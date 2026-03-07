@@ -289,6 +289,94 @@ pytest tests/ --cov=engines --cov=benchmarks --cov-report=term-missing
 
 ## AWS Deployment
 
+Two deployment tools are provided — a **self-contained bash script** (no extra tools needed) and a **Terraform module** for team/repeatable workflows.
+
+### Option 1 — Bash Script (Quickest, No Terraform Required)
+
+`deploy/ec2_deploy.sh` handles everything end-to-end with only the **AWS CLI** and standard unix tools (`jq`, `ssh`, `scp`/`rsync`). It creates all networking, launches instances, uploads the project, starts Docker Compose, and polls until engines are healthy.
+
+**Prerequisites:**
+
+```bash
+# AWS CLI v2 (https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html)
+aws configure          # set Access Key, Secret, region
+aws sts get-caller-identity   # verify
+
+# jq (https://jqlang.github.io/jq/)
+brew install jq        # macOS
+sudo apt install jq    # Ubuntu/Debian
+```
+
+**Single GPU instance** (~$1.21/hr — both engines share one A10G):
+
+```bash
+./deploy/ec2_deploy.sh \
+  --mode   single \
+  --key    my-key-pair \
+  --region us-east-1
+  # prompts for HuggingFace token; everything else has sensible defaults
+```
+
+**Two dedicated GPU instances** (~$2.46/hr — one engine per GPU):
+
+```bash
+./deploy/ec2_deploy.sh \
+  --mode     multi \
+  --key      my-key-pair \
+  --hf-token hf_YOUR_TOKEN \
+  --region   us-east-1
+```
+
+**All flags:**
+
+```
+--mode       single|multi              Topology (default: single)
+--region     AWS region                (default: us-east-1)
+--instance   EC2 instance type         (default: g5.2xlarge)
+--key        EC2 key pair name         (required)
+--hf-token   HuggingFace Hub token     (default: empty)
+--model      HF model ID               (default: Qwen/Qwen2.5-1.5B-Instruct)
+--volume-gb  Root EBS size in GB       (default: 100)
+--project    Resource name prefix      (default: llm-benchmark)
+--state-file Path to state JSON        (default: .ec2_state.json)
+--yes        Auto-confirm all prompts  (non-interactive)
+```
+
+The script saves all created resource IDs to `.ec2_state.json`. Use this to tear down:
+
+```bash
+./deploy/ec2_deploy.sh --destroy
+# Terminates instances, releases EIPs, deletes VPC/SGs
+```
+
+After deploy, the script prints:
+
+```
+══════════════════════════════════════
+  Deployment Complete
+══════════════════════════════════════
+
+  single           54.x.x.x
+
+Dashboard: http://54.x.x.x:3000
+
+SSH commands:
+  single           ssh -i ~/.ssh/my-key.pem ubuntu@54.x.x.x
+
+Run benchmarks (from the instance):
+  ~/run_benchmark.sh                    # all scenarios + HTML report
+  python run_experiment.py health
+
+Copy HTML report to laptop:
+  scp -i ~/.ssh/my-key.pem ubuntu@54.x.x.x:~/report.html ./report.html
+```
+
+---
+
+### Option 2 — Terraform (Repeatable / Team Workflows)
+
+Full Terraform module under `deploy/terraform/`. Manages the same two topologies with remote state, variable files, and lifecycle rules. See the full walkthrough below.
+
 Two topology options are provided, both managed by Terraform under `deploy/terraform/`.
 
 ### Instance Options
