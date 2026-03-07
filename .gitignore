@@ -1,0 +1,30 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+dist/
+build/
+
+# Environment & secrets
+.env
+!.env.example
+
+# Benchmark outputs
+results/
+report.html
+*.html
+
+# Model weights cache
+model-cache/
+
+# Deployment state (contains instance IDs — gitignore, do not commit)
+.ec2_state*.json
+deploy/terraform/.terraform/
+deploy/terraform/*.tfstate
+deploy/terraform/*.tfstate.backup
+deploy/terraform/.terraform.lock.hcl
+deploy/terraform/terraform.tfvars
+
+# macOS
+.DS_Store
