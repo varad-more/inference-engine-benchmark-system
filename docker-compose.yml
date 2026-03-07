@@ -1,0 +1,138 @@
+version: "3.9"
+
+# =============================================================================
+# vLLM vs SGLang Comparative Benchmark System
+#
+# Services:
+#   vllm      — vLLM OpenAI-compatible server (port 8000)
+#   sglang    — SGLang server                  (port 8001)
+#   dashboard — FastAPI benchmark dashboard    (port 3000)
+#
+# Model weights are cached in ./model-cache (mounted into both engine containers).
+# Set HUGGING_FACE_HUB_TOKEN in a .env file for gated models.
+# =============================================================================
+
+x-gpu-resources: &gpu-resources
+  deploy:
+    resources:
+      reservations:
+        devices:
+          - driver: nvidia
+            device_ids: ["0"]
+            capabilities: [gpu]
+
+x-model-cache: &model-cache
+  type: bind
+  source: ./model-cache
+  target: /root/.cache/huggingface
+
+services:
+  # ---------------------------------------------------------------------------
+  # vLLM
+  # ---------------------------------------------------------------------------
+  vllm:
+    image: vllm/vllm-openai:latest
+    container_name: vllm-server
+    ports:
+      - "8000:8000"
+    environment:
+      - HUGGING_FACE_HUB_TOKEN=${HUGGING_FACE_HUB_TOKEN:-}
+      - CUDA_VISIBLE_DEVICES=0
+    volumes:
+      - <<: *model-cache
+    shm_size: "10gb"
+    command:
+      - "--model"
+      - "Qwen/Qwen2.5-1.5B-Instruct"
+      - "--host"
+      - "0.0.0.0"
+      - "--port"
+      - "8000"
+      - "--enable-prefix-caching"
+      - "--max-model-len"
+      - "8192"
+      - "--gpu-memory-utilization"
+      - "0.85"
+      - "--served-model-name"
+      - "Qwen/Qwen2.5-1.5B-Instruct"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 120s
+    <<: *gpu-resources
+
+  # ---------------------------------------------------------------------------
+  # SGLang
+  # ---------------------------------------------------------------------------
+  sglang:
+    image: lmsysorg/sglang:latest
+    container_name: sglang-server
+    ports:
+      - "8001:8001"
+    environment:
+      - HUGGING_FACE_HUB_TOKEN=${HUGGING_FACE_HUB_TOKEN:-}
+      - CUDA_VISIBLE_DEVICES=0
+    volumes:
+      - <<: *model-cache
+    shm_size: "10gb"
+    command:
+      - "python"
+      - "-m"
+      - "sglang.launch_server"
+      - "--model-path"
+      - "Qwen/Qwen2.5-1.5B-Instruct"
+      - "--host"
+      - "0.0.0.0"
+      - "--port"
+      - "8001"
+      - "--enable-radix-attention"
+      - "--mem-fraction-static"
+      - "0.85"
+      - "--context-length"
+      - "8192"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 120s
+    <<: *gpu-resources
+
+  # ---------------------------------------------------------------------------
+  # Dashboard
+  # ---------------------------------------------------------------------------
+  dashboard:
+    build:
+      context: .
+      dockerfile: Dockerfile.dashboard
+    container_name: benchmark-dashboard
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./results:/app/results
+    environment:
+      - VLLM_HOST=vllm
+      - VLLM_PORT=8000
+      - SGLANG_HOST=sglang
+      - SGLANG_PORT=8001
+      - RESULTS_DIR=/app/results
+    depends_on:
+      vllm:
+        condition: service_healthy
+      sglang:
+        condition: service_healthy
+    command:
+      - "python"
+      - "-m"
+      - "uvicorn"
+      - "dashboard.app:app"
+      - "--host"
+      - "0.0.0.0"
+      - "--port"
+      - "3000"
+
+volumes:
+  model-cache:
+    driver: local
