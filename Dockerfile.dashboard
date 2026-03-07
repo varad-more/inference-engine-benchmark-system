@@ -1,0 +1,35 @@
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# Install system deps
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy project files
+COPY pyproject.toml ./
+COPY engines/ ./engines/
+COPY benchmarks/ ./benchmarks/
+COPY sglang_programs/ ./sglang_programs/
+COPY dashboard/ ./dashboard/
+COPY analysis/ ./analysis/
+
+# Install Python dependencies (no sglang, no GPU needed for dashboard)
+RUN pip install --no-cache-dir \
+    httpx \
+    pydantic \
+    structlog \
+    fastapi \
+    "uvicorn[standard]" \
+    websockets \
+    typer \
+    rich \
+    matplotlib \
+    jinja2 \
+    aiofiles \
+    numpy
+
+EXPOSE 3000
+
+CMD ["python", "-m", "uvicorn", "dashboard.app:app", "--host", "0.0.0.0", "--port", "3000"]
