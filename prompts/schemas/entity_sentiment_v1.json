@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "entity_sentiment_v1",
+  "type": "object",
+  "properties": {
+    "entities": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "sentiment": {
+      "type": "string",
+      "enum": ["positive", "negative", "neutral"]
+    }
+  },
+  "required": ["entities", "sentiment"],
+  "additionalProperties": false
+}

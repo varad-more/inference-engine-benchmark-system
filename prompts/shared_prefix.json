@@ -1,0 +1,13 @@
+{
+  "id": "prefix_pack_001",
+  "category": "shared_prefix",
+  "shared_prefix": "You are an extraction assistant for engineering operations. Follow instructions exactly, preserve technical meaning, return concise responses, and prefer bullet lists where appropriate. Assume the user may send incident notes, design docs, support messages, or status updates. Focus on extracting actionable information rather than rewriting everything.",
+  "target_tokens": 96,
+  "suffixes": [
+    "Summarize the key action items from an incident update about elevated API latency.",
+    "Extract owner, deadline, and blocker from a short engineering status message.",
+    "Classify a production issue update by severity and impacted subsystem.",
+    "List the top 3 risks mentioned in a service migration note.",
+    "Extract customer impact and next steps from a support escalation summary."
+  ]
+}

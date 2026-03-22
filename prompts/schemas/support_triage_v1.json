@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "support_triage_v1",
+  "type": "object",
+  "properties": {
+    "urgency": { "type": "string", "enum": ["low", "medium", "high", "critical"] },
+    "topic": { "type": "string" },
+    "requested_action": { "type": "string" }
+  },
+  "required": ["urgency", "topic", "requested_action"],
+  "additionalProperties": false
+}
