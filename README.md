@@ -647,6 +647,36 @@ aws ec2 stop-instances --instance-ids $(terraform output -json instance_ids | jq
 aws ec2 start-instances --instance-ids $(terraform output -json instance_ids | jq -r '.[]')
 ```
 
+**Auto-stop guardrails for idle GPU spend (recommended):**
+
+Use one (or both) of these patterns so GPU instances do not run overnight unintentionally.
+
+1. **Cron/script-based auto-stop (simple):**
+   - Run a scheduled script (e.g., every 30-60 min) that checks whether benchmark containers/jobs are active.
+   - If no active benchmark process is found for a safe window (e.g., 60+ min), stop the GPU instance.
+
+2. **CloudWatch alarm + action (managed):**
+   - Create a CloudWatch alarm on low `GPUUtilization` (or fallback CPU/network inactivity signals).
+   - Trigger an automation action (Lambda/SSM) to stop the EC2 instance after sustained idle time.
+
+Example minimal auto-stop script (run on the GPU host):
+
+```bash
+#!/usr/bin/env bash
+set -euo pipefail
+
+# If no benchmark process and no running containers, stop instance.
+if ! pgrep -f "run_experiment.py run" >/dev/null 2>&1; then
+  if [ -z "$(sudo docker ps -q)" ]; then
+    INSTANCE_ID=$(curl -s http://169.254.169.254/latest/meta-data/instance-id)
+    REGION=$(curl -s http://169.254.169.254/latest/dynamic/instance-identity/document | jq -r .region)
+    aws ec2 stop-instances --region "$REGION" --instance-ids "$INSTANCE_ID"
+  fi
+fi
+```
+
+> Tip: keep a manual override flag (e.g., `/tmp/no-autostop`) to prevent shutdown during debugging sessions.
+
 **Use Spot Instances** for up to 70% savings — safe for benchmarking since runs are short:
 
 ```bash
