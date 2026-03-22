@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-import pytest
-
 from benchmarks.scenarios import (
     LongContextStress,
     PrefixSharingBenefit,
@@ -25,18 +23,21 @@ class TestScenarioInstances:
         assert s.num_requests == 50
         assert s.concurrency == 1
         assert s.prompt_tokens == 64
+        assert s.prompt_pack == "short_chat"
         assert s.scenario_type == ScenarioType.SINGLE_REQUEST_LATENCY
 
     def test_throughput_ramp_defaults(self) -> None:
         s = ThroughputRamp(name="test")
         assert s.concurrency_levels == [1, 2, 4, 8, 16, 32, 64]
         assert s.requests_per_level == 100
+        assert s.prompt_pack == "long_generation"
         assert s.scenario_type == ScenarioType.THROUGHPUT_RAMP
 
     def test_long_context_stress_defaults(self) -> None:
         s = LongContextStress(name="test")
         assert s.prompt_tokens == 4096
         assert s.num_requests == 20
+        assert s.prompt_pack == "long_context"
         assert s.scenario_type == ScenarioType.LONG_CONTEXT_STRESS
 
     def test_prefix_sharing_benefit_defaults(self) -> None:
@@ -44,11 +45,13 @@ class TestScenarioInstances:
         assert s.shared_prefix_tokens == 512
         assert s.user_suffix_tokens == 50
         assert s.num_requests == 100
+        assert s.prompt_pack == "shared_prefix"
         assert s.scenario_type == ScenarioType.PREFIX_SHARING_BENEFIT
 
     def test_structured_generation_defaults(self) -> None:
         s = StructuredGenerationSpeed(name="test")
         assert s.num_requests == 200
+        assert s.prompt_pack == "structured_json"
         assert s.scenario_type == ScenarioType.STRUCTURED_GENERATION_SPEED
         assert "entities" in s.json_schema["properties"]
         assert "sentiment" in s.json_schema["properties"]
@@ -57,6 +60,7 @@ class TestScenarioInstances:
         s = SingleRequestLatency(name="x")
         d = s.to_dict()
         assert d["scenario_type"] == ScenarioType.SINGLE_REQUEST_LATENCY.value
+        assert d["prompt_pack"] == "short_chat"
         assert d["num_requests"] == 50
 
     def test_all_scenarios_in_registry(self) -> None:

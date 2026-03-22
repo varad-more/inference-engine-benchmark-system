@@ -60,7 +60,9 @@ inference-engine-benchmark-system/
 │
 ├── benchmarks/
 │   ├── metrics.py              # LatencyStats, ThroughputStats, CDF, compare_metrics
-│   ├── scenarios.py            # 5 BenchmarkScenario dataclasses + prompt generators
+│   ├── scenarios.py            # Scenario configs + default prompt-pack mapping
+│   ├── prompt_packs.py         # Prompt-pack loaders (JSONL/JSON)
+│   ├── matrix.py               # Sequential scenario×engine×iteration matrix executor
 │   └── runner.py               # BenchmarkRunner (asyncio.gather, metrics polling, JSON output)
 │
 ├── sglang_programs/
@@ -70,7 +72,8 @@ inference-engine-benchmark-system/
 │   └── app.py                  # FastAPI: REST API + WebSocket live metrics stream
 │
 ├── analysis/
-│   └── report.py               # HTML report generator (matplotlib CDF/throughput/KV charts)
+│   ├── report.py               # HTML report generator (matplotlib CDF/throughput/KV charts)
+│   └── final_report.py         # Aggregated markdown final summary across runs
 │
 ├── prompts/
 │   ├── README.md               # Prompt-pack documentation and usage conventions
@@ -145,23 +148,41 @@ python run_experiment.py run --scenario single_request_latency --engines vllm
 # Both engines
 python run_experiment.py run --scenario throughput_ramp --engines vllm,sglang
 
-# Custom model
+# Custom model + prompt pack
 python run_experiment.py run \
   --scenario prefix_sharing_benefit \
   --engines vllm,sglang \
-  --model Qwen/Qwen2.5-7B-Instruct
+  --model Qwen/Qwen2.5-7B-Instruct \
+  --prompt-pack shared_prefix
 ```
 
 ### Compare both engines head-to-head
 
 ```bash
-python run_experiment.py compare --scenario structured_generation_speed
+python run_experiment.py compare \
+  --scenario structured_generation_speed \
+  --prompt-pack structured_json
 ```
 
-### Generate HTML report
+### Run a sequential matrix (scenario × engine × iteration)
 
 ```bash
+python run_experiment.py matrix \
+  --model Qwen/Qwen2.5-7B-Instruct \
+  --scenarios single_request_latency,throughput_ramp \
+  --engines sglang,vllm \
+  --iterations 2 \
+  --cooldown-seconds 300
+```
+
+### Generate reports
+
+```bash
+# Existing visual HTML report
 python run_experiment.py report --output report.html
+
+# New aggregated markdown summary
+python run_experiment.py final-report --output final_report.md
 ```
 
 ### Start the dashboard
@@ -171,10 +192,11 @@ python run_experiment.py serve
 # Open http://localhost:3000
 ```
 
-### List available scenarios
+### List scenarios and prompt packs
 
 ```bash
 python run_experiment.py list-scenarios
+python run_experiment.py list-prompt-packs
 ```
 
 ---
@@ -202,6 +224,13 @@ Included packs:
 - `shared_prefix.json` — shared system/context prefix with variable suffixes for cache-reuse testing
 
 This structure is intended to make benchmark conclusions more representative than repeatedly hammering a single prompt pattern.
+
+Default scenario→pack mapping is automatic (unless overridden with `--prompt-pack`):
+- `single_request_latency` → `short_chat`
+- `throughput_ramp` → `long_generation`
+- `long_context_stress` → `long_context`
+- `prefix_sharing_benefit` → `shared_prefix`
+- `structured_generation_speed` → `structured_json`
 
 ---
 

@@ -15,12 +15,12 @@ from typing import Any, Callable
 
 import structlog
 
-from benchmarks.metrics import (
-    ConcurrencyPoint,
-    LatencyStats,
-    ScenarioMetrics,
-    ThroughputStats,
-    compare_metrics,
+from benchmarks.metrics import LatencyStats, ScenarioMetrics, ThroughputStats, compare_metrics
+from benchmarks.prompt_packs import (
+    PromptRecord,
+    default_prompt_pack_for_scenario,
+    cycle_prompt_pack,
+    load_shared_prefix_pack,
 )
 from benchmarks.scenarios import (
     BenchmarkScenario,
@@ -42,25 +42,20 @@ logger = structlog.get_logger(__name__)
 RESULTS_DIR = Path("results")
 RESULTS_DIR.mkdir(exist_ok=True)
 
-# ---------------------------------------------------------------------------
-# Per-request result
-# ---------------------------------------------------------------------------
 
 @dataclass
 class RequestResult:
     request_id: int
     prompt_len: int
     success: bool
+    prompt_id: str = ""
+    prompt_category: str = ""
     ttft_ms: float = 0.0
     total_ms: float = 0.0
     output_tokens: int = 0
     tokens_per_sec: float = 0.0
     error: str = ""
 
-
-# ---------------------------------------------------------------------------
-# Scenario result container
-# ---------------------------------------------------------------------------
 
 @dataclass
 class ScenarioResults:
@@ -72,6 +67,8 @@ class ScenarioResults:
     metrics: ScenarioMetrics
     engine_metrics_timeline: list[dict[str, Any]] = field(default_factory=list)
     scenario_config: dict[str, Any] = field(default_factory=dict)
+    workload_metadata: dict[str, Any] = field(default_factory=dict)
+    run_metadata: dict[str, Any] = field(default_factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
         return {
@@ -83,6 +80,8 @@ class ScenarioResults:
             "metrics": self.metrics.to_dict(),
             "engine_metrics_timeline": self.engine_metrics_timeline,
             "scenario_config": self.scenario_config,
+            "workload_metadata": self.workload_metadata,
+            "run_metadata": self.run_metadata,
         }
 
     def save(self, results_dir: Path = RESULTS_DIR) -> Path:
@@ -93,10 +92,6 @@ class ScenarioResults:
         logger.info("saved results", path=str(path))
         return path
 
-
-# ---------------------------------------------------------------------------
-# Comparison result
-# ---------------------------------------------------------------------------
 
 @dataclass
 class ComparisonResult:
@@ -122,26 +117,11 @@ class ComparisonResult:
         return path
 
 
-# ---------------------------------------------------------------------------
-# Progress callback type
-# ---------------------------------------------------------------------------
-
 ProgressCallback = Callable[[int, int, RequestResult], None]
 
 
-# ---------------------------------------------------------------------------
-# BenchmarkRunner
-# ---------------------------------------------------------------------------
-
 class BenchmarkRunner:
-    """
-    Runs benchmark scenarios against an inference client.
-
-    Usage:
-        runner = BenchmarkRunner()
-        results = await runner.run_scenario(scenario, client)
-        results.save()
-    """
+    """Runs benchmark scenarios against an inference client."""
 
     def __init__(
         self,
@@ -153,21 +133,19 @@ class BenchmarkRunner:
         self.results_dir.mkdir(exist_ok=True)
         self._log = structlog.get_logger(self.__class__.__name__)
 
-    # ------------------------------------------------------------------
-    # Main entry point
-    # ------------------------------------------------------------------
-
     async def run_scenario(
         self,
         scenario: BenchmarkScenario,
         client: BaseInferenceClient,
         progress_cb: ProgressCallback | None = None,
+        run_metadata: dict[str, Any] | None = None,
     ) -> ScenarioResults:
         """Dispatch to the appropriate scenario handler."""
         self._log.info(
             "starting scenario",
             scenario=scenario.name,
             engine=client.__class__.__name__,
+            prompt_pack=scenario.prompt_pack,
         )
         run_id = str(uuid.uuid4())[:8]
         ts = time.time()
@@ -183,8 +161,18 @@ class BenchmarkRunner:
         if handler is None:
             raise ValueError(f"Unknown scenario type: {scenario.scenario_type}")
 
-        requests, engine_timeline = await handler(scenario, client, progress_cb)
-        metrics = self._compute_metrics(scenario.name, client.__class__.__name__, requests, engine_timeline)
+        requests, engine_timeline, workload_metadata = await handler(scenario, client, progress_cb)
+        metrics = self._compute_metrics(
+            scenario.name,
+            client.__class__.__name__,
+            requests,
+            engine_timeline,
+        )
+
+        merged_run_metadata = dict(run_metadata or {})
+        merged_run_metadata.setdefault("model", getattr(client, "model", "unknown"))
+        merged_run_metadata.setdefault("host", getattr(client, "host", "unknown"))
+        merged_run_metadata.setdefault("port", getattr(client, "port", "unknown"))
 
         return ScenarioResults(
             scenario_name=scenario.name,
@@ -195,28 +183,38 @@ class BenchmarkRunner:
             metrics=metrics,
             engine_metrics_timeline=engine_timeline,
             scenario_config=scenario.to_dict(),
+            workload_metadata=workload_metadata,
+            run_metadata=merged_run_metadata,
         )
-
-    # ------------------------------------------------------------------
-    # Scenario handlers
-    # ------------------------------------------------------------------
 
     async def _run_single_latency(
         self,
         scenario: BenchmarkScenario,
         client: BaseInferenceClient,
         progress_cb: ProgressCallback | None,
-    ) -> tuple[list[RequestResult], list[dict[str, Any]]]:
+    ) -> tuple[list[RequestResult], list[dict[str, Any]], dict[str, Any]]:
         assert isinstance(scenario, SingleRequestLatency)
-        prompt = make_short_prompt(scenario.prompt_tokens)
+        prompt_records, workload_metadata = self._prompt_records_for_scenario(
+            scenario_name=scenario.name,
+            prompt_pack=scenario.prompt_pack,
+            count=scenario.num_requests,
+            fallback_builder=lambda: make_short_prompt(scenario.prompt_tokens),
+        )
         semaphore = asyncio.Semaphore(scenario.concurrency)
         results: list[RequestResult] = []
         engine_timeline: list[dict[str, Any]] = []
 
         async def _single(idx: int) -> RequestResult:
             async with semaphore:
+                record = prompt_records[idx]
                 return await self._timed_request(
-                    client, idx, prompt, scenario.max_output_tokens, scenario.temperature
+                    client,
+                    idx,
+                    record.prompt,
+                    scenario.max_output_tokens,
+                    scenario.temperature,
+                    prompt_id=record.id,
+                    prompt_category=record.category,
                 )
 
         poll_task = asyncio.create_task(
@@ -233,16 +231,22 @@ class BenchmarkRunner:
         stop_event.set()
         await poll_task
         results.sort(key=lambda x: x.request_id)
-        return results, engine_timeline
+        return results, engine_timeline, workload_metadata
 
     async def _run_throughput_ramp(
         self,
         scenario: BenchmarkScenario,
         client: BaseInferenceClient,
         progress_cb: ProgressCallback | None,
-    ) -> tuple[list[RequestResult], list[dict[str, Any]]]:
+    ) -> tuple[list[RequestResult], list[dict[str, Any]], dict[str, Any]]:
         assert isinstance(scenario, ThroughputRamp)
-        prompt = make_short_prompt(scenario.prompt_tokens)
+        total_requests = scenario.requests_per_level * len(scenario.concurrency_levels)
+        prompt_records, workload_metadata = self._prompt_records_for_scenario(
+            scenario_name=scenario.name,
+            prompt_pack=scenario.prompt_pack,
+            count=total_requests,
+            fallback_builder=lambda: make_short_prompt(scenario.prompt_tokens),
+        )
         all_results: list[RequestResult] = []
         engine_timeline: list[dict[str, Any]] = []
 
@@ -253,14 +257,19 @@ class BenchmarkRunner:
             level_results: list[RequestResult] = []
 
             stop_event = asyncio.Event()
-            poll_task = asyncio.create_task(
-                self._poll_metrics(client, engine_timeline, stop_event)
-            )
+            poll_task = asyncio.create_task(self._poll_metrics(client, engine_timeline, stop_event))
 
             async def _req(idx: int) -> RequestResult:
                 async with semaphore:
+                    record = prompt_records[idx]
                     return await self._timed_request(
-                        client, idx, prompt, scenario.max_output_tokens, scenario.temperature
+                        client,
+                        idx,
+                        record.prompt,
+                        scenario.max_output_tokens,
+                        scenario.temperature,
+                        prompt_id=record.id,
+                        prompt_category=record.category,
                     )
 
             tasks = [_req(global_idx + i) for i in range(scenario.requests_per_level)]
@@ -276,29 +285,39 @@ class BenchmarkRunner:
             global_idx += scenario.requests_per_level
             all_results.extend(level_results)
 
-        return all_results, engine_timeline
+        return all_results, engine_timeline, workload_metadata
 
     async def _run_long_context(
         self,
         scenario: BenchmarkScenario,
         client: BaseInferenceClient,
         progress_cb: ProgressCallback | None,
-    ) -> tuple[list[RequestResult], list[dict[str, Any]]]:
+    ) -> tuple[list[RequestResult], list[dict[str, Any]], dict[str, Any]]:
         assert isinstance(scenario, LongContextStress)
-        prompt = make_long_prompt(scenario.prompt_tokens)
+        prompt_records, workload_metadata = self._prompt_records_for_scenario(
+            scenario_name=scenario.name,
+            prompt_pack=scenario.prompt_pack,
+            count=scenario.num_requests,
+            fallback_builder=lambda: make_long_prompt(scenario.prompt_tokens),
+        )
         semaphore = asyncio.Semaphore(scenario.concurrency)
         results: list[RequestResult] = []
         engine_timeline: list[dict[str, Any]] = []
 
         stop_event = asyncio.Event()
-        poll_task = asyncio.create_task(
-            self._poll_metrics(client, engine_timeline, stop_event)
-        )
+        poll_task = asyncio.create_task(self._poll_metrics(client, engine_timeline, stop_event))
 
         async def _req(idx: int) -> RequestResult:
             async with semaphore:
+                record = prompt_records[idx]
                 return await self._timed_request(
-                    client, idx, prompt, scenario.max_output_tokens, scenario.temperature
+                    client,
+                    idx,
+                    record.prompt,
+                    scenario.max_output_tokens,
+                    scenario.temperature,
+                    prompt_id=record.id,
+                    prompt_category=record.category,
                 )
 
         tasks = [_req(i) for i in range(scenario.num_requests)]
@@ -311,31 +330,42 @@ class BenchmarkRunner:
         stop_event.set()
         await poll_task
         results.sort(key=lambda x: x.request_id)
-        return results, engine_timeline
+        return results, engine_timeline, workload_metadata
 
     async def _run_prefix_sharing(
         self,
         scenario: BenchmarkScenario,
         client: BaseInferenceClient,
         progress_cb: ProgressCallback | None,
-    ) -> tuple[list[RequestResult], list[dict[str, Any]]]:
+    ) -> tuple[list[RequestResult], list[dict[str, Any]], dict[str, Any]]:
         assert isinstance(scenario, PrefixSharingBenefit)
-        shared_prefix = make_system_prompt(scenario.shared_prefix_tokens)
+        pack = self._shared_prefix_pack_for_scenario(scenario)
         semaphore = asyncio.Semaphore(scenario.concurrency)
         results: list[RequestResult] = []
         engine_timeline: list[dict[str, Any]] = []
+        workload_metadata = {
+            "prompt_pack": scenario.prompt_pack,
+            "prompt_source": "prompt_pack",
+            "shared_prefix_id": pack.id,
+            "shared_prefix_length_words": len(pack.shared_prefix.split()),
+            "prompt_ids": [f"{pack.id}:{idx % len(pack.suffixes)}" for idx in range(scenario.num_requests)],
+        }
 
         stop_event = asyncio.Event()
-        poll_task = asyncio.create_task(
-            self._poll_metrics(client, engine_timeline, stop_event)
-        )
+        poll_task = asyncio.create_task(self._poll_metrics(client, engine_timeline, stop_event))
 
         async def _req(idx: int) -> RequestResult:
             async with semaphore:
-                suffix = make_short_prompt(scenario.user_suffix_tokens) + f" (variant {idx})"
-                prompt = shared_prefix + "\n\n" + suffix
+                suffix = pack.suffixes[idx % len(pack.suffixes)]
+                prompt = pack.shared_prefix + "\n\n" + suffix
                 return await self._timed_request(
-                    client, idx, prompt, scenario.max_output_tokens, scenario.temperature
+                    client,
+                    idx,
+                    prompt,
+                    scenario.max_output_tokens,
+                    scenario.temperature,
+                    prompt_id=f"{pack.id}:{idx % len(pack.suffixes)}",
+                    prompt_category=pack.category,
                 )
 
         tasks = [_req(i) for i in range(scenario.num_requests)]
@@ -348,39 +378,44 @@ class BenchmarkRunner:
         stop_event.set()
         await poll_task
         results.sort(key=lambda x: x.request_id)
-        return results, engine_timeline
+        return results, engine_timeline, workload_metadata
 
     async def _run_structured_gen(
         self,
         scenario: BenchmarkScenario,
         client: BaseInferenceClient,
         progress_cb: ProgressCallback | None,
-    ) -> tuple[list[RequestResult], list[dict[str, Any]]]:
+    ) -> tuple[list[RequestResult], list[dict[str, Any]], dict[str, Any]]:
         assert isinstance(scenario, StructuredGenerationSpeed)
+        prompt_records, workload_metadata = self._prompt_records_for_scenario(
+            scenario_name=scenario.name,
+            prompt_pack=scenario.prompt_pack,
+            count=scenario.num_requests,
+            fallback_builder=lambda: make_json_extraction_prompt(
+                "Apple CEO Tim Cook announced Q4 revenue beat expectations."
+            ),
+        )
+        workload_metadata["schemas_used"] = sorted(
+            {record.schema for record in prompt_records if record.schema}
+        )
         semaphore = asyncio.Semaphore(scenario.concurrency)
         results: list[RequestResult] = []
         engine_timeline: list[dict[str, Any]] = []
 
-        # Varied entity extraction inputs
-        base_texts = [
-            "Apple CEO Tim Cook announced Q4 revenue beat expectations.",
-            "Microsoft Azure cloud grew 29% YoY, Satya Nadella praised teams.",
-            "The Federal Reserve raised rates by 25bps, markets fell sharply.",
-            "NASA's Artemis mission successfully landed near the lunar south pole.",
-            "OpenAI released GPT-5, causing Google DeepMind to accelerate Gemini.",
-        ]
-
         stop_event = asyncio.Event()
-        poll_task = asyncio.create_task(
-            self._poll_metrics(client, engine_timeline, stop_event)
-        )
+        poll_task = asyncio.create_task(self._poll_metrics(client, engine_timeline, stop_event))
 
         async def _req(idx: int) -> RequestResult:
             async with semaphore:
-                text = base_texts[idx % len(base_texts)]
-                prompt = make_json_extraction_prompt(text)
+                record = prompt_records[idx]
                 return await self._timed_request(
-                    client, idx, prompt, scenario.max_output_tokens, scenario.temperature
+                    client,
+                    idx,
+                    record.prompt,
+                    scenario.max_output_tokens,
+                    scenario.temperature,
+                    prompt_id=record.id,
+                    prompt_category=record.category,
                 )
 
         tasks = [_req(i) for i in range(scenario.num_requests)]
@@ -393,11 +428,7 @@ class BenchmarkRunner:
         stop_event.set()
         await poll_task
         results.sort(key=lambda x: x.request_id)
-        return results, engine_timeline
-
-    # ------------------------------------------------------------------
-    # Helpers
-    # ------------------------------------------------------------------
+        return results, engine_timeline, workload_metadata
 
     async def _timed_request(
         self,
@@ -406,13 +437,19 @@ class BenchmarkRunner:
         prompt: str,
         max_tokens: int,
         temperature: float,
+        prompt_id: str = "",
+        prompt_category: str = "",
     ) -> RequestResult:
         try:
             gen: GenerationResult = await client.generate(
-                prompt, max_tokens=max_tokens, temperature=temperature
+                prompt,
+                max_tokens=max_tokens,
+                temperature=temperature,
             )
             return RequestResult(
                 request_id=idx,
+                prompt_id=prompt_id,
+                prompt_category=prompt_category,
                 prompt_len=len(prompt.split()),
                 success=True,
                 ttft_ms=gen.ttft_ms,
@@ -424,6 +461,8 @@ class BenchmarkRunner:
             self._log.error("request failed", idx=idx, error=str(exc))
             return RequestResult(
                 request_id=idx,
+                prompt_id=prompt_id,
+                prompt_category=prompt_category,
                 prompt_len=len(prompt.split()),
                 success=False,
                 error=str(exc)[:200],
@@ -438,13 +477,15 @@ class BenchmarkRunner:
         while not stop_event.is_set():
             try:
                 m: EngineMetrics = await client.get_metrics()
-                timeline.append({
-                    "timestamp": m.timestamp,
-                    "gpu_memory_used_gb": m.gpu_memory_used_gb,
-                    "kv_cache_usage_pct": m.kv_cache_usage_pct,
-                    "pending_requests": m.pending_requests,
-                    "running_requests": m.running_requests,
-                })
+                timeline.append(
+                    {
+                        "timestamp": m.timestamp,
+                        "gpu_memory_used_gb": m.gpu_memory_used_gb,
+                        "kv_cache_usage_pct": m.kv_cache_usage_pct,
+                        "pending_requests": m.pending_requests,
+                        "running_requests": m.running_requests,
+                    }
+                )
             except Exception as exc:
                 self._log.debug("metrics poll failed", error=str(exc))
             try:
@@ -452,7 +493,7 @@ class BenchmarkRunner:
                     asyncio.shield(asyncio.ensure_future(stop_event.wait())),
                     timeout=self.metrics_poll_interval,
                 )
-            except asyncio.TimeoutError:
+            except TimeoutError:
                 pass
 
     def _compute_metrics(
@@ -466,9 +507,7 @@ class BenchmarkRunner:
         ttft_samples = [r.ttft_ms for r in successful]
         total_samples = [r.total_ms for r in successful]
         total_tokens = sum(r.output_tokens for r in successful)
-        wall_time = (
-            (max(r.total_ms for r in successful) / 1000.0) if successful else 0.0
-        )
+        wall_time = (max(r.total_ms for r in successful) / 1000.0) if successful else 0.0
 
         latency_stats = LatencyStats.from_samples(total_samples)
         ttft_stats = LatencyStats.from_samples(ttft_samples)
@@ -479,8 +518,8 @@ class BenchmarkRunner:
             wall_time_sec=wall_time,
         )
 
-        kv_timeline = [e["kv_cache_usage_pct"] for e in engine_timeline]
-        gpu_timeline = [e["gpu_memory_used_gb"] for e in engine_timeline]
+        kv_timeline = [entry["kv_cache_usage_pct"] for entry in engine_timeline]
+        gpu_timeline = [entry["gpu_memory_used_gb"] for entry in engine_timeline]
         error_rate = (len(requests) - len(successful)) / max(len(requests), 1)
 
         return ScenarioMetrics(
@@ -494,10 +533,65 @@ class BenchmarkRunner:
             error_rate=error_rate,
         )
 
+    def _prompt_records_for_scenario(
+        self,
+        scenario_name: str,
+        prompt_pack: str | None,
+        count: int,
+        fallback_builder: Callable[[], str],
+    ) -> tuple[list[PromptRecord], dict[str, Any]]:
+        pack_name = prompt_pack or default_prompt_pack_for_scenario(scenario_name)
+        try:
+            prompt_records = cycle_prompt_pack(pack_name, count)
+            return prompt_records, {
+                "prompt_pack": pack_name,
+                "prompt_source": "prompt_pack",
+                "prompt_ids": [record.id for record in prompt_records],
+                "categories": sorted({record.category for record in prompt_records}),
+            }
+        except Exception as exc:
+            self._log.warning(
+                "prompt pack unavailable, using synthetic fallback",
+                scenario=scenario_name,
+                prompt_pack=pack_name,
+                error=str(exc),
+            )
+            prompt_records = [
+                PromptRecord(
+                    id=f"synthetic_{scenario_name}_{idx:04d}",
+                    category="synthetic",
+                    prompt=fallback_builder(),
+                )
+                for idx in range(count)
+            ]
+            return prompt_records, {
+                "prompt_pack": pack_name,
+                "prompt_source": "synthetic_fallback",
+                "prompt_ids": [record.id for record in prompt_records],
+                "categories": ["synthetic"],
+            }
 
-# ---------------------------------------------------------------------------
-# Comparison runner
-# ---------------------------------------------------------------------------
+    def _shared_prefix_pack_for_scenario(self, scenario: PrefixSharingBenefit):
+        pack_name = scenario.prompt_pack or default_prompt_pack_for_scenario(scenario.name)
+        if pack_name != "shared_prefix":
+            self._log.warning(
+                "prefix-sharing scenario ignores non-shared pack override",
+                prompt_pack=pack_name,
+            )
+        try:
+            return load_shared_prefix_pack()
+        except Exception as exc:
+            self._log.warning("shared prefix pack unavailable, using synthetic fallback", error=str(exc))
+            return type("SyntheticSharedPrefix", (), {
+                "id": "synthetic_shared_prefix",
+                "category": "shared_prefix",
+                "shared_prefix": make_system_prompt(scenario.shared_prefix_tokens),
+                "suffixes": tuple(
+                    make_short_prompt(scenario.user_suffix_tokens) + f" (variant {idx})"
+                    for idx in range(5)
+                ),
+            })()
+
 
 async def run_comparison(
     scenario: BenchmarkScenario,
@@ -505,18 +599,17 @@ async def run_comparison(
     sglang_client: BaseInferenceClient,
     results_dir: Path = RESULTS_DIR,
     progress_cb: ProgressCallback | None = None,
+    run_metadata: dict[str, Any] | None = None,
 ) -> ComparisonResult:
-    """
-    Run the same scenario on both engines sequentially and produce a ComparisonResult.
-    """
+    """Run the same scenario on both engines sequentially."""
     runner = BenchmarkRunner(results_dir=results_dir)
 
     logger.info("running vLLM", scenario=scenario.name)
-    vllm_results = await runner.run_scenario(scenario, vllm_client, progress_cb)
+    vllm_results = await runner.run_scenario(scenario, vllm_client, progress_cb, run_metadata)
     vllm_results.save(results_dir)
 
     logger.info("running SGLang", scenario=scenario.name)
-    sglang_results = await runner.run_scenario(scenario, sglang_client, progress_cb)
+    sglang_results = await runner.run_scenario(scenario, sglang_client, progress_cb, run_metadata)
     sglang_results.save(results_dir)
 
     delta = compare_metrics(vllm_results.metrics, sglang_results.metrics)
@@ -533,16 +626,12 @@ async def run_comparison(
 
 if __name__ == "__main__":
     import asyncio
+
     from benchmarks.scenarios import SingleRequestLatency
     from engines.vllm_client import VLLMClient
-    from engines.sglang_client import SGLangClient
 
     async def smoke() -> None:
-        scenario = SingleRequestLatency(
-            name="single_request_latency",
-            num_requests=5,
-            concurrency=1,
-        )
+        scenario = SingleRequestLatency(name="single_request_latency", num_requests=5, concurrency=1)
         client = VLLMClient(host="localhost", port=8000)
         healthy = await client.health_check()
         if not healthy:
