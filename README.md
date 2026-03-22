@@ -850,53 +850,34 @@ The following snapshot summarizes the completed multi-model matrix collected on 
 
 > Scope note: all rows below are completed runs. The only intentional gap is `Phi-3 mini + SGLang`, which is blocked on this setup by an engine compatibility issue documented below.
 
-#### Qwen 7B (`Qwen/Qwen2.5-7B-Instruct`)
+| Model | Scenario | Engine | TTFT p50 | TTFT p95 | Total latency p95 | Tokens/sec | Requests/sec | Success |
+|---|---|---|---:|---:|---:|---:|---:|---:|
+| Qwen 7B | `single_request_latency` | SGLang | 67.9 ms | 68.2 ms | 4178.4 ms | 1531.6 | 11.97 | 100.0% |
+| Qwen 7B | `single_request_latency` | vLLM | 40.4 ms | 40.7 ms | 4202.4 ms | 1451.3 | 11.34 | 100.0% |
+| Qwen 7B | `throughput_ramp` | SGLang | 68.7 ms | 194.2 ms | 9581.5 ms | 18667.3 | 72.92 | 100.0% |
+| Qwen 7B | `throughput_ramp` | vLLM | 89.9 ms | 311.9 ms | 10091.5 ms | 15140.9 | 68.98 | 100.0% |
+| Gemma 2B | `single_request_latency` | SGLang | 34.1 ms | 35.0 ms | 1683.0 ms | 3785.5 | 29.57 | 100.0% |
+| Gemma 2B | `single_request_latency` | vLLM | 19.8 ms | 20.3 ms | 1661.8 ms | 3749.2 | 29.29 | 100.0% |
+| Gemma 2B | `throughput_ramp` | SGLang | 53.6 ms | 159.9 ms | 4898.1 ms | 36459.2 | 142.43 | 100.0% |
+| Gemma 2B | `throughput_ramp` | vLLM | 44.0 ms | 189.9 ms | 2301.1 ms | 33875.2 | 289.16 | 100.0% |
+| Phi-3 mini | `single_request_latency` | vLLM | 25.4 ms | 25.9 ms | 2243.6 ms | 2786.4 | 21.77 | 100.0% |
+| Phi-3 mini | `throughput_ramp` | vLLM | 55.5 ms | 188.6 ms | 8645.5 ms | 20533.9 | 80.21 | 100.0% |
+| Mistral 7B | `single_request_latency` | SGLang | 66.0 ms | 66.4 ms | 4057.3 ms | 1574.9 | 12.30 | 100.0% |
+| Mistral 7B | `single_request_latency` | vLLM | 41.4 ms | 41.7 ms | 4044.0 ms | 1539.7 | 12.03 | 100.0% |
+| Mistral 7B | `throughput_ramp` | SGLang | 69.7 ms | 353.6 ms | 10332.4 ms | 17294.3 | 67.56 | 100.0% |
+| Mistral 7B | `throughput_ramp` | vLLM | 92.3 ms | 240.5 ms | 10342.1 ms | 17175.6 | 67.09 | 100.0% |
+| Gemma 9B | `single_request_latency` | SGLang | 86.3 ms | 86.9 ms | 333.4 ms | 676.2 | 135.24 | 100.0% |
+| Gemma 9B | `single_request_latency` | vLLM *(tuned)* | 120.8 ms | 122.2 ms | 381.6 ms | 648.6 | 129.73 | 100.0% |
+| Gemma 9B | `throughput_ramp` | SGLang | 91.4 ms | 3666.6 ms | 5277.1 ms | 3595.1 | 99.86 | 100.0% |
+| Gemma 9B | `throughput_ramp` | vLLM *(tuned)* | 82.7 ms | 362.5 ms | 2483.7 ms | 9619.6 | 267.21 | 100.0% |
 
-- `single_request_latency`
-  - **SGLang** — TTFT p50 **67.9 ms**, TTFT p95 **68.2 ms**, latency p95 **4178.4 ms**, **1531.6 tok/s**, **11.97 req/s**, success **100.0%**
-  - **vLLM** — TTFT p50 **40.4 ms**, TTFT p95 **40.7 ms**, latency p95 **4202.4 ms**, **1451.3 tok/s**, **11.34 req/s**, success **100.0%**
-- `throughput_ramp`
-  - **SGLang** — TTFT p50 **68.7 ms**, TTFT p95 **194.2 ms**, latency p95 **9581.5 ms**, **18667.3 tok/s**, **72.92 req/s**, success **100.0%**
-  - **vLLM** — TTFT p50 **89.9 ms**, TTFT p95 **311.9 ms**, latency p95 **10091.5 ms**, **15140.9 tok/s**, **68.98 req/s**, success **100.0%**
-- **Interim takeaway:** vLLM won on single-request TTFT, while SGLang delivered better aggregate throughput on this Qwen 7B run.
+#### Notes and takeaways
 
-#### Gemma 2B (`google/gemma-2-2b-it`)
-
-- `single_request_latency`
-  - **SGLang** — TTFT p50 **34.1 ms**, TTFT p95 **35.0 ms**, latency p95 **1683.0 ms**, **3785.5 tok/s**, **29.57 req/s**, success **100.0%**
-  - **vLLM** — TTFT p50 **19.8 ms**, TTFT p95 **20.3 ms**, latency p95 **1661.8 ms**, **3749.2 tok/s**, **29.29 req/s**, success **100.0%**
-- `throughput_ramp`
-  - **SGLang** — TTFT p50 **53.6 ms**, TTFT p95 **159.9 ms**, latency p95 **4898.1 ms**, **36459.2 tok/s**, **142.43 req/s**, success **100.0%**
-  - **vLLM** — TTFT p50 **44.0 ms**, TTFT p95 **189.9 ms**, latency p95 **2301.1 ms**, **33875.2 tok/s**, **289.16 req/s**, success **100.0%**
-- **Interim takeaway:** vLLM won on latency and requests/sec, while SGLang posted higher tokens/sec in the Gemma 2B throughput run.
-
-#### Phi-3 mini (`microsoft/Phi-3-mini-4k-instruct`)
-
-- `single_request_latency`
-  - **vLLM** — TTFT p50 **25.4 ms**, TTFT p95 **25.9 ms**, latency p95 **2243.6 ms**, **2786.4 tok/s**, **21.77 req/s**, success **100.0%**
-- `throughput_ramp`
-  - **vLLM** — TTFT p50 **55.5 ms**, TTFT p95 **188.6 ms**, latency p95 **8645.5 ms**, **20533.9 tok/s**, **80.21 req/s**, success **100.0%**
-- **Compatibility note:** `Phi-3-mini + SGLang` is currently blocked on this setup by a FlashInfer/CUDA graph incompatibility (`unsupported head_dim=96`), so Phi-3 is presently benchmarked on **vLLM only**.
-
-#### Mistral 7B (`mistralai/Mistral-7B-Instruct-v0.3`)
-
-- `single_request_latency`
-  - **SGLang** — TTFT p50 **66.0 ms**, TTFT p95 **66.4 ms**, latency p95 **4057.3 ms**, **1574.9 tok/s**, **12.30 req/s**, success **100.0%**
-  - **vLLM** — TTFT p50 **41.4 ms**, TTFT p95 **41.7 ms**, latency p95 **4044.0 ms**, **1539.7 tok/s**, **12.03 req/s**, success **100.0%**
-- `throughput_ramp`
-  - **SGLang** — TTFT p50 **69.7 ms**, TTFT p95 **353.6 ms**, latency p95 **10332.4 ms**, **17294.3 tok/s**, **67.56 req/s**, success **100.0%**
-  - **vLLM** — TTFT p50 **92.3 ms**, TTFT p95 **240.5 ms**, latency p95 **10342.1 ms**, **17175.6 tok/s**, **67.09 req/s**, success **100.0%**
-- **Takeaway:** vLLM again led on single-request TTFT, while both engines landed very similar throughput/req-sec numbers on the larger ramp workload.
-
-#### Gemma 9B (`google/gemma-2-9b-it`)
-
-- `single_request_latency`
-  - **SGLang** — TTFT p50 **86.3 ms**, TTFT p95 **86.9 ms**, latency p95 **333.4 ms**, **676.2 tok/s**, **135.24 req/s**, success **100.0%**
-  - **vLLM** *(tuned: 4096 ctx, 0.92 GPU mem util)* — TTFT p50 **120.8 ms**, TTFT p95 **122.2 ms**, latency p95 **381.6 ms**, **648.6 tok/s**, **129.73 req/s**, success **100.0%**
-- `throughput_ramp`
-  - **SGLang** — TTFT p50 **91.4 ms**, TTFT p95 **3666.6 ms**, latency p95 **5277.1 ms**, **3595.1 tok/s**, **99.86 req/s**, success **100.0%**
-  - **vLLM** *(tuned: 4096 ctx, 0.92 GPU mem util)* — TTFT p50 **82.7 ms**, TTFT p95 **362.5 ms**, latency p95 **2483.7 ms**, **9619.6 tok/s**, **267.21 req/s**, success **100.0%**
-- **Takeaway:** Gemma 9B is the heaviest fit on this single A10G. vLLM required tuned memory/context settings to fit, but once it came up it substantially outperformed SGLang on throughput and p95 latency.
+- **Qwen 7B:** vLLM won on single-request TTFT, while SGLang delivered better aggregate throughput on the ramp run.
+- **Gemma 2B:** vLLM won on latency and requests/sec, while SGLang posted slightly higher tokens/sec on throughput ramp.
+- **Phi-3 mini:** benchmarked on **vLLM only** because `Phi-3 mini + SGLang` is currently blocked on this setup by a FlashInfer/CUDA graph incompatibility (`unsupported head_dim=96`).
+- **Mistral 7B:** vLLM again won on low-latency single-request TTFT, while both engines landed very similar throughput on the ramp scenario.
+- **Gemma 9B:** vLLM required tuned launch settings on the single A10G (`context=4096`, `gpu_memory_utilization=0.92`), but once it came up it substantially outperformed SGLang on throughput and latency p95 in the ramp scenario.
 
 ---
 
