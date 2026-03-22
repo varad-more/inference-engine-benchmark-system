@@ -1,5 +1,8 @@
 from __future__ import annotations
 
+import json
+from pathlib import Path
+
 from fastapi.testclient import TestClient
 
 import dashboard.app as dash
@@ -51,9 +54,35 @@ def test_current_activity_endpoint(monkeypatch) -> None:
     assert payload["active_servers"][0]["engine"] == "sglang"
 
 
+def test_result_file_payload(tmp_path: Path) -> None:
+    path = tmp_path / "single_request_latency_VLLMClient_123.json"
+    path.write_text(
+        json.dumps(
+            {
+                "scenario_name": "single_request_latency",
+                "engine_name": "VLLMClient",
+                "metrics": {
+                    "ttft": {"p95": 12.3},
+                    "latency": {"p95": 456.7},
+                    "throughput": {"tokens_per_sec": 999.0, "requests_per_sec": 7.5},
+                    "error_rate": 0.0,
+                },
+                "run_metadata": {"model": "google/gemma-2-2b-it"},
+                "workload_metadata": {"prompt_pack": "short_chat"},
+            }
+        )
+    )
+    payload = dash._result_file_payload(path)
+    assert payload["type"] == "result"
+    assert payload["engine"] == "vLLM"
+    assert payload["model"] == "google/gemma-2-2b-it"
+    assert payload["ttft_p95_ms"] == 12.3
+
+
 def test_dashboard_home_renders() -> None:
     client = TestClient(dash.app)
     response = client.get("/")
     assert response.status_code == 200
     assert "Current activity" in response.text
+    assert "Latest completed result" in response.text
     assert "/api/current" in response.text

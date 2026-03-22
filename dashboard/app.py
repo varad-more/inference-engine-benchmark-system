@@ -80,6 +80,10 @@ MODEL_LABELS = {
     "gemma9b": "Gemma 9B",
     "phi3": "Phi-3 mini",
 }
+ENGINE_LABELS = {
+    "VLLMClient": "vLLM",
+    "SGLangClient": "SGLang",
+}
 
 
 # ---------------------------------------------------------------------------
@@ -225,17 +229,86 @@ def _parse_server_command(command: str) -> dict[str, Any] | None:
     return None
 
 
+def _result_file_payload(path: Path) -> dict[str, Any]:
+    payload: dict[str, Any] = {
+        "id": path.stem,
+        "filename": path.name,
+        "size_bytes": path.stat().st_size,
+        "modified": path.stat().st_mtime,
+        "type": "unknown",
+    }
+    try:
+        data = json.loads(path.read_text())
+    except Exception:
+        return payload
+
+    if "metrics" in data and "scenario_name" in data and "engine_name" in data:
+        metrics = data.get("metrics", {})
+        throughput = metrics.get("throughput", {})
+        payload.update(
+            {
+                "type": "result",
+                "scenario": data.get("scenario_name"),
+                "engine": ENGINE_LABELS.get(data.get("engine_name"), data.get("engine_name")),
+                "model": data.get("run_metadata", {}).get("model"),
+                "prompt_pack": data.get("workload_metadata", {}).get("prompt_pack"),
+                "success_rate_pct": round((1 - metrics.get("error_rate", 0.0)) * 100, 1),
+                "ttft_p95_ms": metrics.get("ttft", {}).get("p95"),
+                "latency_p95_ms": metrics.get("latency", {}).get("p95"),
+                "tokens_per_sec": throughput.get("tokens_per_sec"),
+                "requests_per_sec": throughput.get("requests_per_sec"),
+            }
+        )
+    elif "scenario_name" in data and "vllm" in data and "sglang" in data:
+        payload.update({"type": "comparison", "scenario": data.get("scenario_name")})
+    elif "tasks" in data and "model" in data:
+        payload.update({"type": "matrix_manifest", "model": data.get("model")})
+
+    return payload
+
+
 def _latest_results_payload(limit: int = 8) -> list[dict[str, Any]]:
     files = sorted(RESULTS_DIR.glob("*.json"), key=lambda p: p.stat().st_mtime, reverse=True)
-    return [
-        {
-            "id": f.stem,
-            "filename": f.name,
-            "size_bytes": f.stat().st_size,
-            "modified": f.stat().st_mtime,
+    return [_result_file_payload(f) for f in files[:limit]]
+
+
+def _system_status_payload() -> dict[str, Any]:
+    gpu_line = _run_shell(
+        "nvidia-smi --query-gpu=temperature.gpu,utilization.gpu,memory.used,memory.total --format=csv,noheader,nounits 2>/dev/null | head -n1"
+    )
+    load_line = _run_shell(
+        "python3 - <<'PY'\nimport os\nprint(', '.join(f'{x:.2f}' for x in os.getloadavg()))\nPY"
+    )
+    mem_line = _run_shell(
+        "python3 - <<'PY'\nimport shutil, subprocess\nout = subprocess.check_output(['free', '-m'], text=True).splitlines()[1].split()\nprint(f'{out[2]},{out[6]}')\nPY"
+    )
+
+    payload: dict[str, Any] = {}
+    if gpu_line:
+        parts = [p.strip() for p in gpu_line.split(',')]
+        if len(parts) == 4:
+            payload["gpu"] = {
+                "temperature_c": float(parts[0]),
+                "utilization_pct": float(parts[1]),
+                "memory_used_mib": float(parts[2]),
+                "memory_total_mib": float(parts[3]),
+            }
+    if load_line:
+        payload["load_avg"] = load_line
+    if mem_line and "," in mem_line:
+        used, avail = [p.strip() for p in mem_line.split(',', 1)]
+        payload["memory"] = {
+            "used_mib": float(used),
+            "available_mib": float(avail),
         }
-        for f in files[:limit]
-    ]
+    return payload
+
+
+def _latest_completed_result_payload() -> dict[str, Any] | None:
+    for item in _latest_results_payload(limit=30):
+        if item.get("type") == "result":
+            return item
+    return None
 
 
 def _current_activity_payload() -> dict[str, Any]:
@@ -286,6 +359,8 @@ def _current_activity_payload() -> dict[str, Any]:
         "current": current or {"state": "idle", "source": "none"},
         "active_servers": active_servers,
         "latest_results": _latest_results_payload(limit=5),
+        "latest_completed_result": _latest_completed_result_payload(),
+        "system": _system_status_payload(),
     }
 
 
@@ -309,6 +384,7 @@ async def dashboard_home() -> HTMLResponse:
             --bg: #0b1020;
             --panel: #121933;
             --panel-2: #172043;
+            --panel-3: #0f1530;
             --border: #27335a;
             --text: #e8eefc;
             --muted: #9fb0d0;
@@ -324,20 +400,44 @@ async def dashboard_home() -> HTMLResponse:
           .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; margin-top: 1rem; }
           .card { background: var(--panel); border: 1px solid var(--border); border-radius: 14px; padding: 1rem; }
           .wide { grid-column: 1 / -1; }
+          .hero { display:grid; grid-template-columns: repeat(auto-fit, minmax(200px,1fr)); gap: 1rem; margin-top: 1rem; }
+          .stat { background: var(--panel-3); border: 1px solid var(--border); border-radius: 12px; padding: 0.9rem; }
+          .stat .label { color: var(--muted); font-size: 0.85rem; margin-bottom: 0.35rem; }
+          .stat .value { font-size: 1.2rem; font-weight: 700; }
           .pill { display: inline-block; padding: 0.2rem 0.55rem; border-radius: 999px; background: var(--panel-2); border: 1px solid var(--border); font-size: 0.9rem; }
           .status-ok { color: var(--ok); }
           .status-warn { color: var(--warn); }
           .status-bad { color: var(--bad); }
           table { width: 100%; border-collapse: collapse; }
-          th, td { padding: 0.6rem; border-bottom: 1px solid var(--border); text-align: left; font-size: 0.95rem; }
+          th, td { padding: 0.6rem; border-bottom: 1px solid var(--border); text-align: left; font-size: 0.93rem; vertical-align: top; }
           .mono { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.92rem; }
-          .small { font-size: 0.9rem; }
-          .spacer { height: 0.5rem; }
+          .small { font-size: 0.88rem; }
+          .compare-grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(220px,1fr)); gap:0.75rem; }
+          .compare-item { background: var(--panel-3); border:1px solid var(--border); border-radius: 10px; padding: 0.75rem; }
         </style>
       </head>
       <body>
         <h1>Inference Benchmark Dashboard</h1>
-        <p class="muted">Live status for the benchmark repo. Use <code>http://</code>, not <code>https://</code>, unless you put this behind a TLS reverse proxy.</p>
+        <p class="muted">Live benchmark status, latest results, and quick comparisons. Use <code>http://</code>, not <code>https://</code>, unless this is behind a TLS reverse proxy.</p>
+
+        <div class="hero">
+          <div class="stat">
+            <div class="label">Current model</div>
+            <div class="value" id="hero-model">—</div>
+          </div>
+          <div class="stat">
+            <div class="label">Current test</div>
+            <div class="value" id="hero-scenario">—</div>
+          </div>
+          <div class="stat">
+            <div class="label">GPU status</div>
+            <div class="value" id="hero-gpu">—</div>
+          </div>
+          <div class="stat">
+            <div class="label">Latest result</div>
+            <div class="value" id="hero-latest">—</div>
+          </div>
+        </div>
 
         <div class="grid">
           <div class="card">
@@ -345,30 +445,34 @@ async def dashboard_home() -> HTMLResponse:
             <div id="current">Loading…</div>
           </div>
           <div class="card">
-            <h2>Active services</h2>
+            <h2>Machine + services</h2>
             <div id="services">Loading…</div>
           </div>
           <div class="card">
-            <h2>Quick links</h2>
-            <ul>
-              <li><a href="/docs">API docs</a></li>
-              <li><a href="/api/results">Raw results JSON</a></li>
-              <li><a href="/api/current">Current activity JSON</a></li>
-              <li><a href="/api/compare/single_request_latency">Latest single_request_latency compare</a></li>
-              <li><a href="/api/compare/throughput_ramp">Latest throughput_ramp compare</a></li>
-            </ul>
+            <h2>Latest completed result</h2>
+            <div id="latest-result">Loading…</div>
           </div>
           <div class="card wide">
             <h2>Latest result files</h2>
             <div id="results">Loading…</div>
           </div>
           <div class="card">
-            <h2>Scenario compare: latency</h2>
+            <h2>single_request_latency compare</h2>
             <div id="compare-latency">Loading…</div>
           </div>
           <div class="card">
-            <h2>Scenario compare: throughput</h2>
+            <h2>throughput_ramp compare</h2>
             <div id="compare-throughput">Loading…</div>
+          </div>
+          <div class="card">
+            <h2>Quick links</h2>
+            <ul>
+              <li><a href="/docs">API docs</a></li>
+              <li><a href="/api/current">Current activity JSON</a></li>
+              <li><a href="/api/results">Raw results JSON</a></li>
+              <li><a href="/api/compare/single_request_latency">Latency compare JSON</a></li>
+              <li><a href="/api/compare/throughput_ramp">Throughput compare JSON</a></li>
+            </ul>
           </div>
         </div>
 
@@ -376,11 +480,26 @@ async def dashboard_home() -> HTMLResponse:
           function esc(value) {
             return String(value ?? '').replace(/[&<>"']/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
           }
-
+          function fmtMs(value) { return value == null ? '—' : `${Number(value).toFixed(1)} ms`; }
+          function fmtNum(value, digits = 1) { return value == null ? '—' : Number(value).toFixed(digits); }
           function statusClass(state) {
             if (state === 'running') return 'status-ok';
             if (state === 'queued_or_cooldown') return 'status-warn';
             return 'status-bad';
+          }
+
+          function renderHero(payload) {
+            const current = payload.current || {};
+            const system = payload.system || {};
+            const latest = payload.latest_completed_result || {};
+            document.getElementById('hero-model').textContent = current.model || 'Idle';
+            document.getElementById('hero-scenario').textContent = current.scenario || current.state || 'idle';
+            if (system.gpu) {
+              document.getElementById('hero-gpu').textContent = `${system.gpu.utilization_pct}% • ${system.gpu.temperature_c}°C`;
+            } else {
+              document.getElementById('hero-gpu').textContent = 'n/a';
+            }
+            document.getElementById('hero-latest').textContent = latest.model ? `${latest.model}` : 'No results';
           }
 
           function renderCurrent(payload) {
@@ -392,19 +511,48 @@ async def dashboard_home() -> HTMLResponse:
             if (current.scenario) parts.push(`<p><strong>Scenario:</strong> ${esc(current.scenario)}</p>`);
             if (current.prompt_pack) parts.push(`<p><strong>Prompt pack:</strong> ${esc(current.prompt_pack)}</p>`);
             if (current.progress != null && current.total) parts.push(`<p><strong>Progress:</strong> ${current.progress}/${current.total}</p>`);
-            if (current.script) parts.push(`<p><strong>Script:</strong> <span class="mono">${esc(current.script)}</span></p>`);
+            if (current.script) parts.push(`<p><strong>Runner script:</strong> <span class="mono">${esc(current.script)}</span></p>`);
+            if (current.raw_command) parts.push(`<p class="small muted"><strong>Command:</strong> ${esc(current.raw_command)}</p>`);
             if (current.state === 'idle') parts.push('<p class="muted">No active benchmark process detected right now.</p>');
             document.getElementById('current').innerHTML = parts.join('');
           }
 
           function renderServices(payload) {
+            const parts = [];
+            const system = payload.system || {};
+            if (system.gpu) {
+              parts.push(`<p><strong>GPU:</strong> ${system.gpu.utilization_pct}% util, ${system.gpu.memory_used_mib}/${system.gpu.memory_total_mib} MiB, ${system.gpu.temperature_c}°C</p>`);
+            }
+            if (system.load_avg) {
+              parts.push(`<p><strong>Load avg:</strong> ${esc(system.load_avg)}</p>`);
+            }
+            if (system.memory) {
+              parts.push(`<p><strong>RAM:</strong> ${fmtNum(system.memory.used_mib, 0)} MiB used, ${fmtNum(system.memory.available_mib, 0)} MiB available</p>`);
+            }
             const services = payload.active_servers || [];
-            if (!services.length) {
-              document.getElementById('services').innerHTML = '<p class="muted">No engine/dashboard processes detected.</p>';
+            if (services.length) {
+              parts.push('<ul>' + services.map(item => `<li><strong>${esc(item.engine)}</strong>${item.model ? ` — ${esc(item.model)}` : ''}</li>`).join('') + '</ul>');
+            } else {
+              parts.push('<p class="muted">No engine/dashboard processes detected.</p>');
+            }
+            document.getElementById('services').innerHTML = parts.join('');
+          }
+
+          function renderLatestResult(item) {
+            if (!item) {
+              document.getElementById('latest-result').innerHTML = '<p class="muted">No completed result file found yet.</p>';
               return;
             }
-            const html = '<ul>' + services.map(item => `<li><strong>${esc(item.engine)}</strong>${item.model ? ` — ${esc(item.model)}` : ''}</li>`).join('') + '</ul>';
-            document.getElementById('services').innerHTML = html;
+            document.getElementById('latest-result').innerHTML = `
+              <p><strong>${esc(item.model || 'Unknown model')}</strong></p>
+              <p>${esc(item.engine || '—')} • ${esc(item.scenario || '—')}</p>
+              <p><strong>TTFT p95:</strong> ${fmtMs(item.ttft_p95_ms)}</p>
+              <p><strong>Latency p95:</strong> ${fmtMs(item.latency_p95_ms)}</p>
+              <p><strong>Tok/s:</strong> ${fmtNum(item.tokens_per_sec)}</p>
+              <p><strong>Req/s:</strong> ${fmtNum(item.requests_per_sec, 2)}</p>
+              <p><strong>Success:</strong> ${fmtNum(item.success_rate_pct, 1)}%</p>
+              <p class="small"><a href="/api/results/${encodeURIComponent(item.id)}">Open JSON</a></p>
+            `;
           }
 
           function renderResults(results) {
@@ -412,16 +560,20 @@ async def dashboard_home() -> HTMLResponse:
               document.getElementById('results').innerHTML = '<p class="muted">No result files yet.</p>';
               return;
             }
-            const rows = results.map(item => `
+            const rows = results.filter(item => item.type === 'result').slice(0, 12).map(item => `
               <tr>
-                <td><a href="/api/results/${encodeURIComponent(item.id)}">${esc(item.filename)}</a></td>
+                <td><a href="/api/results/${encodeURIComponent(item.id)}">${esc(item.model || item.filename)}</a></td>
+                <td>${esc(item.engine || '—')}</td>
+                <td>${esc(item.scenario || '—')}</td>
+                <td>${fmtMs(item.ttft_p95_ms)}</td>
+                <td>${fmtNum(item.tokens_per_sec)}</td>
+                <td>${fmtNum(item.success_rate_pct, 1)}%</td>
                 <td>${new Date(item.modified * 1000).toLocaleString()}</td>
-                <td>${Math.round(item.size_bytes / 1024)} KB</td>
               </tr>
             `).join('');
             document.getElementById('results').innerHTML = `
               <table>
-                <thead><tr><th>File</th><th>Modified</th><th>Size</th></tr></thead>
+                <thead><tr><th>Model</th><th>Engine</th><th>Scenario</th><th>TTFT p95</th><th>Tok/s</th><th>Success</th><th>Modified</th></tr></thead>
                 <tbody>${rows}</tbody>
               </table>
             `;
@@ -432,20 +584,17 @@ async def dashboard_home() -> HTMLResponse:
               document.getElementById(targetId).innerHTML = `<p class="muted">${emptyText}</p>`;
               return;
             }
-            const rows = [];
+            const chunks = [];
             if (payload.vllm) {
-              rows.push(`<tr><td>vLLM TTFT p95</td><td>${payload.vllm.ttft?.p95?.toFixed?.(1) ?? '—'} ms</td></tr>`);
-              rows.push(`<tr><td>vLLM tok/s</td><td>${payload.vllm.throughput?.tokens_per_sec?.toFixed?.(1) ?? '—'}</td></tr>`);
+              chunks.push(`<div class="compare-item"><strong>vLLM</strong><br>TTFT p95: ${fmtMs(payload.vllm.ttft?.p95)}<br>Tok/s: ${fmtNum(payload.vllm.throughput?.tokens_per_sec)}<br>Req/s: ${fmtNum(payload.vllm.throughput?.requests_per_sec, 2)}</div>`);
             }
             if (payload.sglang) {
-              rows.push(`<tr><td>SGLang TTFT p95</td><td>${payload.sglang.ttft?.p95?.toFixed?.(1) ?? '—'} ms</td></tr>`);
-              rows.push(`<tr><td>SGLang tok/s</td><td>${payload.sglang.throughput?.tokens_per_sec?.toFixed?.(1) ?? '—'}</td></tr>`);
+              chunks.push(`<div class="compare-item"><strong>SGLang</strong><br>TTFT p95: ${fmtMs(payload.sglang.ttft?.p95)}<br>Tok/s: ${fmtNum(payload.sglang.throughput?.tokens_per_sec)}<br>Req/s: ${fmtNum(payload.sglang.throughput?.requests_per_sec, 2)}</div>`);
             }
             if (payload.delta) {
-              rows.push(`<tr><td>Δ TTFT p95</td><td>${payload.delta.ttft_p95_pct}%</td></tr>`);
-              rows.push(`<tr><td>Δ tok/s</td><td>${payload.delta.tokens_per_sec_pct}%</td></tr>`);
+              chunks.push(`<div class="compare-item"><strong>Delta</strong><br>TTFT p95 Δ: ${esc(payload.delta.ttft_p95_pct)}%<br>Tok/s Δ: ${esc(payload.delta.tokens_per_sec_pct)}%</div>`);
             }
-            document.getElementById(targetId).innerHTML = `<table><tbody>${rows.join('')}</tbody></table>`;
+            document.getElementById(targetId).innerHTML = `<div class="compare-grid">${chunks.join('')}</div>`;
           }
 
           async function loadAll() {
@@ -456,12 +605,13 @@ async def dashboard_home() -> HTMLResponse:
                 fetch('/api/compare/single_request_latency').catch(() => null),
                 fetch('/api/compare/throughput_ramp').catch(() => null),
               ]);
-
               const current = await currentRes.json();
               const results = await resultsRes.json();
+              renderHero(current);
               renderCurrent(current);
               renderServices(current);
-              renderResults(results.slice(0, 10));
+              renderLatestResult(current.latest_completed_result);
+              renderResults(results);
 
               let latency = null;
               let throughput = null;
