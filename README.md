@@ -72,6 +72,16 @@ inference-engine-benchmark-system/
 ├── analysis/
 │   └── report.py               # HTML report generator (matplotlib CDF/throughput/KV charts)
 │
+├── prompts/
+│   ├── README.md               # Prompt-pack documentation and usage conventions
+│   ├── short_chat.jsonl        # Low-latency chat prompts
+│   ├── long_generation.jsonl   # Decode-heavy prompts
+│   ├── long_context.jsonl      # Context-stress prompts
+│   ├── structured_json.jsonl   # Schema-oriented extraction prompts
+│   ├── reasoning.jsonl         # Multi-step / reasoning prompts
+│   ├── shared_prefix.json      # Shared-prefix cache benchmark pack
+│   └── schemas/                # JSON schemas referenced by structured prompts
+│
 ├── tests/
 │   ├── conftest.py
 │   ├── test_metrics.py         # LatencyStats, ThroughputStats, CDF, compare_metrics tests
@@ -178,6 +188,20 @@ python run_experiment.py list-scenarios
 | `long_context_stress` | 20 | 4 | 4096-token prompts, GPU memory pressure |
 | `prefix_sharing_benefit` | 100 | 8 | 512-tok shared prefix, cache warm-up curve |
 | `structured_generation_speed` | 200 | 16 | JSON extraction, constrained decode |
+
+## Prompt Packs
+
+The repo now includes a starter prompt corpus under `prompts/` so benchmark runs can cover more than one workload style.
+
+Included packs:
+- `short_chat.jsonl` — short prompts + short outputs for TTFT-focused testing
+- `long_generation.jsonl` — short prompts requesting long outputs for decode-heavy testing
+- `long_context.jsonl` — document/transcript-style prompts for context-stress evaluation
+- `structured_json.jsonl` — extraction/classification prompts with schema references
+- `reasoning.jsonl` — multi-step technical prompts for longer analytic responses
+- `shared_prefix.json` — shared system/context prefix with variable suffixes for cache-reuse testing
+
+This structure is intended to make benchmark conclusions more representative than repeatedly hammering a single prompt pattern.
 
 ---
 

@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "job_extract_v1",
+  "type": "object",
+  "properties": {
+    "technologies": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "seniority": { "type": "string" },
+    "location_preferences": {
+      "type": "array",
+      "items": { "type": "string" }
+    }
+  },
+  "required": ["technologies", "seniority", "location_preferences"],
+  "additionalProperties": false
+}
