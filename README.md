@@ -840,11 +840,11 @@ All published benchmark runs in this report were executed **sequentially on a si
 - `results/throughput_ramp_SGLangClient_1774163585.json`
 - `results/throughput_ramp_VLLMClient_1774164141.json`
 
-### Expanded multi-model benchmark snapshot (in progress)
+### Expanded multi-model benchmark snapshot (completed 2026-03-22)
 
-The benchmark matrix is still running, but the following completed runs are already available and useful for interim comparison.
+The following snapshot summarizes the completed multi-model matrix collected on the single A10G benchmark host.
 
-> Scope note: this snapshot includes only **completed** runs at the time of writing. Some later steps (for example, remaining Mistral/Gemma 9B runs) may still be in progress.
+> Scope note: all rows below are completed runs. The only intentional gap is `Phi-3 mini + SGLang`, which is blocked on this setup by an engine compatibility issue documented below.
 
 #### Qwen 7B (`Qwen/Qwen2.5-7B-Instruct`)
 
@@ -874,14 +874,25 @@ The benchmark matrix is still running, but the following completed runs are alre
   - **vLLM** — TTFT p50 **55.5 ms**, TTFT p95 **188.6 ms**, latency p95 **8645.5 ms**, **20533.9 tok/s**, **80.21 req/s**, success **100.0%**
 - **Compatibility note:** `Phi-3-mini + SGLang` is currently blocked on this setup by a FlashInfer/CUDA graph incompatibility (`unsupported head_dim=96`), so Phi-3 is presently benchmarked on **vLLM only**.
 
-#### Mistral 7B (`mistralai/Mistral-7B-Instruct-v0.3`) — partial
+#### Mistral 7B (`mistralai/Mistral-7B-Instruct-v0.3`)
 
 - `single_request_latency`
   - **SGLang** — TTFT p50 **66.0 ms**, TTFT p95 **66.4 ms**, latency p95 **4057.3 ms**, **1574.9 tok/s**, **12.30 req/s**, success **100.0%**
   - **vLLM** — TTFT p50 **41.4 ms**, TTFT p95 **41.7 ms**, latency p95 **4044.0 ms**, **1539.7 tok/s**, **12.03 req/s**, success **100.0%**
 - `throughput_ramp`
   - **SGLang** — TTFT p50 **69.7 ms**, TTFT p95 **353.6 ms**, latency p95 **10332.4 ms**, **17294.3 tok/s**, **67.56 req/s**, success **100.0%**
-- **Status:** Mistral vLLM throughput and the Gemma 9B block are still being collected.
+  - **vLLM** — TTFT p50 **92.3 ms**, TTFT p95 **240.5 ms**, latency p95 **10342.1 ms**, **17175.6 tok/s**, **67.09 req/s**, success **100.0%**
+- **Takeaway:** vLLM again led on single-request TTFT, while both engines landed very similar throughput/req-sec numbers on the larger ramp workload.
+
+#### Gemma 9B (`google/gemma-2-9b-it`)
+
+- `single_request_latency`
+  - **SGLang** — TTFT p50 **86.3 ms**, TTFT p95 **86.9 ms**, latency p95 **333.4 ms**, **676.2 tok/s**, **135.24 req/s**, success **100.0%**
+  - **vLLM** *(tuned: 4096 ctx, 0.92 GPU mem util)* — TTFT p50 **120.8 ms**, TTFT p95 **122.2 ms**, latency p95 **381.6 ms**, **648.6 tok/s**, **129.73 req/s**, success **100.0%**
+- `throughput_ramp`
+  - **SGLang** — TTFT p50 **91.4 ms**, TTFT p95 **3666.6 ms**, latency p95 **5277.1 ms**, **3595.1 tok/s**, **99.86 req/s**, success **100.0%**
+  - **vLLM** *(tuned: 4096 ctx, 0.92 GPU mem util)* — TTFT p50 **82.7 ms**, TTFT p95 **362.5 ms**, latency p95 **2483.7 ms**, **9619.6 tok/s**, **267.21 req/s**, success **100.0%**
+- **Takeaway:** Gemma 9B is the heaviest fit on this single A10G. vLLM required tuned memory/context settings to fit, but once it came up it substantially outperformed SGLang on throughput and p95 latency.
 
 ---
 
