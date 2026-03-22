@@ -58,3 +58,24 @@ ignore_missing_imports = true
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
 testpaths = ["tests"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["engines", "benchmarks", "dashboard", "sglang_programs", "analysis"]
+include = ["run_experiment.py"]
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "engines/**",
+    "benchmarks/**",
+    "dashboard/**",
+    "sglang_programs/**",
+    "analysis/**",
+    "tests/**",
+    "deploy/**",
+    "run_experiment.py",
+    "docker-compose.yml",
+    "Dockerfile.dashboard",
+    "README.md",
+    "pyproject.toml",
+    ".env.example",
+]
