@@ -842,6 +842,8 @@ All published benchmark runs in this report were executed **sequentially on a si
 
 ### Expanded multi-model benchmark snapshot (completed 2026-03-22)
 
+For a polished write-up with visuals, see: [`reports/final_benchmark_report_2026-03-22.md`](reports/final_benchmark_report_2026-03-22.md)
+
 The following snapshot summarizes the completed multi-model matrix collected on the single A10G benchmark host.
 
 > Scope note: all rows below are completed runs. The only intentional gap is `Phi-3 mini + SGLang`, which is blocked on this setup by an engine compatibility issue documented below.
