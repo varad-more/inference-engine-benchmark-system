@@ -238,8 +238,10 @@ Default scenario→pack mapping is automatic (unless overridden with `--prompt-p
 
 | Method | Endpoint | Description |
 |---|---|---|
+| `GET` | `/` | Browser-friendly dashboard home |
 | `GET` | `/api/results` | List all saved result files |
 | `GET` | `/api/results/{id}` | Load a specific result |
+| `GET` | `/api/current` | Detect the currently running benchmark/test + active services |
 | `GET` | `/api/compare/{scenario}` | Latest vLLM+SGLang delta for a scenario |
 | `POST` | `/api/run` | Start a background benchmark run |
 | `GET` | `/api/run/{job_id}/status` | Poll run progress |
