@@ -399,6 +399,23 @@ Two topology options are provided, both managed by Terraform under `deploy/terra
 | An EC2 Key Pair | AWS Console → EC2 → Key Pairs → Create |
 | Your public IP | `curl -s https://checkip.amazonaws.com` |
 
+### AWS quota requisition (important before deploy)
+
+GPU instances are commonly quota-blocked in new AWS accounts. Before running deployment, request quota increases in **Service Quotas** for your target region.
+
+Recommended requests:
+
+- **EC2 On-Demand G and VT instances** (for `g5.*`)
+- If using Spot: **EC2 Spot Instance Requests for G and VT instances**
+- Optional fallback if you plan alternatives: quotas for `g4dn.*` / `p*` families
+
+Suggested initial values:
+
+- Option A (single `g5.2xlarge`): request enough for **1 instance**
+- Option B (multi): request enough for **2x g5.2xlarge + 1x t3.medium**
+
+If quota is insufficient, Terraform/script deploy will fail with capacity/quota errors even when config is correct.
+
 ```bash
 aws configure          # set Access Key, Secret, region (us-east-1)
 aws sts get-caller-identity   # verify credentials
@@ -688,6 +705,10 @@ This section captures the latest validated run on the remote benchmark server.
 - Model: `Qwen/Qwen2.5-1.5B-Instruct`
 - Engine mode: **sequential** (run one engine at a time on the same GPU)
 - Result quality: all scenarios below completed with **100% success rate**
+
+### Testing execution note
+
+All published benchmark runs in this report were executed **sequentially on a single machine** (single GPU host). We intentionally did not run vLLM and SGLang concurrently to avoid VRAM contention and startup instability on one A10G.
 
 > Why sequential? On a single A10G, running both engines concurrently causes VRAM contention and unstable startup. Sequential execution gives clean, reproducible numbers.
 
