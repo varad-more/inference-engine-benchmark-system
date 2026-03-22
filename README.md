@@ -901,6 +901,105 @@ The following snapshot summarizes the completed multi-model matrix collected on 
 
 ---
 
+## Reader Quickstart and Usage Guide
+
+This section is for readers who land here from the blog post and want the practical version fast.
+
+### What should a new user try first?
+
+| Goal | Best first model | Best first engine path | Why |
+|---|---|---|---|
+| Fastest first success | `google/gemma-2-2b-it` | vLLM or SGLang | Small, stable, easy to fit |
+| Mid-size realistic benchmark | `Qwen/Qwen2.5-7B-Instruct` | Run both sequentially | Good balance of speed + realism |
+| Larger-model stress test | `google/gemma-2-9b-it` | Start with SGLang, then tuned vLLM | Heavier fit test on single A10G |
+
+### Minimal inference flow
+
+| Step | Command / action | Why it matters |
+|---|---|---|
+| 1 | `cd ~/repos/inference-engine-benchmark-system` | Enter repo |
+| 2 | Ensure `.env` contains `HUGGING_FACE_HUB_TOKEN=hf_...` | Needed for model pulls |
+| 3 | `sudo docker compose down` | Clear prior engine state |
+| 4 | Start **one engine only**: `sudo docker compose up -d vllm` or `sudo docker compose up -d sglang` | Single A10G works best sequentially |
+| 5 | Check health: `curl http://localhost:8000/health` or `curl http://localhost:8001/health` | Wait until engine is actually ready |
+| 6 | Send inference request or run a benchmark scenario | Validate serving path |
+| 7 | Stop engine before switching: `sudo docker compose down` | Avoid VRAM contention |
+
+### Example one-off inference request
+
+| Engine | Endpoint | Example |
+|---|---|---|
+| vLLM | `http://localhost:8000/v1/completions` | prompt → completion JSON response |
+| SGLang | `http://localhost:8001/v1/completions` | prompt → completion JSON response |
+
+Example payload:
+
+```json
+{
+  "model": "google/gemma-2-2b-it",
+  "prompt": "Explain cache invalidation in simple terms.",
+  "max_tokens": 120,
+  "temperature": 0.0
+}
+```
+
+### Benchmark flow
+
+| Scenario | Command pattern | What it tells you |
+|---|---|---|
+| `single_request_latency` | `python run_experiment.py run --scenario single_request_latency --engines vllm --model <model>` | Best for TTFT / responsiveness |
+| `throughput_ramp` | `python run_experiment.py run --scenario throughput_ramp --engines vllm --model <model>` | Best for concurrency / throughput behavior |
+| `matrix` | `python run_experiment.py matrix ...` | Sequential scenario × engine × iteration runs |
+
+### How to read the benchmark output
+
+| Metric | Meaning | Better direction | Why it matters |
+|---|---|---|---|
+| TTFT p50 | Typical time to first token | Lower | Responsiveness |
+| TTFT p95 | Tail time to first token | Lower | User-facing jitter/slowness |
+| Total latency p95 | Tail end-to-end time | Lower | Full request experience |
+| Tokens/sec | Decode throughput | Higher | Heavy generation workloads |
+| Requests/sec | Request handling rate | Higher | Concurrency scaling |
+| Success rate | Fraction of successful requests | Higher | Stability |
+
+### Example completed output (tabular)
+
+| Model | Scenario | Engine | TTFT p95 | Latency p95 | Tok/s | Req/s | Success |
+|---|---|---|---:|---:|---:|---:|---:|
+| Gemma 2B | `single_request_latency` | vLLM | 20.3 ms | 1661.8 ms | 3749.2 | 29.29 | 100.0% |
+| Gemma 2B | `throughput_ramp` | SGLang | 159.9 ms | 4898.1 ms | 36459.2 | 142.43 | 100.0% |
+| Qwen 7B | `single_request_latency` | vLLM | 40.7 ms | 4202.4 ms | 1451.3 | 11.34 | 100.0% |
+| Qwen 7B | `throughput_ramp` | SGLang | 194.2 ms | 9581.5 ms | 18667.3 | 72.92 | 100.0% |
+| Mistral 7B | `throughput_ramp` | vLLM | 240.5 ms | 10342.1 ms | 17175.6 | 67.09 | 100.0% |
+| Gemma 9B | `throughput_ramp` | vLLM (tuned) | 362.5 ms | 2483.7 ms | 9619.6 | 267.21 | 100.0% |
+
+### Common failure modes
+
+| Symptom | Likely cause | What to try |
+|---|---|---|
+| Engine never becomes healthy | model still loading or crashed at startup | check `docker logs`, wait for full warm-up |
+| Cache/OOM failure | model too large for current context / memory settings | reduce context length, tune memory flags |
+| One engine works, another fails | engine/model compatibility issue | document it and pivot instead of wasting retries |
+| Very high throughput tail latency | model is close to hardware limits | reduce concurrency or move to larger GPU |
+
+### Real issues encountered in this benchmark series
+
+| Model | Engine | Issue | Resolution |
+|---|---|---|---|
+| Phi-3 mini | SGLang | FlashInfer/CUDA graph incompatibility (`unsupported head_dim=96`) | skipped SGLang, benchmarked on vLLM |
+| Gemma 9B | vLLM | default memory fit failed on A10G | tuned to `context=4096`, `gpu_memory_utilization=0.92` |
+
+### Best next step for a new reader
+
+| If you want to… | Do this next |
+|---|---|
+| Reproduce something quickly | start with Gemma 2B + `single_request_latency` |
+| Compare engines fairly | run one engine at a time, same model, same scenario |
+| Understand bigger-model behavior | move to Qwen 7B / Mistral 7B after a small-model sanity check |
+| Read the full polished write-up | open `reports/final_benchmark_report_2026-03-22.md` or `.html` |
+
+---
+
 ## License
 
 MIT
