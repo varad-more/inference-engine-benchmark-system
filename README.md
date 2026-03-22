@@ -931,6 +931,82 @@ Example payload:
 | `throughput_ramp` | `python run_experiment.py run --scenario throughput_ramp --engines vllm --model <model>` | Best for concurrency / throughput behavior |
 | `matrix` | `python run_experiment.py matrix ...` | Sequential scenario × engine × iteration runs |
 
+### Replicate the exact benchmark from this report
+
+| Item | Value |
+|---|---|
+| Instance | AWS `g5.2xlarge` |
+| GPU | NVIDIA A10G 24 GB |
+| Execution mode | Sequential, one engine at a time |
+| Core scenarios | `single_request_latency`, `throughput_ramp` |
+| Cooldown policy | 5 min between engine switches |
+| Result location | `results/*.json` |
+
+#### Model order used for the completed report
+
+| Order | Model | SGLang | vLLM | Notes |
+|---:|---|---|---|---|
+| 1 | `Qwen/Qwen2.5-7B-Instruct` | Yes | Yes | Standard sequential run |
+| 2 | `google/gemma-2-2b-it` | Yes | Yes | Standard sequential run |
+| 3 | `microsoft/Phi-3-mini-4k-instruct` | No | Yes | SGLang blocked on this setup (`unsupported head_dim=96`) |
+| 4 | `mistralai/Mistral-7B-Instruct-v0.3` | Yes | Yes | Standard sequential run |
+| 5 | `google/gemma-2-9b-it` | Yes | Yes | vLLM required tuned fit settings |
+
+#### Exact per-model sequence
+
+| Step | Action |
+|---:|---|
+| 1 | Set the model in `docker-compose.yml` |
+| 2 | `sudo docker compose down` |
+| 3 | Start **SGLang** only |
+| 4 | Wait for `curl http://localhost:8001/health` |
+| 5 | Run `single_request_latency` |
+| 6 | Run `throughput_ramp` |
+| 7 | Stop SGLang |
+| 8 | Wait 5 minutes |
+| 9 | Start **vLLM** only |
+| 10 | Wait for `curl http://localhost:8000/health` |
+| 11 | Run `single_request_latency` |
+| 12 | Run `throughput_ramp` |
+| 13 | Save/compare `results/*.json` |
+
+#### Standard command pattern
+
+```bash
+# SGLang
+sudo docker compose down
+sudo docker compose up -d sglang
+curl http://localhost:8001/health
+source .venv/bin/activate
+python run_experiment.py run --scenario single_request_latency --engines sglang --model <MODEL>
+python run_experiment.py run --scenario throughput_ramp --engines sglang --model <MODEL>
+
+# Switch engines
+sudo docker compose down
+sleep 300
+sudo docker compose up -d vllm
+curl http://localhost:8000/health
+python run_experiment.py run --scenario single_request_latency --engines vllm --model <MODEL>
+python run_experiment.py run --scenario throughput_ramp --engines vllm --model <MODEL>
+```
+
+#### Model-specific exceptions
+
+| Model | Engine | Required change |
+|---|---|---|
+| `microsoft/Phi-3-mini-4k-instruct` | SGLang | Skip on this setup due to FlashInfer/CUDA graph incompatibility |
+| `google/gemma-2-9b-it` | vLLM | Use `context=4096` and `gpu_memory_utilization=0.92` |
+
+#### Tuned Gemma 9B vLLM settings
+
+| Setting | Value |
+|---|---:|
+| `--max-model-len` | `4096` |
+| `--context-length` | `4096` |
+| `--gpu-memory-utilization` | `0.92` |
+
+These settings were needed to fit Gemma 9B on a single A10G for the vLLM runs in the final report.
+
 ### How to read the benchmark output
 
 | Metric | Meaning | Better direction | Why it matters |
