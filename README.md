@@ -665,6 +665,19 @@ terraform destroy \
 
 ---
 
+## Release Readiness
+
+Current recommendation: **v0.1.0-beta** (public beta).
+
+### Release checklist status
+
+- ✅ Packaging metadata fixed (`pip install -e ".[dev]"` no longer blocked by Hatch file selection)
+- ✅ CI added (GitHub Actions: lint + tests on Python 3.11/3.12)
+- ✅ Real benchmark report included with reproducible JSON artifacts
+- ⚠️ Recommended before stable `v1.0.0`: run matrix benchmarks across more models/hardware and add rerun variance summary
+
+---
+
 ## Latest Benchmark Report (2026-03-22, AWS g5.2xlarge / A10G 24GB)
 
 This section captures the latest validated run on the remote benchmark server.
