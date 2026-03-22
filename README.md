@@ -665,6 +665,53 @@ terraform destroy \
 
 ---
 
+## Latest Benchmark Report (2026-03-22, AWS g5.2xlarge / A10G 24GB)
+
+This section captures the latest validated run on the remote benchmark server.
+
+### Test environment
+
+- Instance: `g5.2xlarge` (single NVIDIA A10G, 24GB VRAM)
+- Model: `Qwen/Qwen2.5-1.5B-Instruct`
+- Engine mode: **sequential** (run one engine at a time on the same GPU)
+- Result quality: all scenarios below completed with **100% success rate**
+
+> Why sequential? On a single A10G, running both engines concurrently causes VRAM contention and unstable startup. Sequential execution gives clean, reproducible numbers.
+
+### Scenario A — `single_request_latency` (50 requests)
+
+| Engine | TTFT p50 | TTFT p95 | TTFT p99 | Total latency p95 | Tokens/sec | Requests/sec | Success |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| vLLM | 15.9 ms | 16.4 ms | 91.3 ms | 1047.4 ms | 4982.1 | 38.92 | 100.0% |
+| SGLang | 27.5 ms | 28.1 ms | 37.2 ms | 1008.2 ms | 6253.8 | 48.86 | 100.0% |
+
+### Scenario B — `throughput_ramp` (700 requests)
+
+| Engine | TTFT p50 | TTFT p95 | TTFT p99 | Total latency p95 | Tokens/sec | Requests/sec | Success |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| vLLM | 31.5 ms | 178.1 ms | 208.1 ms | 3202.4 ms | 55287.6 | 216.09 | 100.0% |
+| SGLang | 49.4 ms | 155.7 ms | 190.9 ms | 4480.8 ms | 39840.1 | 155.63 | 100.0% |
+
+### High-level takeaways
+
+- **Low-concurrency responsiveness**: vLLM had lower TTFT p50/p95 in this run.
+- **High-concurrency throughput**: vLLM delivered higher aggregate tokens/sec and requests/sec.
+- **SGLang remained competitive** and maintained excellent success rate/stability.
+- These results are for one model + one GPU class; for production selection, repeat across:
+  - larger models,
+  - longer context windows,
+  - multiple reruns/seeds,
+  - and dedicated-per-engine hardware (Option B).
+
+### Result artifacts
+
+- `results/single_request_latency_SGLangClient_1774163306.json`
+- `results/single_request_latency_VLLMClient_1774163440.json`
+- `results/throughput_ramp_SGLangClient_1774163585.json`
+- `results/throughput_ramp_VLLMClient_1774164141.json`
+
+---
+
 ## License
 
 MIT
