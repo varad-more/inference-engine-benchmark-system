@@ -22,12 +22,14 @@ class BenchmarkScenario:
     name: str
     scenario_type: ScenarioType
     description: str = ""
+    prompt_pack: str | None = None
 
     def to_dict(self) -> dict[str, Any]:
         return {
             "name": self.name,
             "scenario_type": self.scenario_type.value,
             "description": self.description,
+            "prompt_pack": self.prompt_pack,
         }
 
 
@@ -54,6 +56,8 @@ class SingleRequestLatency(BenchmarkScenario):
                 f"{self.num_requests} sequential requests, concurrency={self.concurrency}, "
                 f"~{self.prompt_tokens} prompt tokens, {self.max_output_tokens} max output tokens."
             )
+        if self.prompt_pack is None:
+            self.prompt_pack = "short_chat"
 
     def to_dict(self) -> dict[str, Any]:
         d = super().to_dict()
@@ -89,6 +93,8 @@ class ThroughputRamp(BenchmarkScenario):
                 f"Concurrency sweep {self.concurrency_levels}, "
                 f"{self.requests_per_level} requests/level."
             )
+        if self.prompt_pack is None:
+            self.prompt_pack = "long_generation"
 
     def to_dict(self) -> dict[str, Any]:
         d = super().to_dict()
@@ -124,6 +130,8 @@ class LongContextStress(BenchmarkScenario):
                 f"{self.num_requests} requests with ~{self.prompt_tokens}-token prompts, "
                 f"concurrency={self.concurrency}."
             )
+        if self.prompt_pack is None:
+            self.prompt_pack = "long_context"
 
     def to_dict(self) -> dict[str, Any]:
         d = super().to_dict()
@@ -160,6 +168,8 @@ class PrefixSharingBenefit(BenchmarkScenario):
                 f"{self.num_requests} requests with {self.shared_prefix_tokens}-token shared prefix, "
                 f"{self.user_suffix_tokens}-token variable suffix."
             )
+        if self.prompt_pack is None:
+            self.prompt_pack = "shared_prefix"
 
     def to_dict(self) -> dict[str, Any]:
         d = super().to_dict()
@@ -202,6 +212,8 @@ class StructuredGenerationSpeed(BenchmarkScenario):
                 f"{self.num_requests} JSON entity-extraction requests, "
                 f"concurrency={self.concurrency}."
             )
+        if self.prompt_pack is None:
+            self.prompt_pack = "structured_json"
 
     def to_dict(self) -> dict[str, Any]:
         d = super().to_dict()
