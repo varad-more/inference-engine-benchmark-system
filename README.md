@@ -566,6 +566,17 @@ terraform apply \
 | Llama 3.1 8B | 18 GB | g5.2xlarge (A10G 24 GB) | 8 |
 | Llama 3.1 70B | 140 GB | p4d.24xlarge (8× A100 320 GB) | 96 |
 
+**Storage planning (disk) for multi-model benchmarking:**
+
+- Keep at least **50–70 GB free disk** before large benchmark batches.
+- Typical model cache growth (approximate):
+  - **2B class** models: ~4–8 GB each
+  - **7B–9B class** models: ~10–20 GB each
+  - **14B+ class** models: ~25–45 GB each
+- Docker image layers for inference engines can consume **20–60 GB** over time.
+- Sequential benchmarking (one engine/model active at a time) reduces peak storage churn and avoids duplicate temporary artifacts.
+- If disk pressure appears, prune stopped/unused Docker images between batches (`docker image prune -a`) and keep only active model caches.
+
 ---
 
 ### Using a terraform.tfvars File
