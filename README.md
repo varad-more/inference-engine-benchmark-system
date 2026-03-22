@@ -558,13 +558,13 @@ terraform apply \
 
 **GPU VRAM requirements:**
 
-| Model | Min VRAM | Recommended instance |
-|---|---|---|
-| Qwen2.5-1.5B | 4 GB | g4dn.xlarge (T4 16 GB) |
-| Qwen2.5-7B | 16 GB | g5.2xlarge (A10G 24 GB) |
-| Qwen2.5-14B | 30 GB | g5.12xlarge (4× A10G 96 GB) |
-| Llama 3.1 8B | 18 GB | g5.2xlarge (A10G 24 GB) |
-| Llama 3.1 70B | 140 GB | p4d.24xlarge (8× A100 320 GB) |
+| Model | Min VRAM | Recommended instance | AWS vCPUs |
+|---|---|---|---:|
+| Qwen2.5-1.5B | 4 GB | g4dn.xlarge (T4 16 GB) | 4 |
+| Qwen2.5-7B | 16 GB | g5.2xlarge (A10G 24 GB) | 8 |
+| Qwen2.5-14B | 30 GB | g5.12xlarge (4× A10G 96 GB) | 48 |
+| Llama 3.1 8B | 18 GB | g5.2xlarge (A10G 24 GB) | 8 |
+| Llama 3.1 70B | 140 GB | p4d.24xlarge (8× A100 320 GB) | 96 |
 
 ---
 
