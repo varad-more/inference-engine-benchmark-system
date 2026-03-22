@@ -840,6 +840,53 @@ All published benchmark runs in this report were executed **sequentially on a si
 - `results/throughput_ramp_SGLangClient_1774163585.json`
 - `results/throughput_ramp_VLLMClient_1774164141.json`
 
+### Expanded multi-model benchmark snapshot (in progress)
+
+The benchmark matrix is still running, but the following completed runs are already available and useful for interim comparison.
+
+> Scope note: this snapshot includes only **completed** runs at the time of writing. Some later steps (for example, remaining Mistral/Gemma 9B runs) may still be in progress.
+
+#### Qwen 7B (`Qwen/Qwen2.5-7B-Instruct`)
+
+| Model | Scenario | Engine | TTFT p50 | TTFT p95 | Total latency p95 | Tokens/sec | Requests/sec | Success |
+|---|---|---|---:|---:|---:|---:|---:|---:|
+| Qwen 7B | `single_request_latency` | SGLang | 67.9 ms | 68.2 ms | 4178.4 ms | 1531.6 | 11.97 | 100.0% |
+| Qwen 7B | `single_request_latency` | vLLM | 40.4 ms | 40.7 ms | 4202.4 ms | 1451.3 | 11.34 | 100.0% |
+| Qwen 7B | `throughput_ramp` | SGLang | 68.7 ms | 194.2 ms | 9581.5 ms | 18667.3 | 72.92 | 100.0% |
+| Qwen 7B | `throughput_ramp` | vLLM | 89.9 ms | 311.9 ms | 10091.5 ms | 15140.9 | 68.98 | 100.0% |
+
+**Interim takeaway:** vLLM won on single-request TTFT, while SGLang delivered better aggregate throughput on this Qwen 7B run.
+
+#### Gemma 2B (`google/gemma-2-2b-it`)
+
+| Model | Scenario | Engine | TTFT p50 | TTFT p95 | Total latency p95 | Tokens/sec | Requests/sec | Success |
+|---|---|---|---:|---:|---:|---:|---:|---:|
+| Gemma 2B | `single_request_latency` | SGLang | 34.1 ms | 35.0 ms | 1683.0 ms | 3785.5 | 29.57 | 100.0% |
+| Gemma 2B | `single_request_latency` | vLLM | 19.8 ms | 20.3 ms | 1661.8 ms | 3749.2 | 29.29 | 100.0% |
+| Gemma 2B | `throughput_ramp` | SGLang | 53.6 ms | 159.9 ms | 4898.1 ms | 36459.2 | 142.43 | 100.0% |
+| Gemma 2B | `throughput_ramp` | vLLM | 44.0 ms | 189.9 ms | 2301.1 ms | 33875.2 | 289.16 | 100.0% |
+
+**Interim takeaway:** vLLM won on latency and requests/sec, while SGLang posted higher tokens/sec in the Gemma 2B throughput run.
+
+#### Phi-3 mini (`microsoft/Phi-3-mini-4k-instruct`)
+
+| Model | Scenario | Engine | TTFT p50 | TTFT p95 | Total latency p95 | Tokens/sec | Requests/sec | Success |
+|---|---|---|---:|---:|---:|---:|---:|---:|
+| Phi-3 mini | `single_request_latency` | vLLM | 25.4 ms | 25.9 ms | 2243.6 ms | 2786.4 | 21.77 | 100.0% |
+| Phi-3 mini | `throughput_ramp` | vLLM | 55.5 ms | 188.6 ms | 8645.5 ms | 20533.9 | 80.21 | 100.0% |
+
+**Compatibility note:** `Phi-3-mini + SGLang` is currently blocked on this setup by a FlashInfer/CUDA graph incompatibility (`unsupported head_dim=96`), so Phi-3 is presently benchmarked on **vLLM only**.
+
+#### Mistral 7B (`mistralai/Mistral-7B-Instruct-v0.3`) — partial
+
+| Model | Scenario | Engine | TTFT p50 | TTFT p95 | Total latency p95 | Tokens/sec | Requests/sec | Success |
+|---|---|---|---:|---:|---:|---:|---:|---:|
+| Mistral 7B | `single_request_latency` | SGLang | 66.0 ms | 66.4 ms | 4057.3 ms | 1574.9 | 12.30 | 100.0% |
+| Mistral 7B | `single_request_latency` | vLLM | 41.4 ms | 41.7 ms | 4044.0 ms | 1539.7 | 12.03 | 100.0% |
+| Mistral 7B | `throughput_ramp` | SGLang | 69.7 ms | 353.6 ms | 10332.4 ms | 17294.3 | 67.56 | 100.0% |
+
+**Status:** Mistral vLLM throughput and the Gemma 9B block are still being collected.
+
 ---
 
 ## License
