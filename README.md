@@ -845,6 +845,7 @@ All published benchmark runs in this report were executed **sequentially on a si
 For a polished write-up with visuals, see:
 - [`reports/final_benchmark_report_2026-03-22.md`](reports/final_benchmark_report_2026-03-22.md)
 - [`reports/final_benchmark_report_2026-03-22.html`](reports/final_benchmark_report_2026-03-22.html)
+- [`reports/blog_companion_guides.md`](reports/blog_companion_guides.md)
 
 The following snapshot summarizes the completed multi-model matrix collected on the single A10G benchmark host.
 
