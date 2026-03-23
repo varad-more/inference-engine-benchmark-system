@@ -53,6 +53,19 @@ target-version = "py311"
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP"]
 
+[tool.ruff.lint.per-file-ignores]
+# Files with long embedded strings (HTML, SVG, regex, test fixtures)
+"analysis/generate_final_benchmark_report.py" = ["E501"]
+"analysis/report.py" = ["E501"]
+"dashboard/app.py" = ["E501"]
+"analysis/final_report.py" = ["E501"]
+"benchmarks/metrics.py" = ["E501"]
+"benchmarks/runner.py" = ["E501"]
+"benchmarks/scenarios.py" = ["E501"]
+"sglang_programs/chain_of_thought.py" = ["E501"]
+"run_experiment.py" = ["E501"]
+"tests/test_dashboard.py" = ["E501"]
+
 [tool.mypy]
 python_version = "3.11"
 strict = true

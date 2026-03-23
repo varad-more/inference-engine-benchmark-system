@@ -54,9 +54,10 @@ graph TB
 ```
 inference-engine-benchmark-system/
 ├── engines/
-│   ├── base_client.py          # Abstract base + GenerationResult / EngineMetrics dataclasses
+│   ├── base_client.py          # Abstract base + GenerationResult / EngineMetrics + retry helper
 │   ├── vllm_client.py          # vLLM OpenAI-compat client (SSE streaming, Prometheus metrics)
-│   └── sglang_client.py        # SGLang client (REST + native sgl.Runtime support)
+│   ├── sglang_client.py        # SGLang client (REST + native sgl.Runtime support)
+│   └── py.typed                # PEP 561 type marker
 │
 ├── benchmarks/
 │   ├── metrics.py              # LatencyStats, ThroughputStats, CDF, compare_metrics
@@ -148,6 +149,12 @@ For the exact validated A10G flow, see:
 
 ## CLI Usage
 
+### Check version
+
+```bash
+python run_experiment.py --version
+```
+
 ### Run a single scenario
 
 ```bash
@@ -156,6 +163,9 @@ python run_experiment.py run --scenario single_request_latency --engines vllm
 
 # Both engines (best for multi-host or non-constrained setups)
 python run_experiment.py run --scenario throughput_ramp --engines vllm,sglang
+
+# Strict mode: abort if engine health check fails (recommended for CI/production)
+python run_experiment.py run --scenario single_request_latency --engines vllm --strict
 
 # Custom model + prompt pack
 python run_experiment.py run \
@@ -200,7 +210,10 @@ python run_experiment.py final-report --output final_report.md
 
 ```bash
 python run_experiment.py serve
-# Open http://localhost:3000
+# Open http://localhost:3000 (binds to 127.0.0.1 by default)
+
+# To expose on all interfaces (e.g. in Docker or remote access):
+python run_experiment.py serve --host 0.0.0.0
 ```
 
 ### List scenarios and prompt packs
@@ -289,6 +302,37 @@ Default scenario→pack mapping is automatic (unless overridden with `--prompt-p
 
 ---
 
+## Production Hardening
+
+The following production-readiness features are built in:
+
+### Security
+- **Input validation**: All dashboard API inputs (`/api/run`) are validated with Pydantic field validators — scenario names, engine names, model strings, and hostnames are checked against allowlist patterns to prevent command injection
+- **Path traversal protection**: The `/api/results/{id}` endpoint validates that resolved paths stay within the results directory
+- **CORS**: Dashboard CORS is locked to `http://localhost:3000` by default; configure via `ALLOWED_ORIGINS` env var for production domains
+
+### Reliability
+- **Health check retries**: Engine health checks retry 2x with exponential backoff before reporting failure
+- **`--strict` mode**: Use `--strict` on the `run` command to abort benchmarks when an engine is unreachable, preventing garbage results
+- **Graceful shutdown**: `Ctrl+C` during a benchmark properly closes HTTP clients instead of leaking connections
+
+### Observability
+- **Structured logging**: Configurable via `LOG_FORMAT` (`console` for dev, `json` for production log aggregation) and `LOG_LEVEL`
+- **Version introspection**: `benchmark --version` reports the installed package version
+
+### CI/CD
+- Full **ruff** lint and format checks
+- **mypy** strict type checking
+- Package build and metadata validation
+- Multi-Python (3.11, 3.12) test matrix
+
+### Deployment
+- **Dockerfile** installs from `pyproject.toml` to prevent dependency drift
+- Dashboard `serve` command defaults to `127.0.0.1` (safe for local dev); use `--host 0.0.0.0` to expose
+- GPU memory size is configurable in `VLLMClient` (no longer hardcoded to 24 GB)
+
+---
+
 ## Running Tests
 
 ```bash
@@ -341,6 +385,9 @@ pytest tests/ --cov=engines --cov=benchmarks --cov-report=term-missing
 | `SGLANG_HOST` | `localhost` | SGLang server host |
 | `SGLANG_PORT` | `8001` | SGLang server port |
 | `RESULTS_DIR` | `results/` | Directory for JSON result files |
+| `ALLOWED_ORIGINS` | `http://localhost:3000` | Comma-separated CORS origins for the dashboard |
+| `LOG_FORMAT` | `console` | Logging output format: `console` (colored) or `json` (structured) |
+| `LOG_LEVEL` | `INFO` | Logging level: `DEBUG`, `INFO`, `WARNING`, `ERROR` |
 
 ---
 

@@ -29,7 +29,7 @@ class PromptRecord:
     schema: str | None = None
 
     @classmethod
-    def from_dict(cls, data: dict[str, Any]) -> "PromptRecord":
+    def from_dict(cls, data: dict[str, Any]) -> PromptRecord:
         return cls(
             id=str(data["id"]),
             category=str(data.get("category", "unknown")),
@@ -51,7 +51,7 @@ class SharedPrefixPack:
     target_tokens: int | None = None
 
     @classmethod
-    def from_dict(cls, data: dict[str, Any]) -> "SharedPrefixPack":
+    def from_dict(cls, data: dict[str, Any]) -> SharedPrefixPack:
         return cls(
             id=str(data["id"]),
             category=str(data.get("category", "shared_prefix")),

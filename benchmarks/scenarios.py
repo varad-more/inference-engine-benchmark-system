@@ -3,11 +3,11 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from enum import Enum
+from enum import StrEnum
 from typing import Any
 
 
-class ScenarioType(str, Enum):
+class ScenarioType(StrEnum):
     SINGLE_REQUEST_LATENCY = "single_request_latency"
     THROUGHPUT_RAMP = "throughput_ramp"
     LONG_CONTEXT_STRESS = "long_context_stress"

@@ -2,10 +2,9 @@
 
 from __future__ import annotations
 
-import math
 import statistics
+from collections.abc import Sequence
 from dataclasses import dataclass, field
-from typing import Sequence
 
 
 @dataclass
@@ -24,7 +23,7 @@ class LatencyStats:
     count: int
 
     @classmethod
-    def from_samples(cls, samples: Sequence[float]) -> "LatencyStats":
+    def from_samples(cls, samples: Sequence[float]) -> LatencyStats:
         """Compute stats from a list of latency values (ms)."""
         if not samples:
             return cls(
@@ -87,7 +86,7 @@ class ThroughputStats:
         successful_requests: int,
         total_tokens: int,
         wall_time_sec: float,
-    ) -> "ThroughputStats":
+    ) -> ThroughputStats:
         rps = successful_requests / max(wall_time_sec, 1e-9)
         tps = total_tokens / max(wall_time_sec, 1e-9)
         mean_tok = total_tokens / max(successful_requests, 1)

@@ -9,17 +9,18 @@ import asyncio
 import json
 import time
 import uuid
+from collections.abc import Callable
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
-from typing import Any, Callable
+from typing import Any
 
 import structlog
 
 from benchmarks.metrics import LatencyStats, ScenarioMetrics, ThroughputStats, compare_metrics
 from benchmarks.prompt_packs import (
     PromptRecord,
-    default_prompt_pack_for_scenario,
     cycle_prompt_pack,
+    default_prompt_pack_for_scenario,
     load_shared_prefix_pack,
 )
 from benchmarks.scenarios import (

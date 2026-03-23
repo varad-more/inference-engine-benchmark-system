@@ -5,13 +5,14 @@ from __future__ import annotations
 import asyncio
 import json
 import time
+from collections.abc import AsyncIterator, Callable
 from dataclasses import dataclass, field
-from typing import TYPE_CHECKING, Any, AsyncIterator, Callable
+from typing import TYPE_CHECKING, Any
 
 import httpx
 import structlog
 
-from engines.base_client import BaseInferenceClient, EngineMetrics, GenerationResult
+from engines.base_client import BaseInferenceClient, EngineMetrics, GenerationResult, retry_async
 
 if TYPE_CHECKING:
     pass  # sglang imported lazily to keep import optional
@@ -123,8 +124,10 @@ class SGLangClient(BaseInferenceClient):
 
     async def health_check(self) -> bool:
         try:
-            r = await self._http.get("/health")
-            return r.status_code == 200
+            async def _check() -> bool:
+                r = await self._http.get("/health")
+                return r.status_code == 200
+            return await retry_async(_check, retries=2, backoff=1.0, logger_ctx=self._log)
         except Exception as exc:
             self._log.warning("sglang health check failed", error=str(exc))
             return False
@@ -230,7 +233,7 @@ class SGLangClient(BaseInferenceClient):
             except Exception:
                 pass
 
-    async def __aenter__(self) -> "SGLangClient":
+    async def __aenter__(self) -> SGLangClient:
         return self
 
     async def __aexit__(self, *_: object) -> None:
