@@ -32,3 +32,9 @@ jobs:
 
       - name: Run tests
         run: pytest -q
+
+      - name: Build distribution artifacts
+        run: python -m build
+
+      - name: Validate package metadata
+        run: python -m twine check dist/*
