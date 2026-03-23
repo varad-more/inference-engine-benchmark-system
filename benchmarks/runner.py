@@ -507,7 +507,20 @@ class BenchmarkRunner:
         ttft_samples = [r.ttft_ms for r in successful]
         total_samples = [r.total_ms for r in successful]
         total_tokens = sum(r.output_tokens for r in successful)
-        wall_time = (max(r.total_ms for r in successful) / 1000.0) if successful else 0.0
+
+        wall_time = 0.0
+        if len(engine_timeline) >= 2:
+            timestamps = [entry.get("timestamp") for entry in engine_timeline if entry.get("timestamp") is not None]
+            if len(timestamps) >= 2:
+                wall_time = max(timestamps) - min(timestamps)
+
+        if wall_time <= 0 and scenario_name == "single_request_latency" and successful:
+            # Sequential run: summing per-request totals approximates full wall-clock duration.
+            wall_time = sum(r.total_ms for r in successful) / 1000.0
+
+        if wall_time <= 0 and successful:
+            # Last-resort fallback.
+            wall_time = max(r.total_ms for r in successful) / 1000.0
 
         latency_stats = LatencyStats.from_samples(total_samples)
         ttft_stats = LatencyStats.from_samples(ttft_samples)
