@@ -92,8 +92,9 @@ inference-engine-benchmark-system/
 │   └── test_scenarios.py       # Scenario dataclasses and prompt generator tests
 │
 ├── results/                    # Auto-created; stores JSON result files
+├── docs/                       # Operational runbooks / limitations for production-style use
 ├── run_experiment.py           # Typer CLI (run / compare / report / serve / health)
-├── docker-compose.yml          # vllm + sglang + dashboard services
+├── docker-compose.yml          # Sequential-friendly compose services for one-engine-at-a-time runs
 ├── Dockerfile.dashboard        # Lightweight dashboard container
 └── pyproject.toml              # Python 3.11+ project metadata
 ```
@@ -110,30 +111,38 @@ pip install -e ".[dev]"
 pip install -e ".[sglang,dev]"
 ```
 
-### 2. Launch engines with Docker Compose
+### 2. Prepare `.env` and model cache
 
 ```bash
-# Copy your HuggingFace token
-echo "HUGGING_FACE_HUB_TOKEN=hf_..." > .env
+cp .env.example .env
 mkdir -p model-cache
-
-docker compose up -d
 ```
 
-Wait for both health checks to pass (approx 2 min for model download):
+### 3. Start one engine at a time (recommended for a single GPU)
 
 ```bash
-docker compose ps
-# vllm-server           healthy
-# sglang-server         healthy
-# benchmark-dashboard   running
+# vLLM path
+docker compose up -d dashboard vllm
+curl http://localhost:8000/health
+
+# SGLang path
+docker compose up -d dashboard sglang
+curl http://localhost:8001/health
 ```
 
-### 3. Check engine health
+> On a single A10G, do **not** treat `docker compose up -d` as the default benchmark path.
+> The validated benchmark flow is sequential: start one engine, run benchmarks, stop it, then switch.
+
+### 4. Check engine health
 
 ```bash
 python run_experiment.py health
 ```
+
+For the exact validated A10G flow, see:
+- [`docs/SINGLE_GPU_OPERATION.md`](docs/SINGLE_GPU_OPERATION.md)
+- [`docs/VALIDATED_BENCHMARK_RUNBOOK.md`](docs/VALIDATED_BENCHMARK_RUNBOOK.md)
+- [`docs/KNOWN_LIMITATIONS.md`](docs/KNOWN_LIMITATIONS.md)
 
 ---
 
@@ -145,7 +154,7 @@ python run_experiment.py health
 # Single engine
 python run_experiment.py run --scenario single_request_latency --engines vllm
 
-# Both engines
+# Both engines (best for multi-host or non-constrained setups)
 python run_experiment.py run --scenario throughput_ramp --engines vllm,sglang
 
 # Custom model + prompt pack
@@ -155,6 +164,8 @@ python run_experiment.py run \
   --model Qwen/Qwen2.5-7B-Instruct \
   --prompt-pack shared_prefix
 ```
+
+> On a single GPU host, prefer one engine at a time even if the CLI supports a comma-separated engine list.
 
 ### Compare both engines head-to-head
 
@@ -778,82 +789,89 @@ terraform destroy \
 
 ---
 
-## Release Readiness
+## Validated Benchmark Results (2026-03-22, AWS g5.2xlarge / A10G 24GB)
 
-Current recommendation: **v0.1.0-beta** (public beta).
+This results section has two parts:
 
-### Release checklist status
+1. a **baseline run** on `Qwen/Qwen2.5-1.5B-Instruct`, which helped verify that the harness and metrics were working properly, and
+2. the **larger model matrix** below, which is the main result set to use when judging the repo.
 
-- ✅ Packaging metadata fixed (`pip install -e ".[dev]"` no longer blocked by Hatch file selection)
-- ✅ CI added (GitHub Actions: lint + tests on Python 3.11/3.12)
-- ✅ Real benchmark report included with reproducible JSON artifacts
-- ⚠️ Recommended before stable `v1.0.0`: run matrix benchmarks across more models/hardware and add rerun variance summary
+All runs in this section were done **one engine at a time on a single A10G host**. We did not run vLLM and SGLang at the same time on the same GPU because that causes memory pressure, unstable startup, and messy comparisons.
 
----
+> Note on throughput numbers: Tokens/sec and Requests/sec in the tables below use the **full run duration** from the engine timeline, not the longest single request.
 
-## Latest Benchmark Report (2026-03-22, AWS g5.2xlarge / A10G 24GB)
+### Baseline run (`Qwen/Qwen2.5-1.5B-Instruct`)
 
-This section captures the latest validated run on the remote benchmark server.
+This earlier run stays in the README because it shows the harness working cleanly on a smaller public model before the larger matrix was finished.
 
-### Test environment
-
+**Environment**
 - Instance: `g5.2xlarge` (single NVIDIA A10G, 24GB VRAM)
 - Model: `Qwen/Qwen2.5-1.5B-Instruct`
-- Engine mode: **sequential** (run one engine at a time on the same GPU)
-- Result quality: all scenarios below completed with **100% success rate**
+- Engine mode: **sequential**
+- Result quality: all scenarios completed with **100% success rate**
 
-### Testing execution note
-
-All published benchmark runs in this report were executed **sequentially on a single machine** (single GPU host). We intentionally did not run vLLM and SGLang concurrently to avoid VRAM contention and startup instability on one A10G.
-
-> Why sequential? On a single A10G, running both engines concurrently causes VRAM contention and unstable startup. Sequential execution gives clean, reproducible numbers.
-
-
-> Throughput normalization: Tokens/sec and Requests/sec in the tables below are normalized using **full scenario wall-clock duration** (from engine timeline timestamps), not the max single-request latency.
-
-### Scenario A — `single_request_latency` (50 requests)
+**Scenario A — `single_request_latency` (50 requests)**
 
 | Engine | TTFT p50 | TTFT p95 | TTFT p99 | Total latency p95 | Tokens/sec | Requests/sec | Success |
 |---|---:|---:|---:|---:|---:|---:|---:|
 | vLLM | 15.9 ms | 16.4 ms | 91.3 ms | 1047.4 ms | 122.3 | 0.96 | 100.0% |
 | SGLang | 27.5 ms | 28.1 ms | 37.2 ms | 1008.2 ms | 127.3 | 0.99 | 100.0% |
 
-### Scenario B — `throughput_ramp` (700 requests)
+**Scenario B — `throughput_ramp` (700 requests)**
 
 | Engine | TTFT p50 | TTFT p95 | TTFT p99 | Total latency p95 | Tokens/sec | Requests/sec | Success |
 |---|---:|---:|---:|---:|---:|---:|---:|
 | vLLM | 31.5 ms | 178.1 ms | 208.1 ms | 3202.4 ms | 410.3 | 1.60 | 100.0% |
 | SGLang | 49.4 ms | 155.7 ms | 190.9 ms | 4480.8 ms | 422.9 | 1.65 | 100.0% |
 
-### High-level takeaways
+**What this baseline showed**
+- vLLM was quicker to first token on this smaller public model.
+- SGLang was slightly ahead on tokens/sec and requests/sec in the throughput run.
+- Both engines stayed stable with 100% success.
 
-- **Low-concurrency responsiveness**: vLLM had lower TTFT p50/p95 in this run.
-- **Throughput on this run**: SGLang led slightly on normalized tokens/sec and requests/sec.
-- **Both engines remained stable** with 100% success.
-- These results are for one model + one GPU class; for production selection, repeat across:
-  - larger models,
-  - longer context windows,
-  - multiple reruns/seeds,
-  - and dedicated-per-engine hardware (Option B).
-
-### Result artifacts
-
+**Baseline result artifacts**
 - `results/single_request_latency_SGLangClient_1774163306.json`
 - `results/single_request_latency_VLLMClient_1774163440.json`
 - `results/throughput_ramp_SGLangClient_1774163585.json`
 - `results/throughput_ramp_VLLMClient_1774164141.json`
 
-### Expanded multi-model benchmark snapshot (completed 2026-03-22)
+### Main benchmark snapshot (completed 2026-03-22)
 
-For a polished write-up with visuals, see:
-- [`reports/final_benchmark_report_2026-03-22.md`](reports/final_benchmark_report_2026-03-22.md)
-- [`reports/final_benchmark_report_2026-03-22.html`](reports/final_benchmark_report_2026-03-22.html)
+This is the main comparison section in the repo. It includes the top findings, visuals, and the full table from the completed larger model run on a single A10G.
 
-The following snapshot summarizes the completed multi-model matrix collected on the single A10G benchmark host.
+**Environment**
+- AWS `g5.2xlarge`
+- NVIDIA A10G 24 GB
+- Sequential execution, one engine at a time
+- Models: Gemma 2B, Phi-3 mini, Qwen 7B, Mistral 7B, Gemma 9B
+
+**Top findings**
+- **Fastest TTFT p95 for a single request:** Gemma 2B on **vLLM** at **20.3 ms**
+- **Best throughput among the smaller models:** Gemma 2B on **vLLM** at **261.2 tok/s** and **2.23 req/s**
+- **Phi-3 mini:** only **vLLM** completed on this setup
+- **Gemma 9B:** **SGLang** won on single request TTFT, while tuned **vLLM** won on throughput and ramp latency p95
 
 > Scope note: all rows below are completed runs. The only intentional gap is `Phi-3 mini + SGLang`, which is blocked on this setup by an engine compatibility issue documented below.
 >
 > Data provenance: values are pulled directly from each row’s source `results/*Client_*.json` `metrics` block. The exact source file for every row is recorded in `reports/benchmark_snapshot_2026-03-22.json` (`path` field).
+
+#### Visual summary
+
+**Single-request TTFT p95**
+
+![Single-request TTFT p95](reports/figures/single_request_ttft_p95.svg)
+
+**Throughput tokens/sec**
+
+![Throughput tokens per second](reports/figures/throughput_tokens_per_sec.svg)
+
+**Throughput requests/sec**
+
+![Throughput requests per second](reports/figures/throughput_requests_per_sec.svg)
+
+**Latency / throughput tradeoff**
+
+![Throughput tradeoff map](reports/figures/throughput_tradeoff.svg)
 
 | Model | Scenario | Engine | TTFT p50 | TTFT p95 | Total latency p95 | Tokens/sec | Requests/sec | Success |
 |---|---|---|---:|---:|---:|---:|---:|---:|
@@ -877,19 +895,24 @@ The following snapshot summarizes the completed multi-model matrix collected on 
 | Gemma 9B | `throughput_ramp` | vLLM *(tuned)* | 82.7 ms | 362.5 ms | 2483.7 ms | 75.1 | 2.09 | 100.0% |
 
 
-#### Notes and takeaways
+#### What the models showed
 
-- **Qwen 7B:** vLLM won on single-request TTFT; throughput split by metric (SGLang led tok/s, vLLM led req/s).
-- **Gemma 2B:** vLLM won on single-request latency and also led throughput on both tok/s and req/s.
-- **Phi-3 mini:** benchmarked on **vLLM only** because `Phi-3 mini + SGLang` is currently blocked on this setup by a FlashInfer/CUDA graph incompatibility (`unsupported head_dim=96`).
-- **Mistral 7B:** vLLM won on low-latency single-request TTFT; throughput was effectively a tie (SGLang marginally higher tok/s, vLLM marginally higher req/s).
-- **Gemma 9B:** SGLang had lower single-request TTFT, while tuned vLLM led throughput and had much better ramp latency p95.
+- **Qwen 7B:** vLLM won on TTFT for a single request. Throughput split by metric, with SGLang ahead on tok/s and vLLM ahead on req/s.
+- **Gemma 2B:** vLLM won on single request latency and also led on both tok/s and req/s.
+- **Phi-3 mini:** only **vLLM** completed on this setup because SGLang hit a compatibility issue (`unsupported head_dim=96`).
+- **Mistral 7B:** vLLM won on TTFT for a single request. Throughput was basically a tie.
+- **Gemma 9B:** SGLang had lower TTFT for a single request, while tuned vLLM led on throughput and had much better ramp latency p95.
+
+**Bottom line**
+- **vLLM** looked like the stronger general default for quick response times on this A10G setup.
+- **SGLang** stayed competitive and in some cases matched or slightly beat throughput numbers.
+- The right choice still depends on the workload, the model, and the hardware.
 
 ---
 
 ## Reader Quickstart and Usage Guide
 
-This section is for readers who land here from the blog post and want the practical version fast.
+If you land on this repo and want the practical version fast, start here.
 
 ### What should a new user try first?
 

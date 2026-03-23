@@ -29,7 +29,8 @@ services:
   # vLLM
   # ---------------------------------------------------------------------------
   vllm:
-    image: vllm/vllm-openai:latest
+    profiles: ["vllm"]
+    image: ${VLLM_IMAGE:-vllm/vllm-openai:v0.18.0-cu130}
     container_name: vllm-server
     ports:
       - "8000:8000"
@@ -65,7 +66,8 @@ services:
   # SGLang
   # ---------------------------------------------------------------------------
   sglang:
-    image: lmsysorg/sglang:latest
+    profiles: ["sglang"]
+    image: ${SGLANG_IMAGE:-lmsysorg/sglang:nightly-dev-cu13-20260321-94194537}
     container_name: sglang-server
     ports:
       - "8001:8001"
@@ -115,11 +117,8 @@ services:
       - SGLANG_HOST=sglang
       - SGLANG_PORT=8001
       - RESULTS_DIR=/app/results
-    depends_on:
-      vllm:
-        condition: service_healthy
-      sglang:
-        condition: service_healthy
+    # Keep dashboard decoupled from engine startup so single-GPU benchmark flows
+    # can run one engine at a time without compose forcing both to be healthy.
     command:
       - "python"
       - "-m"
