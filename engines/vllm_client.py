@@ -6,12 +6,12 @@ import asyncio
 import json
 import re
 import time
-from typing import AsyncIterator
+from collections.abc import AsyncIterator
 
 import httpx
 import structlog
 
-from engines.base_client import BaseInferenceClient, EngineMetrics, GenerationResult
+from engines.base_client import BaseInferenceClient, EngineMetrics, GenerationResult, retry_async
 
 logger = structlog.get_logger(__name__)
 
@@ -47,9 +47,11 @@ class VLLMClient(BaseInferenceClient):
         port: int = 8000,
         model: str = "Qwen/Qwen2.5-1.5B-Instruct",
         timeout: float = 120.0,
+        gpu_memory_gb: float = 24.0,
     ) -> None:
         super().__init__(host, port, model)
         self._timeout = timeout
+        self._gpu_memory_gb = gpu_memory_gb
         self._http = httpx.AsyncClient(
             base_url=self.base_url,
             timeout=httpx.Timeout(timeout),
@@ -131,8 +133,10 @@ class VLLMClient(BaseInferenceClient):
 
     async def health_check(self) -> bool:
         try:
-            r = await self._http.get("/health")
-            return r.status_code == 200
+            async def _check() -> bool:
+                r = await self._http.get("/health")
+                return r.status_code == 200
+            return await retry_async(_check, retries=2, backoff=1.0, logger_ctx=self._log)
         except Exception as exc:
             self._log.warning("vllm health check failed", error=str(exc))
             return False
@@ -151,8 +155,7 @@ class VLLMClient(BaseInferenceClient):
         waiting = int(_parse_prometheus(body, _METRIC_WAITING) or 0)
         gpu_mem_pct = _parse_prometheus(body, _METRIC_GPU_MEM) or 0.0
 
-        # Convert GPU memory percentage to approximate GB (assume 24 GB card)
-        gpu_gb = gpu_mem_pct * 24.0 / 100.0
+        gpu_gb = gpu_mem_pct * self._gpu_memory_gb / 100.0
 
         return EngineMetrics(
             gpu_memory_used_gb=gpu_gb,
@@ -228,7 +231,7 @@ class VLLMClient(BaseInferenceClient):
     async def aclose(self) -> None:
         await self._http.aclose()
 
-    async def __aenter__(self) -> "VLLMClient":
+    async def __aenter__(self) -> VLLMClient:
         return self
 
     async def __aexit__(self, *_: object) -> None:

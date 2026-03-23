@@ -2,18 +2,14 @@
 
 from __future__ import annotations
 
-import asyncio
 import json
 import time
-from typing import Any
-from unittest.mock import AsyncMock, MagicMock, patch
 
 import httpx
 import pytest
 import respx
 
 from engines.base_client import EngineMetrics, GenerationResult
-
 
 # ---------------------------------------------------------------------------
 # GenerationResult

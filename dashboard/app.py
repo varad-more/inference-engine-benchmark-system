@@ -16,6 +16,7 @@ from __future__ import annotations
 
 import asyncio
 import json
+import os
 import re
 import shlex
 import subprocess
@@ -29,7 +30,7 @@ import uvicorn
 from fastapi import BackgroundTasks, FastAPI, HTTPException, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse, JSONResponse
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 
 logger = structlog.get_logger(__name__)
 
@@ -42,10 +43,11 @@ app = FastAPI(
     version="0.2.0",
 )
 
+_allowed_origins = os.environ.get("ALLOWED_ORIGINS", "http://localhost:3000").split(",")
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
-    allow_methods=["*"],
+    allow_origins=_allowed_origins,
+    allow_methods=["GET", "POST"],
     allow_headers=["*"],
 )
 
@@ -91,6 +93,12 @@ ENGINE_LABELS = {
 # ---------------------------------------------------------------------------
 
 
+# Pattern that rejects shell metacharacters and allows only safe identifiers
+_SAFE_NAME_RE = re.compile(r"^[a-zA-Z0-9_\-]+$")
+# Model names can include org/model-name patterns (e.g. Qwen/Qwen2.5-1.5B-Instruct)
+_SAFE_MODEL_RE = re.compile(r"^[a-zA-Z0-9_\-./]+$")
+
+
 class RunRequest(BaseModel):
     scenario: str
     engines: list[str] = Field(default=["vllm", "sglang"])
@@ -98,6 +106,36 @@ class RunRequest(BaseModel):
     vllm_host: str = "localhost"
     vllm_port: int = 8000
     sglang_host: str = "localhost"
+
+    @field_validator("scenario")
+    @classmethod
+    def validate_scenario(cls, v: str) -> str:
+        if not _SAFE_NAME_RE.match(v):
+            raise ValueError(f"Invalid scenario name: {v!r}")
+        return v
+
+    @field_validator("engines")
+    @classmethod
+    def validate_engines(cls, v: list[str]) -> list[str]:
+        allowed = {"vllm", "sglang"}
+        for engine in v:
+            if engine not in allowed:
+                raise ValueError(f"Invalid engine: {engine!r}. Must be one of {allowed}")
+        return v
+
+    @field_validator("model")
+    @classmethod
+    def validate_model(cls, v: str) -> str:
+        if not _SAFE_MODEL_RE.match(v) or len(v) > 200:
+            raise ValueError(f"Invalid model name: {v!r}")
+        return v
+
+    @field_validator("vllm_host", "sglang_host")
+    @classmethod
+    def validate_host(cls, v: str) -> str:
+        if not _SAFE_NAME_RE.match(v.replace(".", "")) or len(v) > 253:
+            raise ValueError(f"Invalid host: {v!r}")
+        return v
     sglang_port: int = 8001
 
 
@@ -642,10 +680,14 @@ async def list_results() -> JSONResponse:
 @app.get("/api/results/{result_id}")
 async def get_result(result_id: str) -> JSONResponse:
     """Load and return a specific result by its stem (filename without .json)."""
+    if not _SAFE_NAME_RE.match(result_id):
+        raise HTTPException(status_code=400, detail="Invalid result ID")
     candidates = list(RESULTS_DIR.glob(f"{result_id}*.json"))
     if not candidates:
         raise HTTPException(status_code=404, detail=f"Result '{result_id}' not found")
     path = candidates[0]
+    if not path.resolve().is_relative_to(RESULTS_DIR.resolve()):
+        raise HTTPException(status_code=400, detail="Invalid path")
     return JSONResponse(json.loads(path.read_text()))
 
 
@@ -762,7 +804,7 @@ async def _broadcast(message: dict[str, Any]) -> None:
 
 async def _run_benchmark_job(job_id: str, req: RunRequest) -> None:
     """Background task: run the requested scenario and update job status."""
-    from benchmarks.runner import BenchmarkRunner, RequestResult
+    from benchmarks.runner import BenchmarkRunner
     from benchmarks.scenarios import SCENARIOS
     from engines.sglang_client import SGLangClient
     from engines.vllm_client import VLLMClient

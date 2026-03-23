@@ -5,9 +5,10 @@ from __future__ import annotations
 import asyncio
 import json
 import time
+from collections.abc import Callable
 from dataclasses import asdict, dataclass
 from pathlib import Path
-from typing import Any, Callable
+from typing import Any
 
 from benchmarks.runner import BenchmarkRunner, ScenarioResults
 from benchmarks.scenarios import BenchmarkScenario

@@ -3,8 +3,8 @@ from __future__ import annotations
 import html
 import json
 import re
+from collections.abc import Iterable
 from pathlib import Path
-from typing import Iterable
 
 REPORT_DATE = "2026-03-22"
 RESULTS_DIR = Path("results")

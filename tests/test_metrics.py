@@ -5,14 +5,12 @@ from __future__ import annotations
 import pytest
 
 from benchmarks.metrics import (
-    ConcurrencyPoint,
     LatencyStats,
     ScenarioMetrics,
     ThroughputStats,
     compare_metrics,
     compute_cdf,
 )
-
 
 # ---------------------------------------------------------------------------
 # LatencyStats

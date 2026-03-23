@@ -2,14 +2,40 @@
 
 from __future__ import annotations
 
+import asyncio
 import time
 from abc import ABC, abstractmethod
+from collections.abc import AsyncIterator, Callable
 from dataclasses import dataclass, field
-from typing import AsyncIterator
+from typing import TypeVar
 
 import structlog
 
 logger = structlog.get_logger(__name__)
+
+T = TypeVar("T")
+
+
+async def retry_async(
+    fn: Callable[..., T],
+    *args: object,
+    retries: int = 2,
+    backoff: float = 0.5,
+    logger_ctx: structlog.stdlib.BoundLogger | None = None,
+) -> T:
+    """Retry an async callable with exponential backoff. Not for benchmark-critical paths."""
+    last_exc: Exception | None = None
+    for attempt in range(1 + retries):
+        try:
+            return await fn(*args)  # type: ignore[misc]
+        except Exception as exc:
+            last_exc = exc
+            if attempt < retries:
+                wait = backoff * (2 ** attempt)
+                if logger_ctx:
+                    logger_ctx.debug("retrying", attempt=attempt + 1, wait=wait, error=str(exc))
+                await asyncio.sleep(wait)
+    raise last_exc  # type: ignore[misc]
 
 
 @dataclass
@@ -32,7 +58,7 @@ class GenerationResult:
         end_time: float,
         prompt_tokens: int,
         output_tokens: int,
-    ) -> "GenerationResult":
+    ) -> GenerationResult:
         ttft_ms = (first_token_time - start_time) * 1000
         total_ms = (end_time - start_time) * 1000
         tokens_per_sec = output_tokens / max((end_time - start_time), 1e-9)

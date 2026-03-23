@@ -4,6 +4,9 @@ from __future__ import annotations
 
 import asyncio
 import copy
+import logging
+import os
+import sys
 from pathlib import Path
 
 import structlog
@@ -13,6 +16,65 @@ from rich.console import Console
 from rich.progress import BarColumn, Progress, SpinnerColumn, TextColumn, TimeElapsedColumn
 from rich.table import Table
 
+
+def _configure_logging() -> None:
+    """Configure structlog for JSON (production) or colored console (development)."""
+    log_format = os.environ.get("LOG_FORMAT", "console").lower()
+    log_level = os.environ.get("LOG_LEVEL", "INFO").upper()
+
+    shared_processors: list[structlog.types.Processor] = [
+        structlog.contextvars.merge_contextvars,
+        structlog.stdlib.add_log_level,
+        structlog.stdlib.add_logger_name,
+        structlog.processors.TimeStamper(fmt="iso"),
+        structlog.processors.StackInfoRenderer(),
+    ]
+
+    if log_format == "json":
+        shared_processors.append(structlog.processors.format_exc_info)
+        renderer: structlog.types.Processor = structlog.processors.JSONRenderer()
+    else:
+        renderer = structlog.dev.ConsoleRenderer()
+
+    structlog.configure(
+        processors=[
+            *shared_processors,
+            structlog.stdlib.ProcessorFormatter.wrap_for_formatter,
+        ],
+        logger_factory=structlog.stdlib.LoggerFactory(),
+        wrapper_class=structlog.stdlib.BoundLogger,
+        cache_logger_on_first_use=True,
+    )
+
+    formatter = structlog.stdlib.ProcessorFormatter(
+        processors=[
+            structlog.stdlib.ProcessorFormatter.remove_processors_meta,
+            renderer,
+        ],
+    )
+
+    handler = logging.StreamHandler(sys.stderr)
+    handler.setFormatter(formatter)
+    root_logger = logging.getLogger()
+    root_logger.handlers.clear()
+    root_logger.addHandler(handler)
+    root_logger.setLevel(getattr(logging, log_level, logging.INFO))
+
+
+_configure_logging()
+
+
+def _version_callback(value: bool) -> None:
+    if value:
+        from importlib.metadata import version as pkg_version
+        try:
+            v = pkg_version("inference-engine-benchmark")
+        except Exception:
+            v = "0.1.0-dev"
+        typer.echo(f"inference-engine-benchmark {v}")
+        raise typer.Exit()
+
+
 app = typer.Typer(
     name="benchmark",
     help="vLLM vs SGLang comparative inference benchmark system.",
@@ -20,6 +82,16 @@ app = typer.Typer(
 )
 console = Console()
 logger = structlog.get_logger(__name__)
+
+
+@app.callback()
+def main(
+    version: bool = typer.Option(
+        False, "--version", "-V", callback=_version_callback, is_eager=True,
+        help="Show version and exit.",
+    ),
+) -> None:
+    """vLLM vs SGLang comparative inference benchmark system."""
 
 RESULTS_DIR = Path("results")
 RESULTS_DIR.mkdir(exist_ok=True)
@@ -63,6 +135,7 @@ def run(
     vllm_host: str = typer.Option("localhost", "--vllm-host"),
     sglang_host: str = typer.Option("localhost", "--sglang-host"),
     output_dir: Path | None = typer.Option(None, "--output-dir"),
+    strict: bool = typer.Option(False, "--strict", help="Abort if engine health check fails"),
 ) -> None:
     """Run a benchmark scenario on one or more engines."""
     from benchmarks.runner import BenchmarkRunner, RequestResult
@@ -82,53 +155,69 @@ def run(
 
     async def _run() -> None:
         runner = BenchmarkRunner(results_dir=results_dir)
+        active_client = None
 
-        for engine_name in engine_list:
-            host = vllm_host if engine_name == "vllm" else sglang_host
-            client = _make_client(engine_name, model, host)
+        try:
+            for engine_name in engine_list:
+                host = vllm_host if engine_name == "vllm" else sglang_host
+                client = _make_client(engine_name, model, host)
+                active_client = client
 
-            healthy = await client.health_check()
-            if not healthy:
-                console.print(
-                    f"[yellow]Warning: {engine_name} health check failed. Proceeding anyway.[/yellow]"
-                )
+                healthy = await client.health_check()
+                if not healthy:
+                    if strict:
+                        console.print(
+                            f"[red]Error: {engine_name} health check failed (--strict mode).[/red]"
+                        )
+                        if hasattr(client, "aclose"):
+                            await client.aclose()
+                        raise typer.Exit(1)
+                    console.print(
+                        f"[yellow]Warning: {engine_name} health check failed. Proceeding anyway.[/yellow]"
+                    )
 
-            total_reqs = getattr(bench_scenario, "num_requests", None) or getattr(
-                bench_scenario,
-                "requests_per_level",
-                100,
-            )
-
-            with Progress(
-                SpinnerColumn(),
-                TextColumn(f"[bold]{engine_name}[/bold] {{task.description}}"),
-                BarColumn(),
-                TextColumn("{task.completed}/{task.total}"),
-                TimeElapsedColumn(),
-                console=console,
-            ) as progress:
-                task_id = progress.add_task("running...", total=total_reqs)
-
-                def _cb(done: int, total: int, result: RequestResult) -> None:
-                    progress.update(task_id, completed=done)
-
-                results = await runner.run_scenario(
+                total_reqs = getattr(bench_scenario, "num_requests", None) or getattr(
                     bench_scenario,
-                    client,
-                    _cb,
-                    run_metadata={
-                        "model": model,
-                        "engine": engine_name,
-                        "prompt_pack": bench_scenario.prompt_pack,
-                    },
+                    "requests_per_level",
+                    100,
                 )
 
-            path = results.save(results_dir)
-            console.print(f"\n[green]✓[/green] {engine_name} done → [dim]{path}[/dim]")
-            _print_summary_table(engine_name, results)
+                with Progress(
+                    SpinnerColumn(),
+                    TextColumn(f"[bold]{engine_name}[/bold] {{task.description}}"),
+                    BarColumn(),
+                    TextColumn("{task.completed}/{task.total}"),
+                    TimeElapsedColumn(),
+                    console=console,
+                ) as progress:
+                    task_id = progress.add_task("running...", total=total_reqs)
 
-            if hasattr(client, "aclose"):
-                await client.aclose()
+                    def _cb(done: int, total: int, result: RequestResult) -> None:
+                        progress.update(task_id, completed=done)
+
+                    results = await runner.run_scenario(
+                        bench_scenario,
+                        client,
+                        _cb,
+                        run_metadata={
+                            "model": model,
+                            "engine": engine_name,
+                            "prompt_pack": bench_scenario.prompt_pack,
+                        },
+                    )
+
+                path = results.save(results_dir)
+                console.print(f"\n[green]✓[/green] {engine_name} done → [dim]{path}[/dim]")
+                _print_summary_table(engine_name, results)
+
+                if hasattr(client, "aclose"):
+                    await client.aclose()
+                active_client = None
+        except KeyboardInterrupt:
+            console.print("\n[yellow]Interrupted — cleaning up...[/yellow]")
+        finally:
+            if active_client is not None and hasattr(active_client, "aclose"):
+                await active_client.aclose()
 
     asyncio.run(_run())
 
@@ -267,7 +356,7 @@ def final_report(
 
 @app.command()
 def serve(
-    host: str = typer.Option("0.0.0.0", "--host"),
+    host: str = typer.Option("127.0.0.1", "--host"),
     port: int = typer.Option(3000, "--port"),
     reload: bool = typer.Option(False, "--reload"),
 ) -> None:

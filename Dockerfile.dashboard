@@ -9,26 +9,16 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 # Copy project files
 COPY pyproject.toml ./
+COPY run_experiment.py ./
 COPY engines/ ./engines/
 COPY benchmarks/ ./benchmarks/
 COPY sglang_programs/ ./sglang_programs/
 COPY dashboard/ ./dashboard/
 COPY analysis/ ./analysis/
+COPY prompts/ ./prompts/
 
-# Install Python dependencies (no sglang, no GPU needed for dashboard)
-RUN pip install --no-cache-dir \
-    httpx \
-    pydantic \
-    structlog \
-    fastapi \
-    "uvicorn[standard]" \
-    websockets \
-    typer \
-    rich \
-    matplotlib \
-    jinja2 \
-    aiofiles \
-    numpy
+# Install from pyproject.toml (no sglang extra, no GPU needed for dashboard)
+RUN pip install --no-cache-dir .
 
 EXPOSE 3000
 
