@@ -7,8 +7,8 @@ This report consolidates the completed benchmark matrix collected on an **AWS g5
 ### Headline findings
 
 - **Fastest single-request TTFT p95:** Gemma 2B on **vLLM** at **20.3 ms**.
-- **Highest throughput (tokens/sec):** Gemma 2B on **SGLang** at **36459.2 tok/s**.
-- **Highest throughput (requests/sec):** Gemma 2B on **vLLM** at **289.16 req/s**.
+- **Highest throughput (tokens/sec):** Gemma 2B on **vLLM** at **261.2 tok/s**.
+- **Highest throughput (requests/sec):** Gemma 2B on **vLLM** at **2.23 req/s**.
 - **Broad pattern:** vLLM consistently won the low-latency single-request TTFT tests, while throughput leadership depended on the model family.
 
 ## Environment
@@ -44,45 +44,45 @@ This report consolidates the completed benchmark matrix collected on an **AWS g5
 
 | Model | Scenario | Engine | TTFT p50 | TTFT p95 | Latency p95 | Tok/s | Req/s | Success |
 |---|---|---|---:|---:|---:|---:|---:|---:|
-| Gemma 2B | `single_request_latency` | vLLM | 19.8 ms | 20.3 ms | 1661.8 ms | 3749.2 | 29.29 | 100.0% |
-| Gemma 2B | `single_request_latency` | SGLang | 34.1 ms | 35.0 ms | 1683.0 ms | 3785.5 | 29.57 | 100.0% |
-| Phi-3 mini | `single_request_latency` | vLLM | 25.4 ms | 25.9 ms | 2243.6 ms | 2786.4 | 21.77 | 100.0% |
-| Qwen 7B | `single_request_latency` | vLLM | 40.4 ms | 40.7 ms | 4202.4 ms | 1451.3 | 11.34 | 100.0% |
-| Mistral 7B | `single_request_latency` | vLLM | 41.4 ms | 41.7 ms | 4044.0 ms | 1539.7 | 12.03 | 100.0% |
-| Qwen 7B | `single_request_latency` | SGLang | 67.9 ms | 68.2 ms | 4178.4 ms | 1531.6 | 11.97 | 100.0% |
-| Mistral 7B | `single_request_latency` | SGLang | 66.0 ms | 66.4 ms | 4057.3 ms | 1574.9 | 12.30 | 100.0% |
-| Gemma 9B | `single_request_latency` | vLLM | 120.8 ms | 122.2 ms | 381.6 ms | 648.6 | 129.73 | 100.0% |
-| Gemma 9B | `single_request_latency` | SGLang | 86.3 ms | 86.9 ms | 333.4 ms | 676.2 | 135.24 | 100.0% |
+| Gemma 2B | `single_request_latency` | vLLM | 19.8 ms | 20.3 ms | 1661.8 ms | 77.6 | 0.61 | 100.0% |
+| Gemma 2B | `single_request_latency` | SGLang | 34.1 ms | 35.0 ms | 1683.0 ms | 77.5 | 0.61 | 100.0% |
+| Phi-3 mini | `single_request_latency` | vLLM | 25.4 ms | 25.9 ms | 2243.6 ms | 57.8 | 0.45 | 100.0% |
+| Qwen 7B | `single_request_latency` | vLLM | 40.4 ms | 40.7 ms | 4202.4 ms | 30.6 | 0.24 | 100.0% |
+| Mistral 7B | `single_request_latency` | vLLM | 41.4 ms | 41.7 ms | 4044.0 ms | 31.8 | 0.25 | 100.0% |
+| Qwen 7B | `single_request_latency` | SGLang | 67.9 ms | 68.2 ms | 4178.4 ms | 30.9 | 0.24 | 100.0% |
+| Mistral 7B | `single_request_latency` | SGLang | 66.0 ms | 66.4 ms | 4057.3 ms | 31.8 | 0.25 | 100.0% |
+| Gemma 9B | `single_request_latency` | vLLM | 120.8 ms | 122.2 ms | 381.6 ms | 13.8 | 2.76 | 100.0% |
+| Gemma 9B | `single_request_latency` | SGLang | 86.3 ms | 86.9 ms | 333.4 ms | 15.4 | 3.08 | 100.0% |
 
 ## Throughput-ramp results
 
 | Model | Scenario | Engine | TTFT p50 | TTFT p95 | Latency p95 | Tok/s | Req/s | Success |
 |---|---|---|---:|---:|---:|---:|---:|---:|
-| Gemma 2B | `throughput_ramp` | vLLM | 44.0 ms | 189.9 ms | 2301.1 ms | 33875.2 | 289.16 | 100.0% |
-| Gemma 2B | `throughput_ramp` | SGLang | 53.6 ms | 159.9 ms | 4898.1 ms | 36459.2 | 142.43 | 100.0% |
-| Phi-3 mini | `throughput_ramp` | vLLM | 55.5 ms | 188.6 ms | 8645.5 ms | 20533.9 | 80.21 | 100.0% |
-| Qwen 7B | `throughput_ramp` | vLLM | 89.9 ms | 311.9 ms | 10091.5 ms | 15140.9 | 68.98 | 100.0% |
-| Mistral 7B | `throughput_ramp` | vLLM | 92.3 ms | 240.5 ms | 10342.1 ms | 17175.6 | 67.09 | 100.0% |
-| Qwen 7B | `throughput_ramp` | SGLang | 68.7 ms | 194.2 ms | 9581.5 ms | 18667.3 | 72.92 | 100.0% |
-| Mistral 7B | `throughput_ramp` | SGLang | 69.7 ms | 353.6 ms | 10332.4 ms | 17294.3 | 67.56 | 100.0% |
-| Gemma 9B | `throughput_ramp` | vLLM | 82.7 ms | 362.5 ms | 2483.7 ms | 9619.6 | 267.21 | 100.0% |
-| Gemma 9B | `throughput_ramp` | SGLang | 91.4 ms | 3666.6 ms | 5277.1 ms | 3595.1 | 99.86 | 100.0% |
+| Gemma 2B | `throughput_ramp` | vLLM | 44.0 ms | 189.9 ms | 2301.1 ms | 261.2 | 2.23 | 100.0% |
+| Gemma 2B | `throughput_ramp` | SGLang | 53.6 ms | 159.9 ms | 4898.1 ms | 258.3 | 1.01 | 100.0% |
+| Phi-3 mini | `throughput_ramp` | vLLM | 55.5 ms | 188.6 ms | 8645.5 ms | 188.7 | 0.74 | 100.0% |
+| Qwen 7B | `throughput_ramp` | vLLM | 89.9 ms | 311.9 ms | 10091.5 ms | 98.4 | 0.45 | 100.0% |
+| Mistral 7B | `throughput_ramp` | vLLM | 92.3 ms | 240.5 ms | 10342.1 ms | 106.4 | 0.42 | 100.0% |
+| Qwen 7B | `throughput_ramp` | SGLang | 68.7 ms | 194.2 ms | 9581.5 ms | 106.2 | 0.41 | 100.0% |
+| Mistral 7B | `throughput_ramp` | SGLang | 69.7 ms | 353.6 ms | 10332.4 ms | 106.8 | 0.42 | 100.0% |
+| Gemma 9B | `throughput_ramp` | vLLM | 82.7 ms | 362.5 ms | 2483.7 ms | 75.1 | 2.09 | 100.0% |
+| Gemma 9B | `throughput_ramp` | SGLang | 91.4 ms | 3666.6 ms | 5277.1 ms | 73.1 | 2.03 | 100.0% |
 
 ## Model-by-model takeaways
 
 ### Gemma 2B
 - vLLM won the single-request TTFT comparison.
-- For throughput, SGLang led on tok/s while vLLM led on req/s.
+- For throughput, vLLM led on both tok/s and req/s.
 ### Phi-3 mini
 - Only vLLM completed the single-request benchmark on this setup.
 - Only vLLM completed the throughput ramp on this setup.
 - SGLang could not be included on this setup because the FlashInfer/CUDA graph path failed on unsupported `head_dim=96`.
 ### Qwen 7B
 - vLLM won the single-request TTFT comparison.
-- For throughput, SGLang led on both tok/s and req/s.
+- For throughput, SGLang led on tok/s while vLLM led on req/s.
 ### Mistral 7B
 - vLLM won the single-request TTFT comparison.
-- For throughput, SGLang led on both tok/s and req/s.
+- For throughput, SGLang led on tok/s while vLLM led on req/s.
 ### Gemma 9B
 - SGLang won the single-request TTFT comparison.
 - For throughput, vLLM led on both tok/s and req/s.

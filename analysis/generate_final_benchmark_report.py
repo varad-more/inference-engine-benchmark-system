@@ -148,6 +148,73 @@ def _extract_model_id(
     return _infer_model_from_snapshot_hints(data, snapshot_hints)
 
 
+def _normalized_throughput(data: dict, metrics: dict) -> tuple[float, float, float]:
+    """Return (tokens_per_sec, requests_per_sec, wall_time_sec) normalized by full run wall-clock time."""
+    throughput = metrics.get("throughput", {})
+
+    successful_requests = int(throughput.get("successful_requests", 0) or 0)
+    if successful_requests <= 0:
+        successful_requests = sum(
+            1
+            for req in data.get("requests", [])
+            if isinstance(req, dict) and req.get("success", False)
+        )
+
+    total_tokens = float(throughput.get("total_tokens_generated", 0.0) or 0.0)
+    if total_tokens <= 0:
+        total_tokens = float(
+            sum(
+                int(req.get("output_tokens", 0) or 0)
+                for req in data.get("requests", [])
+                if isinstance(req, dict) and req.get("success", False)
+            )
+        )
+
+    wall_time_sec = 0.0
+    timeline = data.get("engine_metrics_timeline") or []
+    if len(timeline) >= 2:
+        timestamps = [
+            _safe_float(entry.get("timestamp"))
+            for entry in timeline
+            if isinstance(entry, dict) and entry.get("timestamp") is not None
+        ]
+        timestamps = [t for t in timestamps if t is not None]
+        if len(timestamps) >= 2:
+            wall_time_sec = max(timestamps) - min(timestamps)
+
+    if wall_time_sec <= 0 and data.get("scenario_name") == "single_request_latency":
+        wall_time_sec = sum(
+            float(req.get("total_ms", 0.0) or 0.0)
+            for req in data.get("requests", [])
+            if isinstance(req, dict) and req.get("success", True)
+        ) / 1000.0
+
+    if wall_time_sec <= 0:
+        wall_time_sec = float(throughput.get("wall_time_sec", 0.0) or 0.0)
+
+    if wall_time_sec <= 0:
+        req_times = [
+            float(req.get("total_ms", 0.0) or 0.0)
+            for req in data.get("requests", [])
+            if isinstance(req, dict)
+        ]
+        if req_times:
+            wall_time_sec = max(req_times) / 1000.0
+
+    if wall_time_sec > 0 and successful_requests > 0:
+        return (
+            total_tokens / wall_time_sec,
+            successful_requests / wall_time_sec,
+            wall_time_sec,
+        )
+
+    return (
+        float(throughput.get("tokens_per_sec", 0.0) or 0.0),
+        float(throughput.get("requests_per_sec", 0.0) or 0.0),
+        wall_time_sec,
+    )
+
+
 def load_latest_rows() -> list[dict]:
     latest: dict[tuple[str, str, str], tuple[float, dict]] = {}
     model_map_from_logs = _load_result_model_map_from_logs()
@@ -177,7 +244,7 @@ def load_latest_rows() -> list[dict]:
     for (model_id, scenario, engine), (_, container) in latest.items():
         data = container["payload"]
         metrics = data["metrics"]
-        throughput = metrics.get("throughput", {})
+        tokens_per_sec, requests_per_sec, wall_time_sec = _normalized_throughput(data, metrics)
 
         row = {
             "model_id": model_id,
@@ -189,9 +256,10 @@ def load_latest_rows() -> list[dict]:
             "ttft_p95": _safe_float(metrics.get("ttft", {}).get("p95")),
             "ttft_p99": _safe_float(metrics.get("ttft", {}).get("p99")),
             "latency_p95": _safe_float(metrics.get("latency", {}).get("p95")),
-            "tokens_per_sec": _safe_float(throughput.get("tokens_per_sec")),
-            "requests_per_sec": _safe_float(throughput.get("requests_per_sec")),
+            "tokens_per_sec": round(tokens_per_sec, 1),
+            "requests_per_sec": round(requests_per_sec, 2),
             "success_pct": round((1 - float(metrics.get("error_rate", 0.0))) * 100, 1),
+            "wall_time_sec": round(wall_time_sec, 3),
             "path": container["path"],
         }
         rows.append(row)
