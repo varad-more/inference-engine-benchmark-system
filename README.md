@@ -849,6 +849,8 @@ For a polished write-up with visuals, see:
 The following snapshot summarizes the completed multi-model matrix collected on the single A10G benchmark host.
 
 > Scope note: all rows below are completed runs. The only intentional gap is `Phi-3 mini + SGLang`, which is blocked on this setup by an engine compatibility issue documented below.
+>
+> Data provenance: values are pulled directly from each row’s source `results/*Client_*.json` `metrics` block. The exact source file for every row is recorded in `reports/benchmark_snapshot_2026-03-22.json` (`path` field).
 
 | Model | Scenario | Engine | TTFT p50 | TTFT p95 | Total latency p95 | Tokens/sec | Requests/sec | Success |
 |---|---|---|---:|---:|---:|---:|---:|---:|
