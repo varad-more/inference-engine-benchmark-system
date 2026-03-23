@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import html
 import json
+import re
 from pathlib import Path
 from typing import Iterable
 
@@ -46,8 +47,111 @@ def _safe_float(value: float | int | None) -> float | None:
     return None if value is None else float(value)
 
 
+def _load_result_model_map_from_logs() -> dict[str, str]:
+    """Map result file names to model IDs by parsing matrix log files."""
+    mapping: dict[str, str] = {}
+    pattern = re.compile(r"path=(results/[^\s]+\.json)")
+    done_pattern = re.compile(r"results/[^\s]+\.json")
+
+    for log_path in sorted(RESULTS_DIR.glob("*.log")):
+        current_model: str | None = None
+        for raw_line in log_path.read_text(errors="ignore").splitlines():
+            line = raw_line.strip()
+            if line.startswith("===== MODEL:") and line.endswith("====="):
+                current_model = line.removeprefix("===== MODEL:").removesuffix("=====").strip()
+                continue
+            if not current_model:
+                continue
+
+            match = pattern.search(line)
+            if match:
+                mapping[Path(match.group(1)).name] = current_model
+                continue
+
+            # Fallback for summary lines such as: "✓ sglang done → results/...json"
+            if "results/" in line and line.endswith(".json"):
+                maybe = done_pattern.search(line)
+                if maybe:
+                    mapping[Path(maybe.group(0)).name] = current_model
+
+    return mapping
+
+
+def _load_snapshot_hints() -> list[dict]:
+    """Load prior snapshot rows as model-id hints for legacy result files."""
+    hints: list[dict] = []
+    for snapshot in sorted(OUTPUT_DIR.glob("benchmark_snapshot_*.json")):
+        try:
+            rows = json.loads(snapshot.read_text())
+        except Exception:
+            continue
+        if isinstance(rows, list):
+            for row in rows:
+                if isinstance(row, dict) and row.get("model_id") in TARGET_MODEL_MAP:
+                    hints.append(row)
+    return hints
+
+
+def _infer_model_from_snapshot_hints(data: dict, snapshot_hints: list[dict]) -> str | None:
+    scenario = data.get("scenario_name")
+    engine = ENGINE_LABELS.get(data.get("engine_name"), data.get("engine_name", "unknown"))
+    metrics = data.get("metrics", {})
+    ttft_p95 = _safe_float(metrics.get("ttft", {}).get("p95"))
+    latency_p95 = _safe_float(metrics.get("latency", {}).get("p95"))
+
+    candidates = [
+        row for row in snapshot_hints
+        if row.get("scenario") == scenario and row.get("engine") == engine
+    ]
+    if not candidates or ttft_p95 is None or latency_p95 is None:
+        return None
+
+    scored: list[tuple[float, str]] = []
+    for row in candidates:
+        row_ttft = _safe_float(row.get("ttft_p95"))
+        row_latency = _safe_float(row.get("latency_p95"))
+        if row_ttft is None or row_latency is None:
+            continue
+        dist = abs(row_ttft - ttft_p95) + abs(row_latency - latency_p95)
+        scored.append((dist, row["model_id"]))
+
+    if not scored:
+        return None
+
+    scored.sort(key=lambda x: x[0])
+    # Require a close match to avoid accidental cross-model assignment.
+    return scored[0][1] if scored[0][0] <= 5.0 else None
+
+
+def _extract_model_id(
+    data: dict,
+    path: Path,
+    model_map_from_logs: dict[str, str],
+    snapshot_hints: list[dict],
+) -> str | None:
+    run_metadata = data.get("run_metadata") or {}
+    scenario_config = data.get("scenario_config") or {}
+
+    candidates = [
+        run_metadata.get("model"),
+        run_metadata.get("model_id"),
+        scenario_config.get("model"),
+        scenario_config.get("model_id"),
+        data.get("model"),
+        data.get("model_id"),
+        model_map_from_logs.get(path.name),
+    ]
+    for candidate in candidates:
+        if candidate in TARGET_MODEL_MAP:
+            return candidate
+
+    return _infer_model_from_snapshot_hints(data, snapshot_hints)
+
+
 def load_latest_rows() -> list[dict]:
     latest: dict[tuple[str, str, str], tuple[float, dict]] = {}
+    model_map_from_logs = _load_result_model_map_from_logs()
+    snapshot_hints = _load_snapshot_hints()
 
     for path in sorted(RESULTS_DIR.glob("*Client_*.json")):
         try:
@@ -57,7 +161,7 @@ def load_latest_rows() -> list[dict]:
         if not {"scenario_name", "engine_name", "metrics"}.issubset(data):
             continue
 
-        model_id = data.get("run_metadata", {}).get("model")
+        model_id = _extract_model_id(data, path, model_map_from_logs, snapshot_hints)
         if model_id not in TARGET_MODEL_MAP:
             continue
 
@@ -74,6 +178,7 @@ def load_latest_rows() -> list[dict]:
         data = container["payload"]
         metrics = data["metrics"]
         throughput = metrics.get("throughput", {})
+
         row = {
             "model_id": model_id,
             "model": TARGET_MODEL_MAP[model_id]["name"],
