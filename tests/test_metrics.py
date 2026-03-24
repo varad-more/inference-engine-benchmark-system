@@ -16,6 +16,7 @@ from benchmarks.metrics import (
 # LatencyStats
 # ---------------------------------------------------------------------------
 
+
 class TestLatencyStats:
     def test_empty(self) -> None:
         s = LatencyStats.from_samples([])
@@ -48,6 +49,7 @@ class TestLatencyStats:
 
     def test_percentiles_ordered(self) -> None:
         import random
+
         random.seed(0)
         samples = [random.expovariate(1 / 100) for _ in range(500)]
         s = LatencyStats.from_samples(samples)
@@ -71,6 +73,7 @@ class TestLatencyStats:
 # ---------------------------------------------------------------------------
 # ThroughputStats
 # ---------------------------------------------------------------------------
+
 
 class TestThroughputStats:
     def test_basic(self) -> None:
@@ -108,6 +111,7 @@ class TestThroughputStats:
 # CDF
 # ---------------------------------------------------------------------------
 
+
 class TestComputeCDF:
     def test_empty(self) -> None:
         x, y = compute_cdf([])
@@ -121,6 +125,7 @@ class TestComputeCDF:
 
     def test_monotone(self) -> None:
         import random
+
         random.seed(1)
         samples = [random.random() * 1000 for _ in range(200)]
         x, y = compute_cdf(samples)
@@ -139,6 +144,7 @@ class TestComputeCDF:
 # ---------------------------------------------------------------------------
 # compare_metrics
 # ---------------------------------------------------------------------------
+
 
 class TestCompareMetrics:
     def _make_metrics(self, ttft_p95: float, tps: float, engine: str) -> ScenarioMetrics:

@@ -5,7 +5,7 @@ from __future__ import annotations
 import asyncio
 import time
 from abc import ABC, abstractmethod
-from collections.abc import AsyncIterator, Callable
+from collections.abc import AsyncIterator, Awaitable, Callable
 from dataclasses import dataclass, field
 from typing import TypeVar
 
@@ -17,7 +17,7 @@ T = TypeVar("T")
 
 
 async def retry_async(
-    fn: Callable[..., T],
+    fn: Callable[..., Awaitable[T]],
     *args: object,
     retries: int = 2,
     backoff: float = 0.5,
@@ -27,11 +27,11 @@ async def retry_async(
     last_exc: Exception | None = None
     for attempt in range(1 + retries):
         try:
-            return await fn(*args)  # type: ignore[misc]
+            return await fn(*args)
         except Exception as exc:
             last_exc = exc
             if attempt < retries:
-                wait = backoff * (2 ** attempt)
+                wait = backoff * (2**attempt)
                 if logger_ctx:
                     logger_ctx.debug("retrying", attempt=attempt + 1, wait=wait, error=str(exc))
                 await asyncio.sleep(wait)
@@ -104,7 +104,7 @@ class BaseInferenceClient(ABC):
         ...
 
     @abstractmethod
-    async def generate_stream(
+    def generate_stream(
         self,
         prompt: str,
         max_tokens: int = 256,

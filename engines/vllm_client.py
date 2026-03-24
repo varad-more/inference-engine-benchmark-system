@@ -120,7 +120,7 @@ class VLLMClient(BaseInferenceClient):
                 line = raw_line.strip()
                 if not line or not line.startswith("data:"):
                     continue
-                data_str = line[len("data:"):].strip()
+                data_str = line[len("data:") :].strip()
                 if data_str == "[DONE]":
                     break
                 try:
@@ -133,9 +133,11 @@ class VLLMClient(BaseInferenceClient):
 
     async def health_check(self) -> bool:
         try:
+
             async def _check() -> bool:
                 r = await self._http.get("/health")
                 return r.status_code == 200
+
             return await retry_async(_check, retries=2, backoff=1.0, logger_ctx=self._log)
         except Exception as exc:
             self._log.warning("vllm health check failed", error=str(exc))

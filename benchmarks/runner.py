@@ -349,7 +349,9 @@ class BenchmarkRunner:
             "prompt_source": "prompt_pack",
             "shared_prefix_id": pack.id,
             "shared_prefix_length_words": len(pack.shared_prefix.split()),
-            "prompt_ids": [f"{pack.id}:{idx % len(pack.suffixes)}" for idx in range(scenario.num_requests)],
+            "prompt_ids": [
+                f"{pack.id}:{idx % len(pack.suffixes)}" for idx in range(scenario.num_requests)
+            ],
         }
 
         stop_event = asyncio.Event()
@@ -511,7 +513,12 @@ class BenchmarkRunner:
 
         wall_time = 0.0
         if len(engine_timeline) >= 2:
-            timestamps = [entry.get("timestamp") for entry in engine_timeline if entry.get("timestamp") is not None]
+            timestamps = [
+                float(timestamp)
+                for entry in engine_timeline
+                for timestamp in [entry.get("timestamp")]
+                if isinstance(timestamp, (int, float))
+            ]
             if len(timestamps) >= 2:
                 wall_time = max(timestamps) - min(timestamps)
 
@@ -595,16 +602,22 @@ class BenchmarkRunner:
         try:
             return load_shared_prefix_pack()
         except Exception as exc:
-            self._log.warning("shared prefix pack unavailable, using synthetic fallback", error=str(exc))
-            return type("SyntheticSharedPrefix", (), {
-                "id": "synthetic_shared_prefix",
-                "category": "shared_prefix",
-                "shared_prefix": make_system_prompt(scenario.shared_prefix_tokens),
-                "suffixes": tuple(
-                    make_short_prompt(scenario.user_suffix_tokens) + f" (variant {idx})"
-                    for idx in range(5)
-                ),
-            })()
+            self._log.warning(
+                "shared prefix pack unavailable, using synthetic fallback", error=str(exc)
+            )
+            return type(
+                "SyntheticSharedPrefix",
+                (),
+                {
+                    "id": "synthetic_shared_prefix",
+                    "category": "shared_prefix",
+                    "shared_prefix": make_system_prompt(scenario.shared_prefix_tokens),
+                    "suffixes": tuple(
+                        make_short_prompt(scenario.user_suffix_tokens) + f" (variant {idx})"
+                        for idx in range(5)
+                    ),
+                },
+            )()
 
 
 async def run_comparison(
@@ -645,7 +658,9 @@ if __name__ == "__main__":
     from engines.vllm_client import VLLMClient
 
     async def smoke() -> None:
-        scenario = SingleRequestLatency(name="single_request_latency", num_requests=5, concurrency=1)
+        scenario = SingleRequestLatency(
+            name="single_request_latency", num_requests=5, concurrency=1
+        )
         client = VLLMClient(host="localhost", port=8000)
         healthy = await client.health_check()
         if not healthy:

@@ -67,6 +67,7 @@ _configure_logging()
 def _version_callback(value: bool) -> None:
     if value:
         from importlib.metadata import version as pkg_version
+
         try:
             v = pkg_version("inference-engine-benchmark")
         except Exception:
@@ -87,11 +88,16 @@ logger = structlog.get_logger(__name__)
 @app.callback()
 def main(
     version: bool = typer.Option(
-        False, "--version", "-V", callback=_version_callback, is_eager=True,
+        False,
+        "--version",
+        "-V",
+        callback=_version_callback,
+        is_eager=True,
         help="Show version and exit.",
     ),
 ) -> None:
     """vLLM vs SGLang comparative inference benchmark system."""
+
 
 RESULTS_DIR = Path("results")
 RESULTS_DIR.mkdir(exist_ok=True)
@@ -131,7 +137,9 @@ def run(
     scenario: str = typer.Option(..., "--scenario", "-s", help="Scenario name"),
     engines: str = typer.Option("vllm,sglang", "--engines", "-e", help="Comma-separated engines"),
     model: str = typer.Option("Qwen/Qwen2.5-1.5B-Instruct", "--model", "-m"),
-    prompt_pack: str | None = typer.Option(None, "--prompt-pack", help="Optional prompt-pack override"),
+    prompt_pack: str | None = typer.Option(
+        None, "--prompt-pack", help="Optional prompt-pack override"
+    ),
     vllm_host: str = typer.Option("localhost", "--vllm-host"),
     sglang_host: str = typer.Option("localhost", "--sglang-host"),
     output_dir: Path | None = typer.Option(None, "--output-dir"),
@@ -276,7 +284,9 @@ def matrix(
     ),
     engines: str = typer.Option("sglang,vllm", "--engines", help="Comma-separated engines"),
     model: str = typer.Option("Qwen/Qwen2.5-1.5B-Instruct", "--model", "-m"),
-    prompt_pack: str | None = typer.Option(None, "--prompt-pack", help="Optional override for all scenarios"),
+    prompt_pack: str | None = typer.Option(
+        None, "--prompt-pack", help="Optional override for all scenarios"
+    ),
     iterations: int = typer.Option(1, "--iterations", min=1),
     cooldown_seconds: int = typer.Option(60, "--cooldown-seconds", min=0),
     vllm_host: str = typer.Option("localhost", "--vllm-host"),
