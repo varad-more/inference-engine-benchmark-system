@@ -15,6 +15,7 @@ from engines.base_client import EngineMetrics, GenerationResult
 # GenerationResult
 # ---------------------------------------------------------------------------
 
+
 class TestGenerationResult:
     def test_fields(self) -> None:
         r = GenerationResult(
@@ -38,7 +39,7 @@ class TestGenerationResult:
             text="test output",
             start_time=t0,
             first_token_time=t0 + 0.05,  # 50ms TTFT
-            end_time=t0 + 0.5,           # 500ms total
+            end_time=t0 + 0.5,  # 500ms total
             prompt_tokens=12,
             output_tokens=25,
         )
@@ -79,6 +80,7 @@ class TestGenerationResult:
 # EngineMetrics
 # ---------------------------------------------------------------------------
 
+
 class TestEngineMetrics:
     def test_defaults(self) -> None:
         m = EngineMetrics()
@@ -104,6 +106,7 @@ class TestEngineMetrics:
 # ---------------------------------------------------------------------------
 # VLLMClient with respx mocking
 # ---------------------------------------------------------------------------
+
 
 @pytest.fixture()
 def vllm_base_url() -> str:
@@ -235,9 +238,7 @@ vllm:gpu_memory_usage_perc{model_name="test"} 70.0
 async def test_vllm_get_metrics_empty_response(vllm_base_url: str) -> None:
     from engines.vllm_client import VLLMClient
 
-    respx.get(f"{vllm_base_url}/metrics").mock(
-        return_value=httpx.Response(500)
-    )
+    respx.get(f"{vllm_base_url}/metrics").mock(return_value=httpx.Response(500))
 
     client = VLLMClient(host="localhost", port=8000)
     metrics = await client.get_metrics()
@@ -251,6 +252,7 @@ async def test_vllm_get_metrics_empty_response(vllm_base_url: str) -> None:
 # ---------------------------------------------------------------------------
 # SGLangClient with respx mocking
 # ---------------------------------------------------------------------------
+
 
 @respx.mock
 @pytest.mark.asyncio
@@ -316,6 +318,7 @@ async def test_sglang_generate_stream() -> None:
 # ---------------------------------------------------------------------------
 # Prometheus parser unit test (private function)
 # ---------------------------------------------------------------------------
+
 
 def test_prometheus_parser() -> None:
     from engines.vllm_client import _parse_prometheus

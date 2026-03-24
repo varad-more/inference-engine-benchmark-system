@@ -33,6 +33,7 @@ RESULTS_DIR = Path("results")
 # Data loading helpers
 # ---------------------------------------------------------------------------
 
+
 def _load_results(results_dir: Path) -> list[dict[str, Any]]:
     """Load all scenario result JSON files."""
     files = sorted(results_dir.glob("*.json"), key=lambda p: p.stat().st_mtime)
@@ -47,7 +48,9 @@ def _load_results(results_dir: Path) -> list[dict[str, Any]]:
     return data
 
 
-def _filter(results: list[dict[str, Any]], scenario: str, engine: str | None = None) -> list[dict[str, Any]]:
+def _filter(
+    results: list[dict[str, Any]], scenario: str, engine: str | None = None
+) -> list[dict[str, Any]]:
     out = [r for r in results if r.get("scenario_name") == scenario]
     if engine:
         out = [r for r in out if engine.lower() in r.get("engine_name", "").lower()]
@@ -58,6 +61,7 @@ def _filter(results: list[dict[str, Any]], scenario: str, engine: str | None = N
 # ---------------------------------------------------------------------------
 # Chart generators → base64 PNG
 # ---------------------------------------------------------------------------
+
 
 def _fig_to_b64(fig: plt.Figure) -> str:
     buf = io.BytesIO()
@@ -76,12 +80,17 @@ def _cdf_chart(all_results: list[dict[str, Any]]) -> str:
     titles = ["Single Request Latency", "Throughput Ramp"]
 
     for ax, scenario_name, title in zip(axes, scenarios, titles):
-        for engine, color, label in [("VLLMClient", "#2196F3", "vLLM"), ("SGLangClient", "#4CAF50", "SGLang")]:
+        for engine, color, label in [
+            ("VLLMClient", "#2196F3", "vLLM"),
+            ("SGLangClient", "#4CAF50", "SGLang"),
+        ]:
             matches = _filter(all_results, scenario_name, engine)
             if not matches:
                 continue
             reqs = matches[0].get("requests", [])
-            ttft_values = [r["ttft_ms"] for r in reqs if r.get("success") and r.get("ttft_ms", 0) > 0]
+            ttft_values = [
+                r["ttft_ms"] for r in reqs if r.get("success") and r.get("ttft_ms", 0) > 0
+            ]
             if not ttft_values:
                 continue
             sorted_v = sorted(ttft_values)
@@ -109,7 +118,10 @@ def _throughput_chart(all_results: list[dict[str, Any]]) -> str:
     fig, ax = plt.subplots(figsize=(10, 6))
     ax.set_title("Throughput vs Concurrency", fontsize=14, fontweight="bold")
 
-    for engine, color, label in [("VLLMClient", "#2196F3", "vLLM"), ("SGLangClient", "#4CAF50", "SGLang")]:
+    for engine, color, label in [
+        ("VLLMClient", "#2196F3", "vLLM"),
+        ("SGLangClient", "#4CAF50", "SGLang"),
+    ]:
         matches = _filter(all_results, "throughput_ramp", engine)
         if not matches:
             continue
@@ -138,9 +150,14 @@ def _throughput_chart(all_results: list[dict[str, Any]]) -> str:
 def _kv_cache_chart(all_results: list[dict[str, Any]]) -> str:
     """KV cache utilisation over time for long_context_stress scenario."""
     fig, ax = plt.subplots(figsize=(10, 5))
-    ax.set_title("KV Cache Utilisation Over Time — Long Context Stress", fontsize=13, fontweight="bold")
+    ax.set_title(
+        "KV Cache Utilisation Over Time — Long Context Stress", fontsize=13, fontweight="bold"
+    )
 
-    for engine, color, label in [("VLLMClient", "#2196F3", "vLLM"), ("SGLangClient", "#4CAF50", "SGLang")]:
+    for engine, color, label in [
+        ("VLLMClient", "#2196F3", "vLLM"),
+        ("SGLangClient", "#4CAF50", "SGLang"),
+    ]:
         matches = _filter(all_results, "long_context_stress", engine)
         if not matches:
             # Try any scenario
@@ -167,7 +184,10 @@ def _prefix_cache_chart(all_results: list[dict[str, Any]]) -> str:
     fig, ax = plt.subplots(figsize=(9, 5))
     ax.set_title("Prefix Caching Benefit — TTFT by Request Index", fontsize=13, fontweight="bold")
 
-    for engine, color, label in [("VLLMClient", "#2196F3", "vLLM"), ("SGLangClient", "#4CAF50", "SGLang")]:
+    for engine, color, label in [
+        ("VLLMClient", "#2196F3", "vLLM"),
+        ("SGLangClient", "#4CAF50", "SGLang"),
+    ]:
         matches = _filter(all_results, "prefix_sharing_benefit", engine)
         if not matches:
             continue
@@ -176,7 +196,16 @@ def _prefix_cache_chart(all_results: list[dict[str, Any]]) -> str:
         if ttft_vals:
             # Plot first 30 requests to show cache warm-up curve
             x = list(range(min(30, len(ttft_vals))))
-            ax.plot(x, ttft_vals[:30], "o-", color=color, label=label, linewidth=2, markersize=4, alpha=0.85)
+            ax.plot(
+                x,
+                ttft_vals[:30],
+                "o-",
+                color=color,
+                label=label,
+                linewidth=2,
+                markersize=4,
+                alpha=0.85,
+            )
 
     ax.set_xlabel("Request Index")
     ax.set_ylabel("TTFT (ms)")
@@ -189,6 +218,7 @@ def _prefix_cache_chart(all_results: list[dict[str, Any]]) -> str:
 # ---------------------------------------------------------------------------
 # Speedup table
 # ---------------------------------------------------------------------------
+
 
 @dataclass
 class ProgramSpeedup:
@@ -434,6 +464,7 @@ _MERMAID_DIAGRAM = """graph TB
 # Main report generator
 # ---------------------------------------------------------------------------
 
+
 def generate_report(
     results_dir: Path = RESULTS_DIR,
     output_path: Path = Path("report.html"),
@@ -475,7 +506,9 @@ def generate_report(
     stats_html = ""
     n_vllm = sum(1 for r in all_results if "VLLMClient" in r.get("engine_name", ""))
     n_sglang = sum(1 for r in all_results if "SGLangClient" in r.get("engine_name", ""))
-    total_req = sum(r.get("metrics", {}).get("throughput", {}).get("total_requests", 0) for r in all_results)
+    total_req = sum(
+        r.get("metrics", {}).get("throughput", {}).get("total_requests", 0) for r in all_results
+    )
 
     for val, label in [
         (str(len(all_results)), "Total Result Files"),
@@ -505,6 +538,7 @@ def generate_report(
 
 if __name__ == "__main__":
     import sys
+
     out = Path(sys.argv[1]) if len(sys.argv) > 1 else Path("report.html")
     generate_report(results_dir=RESULTS_DIR, output_path=out)
     print(f"Report written to {out} ({out.stat().st_size // 1024} KB)")

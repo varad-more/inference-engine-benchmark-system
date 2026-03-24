@@ -136,6 +136,7 @@ class RunRequest(BaseModel):
         if not _SAFE_NAME_RE.match(v.replace(".", "")) or len(v) > 253:
             raise ValueError(f"Invalid host: {v!r}")
         return v
+
     sglang_port: int = 8001
 
 
@@ -323,7 +324,7 @@ def _system_status_payload() -> dict[str, Any]:
 
     payload: dict[str, Any] = {}
     if gpu_line:
-        parts = [p.strip() for p in gpu_line.split(',')]
+        parts = [p.strip() for p in gpu_line.split(",")]
         if len(parts) == 4:
             payload["gpu"] = {
                 "temperature_c": float(parts[0]),
@@ -334,7 +335,7 @@ def _system_status_payload() -> dict[str, Any]:
     if load_line:
         payload["load_avg"] = load_line
     if mem_line and "," in mem_line:
-        used, avail = [p.strip() for p in mem_line.split(',', 1)]
+        used, avail = [p.strip() for p in mem_line.split(",", 1)]
         payload["memory"] = {
             "used_mib": float(used),
             "available_mib": float(avail),

@@ -81,14 +81,18 @@ def render_markdown(summary: dict[str, Any]) -> str:
         return "\n".join(lines)
 
     for model in models:
-        lines.extend([
-            f"## {model}",
-            "",
-            "| Scenario | Engine | Runs | Prompt pack(s) | TTFT p50 | TTFT p95 | Latency p95 | Tok/s | Req/s | Success |",
-            "|---|---|---:|---|---:|---:|---:|---:|---:|---:|",
-        ])
+        lines.extend(
+            [
+                f"## {model}",
+                "",
+                "| Scenario | Engine | Runs | Prompt pack(s) | TTFT p50 | TTFT p95 | Latency p95 | Tok/s | Req/s | Success |",
+                "|---|---|---:|---|---:|---:|---:|---:|---:|---:|",
+            ]
+        )
         model_rows = [row for row in rows if row["model"] == model]
-        for row in sorted(model_rows, key=lambda item: (item["scenario_name"], item["engine_name"])):
+        for row in sorted(
+            model_rows, key=lambda item: (item["scenario_name"], item["engine_name"])
+        ):
             lines.append(
                 "| {scenario} | {engine} | {runs} | {packs} | {ttft_p50:.1f} ms | {ttft_p95:.1f} ms | "
                 "{latency_p95:.1f} ms | {tps:.1f} | {rps:.2f} | {success:.1f}% |".format(

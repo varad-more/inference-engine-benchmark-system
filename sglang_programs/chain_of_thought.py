@@ -30,6 +30,7 @@ logger = structlog.get_logger(__name__)
 # ---------------------------------------------------------------------------
 try:
     import sglang as sgl  # type: ignore[import]
+
     _SGLANG_AVAILABLE = True
 except ImportError:
     _SGLANG_AVAILABLE = False
@@ -71,6 +72,7 @@ except ImportError:
 # ===========================================================================
 # Program 1 — Structured Chain-of-Thought
 # ===========================================================================
+
 
 @sgl.function  # type: ignore[misc]
 def structured_cot(s: Any, question: str) -> None:
@@ -147,6 +149,7 @@ async def structured_cot_vllm(
 # Program 2 — Parallel Hypotheses
 # ===========================================================================
 
+
 @sgl.function  # type: ignore[misc]
 def parallel_hypotheses(s: Any, topic: str) -> None:
     """
@@ -171,9 +174,7 @@ def parallel_hypotheses(s: Any, topic: str) -> None:
     s.join(forks)
 
     # Collect hypotheses into a readable prompt
-    hyp_text = "\n".join(
-        f"Hypothesis {i+1}: {forks[i][f'hypothesis_{i}']}" for i in range(3)
-    )
+    hyp_text = "\n".join(f"Hypothesis {i + 1}: {forks[i][f'hypothesis_{i}']}" for i in range(3))
     s += sgl.user(
         f"Given these hypotheses:\n{hyp_text}\nWhich is the most scientifically plausible?"
     )
@@ -216,7 +217,7 @@ async def parallel_hypotheses_vllm(
 
     hypotheses = await asyncio.gather(*[_gen(i) for i in range(3)])
 
-    hyp_text = "\n".join(f"Hypothesis {i+1}: {h}" for i, h in enumerate(hypotheses))
+    hyp_text = "\n".join(f"Hypothesis {i + 1}: {h}" for i, h in enumerate(hypotheses))
     selector_prompt = (
         f"Given these hypotheses:\n{hyp_text}\n"
         f"Which is the most scientifically plausible? Reply with just the hypothesis text.\n"
@@ -258,7 +259,9 @@ _JSON_SCHEMA = {
 }
 
 # Regex that matches the target JSON structure
-_JSON_REGEX = r'\{"entities": \[("[^"]*"(, "[^"]*")*)?\], "sentiment": "(positive|negative|neutral)"\}'
+_JSON_REGEX = (
+    r'\{"entities": \[("[^"]*"(, "[^"]*")*)?\], "sentiment": "(positive|negative|neutral)"\}'
+)
 
 
 @sgl.function  # type: ignore[misc]
@@ -278,7 +281,7 @@ def json_entity_extract(s: Any, text: str) -> None:
     s += sgl.user(
         f"Extract all named entities and overall sentiment from the text below.\n"
         f"Respond ONLY with a JSON object: "
-        f'{{\"entities\": [list of entity strings], \"sentiment\": \"positive\"|\"negative\"|\"neutral\"}}\n\n'
+        f'{{"entities": [list of entity strings], "sentiment": "positive"|"negative"|"neutral"}}\n\n'
         f"Text: {text}"
     )
     s += sgl.assistant(
@@ -307,7 +310,7 @@ async def json_entity_extract_vllm(
     prompt = (
         f"Extract all named entities and overall sentiment from the text below.\n"
         f"Respond ONLY with a JSON object: "
-        f'{{\"entities\": [list of strings], \"sentiment\": \"positive\"|\"negative\"|\"neutral\"}}\n\n'
+        f'{{"entities": [list of strings], "sentiment": "positive"|"negative"|"neutral"}}\n\n'
         f"Text: {text}\n\nJSON:"
     )
 
@@ -356,6 +359,7 @@ async def json_entity_extract_vllm(
 # Timing benchmark helper
 # ===========================================================================
 
+
 @dataclass
 class ProgramTimingResult:
     program_name: str
@@ -383,32 +387,38 @@ async def benchmark_program_timing(
         # CoT
         cot_times = []
         for _ in range(n_runs):
-            r = await structured_cot_vllm(
-                "Why is the sky blue?", client, model, vllm_base_url
-            )
+            r = await structured_cot_vllm("Why is the sky blue?", client, model, vllm_base_url)
             cot_times.append(r["total_ms"])
         cot_mean = sum(cot_times) / len(cot_times)
-        results.append(ProgramTimingResult("structured_cot", sglang_ms=340.0, vllm_ms=cot_mean, speedup=cot_mean / 340.0))
+        results.append(
+            ProgramTimingResult(
+                "structured_cot", sglang_ms=340.0, vllm_ms=cot_mean, speedup=cot_mean / 340.0
+            )
+        )
 
         # Hypotheses
         hyp_times = []
         for _ in range(n_runs):
-            r = await parallel_hypotheses_vllm(
-                "dark matter", client, model, vllm_base_url
-            )
+            r = await parallel_hypotheses_vllm("dark matter", client, model, vllm_base_url)
             hyp_times.append(r["total_ms"])
         hyp_mean = sum(hyp_times) / len(hyp_times)
-        results.append(ProgramTimingResult("parallel_hypotheses", sglang_ms=290.0, vllm_ms=hyp_mean, speedup=hyp_mean / 290.0))
+        results.append(
+            ProgramTimingResult(
+                "parallel_hypotheses", sglang_ms=290.0, vllm_ms=hyp_mean, speedup=hyp_mean / 290.0
+            )
+        )
 
         # JSON extraction
         json_times = []
         for _ in range(n_runs):
-            r = await json_entity_extract_vllm(
-                sample_text, client, model, vllm_base_url
-            )
+            r = await json_entity_extract_vllm(sample_text, client, model, vllm_base_url)
             json_times.append(r["total_ms"])
         json_mean = sum(json_times) / len(json_times)
-        results.append(ProgramTimingResult("json_entity_extract", sglang_ms=180.0, vllm_ms=json_mean, speedup=json_mean / 180.0))
+        results.append(
+            ProgramTimingResult(
+                "json_entity_extract", sglang_ms=180.0, vllm_ms=json_mean, speedup=json_mean / 180.0
+            )
+        )
 
     return results
 
@@ -432,7 +442,9 @@ if __name__ == "__main__":
                 return
 
             print("=== structured_cot_vllm ===")
-            result = await structured_cot_vllm("What is quantum entanglement?", client, MODEL, VLLM_URL)
+            result = await structured_cot_vllm(
+                "What is quantum entanglement?", client, MODEL, VLLM_URL
+            )
             print(f"  reasoning: {result['reasoning'][:80]}...")
             print(f"  answer: {result['answer']}")
             print(f"  total_ms: {result['total_ms']:.1f}")
