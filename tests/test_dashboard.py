@@ -34,14 +34,15 @@ def test_parse_helper_script_command() -> None:
 def test_current_activity_endpoint(monkeypatch) -> None:
     dash._jobs.clear()
 
-    def fake_run_shell(command: str, timeout_sec: int = 8) -> str:
-        if "pgrep -af 'run_experiment.py run'" in command:
+    def fake_run_cmd(argv: list[str], timeout_sec: int = 8) -> str:
+        cmd = " ".join(argv)
+        if "run_experiment.py run" in cmd:
             return "1234 python run_experiment.py run --scenario single_request_latency --engines sglang --model Qwen/Qwen2.5-7B-Instruct"
-        if "pgrep -af 'vllm serve|sglang.launch_server|run_experiment.py serve'" in command:
+        if "vllm serve" in cmd or "sglang.launch_server" in cmd:
             return "5678 python -m sglang.launch_server --model-path Qwen/Qwen2.5-7B-Instruct"
         return ""
 
-    monkeypatch.setattr(dash, "_run_shell", fake_run_shell)
+    monkeypatch.setattr(dash, "_run_cmd", fake_run_cmd)
     monkeypatch.setattr(dash, "_latest_results_payload", lambda limit=8: [])
 
     client = TestClient(dash.app)

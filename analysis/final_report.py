@@ -2,29 +2,16 @@
 
 from __future__ import annotations
 
-import json
 from collections import defaultdict
 from pathlib import Path
 from statistics import mean
 from typing import Any
 
-
-def _iter_result_files(results_dir: Path) -> list[Path]:
-    return sorted(path for path in results_dir.glob("*.json") if path.is_file())
-
-
-def _load_result_files(results_dir: Path) -> list[dict[str, Any]]:
-    records: list[dict[str, Any]] = []
-    for path in _iter_result_files(results_dir):
-        data = json.loads(path.read_text())
-        if "metrics" in data and "scenario_name" in data and "engine_name" in data:
-            data["_source_path"] = str(path)
-            records.append(data)
-    return records
+from analysis import load_results
 
 
 def aggregate_results(results_dir: Path) -> dict[str, Any]:
-    records = _load_result_files(results_dir)
+    records = load_results(results_dir)
     grouped: dict[tuple[str, str, str], list[dict[str, Any]]] = defaultdict(list)
 
     for record in records:

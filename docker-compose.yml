@@ -42,7 +42,7 @@ services:
     shm_size: "10gb"
     command:
       - "--model"
-      - "Qwen/Qwen2.5-1.5B-Instruct"
+      - "${MODEL:-Qwen/Qwen2.5-1.5B-Instruct}"
       - "--host"
       - "0.0.0.0"
       - "--port"
@@ -53,7 +53,7 @@ services:
       - "--gpu-memory-utilization"
       - "0.85"
       - "--served-model-name"
-      - "Qwen/Qwen2.5-1.5B-Instruct"
+      - "${MODEL:-Qwen/Qwen2.5-1.5B-Instruct}"
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
       interval: 30s
@@ -82,7 +82,7 @@ services:
       - "-m"
       - "sglang.launch_server"
       - "--model-path"
-      - "Qwen/Qwen2.5-1.5B-Instruct"
+      - "${MODEL:-Qwen/Qwen2.5-1.5B-Instruct}"
       - "--host"
       - "0.0.0.0"
       - "--port"
