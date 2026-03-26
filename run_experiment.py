@@ -16,6 +16,8 @@ from rich.console import Console
 from rich.progress import BarColumn, Progress, SpinnerColumn, TextColumn, TimeElapsedColumn
 from rich.table import Table
 
+from engines.base_client import DEFAULT_MODEL
+
 
 def _configure_logging() -> None:
     """Configure structlog for JSON (production) or colored console (development)."""
@@ -136,7 +138,7 @@ def _get_scenario(scenario_name: str):
 def run(
     scenario: str = typer.Option(..., "--scenario", "-s", help="Scenario name"),
     engines: str = typer.Option("vllm,sglang", "--engines", "-e", help="Comma-separated engines"),
-    model: str = typer.Option("Qwen/Qwen2.5-1.5B-Instruct", "--model", "-m"),
+    model: str = typer.Option(DEFAULT_MODEL, "--model", "-m"),
     prompt_pack: str | None = typer.Option(
         None, "--prompt-pack", help="Optional prompt-pack override"
     ),
@@ -177,8 +179,7 @@ def run(
                         console.print(
                             f"[red]Error: {engine_name} health check failed (--strict mode).[/red]"
                         )
-                        if hasattr(client, "aclose"):
-                            await client.aclose()
+                        await client.aclose()
                         raise typer.Exit(1)
                     console.print(
                         f"[yellow]Warning: {engine_name} health check failed. Proceeding anyway.[/yellow]"
@@ -218,13 +219,12 @@ def run(
                 console.print(f"\n[green]✓[/green] {engine_name} done → [dim]{path}[/dim]")
                 _print_summary_table(engine_name, results)
 
-                if hasattr(client, "aclose"):
-                    await client.aclose()
+                await client.aclose()
                 active_client = None
         except KeyboardInterrupt:
             console.print("\n[yellow]Interrupted — cleaning up...[/yellow]")
         finally:
-            if active_client is not None and hasattr(active_client, "aclose"):
+            if active_client is not None:
                 await active_client.aclose()
 
     asyncio.run(_run())
@@ -233,7 +233,7 @@ def run(
 @app.command()
 def compare(
     scenario: str = typer.Option(..., "--scenario", "-s"),
-    model: str = typer.Option("Qwen/Qwen2.5-1.5B-Instruct", "--model", "-m"),
+    model: str = typer.Option(DEFAULT_MODEL, "--model", "-m"),
     prompt_pack: str | None = typer.Option(None, "--prompt-pack"),
     vllm_host: str = typer.Option("localhost", "--vllm-host"),
     sglang_host: str = typer.Option("localhost", "--sglang-host"),
@@ -283,7 +283,7 @@ def matrix(
         help="Comma-separated scenarios for the matrix",
     ),
     engines: str = typer.Option("sglang,vllm", "--engines", help="Comma-separated engines"),
-    model: str = typer.Option("Qwen/Qwen2.5-1.5B-Instruct", "--model", "-m"),
+    model: str = typer.Option(DEFAULT_MODEL, "--model", "-m"),
     prompt_pack: str | None = typer.Option(
         None, "--prompt-pack", help="Optional override for all scenarios"
     ),
@@ -294,7 +294,9 @@ def matrix(
     output_dir: Path | None = typer.Option(None, "--output-dir"),
 ) -> None:
     """Run a sequential scenario x engine x iteration matrix for one active model."""
-    from benchmarks.matrix import run_matrix
+    import json
+    import time
+
     from benchmarks.runner import BenchmarkRunner
 
     results_dir = output_dir or RESULTS_DIR
@@ -312,24 +314,62 @@ def matrix(
     console.print(f"  Iterations     : [cyan]{iterations}[/cyan]")
     console.print(f"  Cooldown (sec) : [cyan]{cooldown_seconds}[/cyan]")
 
-    def _client_factory(engine_name: str, active_model: str):
-        host = vllm_host if engine_name == "vllm" else sglang_host
-        return _make_client(engine_name, active_model, host)
-
     async def _run() -> None:
         runner = BenchmarkRunner(results_dir=results_dir)
-        manifest = await run_matrix(
-            model=model,
-            scenarios=scenario_list,
-            engines=engine_list,
-            iterations=iterations,
-            cooldown_seconds=cooldown_seconds,
-            runner=runner,
-            client_factory=_client_factory,
-            results_dir=results_dir,
-        )
-        manifest_path = results_dir / f"matrix_manifest_{int(manifest.started_at)}.json"
-        manifest.save(manifest_path)
+        started_at = time.time()
+        tasks_log: list[dict] = []
+
+        for bench_scenario in scenario_list:
+            for iteration in range(1, iterations + 1):
+                for engine_name in engine_list:
+                    host = vllm_host if engine_name == "vllm" else sglang_host
+                    client = _make_client(engine_name, model, host)
+                    healthy = await client.health_check()
+                    task_info: dict = {
+                        "model": model,
+                        "scenario_name": bench_scenario.name,
+                        "engine": engine_name,
+                        "iteration": iteration,
+                        "healthy_before_run": healthy,
+                        "started_at": time.time(),
+                    }
+                    if not healthy:
+                        task_info["status"] = "skipped_unhealthy"
+                        tasks_log.append(task_info)
+                        await client.aclose()
+                        continue
+
+                    results = await runner.run_scenario(
+                        bench_scenario,
+                        client,
+                        run_metadata={
+                            "model": model,
+                            "iteration": iteration,
+                            "matrix_execution": True,
+                        },
+                    )
+                    result_path = results.save(results_dir)
+                    task_info.update(
+                        {
+                            "status": "completed",
+                            "finished_at": time.time(),
+                            "result_path": str(result_path),
+                        }
+                    )
+                    tasks_log.append(task_info)
+                    await client.aclose()
+                    if cooldown_seconds > 0:
+                        await asyncio.sleep(cooldown_seconds)
+
+        manifest = {
+            "started_at": started_at,
+            "finished_at": time.time(),
+            "model": model,
+            "tasks": tasks_log,
+            "cooldown_seconds": cooldown_seconds,
+        }
+        manifest_path = results_dir / f"matrix_manifest_{int(started_at)}.json"
+        manifest_path.write_text(json.dumps(manifest, indent=2))
         console.print(f"[green]✓[/green] Matrix manifest saved to {manifest_path}")
 
     asyncio.run(_run())
@@ -411,7 +451,7 @@ def list_prompt_packs() -> None:
 def health(
     vllm_host: str = typer.Option("localhost", "--vllm-host"),
     sglang_host: str = typer.Option("localhost", "--sglang-host"),
-    model: str = typer.Option("Qwen/Qwen2.5-1.5B-Instruct", "--model"),
+    model: str = typer.Option(DEFAULT_MODEL, "--model"),
 ) -> None:
     """Check health of both inference engines."""
     from engines.sglang_client import SGLangClient

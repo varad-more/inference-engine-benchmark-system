@@ -32,6 +32,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse, JSONResponse
 from pydantic import BaseModel, Field, field_validator
 
+from engines.base_client import DEFAULT_MODEL
+
 logger = structlog.get_logger(__name__)
 
 RESULTS_DIR = Path("results")
@@ -74,6 +76,10 @@ _jobs: dict[str, JobStatus] = {}
 # Active WebSocket connections for live streaming
 _live_connections: set[WebSocket] = set()
 
+# Lock protecting _jobs and _live_connections from concurrent mutation
+_state_lock = asyncio.Lock()
+
+
 MODEL_LABELS = {
     "qwen": "Qwen",
     "qwen7b": "Qwen 7B",
@@ -102,7 +108,7 @@ _SAFE_MODEL_RE = re.compile(r"^[a-zA-Z0-9_\-./]+$")
 class RunRequest(BaseModel):
     scenario: str
     engines: list[str] = Field(default=["vllm", "sglang"])
-    model: str = "Qwen/Qwen2.5-1.5B-Instruct"
+    model: str = DEFAULT_MODEL
     vllm_host: str = "localhost"
     vllm_port: int = 8000
     sglang_host: str = "localhost"
@@ -145,18 +151,18 @@ class RunRequest(BaseModel):
 # ---------------------------------------------------------------------------
 
 
-def _run_shell(command: str, timeout_sec: int = 8) -> str:
-    """Run a shell command safely and return stdout text."""
+def _run_cmd(argv: list[str], timeout_sec: int = 8) -> str:
+    """Run a command with explicit argv (no shell) and return stdout text."""
     try:
         completed = subprocess.run(
-            ["bash", "-lc", command],
+            argv,
             capture_output=True,
             text=True,
             timeout=timeout_sec,
             check=False,
         )
-    except Exception as exc:  # pragma: no cover - defensive fallback
-        logger.debug("shell helper failed", command=command, error=str(exc))
+    except Exception as exc:  # pragma: no cover
+        logger.debug("command failed", argv=argv, error=str(exc))
         return ""
     return completed.stdout.strip()
 
@@ -312,19 +318,19 @@ def _latest_results_payload(limit: int = 8) -> list[dict[str, Any]]:
 
 
 def _system_status_payload() -> dict[str, Any]:
-    gpu_line = _run_shell(
-        "nvidia-smi --query-gpu=temperature.gpu,utilization.gpu,memory.used,memory.total --format=csv,noheader,nounits 2>/dev/null | head -n1"
-    )
-    load_line = _run_shell(
-        "python3 - <<'PY'\nimport os\nprint(', '.join(f'{x:.2f}' for x in os.getloadavg()))\nPY"
-    )
-    mem_line = _run_shell(
-        "python3 - <<'PY'\nimport shutil, subprocess\nout = subprocess.check_output(['free', '-m'], text=True).splitlines()[1].split()\nprint(f'{out[2]},{out[6]}')\nPY"
-    )
-
     payload: dict[str, Any] = {}
+
+    # GPU via nvidia-smi (no shell, direct argv)
+    gpu_line = _run_cmd(
+        [
+            "nvidia-smi",
+            "--query-gpu=temperature.gpu,utilization.gpu,memory.used,memory.total",
+            "--format=csv,noheader,nounits",
+        ]
+    )
     if gpu_line:
-        parts = [p.strip() for p in gpu_line.split(",")]
+        first_line = gpu_line.splitlines()[0]
+        parts = [p.strip() for p in first_line.split(",")]
         if len(parts) == 4:
             payload["gpu"] = {
                 "temperature_c": float(parts[0]),
@@ -332,14 +338,29 @@ def _system_status_payload() -> dict[str, Any]:
                 "memory_used_mib": float(parts[2]),
                 "memory_total_mib": float(parts[3]),
             }
-    if load_line:
-        payload["load_avg"] = load_line
-    if mem_line and "," in mem_line:
-        used, avail = [p.strip() for p in mem_line.split(",", 1)]
-        payload["memory"] = {
-            "used_mib": float(used),
-            "available_mib": float(avail),
-        }
+
+    # Load average via Python stdlib
+    try:
+        load = os.getloadavg()
+        payload["load_avg"] = ", ".join(f"{x:.2f}" for x in load)
+    except OSError:
+        pass
+
+    # Memory via /proc/meminfo (Linux) — no subprocess needed
+    try:
+        meminfo: dict[str, int] = {}
+        with open("/proc/meminfo") as f:
+            for line in f:
+                key, rest = line.split(":", 1)
+                # Values are in kB
+                meminfo[key.strip()] = int(rest.strip().split()[0])
+        total = meminfo.get("MemTotal", 0) // 1024
+        available = meminfo.get("MemAvailable", 0) // 1024
+        used = total - available
+        payload["memory"] = {"used_mib": used, "available_mib": available}
+    except (OSError, ValueError, KeyError):
+        pass
+
     return payload
 
 
@@ -369,7 +390,7 @@ def _current_activity_payload() -> dict[str, Any]:
         current = None
 
     if current is None:
-        run_lines = _run_shell("pgrep -af 'run_experiment.py run' || true").splitlines()
+        run_lines = _run_cmd(["pgrep", "-af", "run_experiment.py run"]).splitlines()
         for line in run_lines:
             parsed = _parse_active_benchmark_command(line)
             if parsed is not None:
@@ -377,15 +398,15 @@ def _current_activity_payload() -> dict[str, Any]:
                 break
 
     if current is None:
-        script_lines = _run_shell("pgrep -af 'run_.*\\.sh' || true").splitlines()
+        script_lines = _run_cmd(["pgrep", "-af", r"run_.*\.sh"]).splitlines()
         for line in script_lines:
             parsed = _parse_helper_script_command(line)
             if parsed is not None:
                 current = parsed
                 break
 
-    server_lines = _run_shell(
-        "pgrep -af 'vllm serve|sglang.launch_server|run_experiment.py serve' || true"
+    server_lines = _run_cmd(
+        ["pgrep", "-af", "vllm serve|sglang.launch_server|run_experiment.py serve"]
     ).splitlines()
     active_servers = []
     for line in server_lines:
@@ -759,7 +780,8 @@ async def start_run(req: RunRequest, background_tasks: BackgroundTasks) -> JSONR
         engines=req.engines,
         total=len(req.engines) * _estimate_requests(req.scenario),
     )
-    _jobs[job_id] = job
+    async with _state_lock:
+        _jobs[job_id] = job
     background_tasks.add_task(_run_benchmark_job, job_id, req)
     return JSONResponse({"job_id": job_id, "status": "pending"}, status_code=202)
 
@@ -776,7 +798,8 @@ async def get_run_status(job_id: str) -> JSONResponse:
 async def live_metrics_ws(websocket: WebSocket) -> None:
     """WebSocket endpoint that streams real-time engine metrics and run progress."""
     await websocket.accept()
-    _live_connections.add(websocket)
+    async with _state_lock:
+        _live_connections.add(websocket)
     try:
         while True:
             await asyncio.sleep(1)
@@ -784,7 +807,8 @@ async def live_metrics_ws(websocket: WebSocket) -> None:
     except WebSocketDisconnect:
         pass
     finally:
-        _live_connections.discard(websocket)
+        async with _state_lock:
+            _live_connections.discard(websocket)
 
 
 # ---------------------------------------------------------------------------
@@ -794,13 +818,14 @@ async def live_metrics_ws(websocket: WebSocket) -> None:
 
 async def _broadcast(message: dict[str, Any]) -> None:
     """Push a message to all active WebSocket clients."""
-    dead: set[WebSocket] = set()
-    for ws in _live_connections:
-        try:
-            await ws.send_json(message)
-        except Exception:
-            dead.add(ws)
-    _live_connections.difference_update(dead)
+    async with _state_lock:
+        dead: set[WebSocket] = set()
+        for ws in list(_live_connections):
+            try:
+                await ws.send_json(message)
+            except Exception:
+                dead.add(ws)
+        _live_connections.difference_update(dead)
 
 
 async def _run_benchmark_job(job_id: str, req: RunRequest) -> None:
@@ -864,8 +889,7 @@ async def _run_benchmark_job(job_id: str, req: RunRequest) -> None:
                 }
             )
 
-            if hasattr(client, "aclose"):
-                await client.aclose()
+            await client.aclose()
 
         job.status = "done"
         job.finished_at = time.time()

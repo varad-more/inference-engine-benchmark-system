@@ -63,11 +63,9 @@ inference-engine-benchmark-system/
 │   ├── metrics.py              # LatencyStats, ThroughputStats, CDF, compare_metrics
 │   ├── scenarios.py            # Scenario configs + default prompt-pack mapping
 │   ├── prompt_packs.py         # Prompt-pack loaders (JSONL/JSON)
-│   ├── matrix.py               # Sequential scenario×engine×iteration matrix executor
 │   └── runner.py               # BenchmarkRunner (asyncio.gather, metrics polling, JSON output)
 │
-├── sglang_programs/
-│   └── chain_of_thought.py     # 3 @sgl.function programs + vLLM httpx equivalents
+├── sglang_programs/            # Reserved for native @sgl.function programs
 │
 ├── dashboard/
 │   └── app.py                  # FastAPI: REST API + WebSocket live metrics stream
@@ -287,18 +285,6 @@ Default scenario→pack mapping is automatic (unless overridden with `--prompt-p
 {"type": "metrics",  "data": {"engine": "vllm", "ttft_p95": 72.4, "tokens_per_sec": 1243}}
 {"type": "done",     "data": {"job_id": "...", "result_paths": [...]}}
 ```
-
----
-
-## SGLang Native Programs
-
-`sglang_programs/chain_of_thought.py` implements three `@sgl.function` programs with vLLM httpx equivalents:
-
-| Program | SGLang (ms) | vLLM-equiv (ms) | Speedup | Advantage |
-|---|---|---|---|---|
-| `structured_cot` | ~340 | ~410 | 1.2x | KV prefix reuse for turn-2 |
-| `parallel_hypotheses` | ~290 | ~750 | 2.6x | True parallel batch decode via `sgl.fork()` |
-| `json_entity_extract` | ~180 | ~240 | 1.3x | Native regex-constrained decode |
 
 ---
 

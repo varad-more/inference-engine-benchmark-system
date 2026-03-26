@@ -13,7 +13,6 @@ from __future__ import annotations
 
 import base64
 import io
-import json
 import time
 from dataclasses import dataclass
 from pathlib import Path
@@ -23,29 +22,11 @@ import matplotlib
 import matplotlib.pyplot as plt
 import structlog
 
+from analysis import RESULTS_DIR, extract_model_name, load_results
+
 matplotlib.use("Agg")  # non-interactive backend
 
 logger = structlog.get_logger(__name__)
-
-RESULTS_DIR = Path("results")
-
-# ---------------------------------------------------------------------------
-# Data loading helpers
-# ---------------------------------------------------------------------------
-
-
-def _load_results(results_dir: Path) -> list[dict[str, Any]]:
-    """Load all scenario result JSON files."""
-    files = sorted(results_dir.glob("*.json"), key=lambda p: p.stat().st_mtime)
-    data: list[dict[str, Any]] = []
-    for f in files:
-        try:
-            d = json.loads(f.read_text())
-            d["_filename"] = f.name
-            data.append(d)
-        except Exception as exc:
-            logger.warning("failed to load result", file=str(f), error=str(exc))
-    return data
 
 
 def _filter(
@@ -230,45 +211,32 @@ class ProgramSpeedup:
 
 
 def _build_speedup_table(all_results: list[dict[str, Any]]) -> list[ProgramSpeedup]:
-    """Build SGLang program speedup table from stored extra data or hardcoded estimates."""
-    # Try to find structured generation results
-    sg_matches = _filter(all_results, "structured_generation_speed", "SGLangClient")
-    vllm_matches = _filter(all_results, "structured_generation_speed", "VLLMClient")
+    """Build speedup comparison table from actual benchmark data.
 
-    sg_tps = sg_matches[0]["metrics"]["throughput"]["tokens_per_sec"] if sg_matches else None
-    vl_tps = vllm_matches[0]["metrics"]["throughput"]["tokens_per_sec"] if vllm_matches else None
-
-    rows = [
-        ProgramSpeedup(
-            "structured_cot (2-turn CoT)",
-            sglang_ms=340.0,
-            vllm_ms=410.0,
-            speedup=410.0 / 340.0,
-            advantage="Prefix reuse for turn-2 KV",
-        ),
-        ProgramSpeedup(
-            "parallel_hypotheses (fork×3)",
-            sglang_ms=290.0,
-            vllm_ms=750.0,
-            speedup=750.0 / 290.0,
-            advantage="True parallel batch decode",
-        ),
-        ProgramSpeedup(
-            "json_entity_extract (constrained)",
-            sglang_ms=180.0,
-            vllm_ms=240.0 if vl_tps is None else 1000.0 / vl_tps,
-            speedup=(240.0 if vl_tps is None else 1000.0 / vl_tps) / 180.0,
-            advantage="Native regex constrained decode",
-        ),
+    Pairs up vLLM and SGLang results for each scenario and computes the
+    relative speedup based on measured latency p95 values.  Returns an
+    empty list when no paired data is available.
+    """
+    scenarios = [
+        ("single_request_latency", "Single request latency"),
+        ("throughput_ramp", "Throughput ramp"),
+        ("long_context_stress", "Long context stress"),
+        ("prefix_sharing_benefit", "Prefix sharing benefit"),
+        ("structured_generation_speed", "Structured generation"),
     ]
-    if sg_tps and vl_tps:
-        rows[-1] = ProgramSpeedup(
-            "json_entity_extract (constrained)",
-            sglang_ms=1000.0 / sg_tps,
-            vllm_ms=1000.0 / vl_tps,
-            speedup=sg_tps / vl_tps,
-            advantage="Native regex constrained decode",
-        )
+    rows: list[ProgramSpeedup] = []
+    for scenario_key, label in scenarios:
+        sg = _filter(all_results, scenario_key, "SGLangClient")
+        vl = _filter(all_results, scenario_key, "VLLMClient")
+        if not sg or not vl:
+            continue
+        sg_lat = sg[0]["metrics"]["latency"]["p95"]
+        vl_lat = vl[0]["metrics"]["latency"]["p95"]
+        if sg_lat <= 0:
+            continue
+        speedup = vl_lat / sg_lat
+        advantage = "SGLang faster" if speedup > 1.0 else "vLLM faster"
+        rows.append(ProgramSpeedup(label, sg_lat, vl_lat, speedup, advantage))
     return rows
 
 
@@ -363,16 +331,16 @@ _HTML_TEMPLATE = """<!DOCTYPE html>
     <img src="data:image/png;base64,{prefix_chart}" alt="Prefix Cache Chart"/>
   </div>
 
-  <!-- SGLang Program Speedup Table -->
+  <!-- Engine Comparison Table -->
   <div class="card">
-    <h2>SGLang Native Programs vs vLLM Equivalent</h2>
+    <h2>SGLang vs vLLM Latency Comparison</h2>
     <table>
       <tr>
-        <th>Program</th>
-        <th class="engine-sglang">SGLang (ms)</th>
-        <th class="engine-vllm">vLLM (ms)</th>
+        <th>Scenario</th>
+        <th class="engine-sglang">SGLang p95 (ms)</th>
+        <th class="engine-vllm">vLLM p95 (ms)</th>
         <th>Speedup</th>
-        <th>Advantage</th>
+        <th>Faster engine</th>
       </tr>
       {speedup_rows}
     </table>
@@ -469,15 +437,10 @@ def generate_report(
     results_dir: Path = RESULTS_DIR,
     output_path: Path = Path("report.html"),
 ) -> None:
-    all_results = _load_results(results_dir)
+    all_results = load_results(results_dir)
     logger.info("loaded results", count=len(all_results))
 
-    # Extract model name from results
-    model = "Qwen/Qwen2.5-1.5B-Instruct"
-    for r in all_results:
-        cfg = r.get("scenario_config", {})
-        if cfg:
-            break
+    model = extract_model_name(all_results)
 
     # Generate charts
     logger.info("generating CDF chart")
