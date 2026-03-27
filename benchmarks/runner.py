@@ -16,7 +16,13 @@ from typing import Any
 
 import structlog
 
-from benchmarks.metrics import LatencyStats, ScenarioMetrics, ThroughputStats, compare_metrics
+from benchmarks.metrics import (
+    CompareMetricsResult,
+    LatencyStats,
+    ScenarioMetrics,
+    ThroughputStats,
+    compare_metrics,
+)
 from benchmarks.prompt_packs import (
     PromptRecord,
     cycle_prompt_pack,
@@ -99,7 +105,7 @@ class ComparisonResult:
     scenario_name: str
     vllm_results: ScenarioResults
     sglang_results: ScenarioResults
-    delta: dict[str, Any]
+    delta: CompareMetricsResult
 
     def to_dict(self) -> dict[str, Any]:
         return {

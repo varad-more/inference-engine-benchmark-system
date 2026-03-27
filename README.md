@@ -135,8 +135,18 @@ curl http://localhost:8001/health
 ### 4. Check engine health
 
 ```bash
+# Check both engines
 python run_experiment.py health
+
+# Check one engine explicitly
+python run_experiment.py health --engines sglang
+python run_experiment.py health --engines vllm
+
+# Explicit alias for both
+python run_experiment.py health --engines both
 ```
+
+> In single-GPU sequential workflows, one engine may appear unreachable if it is intentionally stopped between phases.
 
 For the exact validated A10G flow, see:
 - [`docs/SINGLE_GPU_OPERATION.md`](docs/SINGLE_GPU_OPERATION.md)
@@ -199,6 +209,9 @@ python run_experiment.py matrix \
 ```bash
 # Existing visual HTML report
 python run_experiment.py report --output report.html
+
+# Restrict the HTML report to one model when a results directory has mixed models
+python run_experiment.py report --results-dir results --model Qwen/Qwen2.5-7B-Instruct --output report_qwen.html
 
 # New aggregated markdown summary
 python run_experiment.py final-report --output final_report.md
@@ -264,7 +277,7 @@ Default scenario→pack mapping is automatic (unless overridden with `--prompt-p
 | `GET` | `/api/results` | List all saved result files |
 | `GET` | `/api/results/{id}` | Load a specific result |
 | `GET` | `/api/current` | Detect the currently running benchmark/test + active services |
-| `GET` | `/api/compare/{scenario}` | Latest vLLM+SGLang delta for a scenario |
+| `GET` | `/api/compare/{scenario}` | Model-consistent vLLM+SGLang delta for a scenario (`?model=...` optional) |
 | `POST` | `/api/run` | Start a background benchmark run |
 | `GET` | `/api/run/{job_id}/status` | Poll run progress |
 | `WS` | `/ws/live` | Real-time metric stream (JSON messages) |

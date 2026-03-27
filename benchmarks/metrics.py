@@ -5,6 +5,7 @@ from __future__ import annotations
 import statistics
 from collections.abc import Sequence
 from dataclasses import dataclass, field
+from typing import TypedDict
 
 
 @dataclass
@@ -133,6 +134,20 @@ class ConcurrencyPoint:
     p99_ttft_ms: float
 
 
+class CompareMetricsResult(TypedDict):
+    """Structured output from compare_metrics."""
+
+    engine_a: str
+    engine_b: str
+    ttft_p50_delta_pct: float
+    ttft_p95_delta_pct: float
+    total_latency_p95_delta_pct: float
+    tokens_per_sec_delta_pct: float
+    requests_per_sec_delta_pct: float
+    kv_cache_mean_a: float
+    kv_cache_mean_b: float
+
+
 @dataclass
 class ScenarioMetrics:
     """All metrics for a single scenario run."""
@@ -195,7 +210,7 @@ def compute_cdf(samples: Sequence[float], n_points: int = 200) -> tuple[list[flo
 def compare_metrics(
     a: ScenarioMetrics,
     b: ScenarioMetrics,
-) -> dict[str, object]:
+) -> CompareMetricsResult:
     """
     Compare two ScenarioMetrics (e.g., vLLM vs SGLang).
     Returns dict of relative deltas (positive = b is better).
