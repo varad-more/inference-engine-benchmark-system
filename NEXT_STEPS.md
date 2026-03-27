@@ -97,8 +97,9 @@ Open `results_validation/report.html` and confirm charts render with real data.
 ### 6. Validate dashboard against the same dataset
 
 ```bash
-RESULTS_DIR=results_validation python run_experiment.py serve
+python run_experiment.py serve --results-dir results_validation
 # Open http://localhost:3000
+# Optional model pin: http://localhost:3000/?model=Qwen/Qwen2.5-1.5B-Instruct
 # Confirm: /api/results lists the 4 JSON files, result detail loads
 ```
 

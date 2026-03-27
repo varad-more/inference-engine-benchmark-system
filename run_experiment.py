@@ -427,12 +427,21 @@ def report(
 def final_report(
     output: Path = typer.Option(Path("final_report.md"), "--output", "-o"),
     results_dir: Path | None = typer.Option(None, "--results-dir"),
+    model: str | None = typer.Option(
+        None,
+        "--model",
+        "-m",
+        help="Restrict the markdown summary to a specific model when multiple models exist",
+    ),
 ) -> None:
-    """Generate an aggregated markdown summary from all saved result files."""
+    """Generate an aggregated markdown summary from saved result files."""
     from analysis.final_report import generate_final_report
 
     src_dir = results_dir or RESULTS_DIR
-    summary = generate_final_report(results_dir=src_dir, output_path=output)
+    console.print(f"Generating final report from [cyan]{src_dir}[/cyan] → [cyan]{output}[/cyan]")
+    if model:
+        console.print(f"  Model filter : [cyan]{model}[/cyan]")
+    summary = generate_final_report(results_dir=src_dir, output_path=output, model=model)
     console.print(
         f"[green]✓[/green] Final report written to {output} from {summary['total_result_files']} result files"
     )
@@ -443,9 +452,18 @@ def serve(
     host: str = typer.Option("127.0.0.1", "--host"),
     port: int = typer.Option(3000, "--port"),
     reload: bool = typer.Option(False, "--reload"),
+    results_dir: Path | None = typer.Option(
+        None,
+        "--results-dir",
+        help="Directory of benchmark JSON files to expose in the dashboard",
+    ),
 ) -> None:
     """Start the benchmark dashboard server."""
+    if results_dir is not None:
+        os.environ["RESULTS_DIR"] = str(results_dir)
     console.print(f"[bold]Starting dashboard on http://{host}:{port}[/bold]")
+    if results_dir is not None:
+        console.print(f"  Results dir  : [cyan]{results_dir}[/cyan]")
     uvicorn.run("dashboard.app:app", host=host, port=port, reload=reload, log_level="info")
 
 

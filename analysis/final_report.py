@@ -7,24 +7,38 @@ from pathlib import Path
 from statistics import mean
 from typing import Any
 
-from analysis import load_results
+from analysis import load_results, select_model_results
 
 
-def aggregate_results(results_dir: Path) -> dict[str, Any]:
+def aggregate_results(results_dir: Path, model: str | None = None) -> dict[str, Any]:
     records = load_results(results_dir)
+    available_models = sorted(
+        {
+            str(record.get("run_metadata", {}).get("model", "unknown-model"))
+            for record in records
+            if record.get("run_metadata", {}).get("model")
+        }
+    )
+    selection_mode = "all-results"
+    selected_model = model
+
+    if model is not None:
+        selected_model, records, selection = select_model_results(records, preferred_model=model)
+        selection_mode = str(selection.get("selection_mode", "explicit-model"))
+
     grouped: dict[tuple[str, str, str], list[dict[str, Any]]] = defaultdict(list)
 
     for record in records:
         run_meta = record.get("run_metadata", {})
-        model = run_meta.get("model", "unknown-model")
-        grouped[(model, record["scenario_name"], record["engine_name"])].append(record)
+        record_model = run_meta.get("model", "unknown-model")
+        grouped[(record_model, record["scenario_name"], record["engine_name"])].append(record)
 
     summary_rows: list[dict[str, Any]] = []
-    for (model, scenario_name, engine_name), items in sorted(grouped.items()):
+    for (row_model, scenario_name, engine_name), items in sorted(grouped.items()):
         metrics_list = [item["metrics"] for item in items]
         summary_rows.append(
             {
-                "model": model,
+                "model": row_model,
                 "scenario_name": scenario_name,
                 "engine_name": engine_name,
                 "runs": len(items),
@@ -48,6 +62,9 @@ def aggregate_results(results_dir: Path) -> dict[str, Any]:
         "results_dir": str(results_dir),
         "total_result_files": len(records),
         "rows": summary_rows,
+        "available_models": available_models,
+        "selected_model": selected_model,
+        "selection_mode": selection_mode,
     }
 
 
@@ -62,6 +79,22 @@ def render_markdown(summary: dict[str, Any]) -> str:
         f"Result files considered: **{summary['total_result_files']}**",
         "",
     ]
+
+    if summary.get("selected_model"):
+        lines.extend(
+            [
+                f"Model filter: `{summary['selected_model']}`",
+                f"Selection mode: `{summary.get('selection_mode', 'explicit-model')}`",
+                "",
+            ]
+        )
+    elif summary.get("available_models"):
+        lines.extend(
+            [
+                f"Models detected: {', '.join(f'`{model}`' for model in summary['available_models'])}",
+                "",
+            ]
+        )
 
     if not rows:
         lines.append("No result files found.")
@@ -100,7 +133,9 @@ def render_markdown(summary: dict[str, Any]) -> str:
     return "\n".join(lines)
 
 
-def generate_final_report(results_dir: Path, output_path: Path) -> dict[str, Any]:
-    summary = aggregate_results(results_dir)
+def generate_final_report(
+    results_dir: Path, output_path: Path, model: str | None = None
+) -> dict[str, Any]:
+    summary = aggregate_results(results_dir, model=model)
     output_path.write_text(render_markdown(summary))
     return summary
