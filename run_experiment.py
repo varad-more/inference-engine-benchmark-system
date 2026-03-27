@@ -104,9 +104,35 @@ def main(
 RESULTS_DIR = Path("results")
 RESULTS_DIR.mkdir(exist_ok=True)
 
+_ENGINE_ORDER = ["vllm", "sglang"]
+_ENGINE_LABELS = {"vllm": "vLLM", "sglang": "SGLang"}
+_ENGINE_PORTS = {"vllm": 8000, "sglang": 8001}
+
 
 def _parse_csv(value: str) -> list[str]:
     return [item.strip() for item in value.split(",") if item.strip()]
+
+
+def _parse_engines(value: str, *, allow_group_aliases: bool = False) -> list[str]:
+    items = [item.lower() for item in _parse_csv(value)]
+    if not items:
+        raise typer.BadParameter("Specify at least one engine.")
+
+    normalized: list[str] = []
+    for item in items:
+        if allow_group_aliases and item in {"all", "both"}:
+            normalized.extend(_ENGINE_ORDER)
+        elif item in _ENGINE_ORDER:
+            normalized.append(item)
+        else:
+            valid = ", ".join([*_ENGINE_ORDER, "both"] if allow_group_aliases else _ENGINE_ORDER)
+            raise typer.BadParameter(f"Unknown engine '{item}'. Valid options: {valid}.")
+
+    deduped: list[str] = []
+    for engine in normalized:
+        if engine not in deduped:
+            deduped.append(engine)
+    return deduped
 
 
 def _make_client(engine: str, model: str, host_override: str | None = None):
@@ -152,7 +178,7 @@ def run(
 
     results_dir = output_dir or RESULTS_DIR
     results_dir.mkdir(exist_ok=True)
-    engine_list = [engine.lower() for engine in _parse_csv(engines)]
+    engine_list = _parse_engines(engines)
     bench_scenario = _get_scenario(scenario)
     if prompt_pack:
         bench_scenario.prompt_pack = prompt_pack
@@ -305,7 +331,7 @@ def matrix(
     if prompt_pack:
         for scenario_obj in scenario_list:
             scenario_obj.prompt_pack = prompt_pack
-    engine_list = [engine.lower() for engine in _parse_csv(engines)]
+    engine_list = _parse_engines(engines)
 
     console.rule("[bold blue]Matrix execution")
     console.print(f"  Model          : [cyan]{model}[/cyan]")
@@ -379,13 +405,21 @@ def matrix(
 def report(
     output: Path = typer.Option(Path("report.html"), "--output", "-o"),
     results_dir: Path | None = typer.Option(None, "--results-dir"),
+    model: str | None = typer.Option(
+        None,
+        "--model",
+        "-m",
+        help="Restrict the HTML report to a specific model when multiple models exist",
+    ),
 ) -> None:
-    """Generate an HTML report from all saved results."""
+    """Generate an HTML report from saved results."""
     from analysis.report import generate_report
 
     src_dir = results_dir or RESULTS_DIR
     console.print(f"Generating report from [cyan]{src_dir}[/cyan] → [cyan]{output}[/cyan]")
-    generate_report(results_dir=src_dir, output_path=output)
+    if model:
+        console.print(f"  Model filter : [cyan]{model}[/cyan]")
+    generate_report(results_dir=src_dir, output_path=output, model=model)
     console.print(f"[green]✓[/green] Report written to {output}")
 
 
@@ -449,37 +483,46 @@ def list_prompt_packs() -> None:
 
 @app.command()
 def health(
+    engines: str = typer.Option(
+        "both",
+        "--engines",
+        "-e",
+        help="Comma-separated engines to check: vllm, sglang, or both",
+    ),
     vllm_host: str = typer.Option("localhost", "--vllm-host"),
     sglang_host: str = typer.Option("localhost", "--sglang-host"),
     model: str = typer.Option(DEFAULT_MODEL, "--model"),
 ) -> None:
-    """Check health of both inference engines."""
-    from engines.sglang_client import SGLangClient
-    from engines.vllm_client import VLLMClient
+    """Check health of one or more inference engines."""
+    engine_list = _parse_engines(engines, allow_group_aliases=True)
+    host_map = {"vllm": vllm_host, "sglang": sglang_host}
 
     async def _check() -> None:
-        vllm = VLLMClient(host=vllm_host, port=8000, model=model)
-        sglang = SGLangClient(host=sglang_host, port=8001, model=model)
+        statuses: dict[str, bool] = {}
 
-        v_ok = await vllm.health_check()
-        s_ok = await sglang.health_check()
-        await vllm.aclose()
-        await sglang.aclose()
+        for engine_name in engine_list:
+            client = _make_client(engine_name, model, host_map[engine_name])
+            try:
+                statuses[engine_name] = await client.health_check()
+            finally:
+                await client.aclose()
 
         table = Table(title="Engine Health")
         table.add_column("Engine")
         table.add_column("Status")
         table.add_column("URL")
-        table.add_row(
-            "vLLM",
-            "[green]✓ healthy[/green]" if v_ok else "[red]✗ unreachable[/red]",
-            f"http://{vllm_host}:8000",
-        )
-        table.add_row(
-            "SGLang",
-            "[green]✓ healthy[/green]" if s_ok else "[red]✗ unreachable[/red]",
-            f"http://{sglang_host}:8001",
-        )
+        for engine_name in _ENGINE_ORDER:
+            host = host_map[engine_name]
+            url = f"http://{host}:{_ENGINE_PORTS[engine_name]}"
+            if engine_name in statuses:
+                status = (
+                    "[green]✓ healthy[/green]"
+                    if statuses[engine_name]
+                    else "[red]✗ unreachable[/red]"
+                )
+            else:
+                status = "[dim]- skipped[/dim]"
+            table.add_row(_ENGINE_LABELS[engine_name], status, url)
         console.print(table)
 
     asyncio.run(_check())

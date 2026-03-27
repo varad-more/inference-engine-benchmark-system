@@ -154,7 +154,17 @@ Once the pipeline is proven with Qwen 1.5B, repeat with the models from the prio
 - `mistralai/Mistral-7B-Instruct-v0.3`
 - `google/gemma-2-9b-it`
 
-Use `matrix` with `--iterations 2` and `--cooldown-seconds 300` for stable results. Output to `results/` (the production directory).
+Use `matrix` with `--iterations 2` and `--cooldown-seconds 300` for stable results.
+
+Store each model in its own result directory to avoid mixed-model comparisons in the dashboard and HTML report. For example:
+
+- `results/gemma-2-2b-it/`
+- `results/phi-3-mini-4k-instruct/`
+- `results/qwen2.5-7b-instruct/`
+- `results/mistral-7b-instruct-v0.3/`
+- `results/gemma-2-9b-it/`
+
+When generating reports or serving the dashboard, point `--results-dir` or `RESULTS_DIR` at one model directory at a time.
 
 The `compare` command requires both engines accessible at the same time. Save it for multi-host setups or machines with enough VRAM for both.
 

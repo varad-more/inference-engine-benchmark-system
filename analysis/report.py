@@ -22,7 +22,7 @@ import matplotlib
 import matplotlib.pyplot as plt
 import structlog
 
-from analysis import RESULTS_DIR, extract_model_name, load_results
+from analysis import RESULTS_DIR, extract_model_name, load_results, select_model_results
 
 matplotlib.use("Agg")  # non-interactive backend
 
@@ -86,7 +86,8 @@ def _cdf_chart(all_results: list[dict[str, Any]]) -> str:
         ax.set_title(title)
         ax.set_xlabel("TTFT (ms)")
         ax.set_ylabel("Cumulative Probability")
-        ax.legend()
+        if ax.has_data():
+            ax.legend()
         ax.grid(True, alpha=0.3)
         ax.set_xlim(left=0)
 
@@ -121,7 +122,8 @@ def _throughput_chart(all_results: list[dict[str, Any]]) -> str:
 
     ax.set_xlabel("Concurrency Level")
     ax.set_ylabel("Tokens / Second")
-    ax.legend()
+    if ax.has_data():
+        ax.legend()
     ax.grid(True, alpha=0.3)
     ax.set_xscale("log", base=2)
     plt.tight_layout()
@@ -154,7 +156,8 @@ def _kv_cache_chart(all_results: list[dict[str, Any]]) -> str:
     ax.set_xlabel("Time (samples every 2s)")
     ax.set_ylabel("KV Cache Usage (%)")
     ax.set_ylim(0, 100)
-    ax.legend()
+    if ax.has_data():
+        ax.legend()
     ax.grid(True, alpha=0.3)
     plt.tight_layout()
     return _fig_to_b64(fig)
@@ -190,7 +193,8 @@ def _prefix_cache_chart(all_results: list[dict[str, Any]]) -> str:
 
     ax.set_xlabel("Request Index")
     ax.set_ylabel("TTFT (ms)")
-    ax.legend()
+    if ax.has_data():
+        ax.legend()
     ax.grid(True, alpha=0.3)
     plt.tight_layout()
     return _fig_to_b64(fig)
@@ -283,6 +287,8 @@ _HTML_TEMPLATE = """<!DOCTYPE html>
     .stat-label {{ font-size: 0.8rem; color: #64748b; margin-top: 0.25rem; }}
     .tag {{ background: #0f172a; border: 1px solid #334155; border-radius: 0.25rem;
             padding: 0.1rem 0.5rem; font-size: 0.75rem; color: #94a3b8; }}
+    .note {{ color: #cbd5e1; max-width: 900px; margin: 1rem auto 0; }}
+    .note code {{ background: #0f172a; padding: 0.1rem 0.35rem; border-radius: 0.35rem; }}
     footer {{ text-align: center; color: #334155; padding: 2rem; font-size: 0.8rem; }}
   </style>
 </head>
@@ -295,6 +301,7 @@ _HTML_TEMPLATE = """<!DOCTYPE html>
     <span class="badge">Generated {generated}</span>
     <span class="badge">Model: {model}</span>
     <span class="badge">{n_results} result files</span>
+    {selection_note}
   </div>
 
   <!-- Summary Stats -->
@@ -436,25 +443,38 @@ _MERMAID_DIAGRAM = """graph TB
 def generate_report(
     results_dir: Path = RESULTS_DIR,
     output_path: Path = Path("report.html"),
+    model: str | None = None,
 ) -> None:
     all_results = load_results(results_dir)
     logger.info("loaded results", count=len(all_results))
 
-    model = extract_model_name(all_results)
+    selected_model, report_results, selection_meta = select_model_results(
+        all_results,
+        preferred_model=model,
+        require_engines={"VLLMClient", "SGLangClient"},
+    )
+    logger.info(
+        "selected report scope",
+        selected_model=selected_model,
+        selection_mode=selection_meta.get("selection_mode"),
+        selected_count=len(report_results),
+    )
+
+    report_model = selected_model or extract_model_name(report_results)
 
     # Generate charts
     logger.info("generating CDF chart")
-    cdf_b64 = _cdf_chart(all_results)
+    cdf_b64 = _cdf_chart(report_results)
     logger.info("generating throughput chart")
-    thr_b64 = _throughput_chart(all_results)
+    thr_b64 = _throughput_chart(report_results)
     logger.info("generating KV cache chart")
-    kv_b64 = _kv_cache_chart(all_results)
+    kv_b64 = _kv_cache_chart(report_results)
     logger.info("generating prefix cache chart")
-    prefix_b64 = _prefix_cache_chart(all_results)
+    prefix_b64 = _prefix_cache_chart(report_results)
 
     # Speedup table
     speedup_rows_html = ""
-    for row in _build_speedup_table(all_results):
+    for row in _build_speedup_table(report_results):
         speedup_rows_html += (
             f"<tr>"
             f"<td>{row.program}</td>"
@@ -467,25 +487,43 @@ def generate_report(
 
     # Summary stats
     stats_html = ""
-    n_vllm = sum(1 for r in all_results if "VLLMClient" in r.get("engine_name", ""))
-    n_sglang = sum(1 for r in all_results if "SGLangClient" in r.get("engine_name", ""))
+    n_vllm = sum(1 for r in report_results if "VLLMClient" in r.get("engine_name", ""))
+    n_sglang = sum(1 for r in report_results if "SGLangClient" in r.get("engine_name", ""))
     total_req = sum(
-        r.get("metrics", {}).get("throughput", {}).get("total_requests", 0) for r in all_results
+        r.get("metrics", {}).get("throughput", {}).get("total_requests", 0)
+        for r in report_results
     )
 
     for val, label in [
-        (str(len(all_results)), "Total Result Files"),
+        (str(len(report_results)), "Total Result Files"),
         (str(n_vllm), "vLLM Runs"),
         (str(n_sglang), "SGLang Runs"),
         (str(total_req), "Total Requests"),
-        (str(len(set(r.get("scenario_name", "") for r in all_results))), "Unique Scenarios"),
+        (str(len(set(r.get("scenario_name", "") for r in report_results))), "Unique Scenarios"),
     ]:
         stats_html += f"<div class='stat'><div class='stat-value'>{val}</div><div class='stat-label'>{label}</div></div>"
 
+    available_models = selection_meta.get("available_models", [])
+    selection_note = ""
+    if model:
+        selection_note = (
+            f"<p class='note'>Report explicitly filtered to <code>{report_model}</code>.</p>"
+        )
+    elif len(available_models) > 1:
+        selection_note = (
+            "<p class='note'>"
+            f"Detected {len(available_models)} models in <code>{results_dir}</code>. "
+            f"This HTML report was filtered to <code>{report_model}</code> "
+            f"using selection mode <code>{selection_meta.get('selection_mode')}</code>. "
+            "Use per-model result directories or pass <code>--model</code> for an explicit scope."
+            "</p>"
+        )
+
     html = _HTML_TEMPLATE.format(
         generated=time.strftime("%Y-%m-%d %H:%M UTC", time.gmtime()),
-        model=model,
-        n_results=len(all_results),
+        model=report_model,
+        n_results=len(report_results),
+        selection_note=selection_note,
         summary_stats=stats_html,
         cdf_chart=cdf_b64,
         throughput_chart=thr_b64,

@@ -27,11 +27,12 @@ from typing import Any
 
 import structlog
 import uvicorn
-from fastapi import BackgroundTasks, FastAPI, HTTPException, WebSocket, WebSocketDisconnect
+from fastapi import BackgroundTasks, FastAPI, HTTPException, Query, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse, JSONResponse
 from pydantic import BaseModel, Field, field_validator
 
+from analysis import get_result_model, load_results, select_model_results
 from engines.base_client import DEFAULT_MODEL
 
 logger = structlog.get_logger(__name__)
@@ -315,6 +316,23 @@ def _result_file_payload(path: Path) -> dict[str, Any]:
 def _latest_results_payload(limit: int = 8) -> list[dict[str, Any]]:
     files = sorted(RESULTS_DIR.glob("*.json"), key=lambda p: p.stat().st_mtime, reverse=True)
     return [_result_file_payload(f) for f in files[:limit]]
+
+
+def _latest_engine_result(results: list[dict[str, Any]], engine_name: str) -> dict[str, Any] | None:
+    matches = [r for r in results if r.get("engine_name") == engine_name]
+    if not matches:
+        return None
+    return max(matches, key=lambda item: float(item.get("timestamp", 0.0)))
+
+
+def _comparison_file_model(data: dict[str, Any]) -> str | None:
+    for key in ("vllm", "sglang"):
+        payload = data.get(key)
+        if isinstance(payload, dict):
+            model = get_result_model(payload)
+            if model:
+                return model
+    return None
 
 
 def _system_status_payload() -> dict[str, Any]:
@@ -654,7 +672,8 @@ async def dashboard_home() -> HTMLResponse:
             if (payload.delta) {
               chunks.push(`<div class="compare-item"><strong>Delta</strong><br>TTFT p95 Δ: ${esc(payload.delta.ttft_p95_pct)}%<br>Tok/s Δ: ${esc(payload.delta.tokens_per_sec_pct)}%</div>`);
             }
-            document.getElementById(targetId).innerHTML = `<div class="compare-grid">${chunks.join('')}</div>`;
+            const modelNote = payload.model ? `<p class="small muted"><strong>Model:</strong> ${esc(payload.model)}</p>` : '';
+            document.getElementById(targetId).innerHTML = `${modelNote}<div class="compare-grid">${chunks.join('')}</div>`;
           }
 
           async function loadAll() {
@@ -720,54 +739,83 @@ async def current_activity() -> JSONResponse:
 
 
 @app.get("/api/compare/{scenario}")
-async def compare_scenario(scenario: str) -> JSONResponse:
-    """Load latest vLLM and SGLang result files for the given scenario and compare them."""
+async def compare_scenario(
+    scenario: str,
+    model: str | None = Query(default=None, description="Optional model filter"),
+) -> JSONResponse:
+    """Load model-consistent vLLM and SGLang results for the given scenario and compare them."""
+    scenario_results = [r for r in load_results(RESULTS_DIR) if r.get("scenario_name") == scenario]
 
-    def _latest(engine: str) -> dict[str, Any] | None:
-        pattern = f"{scenario}_{engine}_*.json"
-        files = sorted(RESULTS_DIR.glob(pattern), key=lambda p: p.stat().st_mtime, reverse=True)
-        if not files:
-            return None
-        return json.loads(files[0].read_text())
+    selected_model: str | None = None
+    available_models: list[str] = []
+    if scenario_results:
+        try:
+            selected_model, scenario_results, selection_meta = select_model_results(
+                scenario_results,
+                preferred_model=model,
+                require_engines={"VLLMClient", "SGLangClient"},
+            )
+        except ValueError as exc:
+            raise HTTPException(status_code=404, detail=str(exc)) from exc
+        available_models = selection_meta.get("available_models", [])
 
-    vllm_data = _latest("VLLMClient")
-    sglang_data = _latest("SGLangClient")
+        vllm_data = _latest_engine_result(scenario_results, "VLLMClient")
+        sglang_data = _latest_engine_result(scenario_results, "SGLangClient")
 
-    if not vllm_data and not sglang_data:
-        comp_files = sorted(
-            RESULTS_DIR.glob(f"comparison_{scenario}_*.json"),
-            key=lambda p: p.stat().st_mtime,
-            reverse=True,
-        )
-        if comp_files:
-            return JSONResponse(json.loads(comp_files[0].read_text()))
-        raise HTTPException(status_code=404, detail=f"No results found for scenario '{scenario}'")
-
-    response: dict[str, Any] = {"scenario": scenario}
-    if vllm_data:
-        response["vllm"] = vllm_data.get("metrics", {})
-    if sglang_data:
-        response["sglang"] = sglang_data.get("metrics", {})
-
-    if vllm_data and sglang_data:
-        vllm_m = vllm_data.get("metrics", {})
-        sglang_m = sglang_data.get("metrics", {})
-
-        def _delta(va: float, vb: float) -> float:
-            return round((va - vb) / max(abs(va), 1e-9) * 100, 2)
-
-        vllm_ttft = vllm_m.get("ttft", {}).get("p95", 0)
-        sglang_ttft = sglang_m.get("ttft", {}).get("p95", 0)
-        vllm_tps = vllm_m.get("throughput", {}).get("tokens_per_sec", 0)
-        sglang_tps = sglang_m.get("throughput", {}).get("tokens_per_sec", 0)
-
-        response["delta"] = {
-            "ttft_p95_pct": _delta(vllm_ttft, sglang_ttft),
-            "tokens_per_sec_pct": _delta(vllm_tps, sglang_tps),
-            "note": "positive = vllm higher",
+        response: dict[str, Any] = {
+            "scenario": scenario,
+            "model": selected_model,
+            "available_models": available_models,
         }
+        if vllm_data:
+            response["vllm"] = vllm_data.get("metrics", {})
+        if sglang_data:
+            response["sglang"] = sglang_data.get("metrics", {})
 
-    return JSONResponse(response)
+        if vllm_data and sglang_data:
+            vllm_m = vllm_data.get("metrics", {})
+            sglang_m = sglang_data.get("metrics", {})
+
+            def _delta(va: float, vb: float) -> float:
+                return round((va - vb) / max(abs(va), 1e-9) * 100, 2)
+
+            vllm_ttft = vllm_m.get("ttft", {}).get("p95", 0)
+            sglang_ttft = sglang_m.get("ttft", {}).get("p95", 0)
+            vllm_tps = vllm_m.get("throughput", {}).get("tokens_per_sec", 0)
+            sglang_tps = sglang_m.get("throughput", {}).get("tokens_per_sec", 0)
+
+            response["delta"] = {
+                "ttft_p95_pct": _delta(vllm_ttft, sglang_ttft),
+                "tokens_per_sec_pct": _delta(vllm_tps, sglang_tps),
+                "note": "positive = vllm higher",
+            }
+
+        return JSONResponse(response)
+
+    comp_files = sorted(
+        RESULTS_DIR.glob(f"comparison_{scenario}_*.json"),
+        key=lambda p: p.stat().st_mtime,
+        reverse=True,
+    )
+    comparison_payloads: list[dict[str, Any]] = []
+    for path in comp_files:
+        try:
+            comparison_payloads.append(json.loads(path.read_text()))
+        except Exception:
+            continue
+
+    if model is not None:
+        comparison_payloads = [
+            payload for payload in comparison_payloads if _comparison_file_model(payload) == model
+        ]
+
+    if comparison_payloads:
+        selected = comparison_payloads[0]
+        selected_model = _comparison_file_model(selected)
+        selected.setdefault("model", selected_model)
+        return JSONResponse(selected)
+
+    raise HTTPException(status_code=404, detail=f"No results found for scenario '{scenario}'")
 
 
 @app.post("/api/run")
