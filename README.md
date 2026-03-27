@@ -213,8 +213,11 @@ python run_experiment.py report --output report.html
 # Restrict the HTML report to one model when a results directory has mixed models
 python run_experiment.py report --results-dir results --model Qwen/Qwen2.5-7B-Instruct --output report_qwen.html
 
-# New aggregated markdown summary
+# Aggregated markdown summary
 python run_experiment.py final-report --output final_report.md
+
+# Restrict the markdown summary to one model too
+python run_experiment.py final-report --results-dir results --model Qwen/Qwen2.5-7B-Instruct --output final_report_qwen.md
 ```
 
 ### Start the dashboard
@@ -224,8 +227,11 @@ python run_experiment.py serve
 # Open http://localhost:3000 (binds to 127.0.0.1 by default)
 # Optional model pin: http://localhost:3000/?model=Qwen/Qwen2.5-7B-Instruct
 
+# Point the dashboard at a specific results directory:
+python run_experiment.py serve --results-dir results_validation
+
 # To expose on all interfaces (e.g. in Docker or remote access):
-python run_experiment.py serve --host 0.0.0.0
+python run_experiment.py serve --host 0.0.0.0 --results-dir results_validation
 ```
 
 ### List scenarios and prompt packs
@@ -282,6 +288,8 @@ Default scenario→pack mapping is automatic (unless overridden with `--prompt-p
 | `POST` | `/api/run` | Start a background benchmark run |
 | `GET` | `/api/run/{job_id}/status` | Poll run progress |
 | `WS` | `/ws/live` | Real-time metric stream (JSON messages) |
+
+CLI note: `python run_experiment.py serve --results-dir <dir>` sets the dashboard source directory without manually exporting `RESULTS_DIR`.
 
 **POST /api/run payload:**
 ```json

@@ -4,6 +4,7 @@ import json
 from pathlib import Path
 
 from analysis import select_model_results
+from analysis.final_report import generate_final_report
 from analysis.report import generate_report
 
 
@@ -170,3 +171,54 @@ def test_generate_report_explicit_model_filter(tmp_path: Path) -> None:
     assert gemma in html
     assert "Report explicitly filtered" in html
     assert qwen not in html
+
+
+def test_generate_final_report_explicit_model_filter(tmp_path: Path) -> None:
+    qwen = "Qwen/Qwen2.5-7B-Instruct"
+    gemma = "google/gemma-2-2b-it"
+    _write_result(
+        tmp_path / "single_request_latency_VLLMClient_qwen.json",
+        model=qwen,
+        scenario="single_request_latency",
+        engine="VLLMClient",
+        timestamp=100,
+        ttft_p95=10.0,
+        tokens_per_sec=1000.0,
+    )
+    _write_result(
+        tmp_path / "single_request_latency_SGLangClient_qwen.json",
+        model=qwen,
+        scenario="single_request_latency",
+        engine="SGLangClient",
+        timestamp=110,
+        ttft_p95=20.0,
+        tokens_per_sec=900.0,
+    )
+    _write_result(
+        tmp_path / "single_request_latency_VLLMClient_gemma.json",
+        model=gemma,
+        scenario="single_request_latency",
+        engine="VLLMClient",
+        timestamp=200,
+        ttft_p95=30.0,
+        tokens_per_sec=800.0,
+    )
+    _write_result(
+        tmp_path / "single_request_latency_SGLangClient_gemma.json",
+        model=gemma,
+        scenario="single_request_latency",
+        engine="SGLangClient",
+        timestamp=210,
+        ttft_p95=25.0,
+        tokens_per_sec=850.0,
+    )
+
+    output = tmp_path / "final_report_gemma.md"
+    summary = generate_final_report(results_dir=tmp_path, output_path=output, model=gemma)
+    markdown = output.read_text()
+
+    assert summary["selected_model"] == gemma
+    assert summary["selection_mode"] == "explicit-model"
+    assert gemma in markdown
+    assert "Model filter:" in markdown
+    assert qwen not in markdown
