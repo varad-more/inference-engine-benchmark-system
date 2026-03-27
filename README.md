@@ -222,6 +222,7 @@ python run_experiment.py final-report --output final_report.md
 ```bash
 python run_experiment.py serve
 # Open http://localhost:3000 (binds to 127.0.0.1 by default)
+# Optional model pin: http://localhost:3000/?model=Qwen/Qwen2.5-7B-Instruct
 
 # To expose on all interfaces (e.g. in Docker or remote access):
 python run_experiment.py serve --host 0.0.0.0
@@ -274,9 +275,9 @@ Default scenario→pack mapping is automatic (unless overridden with `--prompt-p
 | Method | Endpoint | Description |
 |---|---|---|
 | `GET` | `/` | Browser-friendly dashboard home |
-| `GET` | `/api/results` | List all saved result files |
+| `GET` | `/api/results` | List saved result files (`?model=...` optional) |
 | `GET` | `/api/results/{id}` | Load a specific result |
-| `GET` | `/api/current` | Detect the currently running benchmark/test + active services |
+| `GET` | `/api/current` | Detect the currently running benchmark/test + active services (`?model=...` filters result summaries) |
 | `GET` | `/api/compare/{scenario}` | Model-consistent vLLM+SGLang delta for a scenario (`?model=...` optional) |
 | `POST` | `/api/run` | Start a background benchmark run |
 | `GET` | `/api/run/{job_id}/status` | Poll run progress |
