@@ -36,7 +36,7 @@ from engines.base_client import DEFAULT_MODEL
 
 logger = structlog.get_logger(__name__)
 
-RESULTS_DIR = Path("results")
+RESULTS_DIR = Path(os.environ.get("RESULTS_DIR", "results"))
 RESULTS_DIR.mkdir(exist_ok=True)
 
 app = FastAPI(
