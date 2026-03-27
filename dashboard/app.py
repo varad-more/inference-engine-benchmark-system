@@ -306,16 +306,36 @@ def _result_file_payload(path: Path) -> dict[str, Any]:
             }
         )
     elif "scenario_name" in data and "vllm" in data and "sglang" in data:
-        payload.update({"type": "comparison", "scenario": data.get("scenario_name")})
+        payload.update(
+            {
+                "type": "comparison",
+                "scenario": data.get("scenario_name"),
+                "model": _comparison_file_model(data),
+            }
+        )
     elif "tasks" in data and "model" in data:
         payload.update({"type": "matrix_manifest", "model": data.get("model")})
 
     return payload
 
 
-def _latest_results_payload(limit: int = 8) -> list[dict[str, Any]]:
+def _payload_matches_model(payload: dict[str, Any], model: str | None) -> bool:
+    if model is None:
+        return True
+    return payload.get("model") == model
+
+
+def _latest_results_payload(limit: int = 8, model: str | None = None) -> list[dict[str, Any]]:
     files = sorted(RESULTS_DIR.glob("*.json"), key=lambda p: p.stat().st_mtime, reverse=True)
-    return [_result_file_payload(f) for f in files[:limit]]
+    payloads: list[dict[str, Any]] = []
+    for file_path in files:
+        payload = _result_file_payload(file_path)
+        if not _payload_matches_model(payload, model):
+            continue
+        payloads.append(payload)
+        if len(payloads) >= limit:
+            break
+    return payloads
 
 
 def _latest_engine_result(results: list[dict[str, Any]], engine_name: str) -> dict[str, Any] | None:
@@ -382,14 +402,14 @@ def _system_status_payload() -> dict[str, Any]:
     return payload
 
 
-def _latest_completed_result_payload() -> dict[str, Any] | None:
-    for item in _latest_results_payload(limit=30):
+def _latest_completed_result_payload(model: str | None = None) -> dict[str, Any] | None:
+    for item in _latest_results_payload(limit=30, model=model):
         if item.get("type") == "result":
             return item
     return None
 
 
-def _current_activity_payload() -> dict[str, Any]:
+def _current_activity_payload(model: str | None = None) -> dict[str, Any]:
     active_job = next((job for job in _jobs.values() if job.status == "running"), None)
     if active_job is not None:
         current: dict[str, Any] | None = {
@@ -436,8 +456,9 @@ def _current_activity_payload() -> dict[str, Any]:
         "timestamp": time.time(),
         "current": current or {"state": "idle", "source": "none"},
         "active_servers": active_servers,
-        "latest_results": _latest_results_payload(limit=5),
-        "latest_completed_result": _latest_completed_result_payload(),
+        "result_filter_model": model,
+        "latest_results": _latest_results_payload(limit=5, model=model),
+        "latest_completed_result": _latest_completed_result_payload(model=model),
         "system": _system_status_payload(),
     }
 
@@ -497,6 +518,7 @@ async def dashboard_home() -> HTMLResponse:
       <body>
         <h1>Inference Benchmark Dashboard</h1>
         <p class="muted">Live benchmark status, latest results, and quick comparisons. Use <code>http://</code>, not <code>https://</code>, unless this is behind a TLS reverse proxy.</p>
+        <p class="muted" id="filter-note" style="display:none"></p>
 
         <div class="hero">
           <div class="stat">
@@ -560,17 +582,38 @@ async def dashboard_home() -> HTMLResponse:
           }
           function fmtMs(value) { return value == null ? '—' : `${Number(value).toFixed(1)} ms`; }
           function fmtNum(value, digits = 1) { return value == null ? '—' : Number(value).toFixed(digits); }
+          const urlModel = new URLSearchParams(window.location.search).get('model');
+
+          function withModel(url) {
+            if (!urlModel) return url;
+            const sep = url.includes('?') ? '&' : '?';
+            return `${url}${sep}model=${encodeURIComponent(urlModel)}`;
+          }
+
           function statusClass(state) {
             if (state === 'running') return 'status-ok';
             if (state === 'queued_or_cooldown') return 'status-warn';
             return 'status-bad';
           }
 
+          function renderFilterNote(payload) {
+            const node = document.getElementById('filter-note');
+            const model = payload.result_filter_model || urlModel;
+            if (!model) {
+              node.style.display = 'none';
+              node.textContent = '';
+              return;
+            }
+            node.style.display = 'block';
+            node.innerHTML = `Filtering result summaries and comparisons to <code>${esc(model)}</code>.`;
+          }
+
           function renderHero(payload) {
             const current = payload.current || {};
             const system = payload.system || {};
             const latest = payload.latest_completed_result || {};
-            document.getElementById('hero-model').textContent = current.model || 'Idle';
+            const filterModel = payload.result_filter_model || null;
+            document.getElementById('hero-model').textContent = current.model || filterModel || 'Idle';
             document.getElementById('hero-scenario').textContent = current.scenario || current.state || 'idle';
             if (system.gpu) {
               document.getElementById('hero-gpu').textContent = `${system.gpu.utilization_pct}% • ${system.gpu.temperature_c}°C`;
@@ -679,13 +722,14 @@ async def dashboard_home() -> HTMLResponse:
           async function loadAll() {
             try {
               const [currentRes, resultsRes, latencyRes, throughputRes] = await Promise.all([
-                fetch('/api/current'),
-                fetch('/api/results'),
-                fetch('/api/compare/single_request_latency').catch(() => null),
-                fetch('/api/compare/throughput_ramp').catch(() => null),
+                fetch(withModel('/api/current')),
+                fetch(withModel('/api/results')),
+                fetch(withModel('/api/compare/single_request_latency')).catch(() => null),
+                fetch(withModel('/api/compare/throughput_ramp')).catch(() => null),
               ]);
               const current = await currentRes.json();
               const results = await resultsRes.json();
+              renderFilterNote(current);
               renderHero(current);
               renderCurrent(current);
               renderServices(current);
@@ -713,9 +757,11 @@ async def dashboard_home() -> HTMLResponse:
 
 
 @app.get("/api/results")
-async def list_results() -> JSONResponse:
-    """List all saved benchmark result files."""
-    return JSONResponse(_latest_results_payload(limit=200))
+async def list_results(
+    model: str | None = Query(default=None, description="Optional model filter"),
+) -> JSONResponse:
+    """List saved benchmark result files, optionally filtered by model."""
+    return JSONResponse(_latest_results_payload(limit=200, model=model))
 
 
 @app.get("/api/results/{result_id}")
@@ -733,9 +779,11 @@ async def get_result(result_id: str) -> JSONResponse:
 
 
 @app.get("/api/current")
-async def current_activity() -> JSONResponse:
-    """Return currently active benchmark/test information and active services."""
-    return JSONResponse(_current_activity_payload())
+async def current_activity(
+    model: str | None = Query(default=None, description="Optional model filter for result summaries"),
+) -> JSONResponse:
+    """Return active benchmark info and optionally filtered result summaries."""
+    return JSONResponse(_current_activity_payload(model=model))
 
 
 @app.get("/api/compare/{scenario}")
