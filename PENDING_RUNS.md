@@ -2,9 +2,25 @@
 
 ## What's missing
 
-Only **Gemma 9B on vLLM** (all 5 scenarios, 2 iterations).
+**Nothing pending right now.**
 
-Everything else is complete (7 models, both engines where supported).
+Gemma 9B on vLLM was the last missing benchmark leg, and it has now completed.
+Everything else is complete (7 models, both engines where supported, except the known Phi-3 mini SGLang exclusion).
+
+## Automation scripts
+
+Use these repo-root scripts to run and verify the remaining work:
+
+```bash
+./pending_run_gemma9b_vllm.sh
+./pending_run_gemma9b_vllm_verify.sh
+```
+
+Known-good compose override for this machine:
+
+```bash
+docker compose -f docker-compose.yml -f docker-compose.gemma9b-vllm-a10g.yml --profile vllm up -d vllm
+```
 
 ## Debugging the 404 on /v1/completions
 
@@ -82,7 +98,7 @@ python run_experiment.py matrix \
   --model google/gemma-2-9b-it \
   --output-dir results/gemma-2-9b-it \
   --iterations 2 \
-  --cooldown-seconds 300
+  --cooldown-seconds 120
 ```
 
 ### Step 4: Verify output

@@ -1,0 +1,29 @@
+# Known-good override for running google/gemma-2-9b-it on a single NVIDIA A10G 24 GB
+# with vLLM on this repo's benchmark stack.
+#
+# Usage:
+#   docker compose -f docker-compose.yml -f docker-compose.gemma9b-vllm-a10g.yml --profile vllm up -d vllm
+#
+# Notes:
+# - Lower max context to 2048 to leave KV-cache headroom.
+# - Push GPU memory utilization to 0.95.
+# - Disable frontend multiprocessing and enforce eager mode to reduce startup/runtime memory pressure.
+
+services:
+  vllm:
+    command:
+      - "--model"
+      - "google/gemma-2-9b-it"
+      - "--host"
+      - "0.0.0.0"
+      - "--port"
+      - "8000"
+      - "--enable-prefix-caching"
+      - "--max-model-len"
+      - "2048"
+      - "--gpu-memory-utilization"
+      - "0.95"
+      - "--served-model-name"
+      - "google/gemma-2-9b-it"
+      - "--disable-frontend-multiprocessing"
+      - "--enforce-eager"
