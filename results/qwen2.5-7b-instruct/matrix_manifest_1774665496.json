@@ -1,0 +1,118 @@
+{
+  "started_at": 1774665496.7327373,
+  "finished_at": 1774670090.0008113,
+  "model": "Qwen/Qwen2.5-7B-Instruct",
+  "tasks": [
+    {
+      "model": "Qwen/Qwen2.5-7B-Instruct",
+      "scenario_name": "single_request_latency",
+      "engine": "vllm",
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1774665496.7806885,
+      "status": "completed",
+      "finished_at": 1774665671.7599895,
+      "result_path": "results/qwen2.5-7b-instruct/single_request_latency_VLLMClient_1774665496.json"
+    },
+    {
+      "model": "Qwen/Qwen2.5-7B-Instruct",
+      "scenario_name": "single_request_latency",
+      "engine": "vllm",
+      "iteration": 2,
+      "healthy_before_run": true,
+      "started_at": 1774665731.7988942,
+      "status": "completed",
+      "finished_at": 1774665906.7058327,
+      "result_path": "results/qwen2.5-7b-instruct/single_request_latency_VLLMClient_1774665731.json"
+    },
+    {
+      "model": "Qwen/Qwen2.5-7B-Instruct",
+      "scenario_name": "throughput_ramp",
+      "engine": "vllm",
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1774665966.7552018,
+      "status": "completed",
+      "finished_at": 1774667669.2380538,
+      "result_path": "results/qwen2.5-7b-instruct/throughput_ramp_VLLMClient_1774665966.json"
+    },
+    {
+      "model": "Qwen/Qwen2.5-7B-Instruct",
+      "scenario_name": "throughput_ramp",
+      "engine": "vllm",
+      "iteration": 2,
+      "healthy_before_run": true,
+      "started_at": 1774667729.289162,
+      "status": "completed",
+      "finished_at": 1774669431.5793993,
+      "result_path": "results/qwen2.5-7b-instruct/throughput_ramp_VLLMClient_1774667729.json"
+    },
+    {
+      "model": "Qwen/Qwen2.5-7B-Instruct",
+      "scenario_name": "long_context_stress",
+      "engine": "vllm",
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1774669491.6604688,
+      "status": "completed",
+      "finished_at": 1774669534.1624343,
+      "result_path": "results/qwen2.5-7b-instruct/long_context_stress_VLLMClient_1774669491.json"
+    },
+    {
+      "model": "Qwen/Qwen2.5-7B-Instruct",
+      "scenario_name": "long_context_stress",
+      "engine": "vllm",
+      "iteration": 2,
+      "healthy_before_run": true,
+      "started_at": 1774669594.1900964,
+      "status": "completed",
+      "finished_at": 1774669636.6906533,
+      "result_path": "results/qwen2.5-7b-instruct/long_context_stress_VLLMClient_1774669594.json"
+    },
+    {
+      "model": "Qwen/Qwen2.5-7B-Instruct",
+      "scenario_name": "prefix_sharing_benefit",
+      "engine": "vllm",
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1774669696.777834,
+      "status": "completed",
+      "finished_at": 1774669751.3606803,
+      "result_path": "results/qwen2.5-7b-instruct/prefix_sharing_benefit_VLLMClient_1774669696.json"
+    },
+    {
+      "model": "Qwen/Qwen2.5-7B-Instruct",
+      "scenario_name": "prefix_sharing_benefit",
+      "engine": "vllm",
+      "iteration": 2,
+      "healthy_before_run": true,
+      "started_at": 1774669811.3928728,
+      "status": "completed",
+      "finished_at": 1774669866.2996693,
+      "result_path": "results/qwen2.5-7b-instruct/prefix_sharing_benefit_VLLMClient_1774669811.json"
+    },
+    {
+      "model": "Qwen/Qwen2.5-7B-Instruct",
+      "scenario_name": "structured_generation_speed",
+      "engine": "vllm",
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1774669926.3298788,
+      "status": "completed",
+      "finished_at": 1774669948.0582356,
+      "result_path": "results/qwen2.5-7b-instruct/structured_generation_speed_VLLMClient_1774669926.json"
+    },
+    {
+      "model": "Qwen/Qwen2.5-7B-Instruct",
+      "scenario_name": "structured_generation_speed",
+      "engine": "vllm",
+      "iteration": 2,
+      "healthy_before_run": true,
+      "started_at": 1774670008.0950997,
+      "status": "completed",
+      "finished_at": 1774670029.993602,
+      "result_path": "results/qwen2.5-7b-instruct/structured_generation_speed_VLLMClient_1774670008.json"
+    }
+  ],
+  "cooldown_seconds": 60
+}

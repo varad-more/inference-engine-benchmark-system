@@ -1,0 +1,328 @@
+== Phase 3 full benchmark start ==
+Fri Mar 27 22:15:44 UTC 2026
+Log file: results/phase3_run_20260327_221544.log
+
+############################################################
+## MODEL: google/gemma-2-2b-it
+## OUTDIR: results/gemma-2-2b-it
+############################################################
+
+== vllm :: google/gemma-2-2b-it ==
+Fri Mar 27 22:15:44 UTC 2026
+/dev/root       145G  138G  7.1G  96% /
+ Container vllm-server  Starting
+ Container vllm-server  Started
+[vllm] health attempt 1
+[2m2026-03-27T22:15:51.126324Z[0m [[33m[1mwarning  [0m] [1mhealth check failed           [0m [[0m[1m[34mVLLMClient[0m][0m [36merror[0m=[35m'Server disconnected without sending a response.'[0m
+                  Engine Health                   
+┏━━━━━━━━┳━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ Engine ┃ Status        ┃ URL                   ┃
+┡━━━━━━━━╇━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━┩
+│ vLLM   │ ✗ unreachable │ http://localhost:8000 │
+│ SGLang │ - skipped     │ http://localhost:8001 │
+└────────┴───────────────┴───────────────────────┘
+[vllm] health attempt 2
+[2m2026-03-27T22:16:09.440316Z[0m [[33m[1mwarning  [0m] [1mhealth check failed           [0m [[0m[1m[34mVLLMClient[0m][0m [36merror[0m=[35m'Server disconnected without sending a response.'[0m
+                  Engine Health                   
+┏━━━━━━━━┳━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ Engine ┃ Status        ┃ URL                   ┃
+┡━━━━━━━━╇━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━┩
+│ vLLM   │ ✗ unreachable │ http://localhost:8000 │
+│ SGLang │ - skipped     │ http://localhost:8001 │
+└────────┴───────────────┴───────────────────────┘
+[vllm] health attempt 3
+[1mHTTP Request: GET http://localhost:8000/health "HTTP/1.1 200 OK"[0m
+                Engine Health                 
+┏━━━━━━━━┳━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ Engine ┃ Status    ┃ URL                   ┃
+┡━━━━━━━━╇━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━┩
+│ vLLM   │ ✓ healthy │ http://localhost:8000 │
+│ SGLang │ - skipped │ http://localhost:8001 │
+└────────┴───────────┴───────────────────────┘
+─────────────────────────────── Matrix execution ───────────────────────────────
+  Model          : google/gemma-2-2b-it
+  Scenarios      : single_request_latency, throughput_ramp, long_context_stress,
+prefix_sharing_benefit, structured_generation_speed
+  Engines        : vllm
+  Iterations     : 2
+  Cooldown (sec) : 300
+[1mHTTP Request: GET http://localhost:8000/health "HTTP/1.1 200 OK"[0m
+[2m2026-03-27T22:16:25.048273Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mVLLMClient[0m [36mprompt_pack[0m=[35mshort_chat[0m [36mscenario[0m=[35msingle_request_latency[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 404 Not Found"[0m
+[2m2026-03-27T22:16:25.058129Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m"Client error '404 Not Found' for url 'http://localhost:8000/v1/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404"[0m [36midx[0m=[35m28[0m
+[1mHTTP Request: GET http://localhost:8000/metrics "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 404 Not Found"[0m
+[2m2026-03-27T22:16:25.067160Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m"Client error '404 Not Found' for url 'http://localhost:8000/v1/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404"[0m [36midx[0m=[35m8[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 404 Not Found"[0m
+[2m2026-03-27T22:16:25.069241Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m"Client error '404 Not Found' for url 'http://localhost:8000/v1/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404"[0m [36midx[0m=[35m35[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 404 Not Found"[0m
+[2m2026-03-27T22:16:25.071997Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m"Client error '404 Not Found' for url 'http://localhost:8000/v1/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404"[0m [36midx[0m=[35m15[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 404 Not Found"[0m
+[2m2026-03-27T22:16:25.074760Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m"Client error '404 Not Found' for url 'http://localhost:8000/v1/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404"[0m [36midx[0m=[35m42[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 404 Not Found"[0m
+[2m2026-03-27T22:16:25.077436Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m"Client error '404 Not Found' for url 'http://localhost:8000/v1/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404"[0m [36midx[0m=[35m22[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 404 Not Found"[0m
+[2m2026-03-27T22:16:25.080323Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m"Client error '404 Not Found' for url 'http://localhost:8000/v1/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404"[0m [36midx[0m=[35m49[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 404 Not Found"[0m
+[2m2026-03-27T22:16:25.082938Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m"Client error '404 Not Found' for url 'http://localhost:8000/v1/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404"[0m [36midx[0m=[35m29[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 404 Not Found"[0m
+[2m2026-03-27T22:16:25.085589Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m"Client error '404 Not Found' for url 'http://localhost:8000/v1/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404"[0m [36midx[0m=[35m9[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 404 Not Found"[0m
+[2m2026-03-27T22:16:25.088131Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m"Client error '404 Not Found' for url 'http://localhost:8000/v1/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404"[0m [36midx[0m=[35m36[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 404 Not Found"[0m
+[2m2026-03-27T22:16:25.090742Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m"Client error '404 Not Found' for url 'http://localhost:8000/v1/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404"[0m [36midx[0m=[35m16[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 404 Not Found"[0m
+[2m2026-03-27T22:16:25.093363Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m"Client error '404 Not Found' for url 'http://localhost:8000/v1/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404"[0m [36midx[0m=[35m43[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 404 Not Found"[0m
+[2m2026-03-27T22:16:25.095921Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m"Client error '404 Not Found' for url 'http://localhost:8000/v1/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404"[0m [36midx[0m=[35m23[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 404 Not Found"[0m
+[2m2026-03-27T22:16:25.098447Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m"Client error '404 Not Found' for url 'http://localhost:8000/v1/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404"[0m [36midx[0m=[35m30[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 404 Not Found"[0m
+[2m2026-03-27T22:16:25.101097Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m"Client error '404 Not Found' for url 'http://localhost:8000/v1/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404"[0m [36midx[0m=[35m4[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 404 Not Found"[0m
+[2m2026-03-27T22:16:25.103651Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m"Client error '404 Not Found' for url 'http://localhost:8000/v1/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404"[0m [36midx[0m=[35m10[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 404 Not Found"[0m
+[2m2026-03-27T22:16:25.106378Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m"Client error '404 Not Found' for url 'http://localhost:8000/v1/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404"[0m [36midx[0m=[35m37[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 404 Not Found"[0m
+[2m2026-03-27T22:16:25.108883Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m"Client error '404 Not Found' for url 'http://localhost:8000/v1/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404"[0m [36midx[0m=[35m17[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 404 Not Found"[0m
+[2m2026-03-27T22:16:25.111386Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m"Client error '404 Not Found' for url 'http://localhost:8000/v1/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404"[0m [36midx[0m=[35m44[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 404 Not Found"[0m
+[2m2026-03-27T22:16:25.113925Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m"Client error '404 Not Found' for url 'http://localhost:8000/v1/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404"[0m [36midx[0m=[35m24[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 404 Not Found"[0m
+[2m2026-03-27T22:16:25.116539Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m"Client error '404 Not Found' for url 'http://localhost:8000/v1/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404"[0m [36midx[0m=[35m31[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 404 Not Found"[0m
+[2m2026-03-27T22:16:25.119127Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m"Client error '404 Not Found' for url 'http://localhost:8000/v1/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404"[0m [36midx[0m=[35m5[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 404 Not Found"[0m
+[2m2026-03-27T22:16:25.121746Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m"Client error '404 Not Found' for url 'http://localhost:8000/v1/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404"[0m [36midx[0m=[35m11[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 404 Not Found"[0m
+[2m2026-03-27T22:16:25.124326Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m"Client error '404 Not Found' for url 'http://localhost:8000/v1/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404"[0m [36midx[0m=[35m38[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 404 Not Found"[0m
+[2m2026-03-27T22:16:25.126946Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m"Client error '404 Not Found' for url 'http://localhost:8000/v1/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404"[0m [36midx[0m=[35m18[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 404 Not Found"[0m
+[2m2026-03-27T22:16:25.129617Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m"Client error '404 Not Found' for url 'http://localhost:8000/v1/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404"[0m [36midx[0m=[35m1[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 404 Not Found"[0m
+[2m2026-03-27T22:16:25.132908Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m"Client error '404 Not Found' for url 'http://localhost:8000/v1/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404"[0m [36midx[0m=[35m45[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 404 Not Found"[0m
+[2m2026-03-27T22:16:25.135903Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m"Client error '404 Not Found' for url 'http://localhost:8000/v1/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404"[0m [36midx[0m=[35m25[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 404 Not Found"[0m
+[2m2026-03-27T22:16:25.138550Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m"Client error '404 Not Found' for url 'http://localhost:8000/v1/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404"[0m [36midx[0m=[35m2[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 404 Not Found"[0m
+[2m2026-03-27T22:16:25.141340Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m"Client error '404 Not Found' for url 'http://localhost:8000/v1/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404"[0m [36midx[0m=[35m32[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 404 Not Found"[0m
+[2m2026-03-27T22:16:25.143821Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m"Client error '404 Not Found' for url 'http://localhost:8000/v1/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404"[0m [36midx[0m=[35m6[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 404 Not Found"[0m
+[2m2026-03-27T22:16:25.146226Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m"Client error '404 Not Found' for url 'http://localhost:8000/v1/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404"[0m [36midx[0m=[35m12[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 404 Not Found"[0m
+[2m2026-03-27T22:16:25.148645Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m"Client error '404 Not Found' for url 'http://localhost:8000/v1/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404"[0m [36midx[0m=[35m39[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 404 Not Found"[0m
+[2m2026-03-27T22:16:25.151047Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m"Client error '404 Not Found' for url 'http://localhost:8000/v1/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404"[0m [36midx[0m=[35m19[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 404 Not Found"[0m
+[2m2026-03-27T22:16:25.153454Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m"Client error '404 Not Found' for url 'http://localhost:8000/v1/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404"[0m [36midx[0m=[35m46[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 404 Not Found"[0m
+[2m2026-03-27T22:16:25.155885Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m"Client error '404 Not Found' for url 'http://localhost:8000/v1/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404"[0m [36midx[0m=[35m26[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 404 Not Found"[0m
+[2m2026-03-27T22:16:25.158299Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m"Client error '404 Not Found' for url 'http://localhost:8000/v1/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404"[0m [36midx[0m=[35m33[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 404 Not Found"[0m
+[2m2026-03-27T22:16:25.160733Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m"Client error '404 Not Found' for url 'http://localhost:8000/v1/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404"[0m [36midx[0m=[35m7[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 404 Not Found"[0m
+[2m2026-03-27T22:16:25.163154Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m"Client error '404 Not Found' for url 'http://localhost:8000/v1/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404"[0m [36midx[0m=[35m13[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 404 Not Found"[0m
+[2m2026-03-27T22:16:25.165621Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m"Client error '404 Not Found' for url 'http://localhost:8000/v1/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404"[0m [36midx[0m=[35m40[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 404 Not Found"[0m
+[2m2026-03-27T22:16:25.168016Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m"Client error '404 Not Found' for url 'http://localhost:8000/v1/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404"[0m [36midx[0m=[35m20[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 404 Not Found"[0m
+[2m2026-03-27T22:16:25.170652Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m"Client error '404 Not Found' for url 'http://localhost:8000/v1/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404"[0m [36midx[0m=[35m0[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 404 Not Found"[0m
+[2m2026-03-27T22:16:25.173002Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m"Client error '404 Not Found' for url 'http://localhost:8000/v1/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404"[0m [36midx[0m=[35m47[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 404 Not Found"[0m
+[2m2026-03-27T22:16:25.175394Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m"Client error '404 Not Found' for url 'http://localhost:8000/v1/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404"[0m [36midx[0m=[35m27[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 404 Not Found"[0m
+[2m2026-03-27T22:16:25.177768Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m"Client error '404 Not Found' for url 'http://localhost:8000/v1/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404"[0m [36midx[0m=[35m3[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 404 Not Found"[0m
+[2m2026-03-27T22:16:25.180168Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m"Client error '404 Not Found' for url 'http://localhost:8000/v1/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404"[0m [36midx[0m=[35m34[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 404 Not Found"[0m
+[2m2026-03-27T22:16:25.182625Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m"Client error '404 Not Found' for url 'http://localhost:8000/v1/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404"[0m [36midx[0m=[35m14[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 404 Not Found"[0m
+[2m2026-03-27T22:16:25.185147Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m"Client error '404 Not Found' for url 'http://localhost:8000/v1/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404"[0m [36midx[0m=[35m41[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 404 Not Found"[0m
+[2m2026-03-27T22:16:25.187679Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m"Client error '404 Not Found' for url 'http://localhost:8000/v1/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404"[0m [36midx[0m=[35m21[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 404 Not Found"[0m
+[2m2026-03-27T22:16:25.190191Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m"Client error '404 Not Found' for url 'http://localhost:8000/v1/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404"[0m [36midx[0m=[35m48[0m
+[2m2026-03-27T22:16:25.191403Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults/gemma-2-2b-it/single_request_latency_VLLMClient_1774649785.json[0m
+[1mHTTP Request: GET http://localhost:8000/health "HTTP/1.1 200 OK"[0m
+[2m2026-03-27T22:21:25.289481Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mVLLMClient[0m [36mprompt_pack[0m=[35mshort_chat[0m [36mscenario[0m=[35msingle_request_latency[0m
+[1mHTTP Request: GET http://localhost:8000/metrics "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 404 Not Found"[0m
+[2m2026-03-27T22:21:25.302981Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m"Client error '404 Not Found' for url 'http://localhost:8000/v1/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404"[0m [36midx[0m=[35m28[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 404 Not Found"[0m
+[2m2026-03-27T22:21:25.304946Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m"Client error '404 Not Found' for url 'http://localhost:8000/v1/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404"[0m [36midx[0m=[35m8[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 404 Not Found"[0m
+[2m2026-03-27T22:21:25.307736Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m"Client error '404 Not Found' for url 'http://localhost:8000/v1/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404"[0m [36midx[0m=[35m35[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 404 Not Found"[0m
+[2m2026-03-27T22:21:25.310398Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m"Client error '404 Not Found' for url 'http://localhost:8000/v1/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404"[0m [36midx[0m=[35m15[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 404 Not Found"[0m
+[2m2026-03-27T22:21:25.313063Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m"Client error '404 Not Found' for url 'http://localhost:8000/v1/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404"[0m [36midx[0m=[35m42[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 404 Not Found"[0m
+[2m2026-03-27T22:21:25.315744Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m"Client error '404 Not Found' for url 'http://localhost:8000/v1/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404"[0m [36midx[0m=[35m22[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 404 Not Found"[0m
+[2m2026-03-27T22:21:25.318366Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m"Client error '404 Not Found' for url 'http://localhost:8000/v1/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404"[0m [36midx[0m=[35m49[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 404 Not Found"[0m
+[2m2026-03-27T22:21:25.321223Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m"Client error '404 Not Found' for url 'http://localhost:8000/v1/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404"[0m [36midx[0m=[35m29[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 404 Not Found"[0m
+[2m2026-03-27T22:21:25.324616Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m"Client error '404 Not Found' for url 'http://localhost:8000/v1/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404"[0m [36midx[0m=[35m9[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 404 Not Found"[0m
+[2m2026-03-27T22:21:25.327651Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m"Client error '404 Not Found' for url 'http://localhost:8000/v1/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404"[0m [36midx[0m=[35m36[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 404 Not Found"[0m
+[2m2026-03-27T22:21:25.330258Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m"Client error '404 Not Found' for url 'http://localhost:8000/v1/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404"[0m [36midx[0m=[35m16[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 404 Not Found"[0m
+[2m2026-03-27T22:21:25.332841Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m"Client error '404 Not Found' for url 'http://localhost:8000/v1/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404"[0m [36midx[0m=[35m43[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 404 Not Found"[0m
+[2m2026-03-27T22:21:25.335409Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m"Client error '404 Not Found' for url 'http://localhost:8000/v1/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404"[0m [36midx[0m=[35m23[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 404 Not Found"[0m
+[2m2026-03-27T22:21:25.337988Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m"Client error '404 Not Found' for url 'http://localhost:8000/v1/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404"[0m [36midx[0m=[35m30[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 404 Not Found"[0m
+[2m2026-03-27T22:21:25.340539Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m"Client error '404 Not Found' for url 'http://localhost:8000/v1/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404"[0m [36midx[0m=[35m4[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 404 Not Found"[0m
+[2m2026-03-27T22:21:25.343047Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m"Client error '404 Not Found' for url 'http://localhost:8000/v1/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404"[0m [36midx[0m=[35m10[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 404 Not Found"[0m
+[2m2026-03-27T22:21:25.345599Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m"Client error '404 Not Found' for url 'http://localhost:8000/v1/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404"[0m [36midx[0m=[35m37[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 404 Not Found"[0m
+[2m2026-03-27T22:21:25.348065Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m"Client error '404 Not Found' for url 'http://localhost:8000/v1/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404"[0m [36midx[0m=[35m17[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 404 Not Found"[0m
+[2m2026-03-27T22:21:25.350567Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m"Client error '404 Not Found' for url 'http://localhost:8000/v1/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404"[0m [36midx[0m=[35m44[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 404 Not Found"[0m
+[2m2026-03-27T22:21:25.352977Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m"Client error '404 Not Found' for url 'http://localhost:8000/v1/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404"[0m [36midx[0m=[35m24[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 404 Not Found"[0m
+[2m2026-03-27T22:21:25.355402Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m"Client error '404 Not Found' for url 'http://localhost:8000/v1/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404"[0m [36midx[0m=[35m31[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 404 Not Found"[0m
+[2m2026-03-27T22:21:25.358052Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m"Client error '404 Not Found' for url 'http://localhost:8000/v1/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404"[0m [36midx[0m=[35m5[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 404 Not Found"[0m
+[2m2026-03-27T22:21:25.360453Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m"Client error '404 Not Found' for url 'http://localhost:8000/v1/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404"[0m [36midx[0m=[35m11[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 404 Not Found"[0m
+[2m2026-03-27T22:21:25.362883Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m"Client error '404 Not Found' for url 'http://localhost:8000/v1/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404"[0m [36midx[0m=[35m38[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 404 Not Found"[0m
+[2m2026-03-27T22:21:25.365294Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m"Client error '404 Not Found' for url 'http://localhost:8000/v1/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404"[0m [36midx[0m=[35m18[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 404 Not Found"[0m
+[2m2026-03-27T22:21:25.367737Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m"Client error '404 Not Found' for url 'http://localhost:8000/v1/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404"[0m [36midx[0m=[35m1[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 404 Not Found"[0m
+[2m2026-03-27T22:21:25.370161Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m"Client error '404 Not Found' for url 'http://localhost:8000/v1/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404"[0m [36midx[0m=[35m45[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 404 Not Found"[0m
+[2m2026-03-27T22:21:25.372619Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m"Client error '404 Not Found' for url 'http://localhost:8000/v1/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404"[0m [36midx[0m=[35m25[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 404 Not Found"[0m
+[2m2026-03-27T22:21:25.375045Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m"Client error '404 Not Found' for url 'http://localhost:8000/v1/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404"[0m [36midx[0m=[35m2[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 404 Not Found"[0m
+[2m2026-03-27T22:21:25.377455Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m"Client error '404 Not Found' for url 'http://localhost:8000/v1/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404"[0m [36midx[0m=[35m32[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 404 Not Found"[0m
+[2m2026-03-27T22:21:25.379905Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m"Client error '404 Not Found' for url 'http://localhost:8000/v1/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404"[0m [36midx[0m=[35m6[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 404 Not Found"[0m
+[2m2026-03-27T22:21:25.382364Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m"Client error '404 Not Found' for url 'http://localhost:8000/v1/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404"[0m [36midx[0m=[35m12[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 404 Not Found"[0m
+[2m2026-03-27T22:21:25.384851Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m"Client error '404 Not Found' for url 'http://localhost:8000/v1/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404"[0m [36midx[0m=[35m39[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 404 Not Found"[0m
+[2m2026-03-27T22:21:25.387291Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m"Client error '404 Not Found' for url 'http://localhost:8000/v1/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404"[0m [36midx[0m=[35m19[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 404 Not Found"[0m
+[2m2026-03-27T22:21:25.389757Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m"Client error '404 Not Found' for url 'http://localhost:8000/v1/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404"[0m [36midx[0m=[35m46[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 404 Not Found"[0m
+[2m2026-03-27T22:21:25.392449Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m"Client error '404 Not Found' for url 'http://localhost:8000/v1/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404"[0m [36midx[0m=[35m26[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 404 Not Found"[0m
+[2m2026-03-27T22:21:25.394925Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m"Client error '404 Not Found' for url 'http://localhost:8000/v1/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404"[0m [36midx[0m=[35m33[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 404 Not Found"[0m
+[2m2026-03-27T22:21:25.397338Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m"Client error '404 Not Found' for url 'http://localhost:8000/v1/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404"[0m [36midx[0m=[35m7[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 404 Not Found"[0m
+[2m2026-03-27T22:21:25.399778Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m"Client error '404 Not Found' for url 'http://localhost:8000/v1/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404"[0m [36midx[0m=[35m13[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 404 Not Found"[0m
+[2m2026-03-27T22:21:25.402203Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m"Client error '404 Not Found' for url 'http://localhost:8000/v1/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404"[0m [36midx[0m=[35m40[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 404 Not Found"[0m
+[2m2026-03-27T22:21:25.404692Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m"Client error '404 Not Found' for url 'http://localhost:8000/v1/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404"[0m [36midx[0m=[35m20[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 404 Not Found"[0m
+[2m2026-03-27T22:21:25.407092Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m"Client error '404 Not Found' for url 'http://localhost:8000/v1/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404"[0m [36midx[0m=[35m0[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 404 Not Found"[0m
+[2m2026-03-27T22:21:25.409675Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m"Client error '404 Not Found' for url 'http://localhost:8000/v1/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404"[0m [36midx[0m=[35m47[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 404 Not Found"[0m
+[2m2026-03-27T22:21:25.412361Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m"Client error '404 Not Found' for url 'http://localhost:8000/v1/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404"[0m [36midx[0m=[35m27[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 404 Not Found"[0m
+[2m2026-03-27T22:21:25.415083Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m"Client error '404 Not Found' for url 'http://localhost:8000/v1/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404"[0m [36midx[0m=[35m3[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 404 Not Found"[0m
+[2m2026-03-27T22:21:25.417775Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m"Client error '404 Not Found' for url 'http://localhost:8000/v1/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404"[0m [36midx[0m=[35m34[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 404 Not Found"[0m
+[2m2026-03-27T22:21:25.420430Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m"Client error '404 Not Found' for url 'http://localhost:8000/v1/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404"[0m [36midx[0m=[35m14[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 404 Not Found"[0m
+[2m2026-03-27T22:21:25.423346Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m"Client error '404 Not Found' for url 'http://localhost:8000/v1/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404"[0m [36midx[0m=[35m41[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 404 Not Found"[0m
+[2m2026-03-27T22:21:25.426150Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m"Client error '404 Not Found' for url 'http://localhost:8000/v1/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404"[0m [36midx[0m=[35m21[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 404 Not Found"[0m
+[2m2026-03-27T22:21:25.429152Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m"Client error '404 Not Found' for url 'http://localhost:8000/v1/completions'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404"[0m [36midx[0m=[35m48[0m
+[2m2026-03-27T22:21:25.430405Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults/gemma-2-2b-it/single_request_latency_VLLMClient_1774650085.json[0m
+[1mHTTP Request: GET http://localhost:8000/health "HTTP/1.1 200 OK"[0m
+[2m2026-03-27T22:26:25.557763Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mVLLMClient[0m [36mprompt_pack[0m=[35mlong_generation[0m [36mscenario[0m=[35mthroughput_ramp[0m
+[2m2026-03-27T22:26:25.558080Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m1[0m
+[1mHTTP Request: GET http://localhost:8000/metrics "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: GET http://localhost:8000/metrics "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: GET http://localhost:8000/metrics "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: GET http://localhost:8000/metrics "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: GET http://localhost:8000/metrics "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: GET http://localhost:8000/metrics "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: GET http://localhost:8000/metrics "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: GET http://localhost:8000/metrics "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: GET http://localhost:8000/metrics "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: GET http://localhost:8000/metrics "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: GET http://localhost:8000/metrics "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: GET http://localhost:8000/metrics "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: GET http://localhost:8000/metrics "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: GET http://localhost:8000/metrics "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: GET http://localhost:8000/metrics "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: GET http://localhost:8000/metrics "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: GET http://localhost:8000/metrics "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: GET http://localhost:8000/metrics "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: GET http://localhost:8000/metrics "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: GET http://localhost:8000/metrics "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: GET http://localhost:8000/metrics "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: GET http://localhost:8000/metrics "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: GET http://localhost:8000/metrics "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: GET http://localhost:8000/metrics "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: GET http://localhost:8000/metrics "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: GET http://localhost:8000/metrics "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: GET http://localhost:8000/metrics "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: GET http://localhost:8000/metrics "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: GET http://localhost:8000/metrics "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: GET http://localhost:8000/metrics "HTTP/1.1 200 OK"[0m

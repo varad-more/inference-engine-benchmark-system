@@ -1,0 +1,87 @@
+===== MODEL: Qwen/Qwen2.5-7B-Instruct =====
+time="2026-03-22T09:50:17Z" level=warning msg="/home/ubuntu/repos/inference-engine-benchmark-system/docker-compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion"
+--- sglang startup ---
+time="2026-03-22T09:50:17Z" level=warning msg="/home/ubuntu/repos/inference-engine-benchmark-system/docker-compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion"
+ Network inference-engine-benchmark-system_default  Creating
+ Network inference-engine-benchmark-system_default  Created
+ Container sglang-server  Creating
+ Container sglang-server  Created
+ Container sglang-server  Starting
+ Container sglang-server  Started
+curl: (56) Recv failure: Connection reset by peer
+curl: (56) Recv failure: Connection reset by peer
+curl: (56) Recv failure: Connection reset by peer
+curl: (56) Recv failure: Connection reset by peer
+curl: (56) Recv failure: Connection reset by peer
+curl: (56) Recv failure: Connection reset by peer
+curl: (56) Recv failure: Connection reset by peer
+curl: (56) Recv failure: Connection reset by peer
+curl: (56) Recv failure: Connection reset by peer
+curl: (56) Recv failure: Connection reset by peer
+curl: (56) Recv failure: Connection reset by peer
+curl: (56) Recv failure: Connection reset by peer
+curl: (56) Recv failure: Connection reset by peer
+curl: (56) Recv failure: Connection reset by peer
+curl: (56) Recv failure: Connection reset by peer
+curl: (56) Recv failure: Connection reset by peer
+curl: (56) Recv failure: Connection reset by peer
+curl: (56) Recv failure: Connection reset by peer
+curl: (56) Recv failure: Connection reset by peer
+curl: (56) Recv failure: Connection reset by peer
+curl: (56) Recv failure: Connection reset by peer
+curl: (56) Recv failure: Connection reset by peer
+curl: (56) Recv failure: Connection reset by peer
+curl: (56) Recv failure: Connection reset by peer
+curl: (56) Recv failure: Connection reset by peer
+curl: (56) Recv failure: Connection reset by peer
+curl: (56) Recv failure: Connection reset by peer
+curl: (56) Recv failure: Connection reset by peer
+curl: (56) Recv failure: Connection reset by peer
+curl: (56) Recv failure: Connection reset by peer
+curl: (56) Recv failure: Connection reset by peer
+curl: (56) Recv failure: Connection reset by peer
+curl: (56) Recv failure: Connection reset by peer
+curl: (56) Recv failure: Connection reset by peer
+curl: (56) Recv failure: Connection reset by peer
+curl: (56) Recv failure: Connection reset by peer
+curl: (56) Recv failure: Connection reset by peer
+curl: (56) Recv failure: Connection reset by peer
+curl: (56) Recv failure: Connection reset by peer
+curl: (56) Recv failure: Connection reset by peer
+curl: (56) Recv failure: Connection reset by peer
+curl: (56) Recv failure: Connection reset by peer
+curl: (56) Recv failure: Connection reset by peer
+curl: (56) Recv failure: Connection reset by peer
+curl: (56) Recv failure: Connection reset by peer
+curl: (56) Recv failure: Connection reset by peer
+curl: (22) The requested URL returned error: 503
+sglang healthy
+────────────────────── Benchmark: single_request_latency ───────────────────────
+  Engines : sglang
+  Model   : Qwen/Qwen2.5-7B-Instruct
+  Results : results
+2026-03-22 09:54:19 [info     ] starting scenario              engine=SGLangClient scenario=single_request_latency
+  sglang running... ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 50/50 0:03:28
+2026-03-22 09:57:48 [info     ] saved results                  path=results/single_request_latency_SGLangClient_1774173259.json
+
+✓ sglang done → results/single_request_latency_SGLangClient_1774173259.json
+ sglang — single_request_latency  
+┏━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━┓
+┃ Metric             ┃     Value ┃
+┡━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━┩
+│ Requests           │        50 │
+│ Success rate       │    100.0% │
+│ TTFT p50           │   68.0 ms │
+│ TTFT p95           │   68.4 ms │
+│ TTFT p99           │   68.4 ms │
+│ Total latency p95  │ 4179.0 ms │
+│ Tokens/sec         │    1531.4 │
+│ Requests/sec       │     11.96 │
+│ Avg KV cache usage │      0.0% │
+└────────────────────┴───────────┘
+────────────────────────── Benchmark: throughput_ramp ──────────────────────────
+  Engines : sglang
+  Model   : Qwen/Qwen2.5-7B-Instruct
+  Results : results
+2026-03-22 09:57:49 [info     ] starting scenario              engine=SGLangClient scenario=throughput_ramp
+2026-03-22 09:57:49 [info     ] throughput ramp level          concurrency=1
