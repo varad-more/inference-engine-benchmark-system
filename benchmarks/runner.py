@@ -9,17 +9,24 @@ import asyncio
 import json
 import time
 import uuid
+from collections.abc import Callable
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
-from typing import Any, Callable
+from typing import Any
 
 import structlog
 
-from benchmarks.metrics import LatencyStats, ScenarioMetrics, ThroughputStats, compare_metrics
+from benchmarks.metrics import (
+    CompareMetricsResult,
+    LatencyStats,
+    ScenarioMetrics,
+    ThroughputStats,
+    compare_metrics,
+)
 from benchmarks.prompt_packs import (
     PromptRecord,
-    default_prompt_pack_for_scenario,
     cycle_prompt_pack,
+    default_prompt_pack_for_scenario,
     load_shared_prefix_pack,
 )
 from benchmarks.scenarios import (
@@ -98,7 +105,7 @@ class ComparisonResult:
     scenario_name: str
     vllm_results: ScenarioResults
     sglang_results: ScenarioResults
-    delta: dict[str, Any]
+    delta: CompareMetricsResult
 
     def to_dict(self) -> dict[str, Any]:
         return {
@@ -187,6 +194,49 @@ class BenchmarkRunner:
             run_metadata=merged_run_metadata,
         )
 
+    async def _run_concurrent_from_records(
+        self,
+        client: BaseInferenceClient,
+        prompt_records: list[PromptRecord],
+        num_requests: int,
+        concurrency: int,
+        max_output_tokens: int,
+        temperature: float,
+        progress_cb: ProgressCallback | None,
+    ) -> tuple[list[RequestResult], list[dict[str, Any]]]:
+        """Shared fan-out/gather logic used by most scenario handlers."""
+        semaphore = asyncio.Semaphore(concurrency)
+        results: list[RequestResult] = []
+        engine_timeline: list[dict[str, Any]] = []
+
+        stop_event = asyncio.Event()
+        poll_task = asyncio.create_task(self._poll_metrics(client, engine_timeline, stop_event))
+
+        async def _req(idx: int) -> RequestResult:
+            async with semaphore:
+                record = prompt_records[idx]
+                return await self._timed_request(
+                    client,
+                    idx,
+                    record.prompt,
+                    max_output_tokens,
+                    temperature,
+                    prompt_id=record.id,
+                    prompt_category=record.category,
+                )
+
+        tasks = [_req(i) for i in range(num_requests)]
+        for i, coro in enumerate(asyncio.as_completed(tasks)):
+            r = await coro
+            results.append(r)
+            if progress_cb:
+                progress_cb(i + 1, num_requests, r)
+
+        stop_event.set()
+        await poll_task
+        results.sort(key=lambda x: x.request_id)
+        return results, engine_timeline
+
     async def _run_single_latency(
         self,
         scenario: BenchmarkScenario,
@@ -200,37 +250,15 @@ class BenchmarkRunner:
             count=scenario.num_requests,
             fallback_builder=lambda: make_short_prompt(scenario.prompt_tokens),
         )
-        semaphore = asyncio.Semaphore(scenario.concurrency)
-        results: list[RequestResult] = []
-        engine_timeline: list[dict[str, Any]] = []
-
-        async def _single(idx: int) -> RequestResult:
-            async with semaphore:
-                record = prompt_records[idx]
-                return await self._timed_request(
-                    client,
-                    idx,
-                    record.prompt,
-                    scenario.max_output_tokens,
-                    scenario.temperature,
-                    prompt_id=record.id,
-                    prompt_category=record.category,
-                )
-
-        poll_task = asyncio.create_task(
-            self._poll_metrics(client, engine_timeline, stop_event := asyncio.Event())
+        results, engine_timeline = await self._run_concurrent_from_records(
+            client,
+            prompt_records,
+            scenario.num_requests,
+            scenario.concurrency,
+            scenario.max_output_tokens,
+            scenario.temperature,
+            progress_cb,
         )
-
-        tasks = [_single(i) for i in range(scenario.num_requests)]
-        for i, coro in enumerate(asyncio.as_completed(tasks)):
-            r = await coro
-            results.append(r)
-            if progress_cb:
-                progress_cb(i + 1, scenario.num_requests, r)
-
-        stop_event.set()
-        await poll_task
-        results.sort(key=lambda x: x.request_id)
         return results, engine_timeline, workload_metadata
 
     async def _run_throughput_ramp(
@@ -253,35 +281,17 @@ class BenchmarkRunner:
         global_idx = 0
         for concurrency in scenario.concurrency_levels:
             self._log.info("throughput ramp level", concurrency=concurrency)
-            semaphore = asyncio.Semaphore(concurrency)
-            level_results: list[RequestResult] = []
-
-            stop_event = asyncio.Event()
-            poll_task = asyncio.create_task(self._poll_metrics(client, engine_timeline, stop_event))
-
-            async def _req(idx: int) -> RequestResult:
-                async with semaphore:
-                    record = prompt_records[idx]
-                    return await self._timed_request(
-                        client,
-                        idx,
-                        record.prompt,
-                        scenario.max_output_tokens,
-                        scenario.temperature,
-                        prompt_id=record.id,
-                        prompt_category=record.category,
-                    )
-
-            tasks = [_req(global_idx + i) for i in range(scenario.requests_per_level)]
-            for i, coro in enumerate(asyncio.as_completed(tasks)):
-                r = await coro
-                level_results.append(r)
-                if progress_cb:
-                    progress_cb(i + 1, scenario.requests_per_level, r)
-
-            stop_event.set()
-            await poll_task
-
+            level_records = prompt_records[global_idx : global_idx + scenario.requests_per_level]
+            level_results, level_timeline = await self._run_concurrent_from_records(
+                client,
+                level_records,
+                scenario.requests_per_level,
+                concurrency,
+                scenario.max_output_tokens,
+                scenario.temperature,
+                progress_cb,
+            )
+            engine_timeline.extend(level_timeline)
             global_idx += scenario.requests_per_level
             all_results.extend(level_results)
 
@@ -300,36 +310,15 @@ class BenchmarkRunner:
             count=scenario.num_requests,
             fallback_builder=lambda: make_long_prompt(scenario.prompt_tokens),
         )
-        semaphore = asyncio.Semaphore(scenario.concurrency)
-        results: list[RequestResult] = []
-        engine_timeline: list[dict[str, Any]] = []
-
-        stop_event = asyncio.Event()
-        poll_task = asyncio.create_task(self._poll_metrics(client, engine_timeline, stop_event))
-
-        async def _req(idx: int) -> RequestResult:
-            async with semaphore:
-                record = prompt_records[idx]
-                return await self._timed_request(
-                    client,
-                    idx,
-                    record.prompt,
-                    scenario.max_output_tokens,
-                    scenario.temperature,
-                    prompt_id=record.id,
-                    prompt_category=record.category,
-                )
-
-        tasks = [_req(i) for i in range(scenario.num_requests)]
-        for i, coro in enumerate(asyncio.as_completed(tasks)):
-            r = await coro
-            results.append(r)
-            if progress_cb:
-                progress_cb(i + 1, scenario.num_requests, r)
-
-        stop_event.set()
-        await poll_task
-        results.sort(key=lambda x: x.request_id)
+        results, engine_timeline = await self._run_concurrent_from_records(
+            client,
+            prompt_records,
+            scenario.num_requests,
+            scenario.concurrency,
+            scenario.max_output_tokens,
+            scenario.temperature,
+            progress_cb,
+        )
         return results, engine_timeline, workload_metadata
 
     async def _run_prefix_sharing(
@@ -340,44 +329,33 @@ class BenchmarkRunner:
     ) -> tuple[list[RequestResult], list[dict[str, Any]], dict[str, Any]]:
         assert isinstance(scenario, PrefixSharingBenefit)
         pack = self._shared_prefix_pack_for_scenario(scenario)
-        semaphore = asyncio.Semaphore(scenario.concurrency)
-        results: list[RequestResult] = []
-        engine_timeline: list[dict[str, Any]] = []
         workload_metadata = {
             "prompt_pack": scenario.prompt_pack,
             "prompt_source": "prompt_pack",
             "shared_prefix_id": pack.id,
             "shared_prefix_length_words": len(pack.shared_prefix.split()),
-            "prompt_ids": [f"{pack.id}:{idx % len(pack.suffixes)}" for idx in range(scenario.num_requests)],
+            "prompt_ids": [
+                f"{pack.id}:{idx % len(pack.suffixes)}" for idx in range(scenario.num_requests)
+            ],
         }
-
-        stop_event = asyncio.Event()
-        poll_task = asyncio.create_task(self._poll_metrics(client, engine_timeline, stop_event))
-
-        async def _req(idx: int) -> RequestResult:
-            async with semaphore:
-                suffix = pack.suffixes[idx % len(pack.suffixes)]
-                prompt = pack.shared_prefix + "\n\n" + suffix
-                return await self._timed_request(
-                    client,
-                    idx,
-                    prompt,
-                    scenario.max_output_tokens,
-                    scenario.temperature,
-                    prompt_id=f"{pack.id}:{idx % len(pack.suffixes)}",
-                    prompt_category=pack.category,
-                )
-
-        tasks = [_req(i) for i in range(scenario.num_requests)]
-        for i, coro in enumerate(asyncio.as_completed(tasks)):
-            r = await coro
-            results.append(r)
-            if progress_cb:
-                progress_cb(i + 1, scenario.num_requests, r)
-
-        stop_event.set()
-        await poll_task
-        results.sort(key=lambda x: x.request_id)
+        # Build PromptRecord list from shared prefix + suffixes
+        prompt_records = [
+            PromptRecord(
+                id=f"{pack.id}:{idx % len(pack.suffixes)}",
+                category=pack.category,
+                prompt=pack.shared_prefix + "\n\n" + pack.suffixes[idx % len(pack.suffixes)],
+            )
+            for idx in range(scenario.num_requests)
+        ]
+        results, engine_timeline = await self._run_concurrent_from_records(
+            client,
+            prompt_records,
+            scenario.num_requests,
+            scenario.concurrency,
+            scenario.max_output_tokens,
+            scenario.temperature,
+            progress_cb,
+        )
         return results, engine_timeline, workload_metadata
 
     async def _run_structured_gen(
@@ -398,36 +376,15 @@ class BenchmarkRunner:
         workload_metadata["schemas_used"] = sorted(
             {record.schema for record in prompt_records if record.schema}
         )
-        semaphore = asyncio.Semaphore(scenario.concurrency)
-        results: list[RequestResult] = []
-        engine_timeline: list[dict[str, Any]] = []
-
-        stop_event = asyncio.Event()
-        poll_task = asyncio.create_task(self._poll_metrics(client, engine_timeline, stop_event))
-
-        async def _req(idx: int) -> RequestResult:
-            async with semaphore:
-                record = prompt_records[idx]
-                return await self._timed_request(
-                    client,
-                    idx,
-                    record.prompt,
-                    scenario.max_output_tokens,
-                    scenario.temperature,
-                    prompt_id=record.id,
-                    prompt_category=record.category,
-                )
-
-        tasks = [_req(i) for i in range(scenario.num_requests)]
-        for i, coro in enumerate(asyncio.as_completed(tasks)):
-            r = await coro
-            results.append(r)
-            if progress_cb:
-                progress_cb(i + 1, scenario.num_requests, r)
-
-        stop_event.set()
-        await poll_task
-        results.sort(key=lambda x: x.request_id)
+        results, engine_timeline = await self._run_concurrent_from_records(
+            client,
+            prompt_records,
+            scenario.num_requests,
+            scenario.concurrency,
+            scenario.max_output_tokens,
+            scenario.temperature,
+            progress_cb,
+        )
         return results, engine_timeline, workload_metadata
 
     async def _timed_request(
@@ -489,10 +446,7 @@ class BenchmarkRunner:
             except Exception as exc:
                 self._log.debug("metrics poll failed", error=str(exc))
             try:
-                await asyncio.wait_for(
-                    asyncio.shield(asyncio.ensure_future(stop_event.wait())),
-                    timeout=self.metrics_poll_interval,
-                )
+                await asyncio.wait_for(stop_event.wait(), timeout=self.metrics_poll_interval)
             except TimeoutError:
                 pass
 
@@ -507,7 +461,20 @@ class BenchmarkRunner:
         ttft_samples = [r.ttft_ms for r in successful]
         total_samples = [r.total_ms for r in successful]
         total_tokens = sum(r.output_tokens for r in successful)
-        wall_time = (max(r.total_ms for r in successful) / 1000.0) if successful else 0.0
+
+        wall_time = 0.0
+        if len(engine_timeline) >= 2:
+            timestamps = [entry["timestamp"] for entry in engine_timeline if "timestamp" in entry]
+            if len(timestamps) >= 2:
+                wall_time = max(timestamps) - min(timestamps)
+
+        if wall_time <= 0 and scenario_name == "single_request_latency" and successful:
+            # Sequential run: summing per-request totals approximates full wall-clock duration.
+            wall_time = sum(r.total_ms for r in successful) / 1000.0
+
+        if wall_time <= 0 and successful:
+            # Last-resort fallback.
+            wall_time = max(r.total_ms for r in successful) / 1000.0
 
         latency_stats = LatencyStats.from_samples(total_samples)
         ttft_stats = LatencyStats.from_samples(ttft_samples)
@@ -581,16 +548,22 @@ class BenchmarkRunner:
         try:
             return load_shared_prefix_pack()
         except Exception as exc:
-            self._log.warning("shared prefix pack unavailable, using synthetic fallback", error=str(exc))
-            return type("SyntheticSharedPrefix", (), {
-                "id": "synthetic_shared_prefix",
-                "category": "shared_prefix",
-                "shared_prefix": make_system_prompt(scenario.shared_prefix_tokens),
-                "suffixes": tuple(
-                    make_short_prompt(scenario.user_suffix_tokens) + f" (variant {idx})"
-                    for idx in range(5)
-                ),
-            })()
+            self._log.warning(
+                "shared prefix pack unavailable, using synthetic fallback", error=str(exc)
+            )
+            return type(
+                "SyntheticSharedPrefix",
+                (),
+                {
+                    "id": "synthetic_shared_prefix",
+                    "category": "shared_prefix",
+                    "shared_prefix": make_system_prompt(scenario.shared_prefix_tokens),
+                    "suffixes": tuple(
+                        make_short_prompt(scenario.user_suffix_tokens) + f" (variant {idx})"
+                        for idx in range(5)
+                    ),
+                },
+            )()
 
 
 async def run_comparison(
@@ -631,7 +604,9 @@ if __name__ == "__main__":
     from engines.vllm_client import VLLMClient
 
     async def smoke() -> None:
-        scenario = SingleRequestLatency(name="single_request_latency", num_requests=5, concurrency=1)
+        scenario = SingleRequestLatency(
+            name="single_request_latency", num_requests=5, concurrency=1
+        )
         client = VLLMClient(host="localhost", port=8000)
         healthy = await client.health_check()
         if not healthy:

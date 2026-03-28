@@ -20,30 +20,38 @@ This beta ships a production-style benchmark harness for comparing **vLLM** and 
 
 Environment:
 - AWS `g5.2xlarge` (NVIDIA A10G 24GB)
-- Model: `Qwen/Qwen2.5-1.5B-Instruct`
+- Models: Gemma 2B, Phi-3 mini, Qwen 7B, Mistral 7B, Gemma 9B
 - Execution mode: sequential single-GPU runs
+- Source of truth: `reports/final_benchmark_report_2026-03-22.md`
 
-### single_request_latency (50 requests)
+### Headline results
 
-- **vLLM**: TTFT p50 15.9 ms, p95 16.4 ms, total latency p95 1047.4 ms, 4982.1 tok/s
-- **SGLang**: TTFT p50 27.5 ms, p95 28.1 ms, total latency p95 1008.2 ms, 6253.8 tok/s
+- **Fastest single-request TTFT p95:** Gemma 2B on **vLLM** at **20.3 ms**
+- **Gemma 2B:** vLLM led both latency and throughput in this setup
+- **Phi-3 mini:** benchmarked on **vLLM only** because SGLang hit `unsupported head_dim=96`
+- **Qwen 7B** and **Mistral 7B:** vLLM led TTFT, while throughput was split or effectively tied by metric
+- **Gemma 9B:** SGLang led single-request TTFT, while tuned vLLM led throughput and ramp latency p95
 
-### throughput_ramp (700 requests)
+### Important operational findings
 
-- **vLLM**: TTFT p50 31.5 ms, p95 178.1 ms, total latency p95 3202.4 ms, 55287.6 tok/s
-- **SGLang**: TTFT p50 49.4 ms, p95 155.7 ms, total latency p95 4480.8 ms, 39840.1 tok/s
-
-All above runs completed at 100% success rate.
+- Single-GPU comparisons must run **one engine at a time** to avoid VRAM contention and misleading results.
+- `google/gemma-2-9b-it` required tuned vLLM launch settings on A10G:
+  - `context=4096`
+  - `gpu_memory_utilization=0.92`
+- The expanded benchmark matrix and generated artifacts live under `reports/` and `results/`.
 
 ## Release-readiness improvements in this beta
 
-- Fixed packaging metadata for Hatch build targets
-- Added CI workflow (Python 3.11/3.12):
-  - `ruff check .`
+- Added CI workflow (Python 3.11/3.12) that validates:
+  - `ruff check . --select E9,F63,F7,F82`
   - `pytest -q`
-- Added release-readiness + benchmark report sections to README
+  - `python -m build`
+  - `python -m twine check dist/*`
+- Added release-facing benchmark report sections and replication guidance to README
+- Added final multi-model report, benchmark snapshot, and chart assets under `reports/`
 - Cleaned Docker Compose config by removing obsolete `version` field
 - Fixed SGLang startup arg mismatch in Compose configuration
+- Added prompt-pack, matrix-runner, and final-report aggregation support for reproducible benchmark execution
 
 ## Known limitations
 

@@ -3,11 +3,11 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from enum import Enum
+from enum import StrEnum
 from typing import Any
 
 
-class ScenarioType(str, Enum):
+class ScenarioType(StrEnum):
     SINGLE_REQUEST_LATENCY = "single_request_latency"
     THROUGHPUT_RAMP = "throughput_ramp"
     LONG_CONTEXT_STRESS = "long_context_stress"
@@ -61,13 +61,15 @@ class SingleRequestLatency(BenchmarkScenario):
 
     def to_dict(self) -> dict[str, Any]:
         d = super().to_dict()
-        d.update({
-            "num_requests": self.num_requests,
-            "concurrency": self.concurrency,
-            "prompt_tokens": self.prompt_tokens,
-            "max_output_tokens": self.max_output_tokens,
-            "temperature": self.temperature,
-        })
+        d.update(
+            {
+                "num_requests": self.num_requests,
+                "concurrency": self.concurrency,
+                "prompt_tokens": self.prompt_tokens,
+                "max_output_tokens": self.max_output_tokens,
+                "temperature": self.temperature,
+            }
+        )
         return d
 
 
@@ -98,13 +100,15 @@ class ThroughputRamp(BenchmarkScenario):
 
     def to_dict(self) -> dict[str, Any]:
         d = super().to_dict()
-        d.update({
-            "concurrency_levels": self.concurrency_levels,
-            "requests_per_level": self.requests_per_level,
-            "prompt_tokens": self.prompt_tokens,
-            "max_output_tokens": self.max_output_tokens,
-            "temperature": self.temperature,
-        })
+        d.update(
+            {
+                "concurrency_levels": self.concurrency_levels,
+                "requests_per_level": self.requests_per_level,
+                "prompt_tokens": self.prompt_tokens,
+                "max_output_tokens": self.max_output_tokens,
+                "temperature": self.temperature,
+            }
+        )
         return d
 
 
@@ -135,12 +139,14 @@ class LongContextStress(BenchmarkScenario):
 
     def to_dict(self) -> dict[str, Any]:
         d = super().to_dict()
-        d.update({
-            "num_requests": self.num_requests,
-            "concurrency": self.concurrency,
-            "prompt_tokens": self.prompt_tokens,
-            "max_output_tokens": self.max_output_tokens,
-        })
+        d.update(
+            {
+                "num_requests": self.num_requests,
+                "concurrency": self.concurrency,
+                "prompt_tokens": self.prompt_tokens,
+                "max_output_tokens": self.max_output_tokens,
+            }
+        )
         return d
 
 
@@ -173,13 +179,15 @@ class PrefixSharingBenefit(BenchmarkScenario):
 
     def to_dict(self) -> dict[str, Any]:
         d = super().to_dict()
-        d.update({
-            "num_requests": self.num_requests,
-            "concurrency": self.concurrency,
-            "shared_prefix_tokens": self.shared_prefix_tokens,
-            "user_suffix_tokens": self.user_suffix_tokens,
-            "max_output_tokens": self.max_output_tokens,
-        })
+        d.update(
+            {
+                "num_requests": self.num_requests,
+                "concurrency": self.concurrency,
+                "shared_prefix_tokens": self.shared_prefix_tokens,
+                "user_suffix_tokens": self.user_suffix_tokens,
+                "max_output_tokens": self.max_output_tokens,
+            }
+        )
         return d
 
 
@@ -194,15 +202,19 @@ class StructuredGenerationSpeed(BenchmarkScenario):
     concurrency: int = 16
     max_output_tokens: int = 150
     temperature: float = 0.0
-    json_schema: dict[str, Any] = field(default_factory=lambda: {
-        "type": "object",
-        "properties": {
-            "entities": {"type": "array", "items": {"type": "string"}},
-            "sentiment": {"type": "string", "enum": ["positive", "negative", "neutral"]},
-        },
-        "required": ["entities", "sentiment"],
-    })
-    scenario_type: ScenarioType = field(default=ScenarioType.STRUCTURED_GENERATION_SPEED, init=False)
+    json_schema: dict[str, Any] = field(
+        default_factory=lambda: {
+            "type": "object",
+            "properties": {
+                "entities": {"type": "array", "items": {"type": "string"}},
+                "sentiment": {"type": "string", "enum": ["positive", "negative", "neutral"]},
+            },
+            "required": ["entities", "sentiment"],
+        }
+    )
+    scenario_type: ScenarioType = field(
+        default=ScenarioType.STRUCTURED_GENERATION_SPEED, init=False
+    )
 
     def __post_init__(self) -> None:
         if not self.name:
@@ -217,18 +229,21 @@ class StructuredGenerationSpeed(BenchmarkScenario):
 
     def to_dict(self) -> dict[str, Any]:
         d = super().to_dict()
-        d.update({
-            "num_requests": self.num_requests,
-            "concurrency": self.concurrency,
-            "max_output_tokens": self.max_output_tokens,
-            "json_schema": self.json_schema,
-        })
+        d.update(
+            {
+                "num_requests": self.num_requests,
+                "concurrency": self.concurrency,
+                "max_output_tokens": self.max_output_tokens,
+                "json_schema": self.json_schema,
+            }
+        )
         return d
 
 
 # ------------------------------------------------------------------
 # Prompt generators
 # ------------------------------------------------------------------
+
 
 def make_short_prompt(target_tokens: int = 64) -> str:
     """Generate a deterministic prompt of approximately target_tokens tokens."""
@@ -300,7 +315,7 @@ if __name__ == "__main__":
     import json
 
     for name, scenario in SCENARIOS.items():
-        print(f"\n{'='*60}")
+        print(f"\n{'=' * 60}")
         print(json.dumps(scenario.to_dict(), indent=2))
 
     short = make_short_prompt(64)

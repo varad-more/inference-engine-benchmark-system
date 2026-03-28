@@ -2,10 +2,10 @@
 
 from __future__ import annotations
 
-import math
 import statistics
+from collections.abc import Sequence
 from dataclasses import dataclass, field
-from typing import Sequence
+from typing import TypedDict
 
 
 @dataclass
@@ -24,12 +24,20 @@ class LatencyStats:
     count: int
 
     @classmethod
-    def from_samples(cls, samples: Sequence[float]) -> "LatencyStats":
+    def from_samples(cls, samples: Sequence[float]) -> LatencyStats:
         """Compute stats from a list of latency values (ms)."""
         if not samples:
             return cls(
-                mean=0.0, median=0.0, p50=0.0, p90=0.0, p95=0.0,
-                p99=0.0, stdev=0.0, min=0.0, max=0.0, count=0,
+                mean=0.0,
+                median=0.0,
+                p50=0.0,
+                p90=0.0,
+                p95=0.0,
+                p99=0.0,
+                stdev=0.0,
+                min=0.0,
+                max=0.0,
+                count=0,
             )
         sorted_s = sorted(samples)
         n = len(sorted_s)
@@ -87,7 +95,7 @@ class ThroughputStats:
         successful_requests: int,
         total_tokens: int,
         wall_time_sec: float,
-    ) -> "ThroughputStats":
+    ) -> ThroughputStats:
         rps = successful_requests / max(wall_time_sec, 1e-9)
         tps = total_tokens / max(wall_time_sec, 1e-9)
         mean_tok = total_tokens / max(successful_requests, 1)
@@ -124,6 +132,20 @@ class ConcurrencyPoint:
     requests_per_sec: float
     p95_ttft_ms: float
     p99_ttft_ms: float
+
+
+class CompareMetricsResult(TypedDict):
+    """Structured output from compare_metrics."""
+
+    engine_a: str
+    engine_b: str
+    ttft_p50_delta_pct: float
+    ttft_p95_delta_pct: float
+    total_latency_p95_delta_pct: float
+    tokens_per_sec_delta_pct: float
+    requests_per_sec_delta_pct: float
+    kv_cache_mean_a: float
+    kv_cache_mean_b: float
 
 
 @dataclass
@@ -188,11 +210,12 @@ def compute_cdf(samples: Sequence[float], n_points: int = 200) -> tuple[list[flo
 def compare_metrics(
     a: ScenarioMetrics,
     b: ScenarioMetrics,
-) -> dict[str, object]:
+) -> CompareMetricsResult:
     """
     Compare two ScenarioMetrics (e.g., vLLM vs SGLang).
     Returns dict of relative deltas (positive = b is better).
     """
+
     def _delta(va: float, vb: float) -> float:
         if abs(va) < 1e-9:
             return 0.0
@@ -204,8 +227,12 @@ def compare_metrics(
         "ttft_p50_delta_pct": _delta(a.ttft.p50, b.ttft.p50) * 100,
         "ttft_p95_delta_pct": _delta(a.ttft.p95, b.ttft.p95) * 100,
         "total_latency_p95_delta_pct": _delta(a.latency.p95, b.latency.p95) * 100,
-        "tokens_per_sec_delta_pct": _delta(b.throughput.tokens_per_sec, a.throughput.tokens_per_sec) * 100,
-        "requests_per_sec_delta_pct": _delta(b.throughput.requests_per_sec, a.throughput.requests_per_sec) * 100,
+        "tokens_per_sec_delta_pct": _delta(b.throughput.tokens_per_sec, a.throughput.tokens_per_sec)
+        * 100,
+        "requests_per_sec_delta_pct": _delta(
+            b.throughput.requests_per_sec, a.throughput.requests_per_sec
+        )
+        * 100,
         "kv_cache_mean_a": (
             sum(a.kv_cache_timeline) / len(a.kv_cache_timeline) if a.kv_cache_timeline else 0.0
         ),

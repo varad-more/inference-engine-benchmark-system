@@ -3,9 +3,9 @@
 from __future__ import annotations
 
 from benchmarks.scenarios import (
+    SCENARIOS,
     LongContextStress,
     PrefixSharingBenefit,
-    SCENARIOS,
     ScenarioType,
     SingleRequestLatency,
     StructuredGenerationSpeed,

@@ -8,6 +8,35 @@ from fastapi.testclient import TestClient
 import dashboard.app as dash
 
 
+def _write_result(
+    path: Path,
+    *,
+    model: str,
+    scenario: str,
+    engine: str,
+    timestamp: float,
+    ttft_p95: float,
+    tokens_per_sec: float,
+) -> None:
+    payload = {
+        "scenario_name": scenario,
+        "engine_name": engine,
+        "timestamp": timestamp,
+        "metrics": {
+            "ttft": {"p95": ttft_p95},
+            "latency": {"p95": ttft_p95 * 10},
+            "throughput": {
+                "tokens_per_sec": tokens_per_sec,
+                "requests_per_sec": tokens_per_sec / 100.0,
+            },
+            "error_rate": 0.0,
+        },
+        "run_metadata": {"model": model},
+        "workload_metadata": {"prompt_pack": "short_chat"},
+    }
+    path.write_text(json.dumps(payload))
+
+
 def test_parse_active_benchmark_command() -> None:
     parsed = dash._parse_active_benchmark_command(
         "1234 python run_experiment.py run --scenario throughput_ramp --engines vllm --model google/gemma-2-2b-it --prompt-pack long_generation"
@@ -34,15 +63,16 @@ def test_parse_helper_script_command() -> None:
 def test_current_activity_endpoint(monkeypatch) -> None:
     dash._jobs.clear()
 
-    def fake_run_shell(command: str, timeout_sec: int = 8) -> str:
-        if "pgrep -af 'run_experiment.py run'" in command:
+    def fake_run_cmd(argv: list[str], timeout_sec: int = 8) -> str:
+        cmd = " ".join(argv)
+        if "run_experiment.py run" in cmd:
             return "1234 python run_experiment.py run --scenario single_request_latency --engines sglang --model Qwen/Qwen2.5-7B-Instruct"
-        if "pgrep -af 'vllm serve|sglang.launch_server|run_experiment.py serve'" in command:
+        if "vllm serve" in cmd or "sglang.launch_server" in cmd:
             return "5678 python -m sglang.launch_server --model-path Qwen/Qwen2.5-7B-Instruct"
         return ""
 
-    monkeypatch.setattr(dash, "_run_shell", fake_run_shell)
-    monkeypatch.setattr(dash, "_latest_results_payload", lambda limit=8: [])
+    monkeypatch.setattr(dash, "_run_cmd", fake_run_cmd)
+    monkeypatch.setattr(dash, "_latest_results_payload", lambda limit=8, model=None: [])
 
     client = TestClient(dash.app)
     response = client.get("/api/current")
@@ -77,6 +107,162 @@ def test_result_file_payload(tmp_path: Path) -> None:
     assert payload["engine"] == "vLLM"
     assert payload["model"] == "google/gemma-2-2b-it"
     assert payload["ttft_p95_ms"] == 12.3
+
+
+def test_compare_endpoint_prefers_latest_complete_model(tmp_path: Path, monkeypatch) -> None:
+    qwen = "Qwen/Qwen2.5-7B-Instruct"
+    gemma = "google/gemma-2-2b-it"
+    monkeypatch.setattr(dash, "RESULTS_DIR", tmp_path)
+
+    _write_result(
+        tmp_path / "single_request_latency_VLLMClient_qwen.json",
+        model=qwen,
+        scenario="single_request_latency",
+        engine="VLLMClient",
+        timestamp=100,
+        ttft_p95=10.0,
+        tokens_per_sec=1000.0,
+    )
+    _write_result(
+        tmp_path / "single_request_latency_SGLangClient_qwen.json",
+        model=qwen,
+        scenario="single_request_latency",
+        engine="SGLangClient",
+        timestamp=110,
+        ttft_p95=20.0,
+        tokens_per_sec=900.0,
+    )
+    _write_result(
+        tmp_path / "single_request_latency_VLLMClient_gemma.json",
+        model=gemma,
+        scenario="single_request_latency",
+        engine="VLLMClient",
+        timestamp=200,
+        ttft_p95=99.0,
+        tokens_per_sec=500.0,
+    )
+
+    client = TestClient(dash.app)
+    response = client.get("/api/compare/single_request_latency")
+    payload = response.json()
+
+    assert response.status_code == 200
+    assert payload["model"] == qwen
+    assert payload["vllm"]["ttft"]["p95"] == 10.0
+    assert payload["sglang"]["ttft"]["p95"] == 20.0
+
+
+def test_compare_endpoint_supports_explicit_model_filter(tmp_path: Path, monkeypatch) -> None:
+    qwen = "Qwen/Qwen2.5-7B-Instruct"
+    gemma = "google/gemma-2-2b-it"
+    monkeypatch.setattr(dash, "RESULTS_DIR", tmp_path)
+
+    _write_result(
+        tmp_path / "single_request_latency_VLLMClient_qwen.json",
+        model=qwen,
+        scenario="single_request_latency",
+        engine="VLLMClient",
+        timestamp=100,
+        ttft_p95=10.0,
+        tokens_per_sec=1000.0,
+    )
+    _write_result(
+        tmp_path / "single_request_latency_SGLangClient_qwen.json",
+        model=qwen,
+        scenario="single_request_latency",
+        engine="SGLangClient",
+        timestamp=110,
+        ttft_p95=20.0,
+        tokens_per_sec=900.0,
+    )
+    _write_result(
+        tmp_path / "single_request_latency_VLLMClient_gemma.json",
+        model=gemma,
+        scenario="single_request_latency",
+        engine="VLLMClient",
+        timestamp=200,
+        ttft_p95=30.0,
+        tokens_per_sec=800.0,
+    )
+
+    client = TestClient(dash.app)
+    response = client.get("/api/compare/single_request_latency", params={"model": gemma})
+    payload = response.json()
+
+    assert response.status_code == 200
+    assert payload["model"] == gemma
+    assert payload["vllm"]["ttft"]["p95"] == 30.0
+    assert "sglang" not in payload
+
+
+def test_results_endpoint_supports_model_filter(tmp_path: Path, monkeypatch) -> None:
+    qwen = "Qwen/Qwen2.5-7B-Instruct"
+    gemma = "google/gemma-2-2b-it"
+    monkeypatch.setattr(dash, "RESULTS_DIR", tmp_path)
+
+    _write_result(
+        tmp_path / "single_request_latency_VLLMClient_qwen.json",
+        model=qwen,
+        scenario="single_request_latency",
+        engine="VLLMClient",
+        timestamp=100,
+        ttft_p95=10.0,
+        tokens_per_sec=1000.0,
+    )
+    _write_result(
+        tmp_path / "single_request_latency_VLLMClient_gemma.json",
+        model=gemma,
+        scenario="single_request_latency",
+        engine="VLLMClient",
+        timestamp=200,
+        ttft_p95=30.0,
+        tokens_per_sec=800.0,
+    )
+
+    client = TestClient(dash.app)
+    response = client.get("/api/results", params={"model": gemma})
+    payload = response.json()
+
+    assert response.status_code == 200
+    assert len(payload) == 1
+    assert payload[0]["model"] == gemma
+
+
+def test_current_activity_endpoint_supports_model_filter(tmp_path: Path, monkeypatch) -> None:
+    qwen = "Qwen/Qwen2.5-7B-Instruct"
+    gemma = "google/gemma-2-2b-it"
+    monkeypatch.setattr(dash, "RESULTS_DIR", tmp_path)
+    dash._jobs.clear()
+
+    _write_result(
+        tmp_path / "single_request_latency_VLLMClient_qwen.json",
+        model=qwen,
+        scenario="single_request_latency",
+        engine="VLLMClient",
+        timestamp=100,
+        ttft_p95=10.0,
+        tokens_per_sec=1000.0,
+    )
+    _write_result(
+        tmp_path / "single_request_latency_VLLMClient_gemma.json",
+        model=gemma,
+        scenario="single_request_latency",
+        engine="VLLMClient",
+        timestamp=200,
+        ttft_p95=30.0,
+        tokens_per_sec=800.0,
+    )
+
+    monkeypatch.setattr(dash, "_run_cmd", lambda argv, timeout_sec=8: "")
+
+    client = TestClient(dash.app)
+    response = client.get("/api/current", params={"model": gemma})
+    payload = response.json()
+
+    assert response.status_code == 200
+    assert payload["result_filter_model"] == gemma
+    assert payload["latest_completed_result"]["model"] == gemma
+    assert len(payload["latest_results"]) == 1
 
 
 def test_dashboard_home_renders() -> None:
