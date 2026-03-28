@@ -490,8 +490,7 @@ def generate_report(
     n_vllm = sum(1 for r in report_results if "VLLMClient" in r.get("engine_name", ""))
     n_sglang = sum(1 for r in report_results if "SGLangClient" in r.get("engine_name", ""))
     total_req = sum(
-        r.get("metrics", {}).get("throughput", {}).get("total_requests", 0)
-        for r in report_results
+        r.get("metrics", {}).get("throughput", {}).get("total_requests", 0) for r in report_results
     )
 
     for val, label in [
