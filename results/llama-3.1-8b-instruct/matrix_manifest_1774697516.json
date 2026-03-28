@@ -1,0 +1,118 @@
+{
+  "started_at": 1774697516.2421427,
+  "finished_at": 1774702418.3749049,
+  "model": "meta-llama/Llama-3.1-8B-Instruct",
+  "tasks": [
+    {
+      "model": "meta-llama/Llama-3.1-8B-Instruct",
+      "scenario_name": "single_request_latency",
+      "engine": "vllm",
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1774697516.2912488,
+      "status": "completed",
+      "finished_at": 1774697728.888256,
+      "result_path": "results/llama-3.1-8b-instruct/single_request_latency_VLLMClient_1774697516.json"
+    },
+    {
+      "model": "meta-llama/Llama-3.1-8B-Instruct",
+      "scenario_name": "single_request_latency",
+      "engine": "vllm",
+      "iteration": 2,
+      "healthy_before_run": true,
+      "started_at": 1774697788.9281597,
+      "status": "completed",
+      "finished_at": 1774698001.4963424,
+      "result_path": "results/llama-3.1-8b-instruct/single_request_latency_VLLMClient_1774697788.json"
+    },
+    {
+      "model": "meta-llama/Llama-3.1-8B-Instruct",
+      "scenario_name": "throughput_ramp",
+      "engine": "vllm",
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1774698061.5662813,
+      "status": "completed",
+      "finished_at": 1774699823.368702,
+      "result_path": "results/llama-3.1-8b-instruct/throughput_ramp_VLLMClient_1774698061.json"
+    },
+    {
+      "model": "meta-llama/Llama-3.1-8B-Instruct",
+      "scenario_name": "throughput_ramp",
+      "engine": "vllm",
+      "iteration": 2,
+      "healthy_before_run": true,
+      "started_at": 1774699883.3994126,
+      "status": "completed",
+      "finished_at": 1774701645.296754,
+      "result_path": "results/llama-3.1-8b-instruct/throughput_ramp_VLLMClient_1774699883.json"
+    },
+    {
+      "model": "meta-llama/Llama-3.1-8B-Instruct",
+      "scenario_name": "long_context_stress",
+      "engine": "vllm",
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1774701705.3386495,
+      "status": "completed",
+      "finished_at": 1774701750.224509,
+      "result_path": "results/llama-3.1-8b-instruct/long_context_stress_VLLMClient_1774701705.json"
+    },
+    {
+      "model": "meta-llama/Llama-3.1-8B-Instruct",
+      "scenario_name": "long_context_stress",
+      "engine": "vllm",
+      "iteration": 2,
+      "healthy_before_run": true,
+      "started_at": 1774701810.2734036,
+      "status": "completed",
+      "finished_at": 1774701855.1554613,
+      "result_path": "results/llama-3.1-8b-instruct/long_context_stress_VLLMClient_1774701810.json"
+    },
+    {
+      "model": "meta-llama/Llama-3.1-8B-Instruct",
+      "scenario_name": "prefix_sharing_benefit",
+      "engine": "vllm",
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1774701915.1869166,
+      "status": "completed",
+      "finished_at": 1774701974.5978699,
+      "result_path": "results/llama-3.1-8b-instruct/prefix_sharing_benefit_VLLMClient_1774701915.json"
+    },
+    {
+      "model": "meta-llama/Llama-3.1-8B-Instruct",
+      "scenario_name": "prefix_sharing_benefit",
+      "engine": "vllm",
+      "iteration": 2,
+      "healthy_before_run": true,
+      "started_at": 1774702034.6859388,
+      "status": "completed",
+      "finished_at": 1774702094.1135888,
+      "result_path": "results/llama-3.1-8b-instruct/prefix_sharing_benefit_VLLMClient_1774702034.json"
+    },
+    {
+      "model": "meta-llama/Llama-3.1-8B-Instruct",
+      "scenario_name": "structured_generation_speed",
+      "engine": "vllm",
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1774702154.201195,
+      "status": "completed",
+      "finished_at": 1774702226.2839496,
+      "result_path": "results/llama-3.1-8b-instruct/structured_generation_speed_VLLMClient_1774702154.json"
+    },
+    {
+      "model": "meta-llama/Llama-3.1-8B-Instruct",
+      "scenario_name": "structured_generation_speed",
+      "engine": "vllm",
+      "iteration": 2,
+      "healthy_before_run": true,
+      "started_at": 1774702286.3245828,
+      "status": "completed",
+      "finished_at": 1774702358.3588846,
+      "result_path": "results/llama-3.1-8b-instruct/structured_generation_speed_VLLMClient_1774702286.json"
+    }
+  ],
+  "cooldown_seconds": 60
+}

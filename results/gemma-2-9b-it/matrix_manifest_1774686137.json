@@ -1,0 +1,118 @@
+{
+  "started_at": 1774686137.926513,
+  "finished_at": 1774691966.461968,
+  "model": "google/gemma-2-9b-it",
+  "tasks": [
+    {
+      "model": "google/gemma-2-9b-it",
+      "scenario_name": "single_request_latency",
+      "engine": "sglang",
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1774686138.9749563,
+      "status": "completed",
+      "finished_at": 1774686381.5988038,
+      "result_path": "results/gemma-2-9b-it/single_request_latency_SGLangClient_1774686138.json"
+    },
+    {
+      "model": "google/gemma-2-9b-it",
+      "scenario_name": "single_request_latency",
+      "engine": "sglang",
+      "iteration": 2,
+      "healthy_before_run": true,
+      "started_at": 1774686442.6870635,
+      "status": "completed",
+      "finished_at": 1774686684.638669,
+      "result_path": "results/gemma-2-9b-it/single_request_latency_SGLangClient_1774686442.json"
+    },
+    {
+      "model": "google/gemma-2-9b-it",
+      "scenario_name": "throughput_ramp",
+      "engine": "sglang",
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1774686745.6969285,
+      "status": "completed",
+      "finished_at": 1774688898.3807294,
+      "result_path": "results/gemma-2-9b-it/throughput_ramp_SGLangClient_1774686745.json"
+    },
+    {
+      "model": "google/gemma-2-9b-it",
+      "scenario_name": "throughput_ramp",
+      "engine": "sglang",
+      "iteration": 2,
+      "healthy_before_run": true,
+      "started_at": 1774688959.4143836,
+      "status": "completed",
+      "finished_at": 1774691255.4647734,
+      "result_path": "results/gemma-2-9b-it/throughput_ramp_SGLangClient_1774688959.json"
+    },
+    {
+      "model": "google/gemma-2-9b-it",
+      "scenario_name": "long_context_stress",
+      "engine": "sglang",
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1774691316.5538769,
+      "status": "completed",
+      "finished_at": 1774691369.6148005,
+      "result_path": "results/gemma-2-9b-it/long_context_stress_SGLangClient_1774691316.json"
+    },
+    {
+      "model": "google/gemma-2-9b-it",
+      "scenario_name": "long_context_stress",
+      "engine": "sglang",
+      "iteration": 2,
+      "healthy_before_run": true,
+      "started_at": 1774691430.7017882,
+      "status": "completed",
+      "finished_at": 1774691483.0184355,
+      "result_path": "results/gemma-2-9b-it/long_context_stress_SGLangClient_1774691430.json"
+    },
+    {
+      "model": "google/gemma-2-9b-it",
+      "scenario_name": "prefix_sharing_benefit",
+      "engine": "sglang",
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1774691544.1080089,
+      "status": "completed",
+      "finished_at": 1774691596.9988997,
+      "result_path": "results/gemma-2-9b-it/prefix_sharing_benefit_SGLangClient_1774691544.json"
+    },
+    {
+      "model": "google/gemma-2-9b-it",
+      "scenario_name": "prefix_sharing_benefit",
+      "engine": "sglang",
+      "iteration": 2,
+      "healthy_before_run": true,
+      "started_at": 1774691658.1039639,
+      "status": "completed",
+      "finished_at": 1774691709.7170572,
+      "result_path": "results/gemma-2-9b-it/prefix_sharing_benefit_SGLangClient_1774691658.json"
+    },
+    {
+      "model": "google/gemma-2-9b-it",
+      "scenario_name": "structured_generation_speed",
+      "engine": "sglang",
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1774691770.7889075,
+      "status": "completed",
+      "finished_at": 1774691808.5216124,
+      "result_path": "results/gemma-2-9b-it/structured_generation_speed_SGLangClient_1774691770.json"
+    },
+    {
+      "model": "google/gemma-2-9b-it",
+      "scenario_name": "structured_generation_speed",
+      "engine": "sglang",
+      "iteration": 2,
+      "healthy_before_run": true,
+      "started_at": 1774691869.5965648,
+      "status": "completed",
+      "finished_at": 1774691906.4017339,
+      "result_path": "results/gemma-2-9b-it/structured_generation_speed_SGLangClient_1774691869.json"
+    }
+  ],
+  "cooldown_seconds": 60
+}

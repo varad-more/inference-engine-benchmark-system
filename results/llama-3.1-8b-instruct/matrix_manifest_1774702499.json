@@ -1,0 +1,118 @@
+{
+  "started_at": 1774702499.341989,
+  "finished_at": 1774707398.6557062,
+  "model": "meta-llama/Llama-3.1-8B-Instruct",
+  "tasks": [
+    {
+      "model": "meta-llama/Llama-3.1-8B-Instruct",
+      "scenario_name": "single_request_latency",
+      "engine": "sglang",
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1774702500.391073,
+      "status": "completed",
+      "finished_at": 1774702712.8425357,
+      "result_path": "results/llama-3.1-8b-instruct/single_request_latency_SGLangClient_1774702500.json"
+    },
+    {
+      "model": "meta-llama/Llama-3.1-8B-Instruct",
+      "scenario_name": "single_request_latency",
+      "engine": "sglang",
+      "iteration": 2,
+      "healthy_before_run": true,
+      "started_at": 1774702773.9305086,
+      "status": "completed",
+      "finished_at": 1774702986.3689206,
+      "result_path": "results/llama-3.1-8b-instruct/single_request_latency_SGLangClient_1774702773.json"
+    },
+    {
+      "model": "meta-llama/Llama-3.1-8B-Instruct",
+      "scenario_name": "throughput_ramp",
+      "engine": "sglang",
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1774703047.4467084,
+      "status": "completed",
+      "finished_at": 1774704803.9025075,
+      "result_path": "results/llama-3.1-8b-instruct/throughput_ramp_SGLangClient_1774703047.json"
+    },
+    {
+      "model": "meta-llama/Llama-3.1-8B-Instruct",
+      "scenario_name": "throughput_ramp",
+      "engine": "sglang",
+      "iteration": 2,
+      "healthy_before_run": true,
+      "started_at": 1774704865.0016918,
+      "status": "completed",
+      "finished_at": 1774706621.0687616,
+      "result_path": "results/llama-3.1-8b-instruct/throughput_ramp_SGLangClient_1774704865.json"
+    },
+    {
+      "model": "meta-llama/Llama-3.1-8B-Instruct",
+      "scenario_name": "long_context_stress",
+      "engine": "sglang",
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1774706682.1675794,
+      "status": "completed",
+      "finished_at": 1774706726.8295543,
+      "result_path": "results/llama-3.1-8b-instruct/long_context_stress_SGLangClient_1774706682.json"
+    },
+    {
+      "model": "meta-llama/Llama-3.1-8B-Instruct",
+      "scenario_name": "long_context_stress",
+      "engine": "sglang",
+      "iteration": 2,
+      "healthy_before_run": true,
+      "started_at": 1774706787.8920822,
+      "status": "completed",
+      "finished_at": 1774706832.5176635,
+      "result_path": "results/llama-3.1-8b-instruct/long_context_stress_SGLangClient_1774706787.json"
+    },
+    {
+      "model": "meta-llama/Llama-3.1-8B-Instruct",
+      "scenario_name": "prefix_sharing_benefit",
+      "engine": "sglang",
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1774706893.5490594,
+      "status": "completed",
+      "finished_at": 1774706952.4709609,
+      "result_path": "results/llama-3.1-8b-instruct/prefix_sharing_benefit_SGLangClient_1774706893.json"
+    },
+    {
+      "model": "meta-llama/Llama-3.1-8B-Instruct",
+      "scenario_name": "prefix_sharing_benefit",
+      "engine": "sglang",
+      "iteration": 2,
+      "healthy_before_run": true,
+      "started_at": 1774707013.5177321,
+      "status": "completed",
+      "finished_at": 1774707072.3054936,
+      "result_path": "results/llama-3.1-8b-instruct/prefix_sharing_benefit_SGLangClient_1774707013.json"
+    },
+    {
+      "model": "meta-llama/Llama-3.1-8B-Instruct",
+      "scenario_name": "structured_generation_speed",
+      "engine": "sglang",
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1774707133.3354251,
+      "status": "completed",
+      "finished_at": 1774707205.4759078,
+      "result_path": "results/llama-3.1-8b-instruct/structured_generation_speed_SGLangClient_1774707133.json"
+    },
+    {
+      "model": "meta-llama/Llama-3.1-8B-Instruct",
+      "scenario_name": "structured_generation_speed",
+      "engine": "sglang",
+      "iteration": 2,
+      "healthy_before_run": true,
+      "started_at": 1774707266.5650468,
+      "status": "completed",
+      "finished_at": 1774707338.5950558,
+      "result_path": "results/llama-3.1-8b-instruct/structured_generation_speed_SGLangClient_1774707266.json"
+    }
+  ],
+  "cooldown_seconds": 60
+}

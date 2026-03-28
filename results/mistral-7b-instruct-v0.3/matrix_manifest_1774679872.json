@@ -1,0 +1,118 @@
+{
+  "started_at": 1774679872.8799086,
+  "finished_at": 1774684543.5729854,
+  "model": "mistralai/Mistral-7B-Instruct-v0.3",
+  "tasks": [
+    {
+      "model": "mistralai/Mistral-7B-Instruct-v0.3",
+      "scenario_name": "single_request_latency",
+      "engine": "sglang",
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1774679873.9288778,
+      "status": "completed",
+      "finished_at": 1774680070.466909,
+      "result_path": "results/mistral-7b-instruct-v0.3/single_request_latency_SGLangClient_1774679873.json"
+    },
+    {
+      "model": "mistralai/Mistral-7B-Instruct-v0.3",
+      "scenario_name": "single_request_latency",
+      "engine": "sglang",
+      "iteration": 2,
+      "healthy_before_run": true,
+      "started_at": 1774680131.5043137,
+      "status": "completed",
+      "finished_at": 1774680328.024311,
+      "result_path": "results/mistral-7b-instruct-v0.3/single_request_latency_SGLangClient_1774680131.json"
+    },
+    {
+      "model": "mistralai/Mistral-7B-Instruct-v0.3",
+      "scenario_name": "throughput_ramp",
+      "engine": "sglang",
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1774680389.083274,
+      "status": "completed",
+      "finished_at": 1774682067.650044,
+      "result_path": "results/mistral-7b-instruct-v0.3/throughput_ramp_SGLangClient_1774680389.json"
+    },
+    {
+      "model": "mistralai/Mistral-7B-Instruct-v0.3",
+      "scenario_name": "throughput_ramp",
+      "engine": "sglang",
+      "iteration": 2,
+      "healthy_before_run": true,
+      "started_at": 1774682128.7399945,
+      "status": "completed",
+      "finished_at": 1774683805.8766646,
+      "result_path": "results/mistral-7b-instruct-v0.3/throughput_ramp_SGLangClient_1774682128.json"
+    },
+    {
+      "model": "mistralai/Mistral-7B-Instruct-v0.3",
+      "scenario_name": "long_context_stress",
+      "engine": "sglang",
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1774683866.9645588,
+      "status": "completed",
+      "finished_at": 1774683907.163313,
+      "result_path": "results/mistral-7b-instruct-v0.3/long_context_stress_SGLangClient_1774683866.json"
+    },
+    {
+      "model": "mistralai/Mistral-7B-Instruct-v0.3",
+      "scenario_name": "long_context_stress",
+      "engine": "sglang",
+      "iteration": 2,
+      "healthy_before_run": true,
+      "started_at": 1774683968.245444,
+      "status": "completed",
+      "finished_at": 1774684008.7157497,
+      "result_path": "results/mistral-7b-instruct-v0.3/long_context_stress_SGLangClient_1774683968.json"
+    },
+    {
+      "model": "mistralai/Mistral-7B-Instruct-v0.3",
+      "scenario_name": "prefix_sharing_benefit",
+      "engine": "sglang",
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1774684069.817206,
+      "status": "completed",
+      "finished_at": 1774684119.1906228,
+      "result_path": "results/mistral-7b-instruct-v0.3/prefix_sharing_benefit_SGLangClient_1774684069.json"
+    },
+    {
+      "model": "mistralai/Mistral-7B-Instruct-v0.3",
+      "scenario_name": "prefix_sharing_benefit",
+      "engine": "sglang",
+      "iteration": 2,
+      "healthy_before_run": true,
+      "started_at": 1774684180.2295895,
+      "status": "completed",
+      "finished_at": 1774684230.3189855,
+      "result_path": "results/mistral-7b-instruct-v0.3/prefix_sharing_benefit_SGLangClient_1774684180.json"
+    },
+    {
+      "model": "mistralai/Mistral-7B-Instruct-v0.3",
+      "scenario_name": "structured_generation_speed",
+      "engine": "sglang",
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1774684291.3924,
+      "status": "completed",
+      "finished_at": 1774684357.0461714,
+      "result_path": "results/mistral-7b-instruct-v0.3/structured_generation_speed_SGLangClient_1774684291.json"
+    },
+    {
+      "model": "mistralai/Mistral-7B-Instruct-v0.3",
+      "scenario_name": "structured_generation_speed",
+      "engine": "sglang",
+      "iteration": 2,
+      "healthy_before_run": true,
+      "started_at": 1774684418.1342626,
+      "status": "completed",
+      "finished_at": 1774684483.5127637,
+      "result_path": "results/mistral-7b-instruct-v0.3/structured_generation_speed_SGLangClient_1774684418.json"
+    }
+  ],
+  "cooldown_seconds": 60
+}

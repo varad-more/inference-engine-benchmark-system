@@ -1,0 +1,118 @@
+{
+  "started_at": 1774675024.348727,
+  "finished_at": 1774679681.7868536,
+  "model": "mistralai/Mistral-7B-Instruct-v0.3",
+  "tasks": [
+    {
+      "model": "mistralai/Mistral-7B-Instruct-v0.3",
+      "scenario_name": "single_request_latency",
+      "engine": "vllm",
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1774675024.3968258,
+      "status": "completed",
+      "finished_at": 1774675221.031542,
+      "result_path": "results/mistral-7b-instruct-v0.3/single_request_latency_VLLMClient_1774675024.json"
+    },
+    {
+      "model": "mistralai/Mistral-7B-Instruct-v0.3",
+      "scenario_name": "single_request_latency",
+      "engine": "vllm",
+      "iteration": 2,
+      "healthy_before_run": true,
+      "started_at": 1774675281.0652213,
+      "status": "completed",
+      "finished_at": 1774675477.6680064,
+      "result_path": "results/mistral-7b-instruct-v0.3/single_request_latency_VLLMClient_1774675281.json"
+    },
+    {
+      "model": "mistralai/Mistral-7B-Instruct-v0.3",
+      "scenario_name": "throughput_ramp",
+      "engine": "vllm",
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1774675537.7539172,
+      "status": "completed",
+      "finished_at": 1774677219.9086435,
+      "result_path": "results/mistral-7b-instruct-v0.3/throughput_ramp_VLLMClient_1774675537.json"
+    },
+    {
+      "model": "mistralai/Mistral-7B-Instruct-v0.3",
+      "scenario_name": "throughput_ramp",
+      "engine": "vllm",
+      "iteration": 2,
+      "healthy_before_run": true,
+      "started_at": 1774677279.938517,
+      "status": "completed",
+      "finished_at": 1774678962.1695218,
+      "result_path": "results/mistral-7b-instruct-v0.3/throughput_ramp_VLLMClient_1774677279.json"
+    },
+    {
+      "model": "mistralai/Mistral-7B-Instruct-v0.3",
+      "scenario_name": "long_context_stress",
+      "engine": "vllm",
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1774679022.2059011,
+      "status": "completed",
+      "finished_at": 1774679063.1956542,
+      "result_path": "results/mistral-7b-instruct-v0.3/long_context_stress_VLLMClient_1774679022.json"
+    },
+    {
+      "model": "mistralai/Mistral-7B-Instruct-v0.3",
+      "scenario_name": "long_context_stress",
+      "engine": "vllm",
+      "iteration": 2,
+      "healthy_before_run": true,
+      "started_at": 1774679123.2581975,
+      "status": "completed",
+      "finished_at": 1774679164.2970788,
+      "result_path": "results/mistral-7b-instruct-v0.3/long_context_stress_VLLMClient_1774679123.json"
+    },
+    {
+      "model": "mistralai/Mistral-7B-Instruct-v0.3",
+      "scenario_name": "prefix_sharing_benefit",
+      "engine": "vllm",
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1774679224.3271148,
+      "status": "completed",
+      "finished_at": 1774679271.3024337,
+      "result_path": "results/mistral-7b-instruct-v0.3/prefix_sharing_benefit_VLLMClient_1774679224.json"
+    },
+    {
+      "model": "mistralai/Mistral-7B-Instruct-v0.3",
+      "scenario_name": "prefix_sharing_benefit",
+      "engine": "vllm",
+      "iteration": 2,
+      "healthy_before_run": true,
+      "started_at": 1774679331.35409,
+      "status": "completed",
+      "finished_at": 1774679378.1766841,
+      "result_path": "results/mistral-7b-instruct-v0.3/prefix_sharing_benefit_VLLMClient_1774679331.json"
+    },
+    {
+      "model": "mistralai/Mistral-7B-Instruct-v0.3",
+      "scenario_name": "structured_generation_speed",
+      "engine": "vllm",
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1774679438.2141569,
+      "status": "completed",
+      "finished_at": 1774679499.9477715,
+      "result_path": "results/mistral-7b-instruct-v0.3/structured_generation_speed_VLLMClient_1774679438.json"
+    },
+    {
+      "model": "mistralai/Mistral-7B-Instruct-v0.3",
+      "scenario_name": "structured_generation_speed",
+      "engine": "vllm",
+      "iteration": 2,
+      "healthy_before_run": true,
+      "started_at": 1774679559.9825048,
+      "status": "completed",
+      "finished_at": 1774679621.7797787,
+      "result_path": "results/mistral-7b-instruct-v0.3/structured_generation_speed_VLLMClient_1774679559.json"
+    }
+  ],
+  "cooldown_seconds": 60
+}
