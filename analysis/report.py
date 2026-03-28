@@ -13,7 +13,6 @@ from __future__ import annotations
 
 import base64
 import io
-import json
 import time
 from dataclasses import dataclass
 from pathlib import Path
@@ -21,34 +20,18 @@ from typing import Any
 
 import matplotlib
 import matplotlib.pyplot as plt
-import numpy as np
 import structlog
+
+from analysis import RESULTS_DIR, extract_model_name, load_results, select_model_results
 
 matplotlib.use("Agg")  # non-interactive backend
 
 logger = structlog.get_logger(__name__)
 
-RESULTS_DIR = Path("results")
 
-# ---------------------------------------------------------------------------
-# Data loading helpers
-# ---------------------------------------------------------------------------
-
-def _load_results(results_dir: Path) -> list[dict[str, Any]]:
-    """Load all scenario result JSON files."""
-    files = sorted(results_dir.glob("*.json"), key=lambda p: p.stat().st_mtime)
-    data: list[dict[str, Any]] = []
-    for f in files:
-        try:
-            d = json.loads(f.read_text())
-            d["_filename"] = f.name
-            data.append(d)
-        except Exception as exc:
-            logger.warning("failed to load result", file=str(f), error=str(exc))
-    return data
-
-
-def _filter(results: list[dict[str, Any]], scenario: str, engine: str | None = None) -> list[dict[str, Any]]:
+def _filter(
+    results: list[dict[str, Any]], scenario: str, engine: str | None = None
+) -> list[dict[str, Any]]:
     out = [r for r in results if r.get("scenario_name") == scenario]
     if engine:
         out = [r for r in out if engine.lower() in r.get("engine_name", "").lower()]
@@ -59,6 +42,7 @@ def _filter(results: list[dict[str, Any]], scenario: str, engine: str | None = N
 # ---------------------------------------------------------------------------
 # Chart generators → base64 PNG
 # ---------------------------------------------------------------------------
+
 
 def _fig_to_b64(fig: plt.Figure) -> str:
     buf = io.BytesIO()
@@ -77,12 +61,17 @@ def _cdf_chart(all_results: list[dict[str, Any]]) -> str:
     titles = ["Single Request Latency", "Throughput Ramp"]
 
     for ax, scenario_name, title in zip(axes, scenarios, titles):
-        for engine, color, label in [("VLLMClient", "#2196F3", "vLLM"), ("SGLangClient", "#4CAF50", "SGLang")]:
+        for engine, color, label in [
+            ("VLLMClient", "#2196F3", "vLLM"),
+            ("SGLangClient", "#4CAF50", "SGLang"),
+        ]:
             matches = _filter(all_results, scenario_name, engine)
             if not matches:
                 continue
             reqs = matches[0].get("requests", [])
-            ttft_values = [r["ttft_ms"] for r in reqs if r.get("success") and r.get("ttft_ms", 0) > 0]
+            ttft_values = [
+                r["ttft_ms"] for r in reqs if r.get("success") and r.get("ttft_ms", 0) > 0
+            ]
             if not ttft_values:
                 continue
             sorted_v = sorted(ttft_values)
@@ -97,7 +86,8 @@ def _cdf_chart(all_results: list[dict[str, Any]]) -> str:
         ax.set_title(title)
         ax.set_xlabel("TTFT (ms)")
         ax.set_ylabel("Cumulative Probability")
-        ax.legend()
+        if ax.has_data():
+            ax.legend()
         ax.grid(True, alpha=0.3)
         ax.set_xlim(left=0)
 
@@ -110,7 +100,10 @@ def _throughput_chart(all_results: list[dict[str, Any]]) -> str:
     fig, ax = plt.subplots(figsize=(10, 6))
     ax.set_title("Throughput vs Concurrency", fontsize=14, fontweight="bold")
 
-    for engine, color, label in [("VLLMClient", "#2196F3", "vLLM"), ("SGLangClient", "#4CAF50", "SGLang")]:
+    for engine, color, label in [
+        ("VLLMClient", "#2196F3", "vLLM"),
+        ("SGLangClient", "#4CAF50", "SGLang"),
+    ]:
         matches = _filter(all_results, "throughput_ramp", engine)
         if not matches:
             continue
@@ -129,7 +122,8 @@ def _throughput_chart(all_results: list[dict[str, Any]]) -> str:
 
     ax.set_xlabel("Concurrency Level")
     ax.set_ylabel("Tokens / Second")
-    ax.legend()
+    if ax.has_data():
+        ax.legend()
     ax.grid(True, alpha=0.3)
     ax.set_xscale("log", base=2)
     plt.tight_layout()
@@ -139,9 +133,14 @@ def _throughput_chart(all_results: list[dict[str, Any]]) -> str:
 def _kv_cache_chart(all_results: list[dict[str, Any]]) -> str:
     """KV cache utilisation over time for long_context_stress scenario."""
     fig, ax = plt.subplots(figsize=(10, 5))
-    ax.set_title("KV Cache Utilisation Over Time — Long Context Stress", fontsize=13, fontweight="bold")
+    ax.set_title(
+        "KV Cache Utilisation Over Time — Long Context Stress", fontsize=13, fontweight="bold"
+    )
 
-    for engine, color, label in [("VLLMClient", "#2196F3", "vLLM"), ("SGLangClient", "#4CAF50", "SGLang")]:
+    for engine, color, label in [
+        ("VLLMClient", "#2196F3", "vLLM"),
+        ("SGLangClient", "#4CAF50", "SGLang"),
+    ]:
         matches = _filter(all_results, "long_context_stress", engine)
         if not matches:
             # Try any scenario
@@ -157,7 +156,8 @@ def _kv_cache_chart(all_results: list[dict[str, Any]]) -> str:
     ax.set_xlabel("Time (samples every 2s)")
     ax.set_ylabel("KV Cache Usage (%)")
     ax.set_ylim(0, 100)
-    ax.legend()
+    if ax.has_data():
+        ax.legend()
     ax.grid(True, alpha=0.3)
     plt.tight_layout()
     return _fig_to_b64(fig)
@@ -168,7 +168,10 @@ def _prefix_cache_chart(all_results: list[dict[str, Any]]) -> str:
     fig, ax = plt.subplots(figsize=(9, 5))
     ax.set_title("Prefix Caching Benefit — TTFT by Request Index", fontsize=13, fontweight="bold")
 
-    for engine, color, label in [("VLLMClient", "#2196F3", "vLLM"), ("SGLangClient", "#4CAF50", "SGLang")]:
+    for engine, color, label in [
+        ("VLLMClient", "#2196F3", "vLLM"),
+        ("SGLangClient", "#4CAF50", "SGLang"),
+    ]:
         matches = _filter(all_results, "prefix_sharing_benefit", engine)
         if not matches:
             continue
@@ -177,11 +180,21 @@ def _prefix_cache_chart(all_results: list[dict[str, Any]]) -> str:
         if ttft_vals:
             # Plot first 30 requests to show cache warm-up curve
             x = list(range(min(30, len(ttft_vals))))
-            ax.plot(x, ttft_vals[:30], "o-", color=color, label=label, linewidth=2, markersize=4, alpha=0.85)
+            ax.plot(
+                x,
+                ttft_vals[:30],
+                "o-",
+                color=color,
+                label=label,
+                linewidth=2,
+                markersize=4,
+                alpha=0.85,
+            )
 
     ax.set_xlabel("Request Index")
     ax.set_ylabel("TTFT (ms)")
-    ax.legend()
+    if ax.has_data():
+        ax.legend()
     ax.grid(True, alpha=0.3)
     plt.tight_layout()
     return _fig_to_b64(fig)
@@ -190,6 +203,7 @@ def _prefix_cache_chart(all_results: list[dict[str, Any]]) -> str:
 # ---------------------------------------------------------------------------
 # Speedup table
 # ---------------------------------------------------------------------------
+
 
 @dataclass
 class ProgramSpeedup:
@@ -201,45 +215,32 @@ class ProgramSpeedup:
 
 
 def _build_speedup_table(all_results: list[dict[str, Any]]) -> list[ProgramSpeedup]:
-    """Build SGLang program speedup table from stored extra data or hardcoded estimates."""
-    # Try to find structured generation results
-    sg_matches = _filter(all_results, "structured_generation_speed", "SGLangClient")
-    vllm_matches = _filter(all_results, "structured_generation_speed", "VLLMClient")
+    """Build speedup comparison table from actual benchmark data.
 
-    sg_tps = sg_matches[0]["metrics"]["throughput"]["tokens_per_sec"] if sg_matches else None
-    vl_tps = vllm_matches[0]["metrics"]["throughput"]["tokens_per_sec"] if vllm_matches else None
-
-    rows = [
-        ProgramSpeedup(
-            "structured_cot (2-turn CoT)",
-            sglang_ms=340.0,
-            vllm_ms=410.0,
-            speedup=410.0 / 340.0,
-            advantage="Prefix reuse for turn-2 KV",
-        ),
-        ProgramSpeedup(
-            "parallel_hypotheses (fork×3)",
-            sglang_ms=290.0,
-            vllm_ms=750.0,
-            speedup=750.0 / 290.0,
-            advantage="True parallel batch decode",
-        ),
-        ProgramSpeedup(
-            "json_entity_extract (constrained)",
-            sglang_ms=180.0,
-            vllm_ms=240.0 if vl_tps is None else 1000.0 / vl_tps,
-            speedup=(240.0 if vl_tps is None else 1000.0 / vl_tps) / 180.0,
-            advantage="Native regex constrained decode",
-        ),
+    Pairs up vLLM and SGLang results for each scenario and computes the
+    relative speedup based on measured latency p95 values.  Returns an
+    empty list when no paired data is available.
+    """
+    scenarios = [
+        ("single_request_latency", "Single request latency"),
+        ("throughput_ramp", "Throughput ramp"),
+        ("long_context_stress", "Long context stress"),
+        ("prefix_sharing_benefit", "Prefix sharing benefit"),
+        ("structured_generation_speed", "Structured generation"),
     ]
-    if sg_tps and vl_tps:
-        rows[-1] = ProgramSpeedup(
-            "json_entity_extract (constrained)",
-            sglang_ms=1000.0 / sg_tps,
-            vllm_ms=1000.0 / vl_tps,
-            speedup=sg_tps / vl_tps,
-            advantage="Native regex constrained decode",
-        )
+    rows: list[ProgramSpeedup] = []
+    for scenario_key, label in scenarios:
+        sg = _filter(all_results, scenario_key, "SGLangClient")
+        vl = _filter(all_results, scenario_key, "VLLMClient")
+        if not sg or not vl:
+            continue
+        sg_lat = sg[0]["metrics"]["latency"]["p95"]
+        vl_lat = vl[0]["metrics"]["latency"]["p95"]
+        if sg_lat <= 0:
+            continue
+        speedup = vl_lat / sg_lat
+        advantage = "SGLang faster" if speedup > 1.0 else "vLLM faster"
+        rows.append(ProgramSpeedup(label, sg_lat, vl_lat, speedup, advantage))
     return rows
 
 
@@ -286,6 +287,8 @@ _HTML_TEMPLATE = """<!DOCTYPE html>
     .stat-label {{ font-size: 0.8rem; color: #64748b; margin-top: 0.25rem; }}
     .tag {{ background: #0f172a; border: 1px solid #334155; border-radius: 0.25rem;
             padding: 0.1rem 0.5rem; font-size: 0.75rem; color: #94a3b8; }}
+    .note {{ color: #cbd5e1; max-width: 900px; margin: 1rem auto 0; }}
+    .note code {{ background: #0f172a; padding: 0.1rem 0.35rem; border-radius: 0.35rem; }}
     footer {{ text-align: center; color: #334155; padding: 2rem; font-size: 0.8rem; }}
   </style>
 </head>
@@ -298,6 +301,7 @@ _HTML_TEMPLATE = """<!DOCTYPE html>
     <span class="badge">Generated {generated}</span>
     <span class="badge">Model: {model}</span>
     <span class="badge">{n_results} result files</span>
+    {selection_note}
   </div>
 
   <!-- Summary Stats -->
@@ -334,16 +338,16 @@ _HTML_TEMPLATE = """<!DOCTYPE html>
     <img src="data:image/png;base64,{prefix_chart}" alt="Prefix Cache Chart"/>
   </div>
 
-  <!-- SGLang Program Speedup Table -->
+  <!-- Engine Comparison Table -->
   <div class="card">
-    <h2>SGLang Native Programs vs vLLM Equivalent</h2>
+    <h2>SGLang vs vLLM Latency Comparison</h2>
     <table>
       <tr>
-        <th>Program</th>
-        <th class="engine-sglang">SGLang (ms)</th>
-        <th class="engine-vllm">vLLM (ms)</th>
+        <th>Scenario</th>
+        <th class="engine-sglang">SGLang p95 (ms)</th>
+        <th class="engine-vllm">vLLM p95 (ms)</th>
         <th>Speedup</th>
-        <th>Advantage</th>
+        <th>Faster engine</th>
       </tr>
       {speedup_rows}
     </table>
@@ -435,33 +439,42 @@ _MERMAID_DIAGRAM = """graph TB
 # Main report generator
 # ---------------------------------------------------------------------------
 
+
 def generate_report(
     results_dir: Path = RESULTS_DIR,
     output_path: Path = Path("report.html"),
+    model: str | None = None,
 ) -> None:
-    all_results = _load_results(results_dir)
+    all_results = load_results(results_dir)
     logger.info("loaded results", count=len(all_results))
 
-    # Extract model name from results
-    model = "Qwen/Qwen2.5-1.5B-Instruct"
-    for r in all_results:
-        cfg = r.get("scenario_config", {})
-        if cfg:
-            break
+    selected_model, report_results, selection_meta = select_model_results(
+        all_results,
+        preferred_model=model,
+        require_engines={"VLLMClient", "SGLangClient"},
+    )
+    logger.info(
+        "selected report scope",
+        selected_model=selected_model,
+        selection_mode=selection_meta.get("selection_mode"),
+        selected_count=len(report_results),
+    )
+
+    report_model = selected_model or extract_model_name(report_results)
 
     # Generate charts
     logger.info("generating CDF chart")
-    cdf_b64 = _cdf_chart(all_results)
+    cdf_b64 = _cdf_chart(report_results)
     logger.info("generating throughput chart")
-    thr_b64 = _throughput_chart(all_results)
+    thr_b64 = _throughput_chart(report_results)
     logger.info("generating KV cache chart")
-    kv_b64 = _kv_cache_chart(all_results)
+    kv_b64 = _kv_cache_chart(report_results)
     logger.info("generating prefix cache chart")
-    prefix_b64 = _prefix_cache_chart(all_results)
+    prefix_b64 = _prefix_cache_chart(report_results)
 
     # Speedup table
     speedup_rows_html = ""
-    for row in _build_speedup_table(all_results):
+    for row in _build_speedup_table(report_results):
         speedup_rows_html += (
             f"<tr>"
             f"<td>{row.program}</td>"
@@ -474,23 +487,43 @@ def generate_report(
 
     # Summary stats
     stats_html = ""
-    n_vllm = sum(1 for r in all_results if "VLLMClient" in r.get("engine_name", ""))
-    n_sglang = sum(1 for r in all_results if "SGLangClient" in r.get("engine_name", ""))
-    total_req = sum(r.get("metrics", {}).get("throughput", {}).get("total_requests", 0) for r in all_results)
+    n_vllm = sum(1 for r in report_results if "VLLMClient" in r.get("engine_name", ""))
+    n_sglang = sum(1 for r in report_results if "SGLangClient" in r.get("engine_name", ""))
+    total_req = sum(
+        r.get("metrics", {}).get("throughput", {}).get("total_requests", 0)
+        for r in report_results
+    )
 
     for val, label in [
-        (str(len(all_results)), "Total Result Files"),
+        (str(len(report_results)), "Total Result Files"),
         (str(n_vllm), "vLLM Runs"),
         (str(n_sglang), "SGLang Runs"),
         (str(total_req), "Total Requests"),
-        (str(len(set(r.get("scenario_name", "") for r in all_results))), "Unique Scenarios"),
+        (str(len(set(r.get("scenario_name", "") for r in report_results))), "Unique Scenarios"),
     ]:
         stats_html += f"<div class='stat'><div class='stat-value'>{val}</div><div class='stat-label'>{label}</div></div>"
 
+    available_models = selection_meta.get("available_models", [])
+    selection_note = ""
+    if model:
+        selection_note = (
+            f"<p class='note'>Report explicitly filtered to <code>{report_model}</code>.</p>"
+        )
+    elif len(available_models) > 1:
+        selection_note = (
+            "<p class='note'>"
+            f"Detected {len(available_models)} models in <code>{results_dir}</code>. "
+            f"This HTML report was filtered to <code>{report_model}</code> "
+            f"using selection mode <code>{selection_meta.get('selection_mode')}</code>. "
+            "Use per-model result directories or pass <code>--model</code> for an explicit scope."
+            "</p>"
+        )
+
     html = _HTML_TEMPLATE.format(
         generated=time.strftime("%Y-%m-%d %H:%M UTC", time.gmtime()),
-        model=model,
-        n_results=len(all_results),
+        model=report_model,
+        n_results=len(report_results),
+        selection_note=selection_note,
         summary_stats=stats_html,
         cdf_chart=cdf_b64,
         throughput_chart=thr_b64,
@@ -506,6 +539,7 @@ def generate_report(
 
 if __name__ == "__main__":
     import sys
+
     out = Path(sys.argv[1]) if len(sys.argv) > 1 else Path("report.html")
     generate_report(results_dir=RESULTS_DIR, output_path=out)
     print(f"Report written to {out} ({out.stat().st_size // 1024} KB)")

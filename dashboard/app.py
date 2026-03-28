@@ -16,6 +16,7 @@ from __future__ import annotations
 
 import asyncio
 import json
+import os
 import re
 import shlex
 import subprocess
@@ -26,14 +27,17 @@ from typing import Any
 
 import structlog
 import uvicorn
-from fastapi import BackgroundTasks, FastAPI, HTTPException, WebSocket, WebSocketDisconnect
+from fastapi import BackgroundTasks, FastAPI, HTTPException, Query, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse, JSONResponse
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
+
+from analysis import get_result_model, load_results, select_model_results
+from engines.base_client import DEFAULT_MODEL
 
 logger = structlog.get_logger(__name__)
 
-RESULTS_DIR = Path("results")
+RESULTS_DIR = Path(os.environ.get("RESULTS_DIR", "results"))
 RESULTS_DIR.mkdir(exist_ok=True)
 
 app = FastAPI(
@@ -42,10 +46,11 @@ app = FastAPI(
     version="0.2.0",
 )
 
+_allowed_origins = os.environ.get("ALLOWED_ORIGINS", "http://localhost:3000").split(",")
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
-    allow_methods=["*"],
+    allow_origins=_allowed_origins,
+    allow_methods=["GET", "POST"],
     allow_headers=["*"],
 )
 
@@ -72,6 +77,10 @@ _jobs: dict[str, JobStatus] = {}
 # Active WebSocket connections for live streaming
 _live_connections: set[WebSocket] = set()
 
+# Lock protecting _jobs and _live_connections from concurrent mutation
+_state_lock = asyncio.Lock()
+
+
 MODEL_LABELS = {
     "qwen": "Qwen",
     "qwen7b": "Qwen 7B",
@@ -91,13 +100,50 @@ ENGINE_LABELS = {
 # ---------------------------------------------------------------------------
 
 
+# Pattern that rejects shell metacharacters and allows only safe identifiers
+_SAFE_NAME_RE = re.compile(r"^[a-zA-Z0-9_\-]+$")
+# Model names can include org/model-name patterns (e.g. Qwen/Qwen2.5-1.5B-Instruct)
+_SAFE_MODEL_RE = re.compile(r"^[a-zA-Z0-9_\-./]+$")
+
+
 class RunRequest(BaseModel):
     scenario: str
     engines: list[str] = Field(default=["vllm", "sglang"])
-    model: str = "Qwen/Qwen2.5-1.5B-Instruct"
+    model: str = DEFAULT_MODEL
     vllm_host: str = "localhost"
     vllm_port: int = 8000
     sglang_host: str = "localhost"
+
+    @field_validator("scenario")
+    @classmethod
+    def validate_scenario(cls, v: str) -> str:
+        if not _SAFE_NAME_RE.match(v):
+            raise ValueError(f"Invalid scenario name: {v!r}")
+        return v
+
+    @field_validator("engines")
+    @classmethod
+    def validate_engines(cls, v: list[str]) -> list[str]:
+        allowed = {"vllm", "sglang"}
+        for engine in v:
+            if engine not in allowed:
+                raise ValueError(f"Invalid engine: {engine!r}. Must be one of {allowed}")
+        return v
+
+    @field_validator("model")
+    @classmethod
+    def validate_model(cls, v: str) -> str:
+        if not _SAFE_MODEL_RE.match(v) or len(v) > 200:
+            raise ValueError(f"Invalid model name: {v!r}")
+        return v
+
+    @field_validator("vllm_host", "sglang_host")
+    @classmethod
+    def validate_host(cls, v: str) -> str:
+        if not _SAFE_NAME_RE.match(v.replace(".", "")) or len(v) > 253:
+            raise ValueError(f"Invalid host: {v!r}")
+        return v
+
     sglang_port: int = 8001
 
 
@@ -106,18 +152,18 @@ class RunRequest(BaseModel):
 # ---------------------------------------------------------------------------
 
 
-def _run_shell(command: str, timeout_sec: int = 8) -> str:
-    """Run a shell command safely and return stdout text."""
+def _run_cmd(argv: list[str], timeout_sec: int = 8) -> str:
+    """Run a command with explicit argv (no shell) and return stdout text."""
     try:
         completed = subprocess.run(
-            ["bash", "-lc", command],
+            argv,
             capture_output=True,
             text=True,
             timeout=timeout_sec,
             check=False,
         )
-    except Exception as exc:  # pragma: no cover - defensive fallback
-        logger.debug("shell helper failed", command=command, error=str(exc))
+    except Exception as exc:  # pragma: no cover
+        logger.debug("command failed", argv=argv, error=str(exc))
         return ""
     return completed.stdout.strip()
 
@@ -260,32 +306,69 @@ def _result_file_payload(path: Path) -> dict[str, Any]:
             }
         )
     elif "scenario_name" in data and "vllm" in data and "sglang" in data:
-        payload.update({"type": "comparison", "scenario": data.get("scenario_name")})
+        payload.update(
+            {
+                "type": "comparison",
+                "scenario": data.get("scenario_name"),
+                "model": _comparison_file_model(data),
+            }
+        )
     elif "tasks" in data and "model" in data:
         payload.update({"type": "matrix_manifest", "model": data.get("model")})
 
     return payload
 
 
-def _latest_results_payload(limit: int = 8) -> list[dict[str, Any]]:
+def _payload_matches_model(payload: dict[str, Any], model: str | None) -> bool:
+    if model is None:
+        return True
+    return payload.get("model") == model
+
+
+def _latest_results_payload(limit: int = 8, model: str | None = None) -> list[dict[str, Any]]:
     files = sorted(RESULTS_DIR.glob("*.json"), key=lambda p: p.stat().st_mtime, reverse=True)
-    return [_result_file_payload(f) for f in files[:limit]]
+    payloads: list[dict[str, Any]] = []
+    for file_path in files:
+        payload = _result_file_payload(file_path)
+        if not _payload_matches_model(payload, model):
+            continue
+        payloads.append(payload)
+        if len(payloads) >= limit:
+            break
+    return payloads
+
+
+def _latest_engine_result(results: list[dict[str, Any]], engine_name: str) -> dict[str, Any] | None:
+    matches = [r for r in results if r.get("engine_name") == engine_name]
+    if not matches:
+        return None
+    return max(matches, key=lambda item: float(item.get("timestamp", 0.0)))
+
+
+def _comparison_file_model(data: dict[str, Any]) -> str | None:
+    for key in ("vllm", "sglang"):
+        payload = data.get(key)
+        if isinstance(payload, dict):
+            model = get_result_model(payload)
+            if model:
+                return model
+    return None
 
 
 def _system_status_payload() -> dict[str, Any]:
-    gpu_line = _run_shell(
-        "nvidia-smi --query-gpu=temperature.gpu,utilization.gpu,memory.used,memory.total --format=csv,noheader,nounits 2>/dev/null | head -n1"
-    )
-    load_line = _run_shell(
-        "python3 - <<'PY'\nimport os\nprint(', '.join(f'{x:.2f}' for x in os.getloadavg()))\nPY"
-    )
-    mem_line = _run_shell(
-        "python3 - <<'PY'\nimport shutil, subprocess\nout = subprocess.check_output(['free', '-m'], text=True).splitlines()[1].split()\nprint(f'{out[2]},{out[6]}')\nPY"
-    )
-
     payload: dict[str, Any] = {}
+
+    # GPU via nvidia-smi (no shell, direct argv)
+    gpu_line = _run_cmd(
+        [
+            "nvidia-smi",
+            "--query-gpu=temperature.gpu,utilization.gpu,memory.used,memory.total",
+            "--format=csv,noheader,nounits",
+        ]
+    )
     if gpu_line:
-        parts = [p.strip() for p in gpu_line.split(',')]
+        first_line = gpu_line.splitlines()[0]
+        parts = [p.strip() for p in first_line.split(",")]
         if len(parts) == 4:
             payload["gpu"] = {
                 "temperature_c": float(parts[0]),
@@ -293,25 +376,40 @@ def _system_status_payload() -> dict[str, Any]:
                 "memory_used_mib": float(parts[2]),
                 "memory_total_mib": float(parts[3]),
             }
-    if load_line:
-        payload["load_avg"] = load_line
-    if mem_line and "," in mem_line:
-        used, avail = [p.strip() for p in mem_line.split(',', 1)]
-        payload["memory"] = {
-            "used_mib": float(used),
-            "available_mib": float(avail),
-        }
+
+    # Load average via Python stdlib
+    try:
+        load = os.getloadavg()
+        payload["load_avg"] = ", ".join(f"{x:.2f}" for x in load)
+    except OSError:
+        pass
+
+    # Memory via /proc/meminfo (Linux) — no subprocess needed
+    try:
+        meminfo: dict[str, int] = {}
+        with open("/proc/meminfo") as f:
+            for line in f:
+                key, rest = line.split(":", 1)
+                # Values are in kB
+                meminfo[key.strip()] = int(rest.strip().split()[0])
+        total = meminfo.get("MemTotal", 0) // 1024
+        available = meminfo.get("MemAvailable", 0) // 1024
+        used = total - available
+        payload["memory"] = {"used_mib": used, "available_mib": available}
+    except (OSError, ValueError, KeyError):
+        pass
+
     return payload
 
 
-def _latest_completed_result_payload() -> dict[str, Any] | None:
-    for item in _latest_results_payload(limit=30):
+def _latest_completed_result_payload(model: str | None = None) -> dict[str, Any] | None:
+    for item in _latest_results_payload(limit=30, model=model):
         if item.get("type") == "result":
             return item
     return None
 
 
-def _current_activity_payload() -> dict[str, Any]:
+def _current_activity_payload(model: str | None = None) -> dict[str, Any]:
     active_job = next((job for job in _jobs.values() if job.status == "running"), None)
     if active_job is not None:
         current: dict[str, Any] | None = {
@@ -330,7 +428,7 @@ def _current_activity_payload() -> dict[str, Any]:
         current = None
 
     if current is None:
-        run_lines = _run_shell("pgrep -af 'run_experiment.py run' || true").splitlines()
+        run_lines = _run_cmd(["pgrep", "-af", "run_experiment.py run"]).splitlines()
         for line in run_lines:
             parsed = _parse_active_benchmark_command(line)
             if parsed is not None:
@@ -338,15 +436,15 @@ def _current_activity_payload() -> dict[str, Any]:
                 break
 
     if current is None:
-        script_lines = _run_shell("pgrep -af 'run_.*\\.sh' || true").splitlines()
+        script_lines = _run_cmd(["pgrep", "-af", r"run_.*\.sh"]).splitlines()
         for line in script_lines:
             parsed = _parse_helper_script_command(line)
             if parsed is not None:
                 current = parsed
                 break
 
-    server_lines = _run_shell(
-        "pgrep -af 'vllm serve|sglang.launch_server|run_experiment.py serve' || true"
+    server_lines = _run_cmd(
+        ["pgrep", "-af", "vllm serve|sglang.launch_server|run_experiment.py serve"]
     ).splitlines()
     active_servers = []
     for line in server_lines:
@@ -358,8 +456,9 @@ def _current_activity_payload() -> dict[str, Any]:
         "timestamp": time.time(),
         "current": current or {"state": "idle", "source": "none"},
         "active_servers": active_servers,
-        "latest_results": _latest_results_payload(limit=5),
-        "latest_completed_result": _latest_completed_result_payload(),
+        "result_filter_model": model,
+        "latest_results": _latest_results_payload(limit=5, model=model),
+        "latest_completed_result": _latest_completed_result_payload(model=model),
         "system": _system_status_payload(),
     }
 
@@ -419,6 +518,7 @@ async def dashboard_home() -> HTMLResponse:
       <body>
         <h1>Inference Benchmark Dashboard</h1>
         <p class="muted">Live benchmark status, latest results, and quick comparisons. Use <code>http://</code>, not <code>https://</code>, unless this is behind a TLS reverse proxy.</p>
+        <p class="muted" id="filter-note" style="display:none"></p>
 
         <div class="hero">
           <div class="stat">
@@ -482,17 +582,38 @@ async def dashboard_home() -> HTMLResponse:
           }
           function fmtMs(value) { return value == null ? '—' : `${Number(value).toFixed(1)} ms`; }
           function fmtNum(value, digits = 1) { return value == null ? '—' : Number(value).toFixed(digits); }
+          const urlModel = new URLSearchParams(window.location.search).get('model');
+
+          function withModel(url) {
+            if (!urlModel) return url;
+            const sep = url.includes('?') ? '&' : '?';
+            return `${url}${sep}model=${encodeURIComponent(urlModel)}`;
+          }
+
           function statusClass(state) {
             if (state === 'running') return 'status-ok';
             if (state === 'queued_or_cooldown') return 'status-warn';
             return 'status-bad';
           }
 
+          function renderFilterNote(payload) {
+            const node = document.getElementById('filter-note');
+            const model = payload.result_filter_model || urlModel;
+            if (!model) {
+              node.style.display = 'none';
+              node.textContent = '';
+              return;
+            }
+            node.style.display = 'block';
+            node.innerHTML = `Filtering result summaries and comparisons to <code>${esc(model)}</code>.`;
+          }
+
           function renderHero(payload) {
             const current = payload.current || {};
             const system = payload.system || {};
             const latest = payload.latest_completed_result || {};
-            document.getElementById('hero-model').textContent = current.model || 'Idle';
+            const filterModel = payload.result_filter_model || null;
+            document.getElementById('hero-model').textContent = current.model || filterModel || 'Idle';
             document.getElementById('hero-scenario').textContent = current.scenario || current.state || 'idle';
             if (system.gpu) {
               document.getElementById('hero-gpu').textContent = `${system.gpu.utilization_pct}% • ${system.gpu.temperature_c}°C`;
@@ -594,19 +715,21 @@ async def dashboard_home() -> HTMLResponse:
             if (payload.delta) {
               chunks.push(`<div class="compare-item"><strong>Delta</strong><br>TTFT p95 Δ: ${esc(payload.delta.ttft_p95_pct)}%<br>Tok/s Δ: ${esc(payload.delta.tokens_per_sec_pct)}%</div>`);
             }
-            document.getElementById(targetId).innerHTML = `<div class="compare-grid">${chunks.join('')}</div>`;
+            const modelNote = payload.model ? `<p class="small muted"><strong>Model:</strong> ${esc(payload.model)}</p>` : '';
+            document.getElementById(targetId).innerHTML = `${modelNote}<div class="compare-grid">${chunks.join('')}</div>`;
           }
 
           async function loadAll() {
             try {
               const [currentRes, resultsRes, latencyRes, throughputRes] = await Promise.all([
-                fetch('/api/current'),
-                fetch('/api/results'),
-                fetch('/api/compare/single_request_latency').catch(() => null),
-                fetch('/api/compare/throughput_ramp').catch(() => null),
+                fetch(withModel('/api/current')),
+                fetch(withModel('/api/results')),
+                fetch(withModel('/api/compare/single_request_latency')).catch(() => null),
+                fetch(withModel('/api/compare/throughput_ramp')).catch(() => null),
               ]);
               const current = await currentRes.json();
               const results = await resultsRes.json();
+              renderFilterNote(current);
               renderHero(current);
               renderCurrent(current);
               renderServices(current);
@@ -634,76 +757,113 @@ async def dashboard_home() -> HTMLResponse:
 
 
 @app.get("/api/results")
-async def list_results() -> JSONResponse:
-    """List all saved benchmark result files."""
-    return JSONResponse(_latest_results_payload(limit=200))
+async def list_results(
+    model: str | None = Query(default=None, description="Optional model filter"),
+) -> JSONResponse:
+    """List saved benchmark result files, optionally filtered by model."""
+    return JSONResponse(_latest_results_payload(limit=200, model=model))
 
 
 @app.get("/api/results/{result_id}")
 async def get_result(result_id: str) -> JSONResponse:
     """Load and return a specific result by its stem (filename without .json)."""
+    if not _SAFE_NAME_RE.match(result_id):
+        raise HTTPException(status_code=400, detail="Invalid result ID")
     candidates = list(RESULTS_DIR.glob(f"{result_id}*.json"))
     if not candidates:
         raise HTTPException(status_code=404, detail=f"Result '{result_id}' not found")
     path = candidates[0]
+    if not path.resolve().is_relative_to(RESULTS_DIR.resolve()):
+        raise HTTPException(status_code=400, detail="Invalid path")
     return JSONResponse(json.loads(path.read_text()))
 
 
 @app.get("/api/current")
-async def current_activity() -> JSONResponse:
-    """Return currently active benchmark/test information and active services."""
-    return JSONResponse(_current_activity_payload())
+async def current_activity(
+    model: str | None = Query(default=None, description="Optional model filter for result summaries"),
+) -> JSONResponse:
+    """Return active benchmark info and optionally filtered result summaries."""
+    return JSONResponse(_current_activity_payload(model=model))
 
 
 @app.get("/api/compare/{scenario}")
-async def compare_scenario(scenario: str) -> JSONResponse:
-    """Load latest vLLM and SGLang result files for the given scenario and compare them."""
+async def compare_scenario(
+    scenario: str,
+    model: str | None = Query(default=None, description="Optional model filter"),
+) -> JSONResponse:
+    """Load model-consistent vLLM and SGLang results for the given scenario and compare them."""
+    scenario_results = [r for r in load_results(RESULTS_DIR) if r.get("scenario_name") == scenario]
 
-    def _latest(engine: str) -> dict[str, Any] | None:
-        pattern = f"{scenario}_{engine}_*.json"
-        files = sorted(RESULTS_DIR.glob(pattern), key=lambda p: p.stat().st_mtime, reverse=True)
-        if not files:
-            return None
-        return json.loads(files[0].read_text())
+    selected_model: str | None = None
+    available_models: list[str] = []
+    if scenario_results:
+        try:
+            selected_model, scenario_results, selection_meta = select_model_results(
+                scenario_results,
+                preferred_model=model,
+                require_engines={"VLLMClient", "SGLangClient"},
+            )
+        except ValueError as exc:
+            raise HTTPException(status_code=404, detail=str(exc)) from exc
+        available_models = selection_meta.get("available_models", [])
 
-    vllm_data = _latest("VLLMClient")
-    sglang_data = _latest("SGLangClient")
+        vllm_data = _latest_engine_result(scenario_results, "VLLMClient")
+        sglang_data = _latest_engine_result(scenario_results, "SGLangClient")
 
-    if not vllm_data and not sglang_data:
-        comp_files = sorted(
-            RESULTS_DIR.glob(f"comparison_{scenario}_*.json"),
-            key=lambda p: p.stat().st_mtime,
-            reverse=True,
-        )
-        if comp_files:
-            return JSONResponse(json.loads(comp_files[0].read_text()))
-        raise HTTPException(status_code=404, detail=f"No results found for scenario '{scenario}'")
-
-    response: dict[str, Any] = {"scenario": scenario}
-    if vllm_data:
-        response["vllm"] = vllm_data.get("metrics", {})
-    if sglang_data:
-        response["sglang"] = sglang_data.get("metrics", {})
-
-    if vllm_data and sglang_data:
-        vllm_m = vllm_data.get("metrics", {})
-        sglang_m = sglang_data.get("metrics", {})
-
-        def _delta(va: float, vb: float) -> float:
-            return round((va - vb) / max(abs(va), 1e-9) * 100, 2)
-
-        vllm_ttft = vllm_m.get("ttft", {}).get("p95", 0)
-        sglang_ttft = sglang_m.get("ttft", {}).get("p95", 0)
-        vllm_tps = vllm_m.get("throughput", {}).get("tokens_per_sec", 0)
-        sglang_tps = sglang_m.get("throughput", {}).get("tokens_per_sec", 0)
-
-        response["delta"] = {
-            "ttft_p95_pct": _delta(vllm_ttft, sglang_ttft),
-            "tokens_per_sec_pct": _delta(vllm_tps, sglang_tps),
-            "note": "positive = vllm higher",
+        response: dict[str, Any] = {
+            "scenario": scenario,
+            "model": selected_model,
+            "available_models": available_models,
         }
+        if vllm_data:
+            response["vllm"] = vllm_data.get("metrics", {})
+        if sglang_data:
+            response["sglang"] = sglang_data.get("metrics", {})
 
-    return JSONResponse(response)
+        if vllm_data and sglang_data:
+            vllm_m = vllm_data.get("metrics", {})
+            sglang_m = sglang_data.get("metrics", {})
+
+            def _delta(va: float, vb: float) -> float:
+                return round((va - vb) / max(abs(va), 1e-9) * 100, 2)
+
+            vllm_ttft = vllm_m.get("ttft", {}).get("p95", 0)
+            sglang_ttft = sglang_m.get("ttft", {}).get("p95", 0)
+            vllm_tps = vllm_m.get("throughput", {}).get("tokens_per_sec", 0)
+            sglang_tps = sglang_m.get("throughput", {}).get("tokens_per_sec", 0)
+
+            response["delta"] = {
+                "ttft_p95_pct": _delta(vllm_ttft, sglang_ttft),
+                "tokens_per_sec_pct": _delta(vllm_tps, sglang_tps),
+                "note": "positive = vllm higher",
+            }
+
+        return JSONResponse(response)
+
+    comp_files = sorted(
+        RESULTS_DIR.glob(f"comparison_{scenario}_*.json"),
+        key=lambda p: p.stat().st_mtime,
+        reverse=True,
+    )
+    comparison_payloads: list[dict[str, Any]] = []
+    for path in comp_files:
+        try:
+            comparison_payloads.append(json.loads(path.read_text()))
+        except Exception:
+            continue
+
+    if model is not None:
+        comparison_payloads = [
+            payload for payload in comparison_payloads if _comparison_file_model(payload) == model
+        ]
+
+    if comparison_payloads:
+        selected = comparison_payloads[0]
+        selected_model = _comparison_file_model(selected)
+        selected.setdefault("model", selected_model)
+        return JSONResponse(selected)
+
+    raise HTTPException(status_code=404, detail=f"No results found for scenario '{scenario}'")
 
 
 @app.post("/api/run")
@@ -716,7 +876,8 @@ async def start_run(req: RunRequest, background_tasks: BackgroundTasks) -> JSONR
         engines=req.engines,
         total=len(req.engines) * _estimate_requests(req.scenario),
     )
-    _jobs[job_id] = job
+    async with _state_lock:
+        _jobs[job_id] = job
     background_tasks.add_task(_run_benchmark_job, job_id, req)
     return JSONResponse({"job_id": job_id, "status": "pending"}, status_code=202)
 
@@ -733,7 +894,8 @@ async def get_run_status(job_id: str) -> JSONResponse:
 async def live_metrics_ws(websocket: WebSocket) -> None:
     """WebSocket endpoint that streams real-time engine metrics and run progress."""
     await websocket.accept()
-    _live_connections.add(websocket)
+    async with _state_lock:
+        _live_connections.add(websocket)
     try:
         while True:
             await asyncio.sleep(1)
@@ -741,7 +903,8 @@ async def live_metrics_ws(websocket: WebSocket) -> None:
     except WebSocketDisconnect:
         pass
     finally:
-        _live_connections.discard(websocket)
+        async with _state_lock:
+            _live_connections.discard(websocket)
 
 
 # ---------------------------------------------------------------------------
@@ -751,18 +914,19 @@ async def live_metrics_ws(websocket: WebSocket) -> None:
 
 async def _broadcast(message: dict[str, Any]) -> None:
     """Push a message to all active WebSocket clients."""
-    dead: set[WebSocket] = set()
-    for ws in _live_connections:
-        try:
-            await ws.send_json(message)
-        except Exception:
-            dead.add(ws)
-    _live_connections.difference_update(dead)
+    async with _state_lock:
+        dead: set[WebSocket] = set()
+        for ws in list(_live_connections):
+            try:
+                await ws.send_json(message)
+            except Exception:
+                dead.add(ws)
+        _live_connections.difference_update(dead)
 
 
 async def _run_benchmark_job(job_id: str, req: RunRequest) -> None:
     """Background task: run the requested scenario and update job status."""
-    from benchmarks.runner import BenchmarkRunner, RequestResult
+    from benchmarks.runner import BenchmarkRunner
     from benchmarks.scenarios import SCENARIOS
     from engines.sglang_client import SGLangClient
     from engines.vllm_client import VLLMClient
@@ -821,8 +985,7 @@ async def _run_benchmark_job(job_id: str, req: RunRequest) -> None:
                 }
             )
 
-            if hasattr(client, "aclose"):
-                await client.aclose()
+            await client.aclose()
 
         job.status = "done"
         job.finished_at = time.time()

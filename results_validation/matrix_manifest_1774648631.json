@@ -1,0 +1,41 @@
+{
+  "started_at": 1774648631.3732054,
+  "finished_at": 1774648847.447575,
+  "model": "Qwen/Qwen2.5-1.5B-Instruct",
+  "tasks": [
+    {
+      "model": "Qwen/Qwen2.5-1.5B-Instruct",
+      "scenario_name": "long_context_stress",
+      "engine": "vllm",
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1774648631.422029,
+      "status": "completed",
+      "finished_at": 1774648642.3099732,
+      "result_path": "results_validation/long_context_stress_VLLMClient_1774648631.json"
+    },
+    {
+      "model": "Qwen/Qwen2.5-1.5B-Instruct",
+      "scenario_name": "prefix_sharing_benefit",
+      "engine": "vllm",
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1774648702.3979568,
+      "status": "completed",
+      "finished_at": 1774648717.0127673,
+      "result_path": "results_validation/prefix_sharing_benefit_VLLMClient_1774648702.json"
+    },
+    {
+      "model": "Qwen/Qwen2.5-1.5B-Instruct",
+      "scenario_name": "structured_generation_speed",
+      "engine": "vllm",
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1774648777.1002493,
+      "status": "completed",
+      "finished_at": 1774648787.388104,
+      "result_path": "results_validation/structured_generation_speed_VLLMClient_1774648777.json"
+    }
+  ],
+  "cooldown_seconds": 60
+}

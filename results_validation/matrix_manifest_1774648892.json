@@ -1,0 +1,41 @@
+{
+  "started_at": 1774648892.6863046,
+  "finished_at": 1774649112.9246159,
+  "model": "Qwen/Qwen2.5-1.5B-Instruct",
+  "tasks": [
+    {
+      "model": "Qwen/Qwen2.5-1.5B-Instruct",
+      "scenario_name": "long_context_stress",
+      "engine": "sglang",
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1774648893.736779,
+      "status": "completed",
+      "finished_at": 1774648904.4549706,
+      "result_path": "results_validation/long_context_stress_SGLangClient_1774648893.json"
+    },
+    {
+      "model": "Qwen/Qwen2.5-1.5B-Instruct",
+      "scenario_name": "prefix_sharing_benefit",
+      "engine": "sglang",
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1774648965.4926445,
+      "status": "completed",
+      "finished_at": 1774648980.4190257,
+      "result_path": "results_validation/prefix_sharing_benefit_SGLangClient_1774648965.json"
+    },
+    {
+      "model": "Qwen/Qwen2.5-1.5B-Instruct",
+      "scenario_name": "structured_generation_speed",
+      "engine": "sglang",
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1774649041.5079393,
+      "status": "completed",
+      "finished_at": 1774649052.9033523,
+      "result_path": "results_validation/structured_generation_speed_SGLangClient_1774649041.json"
+    }
+  ],
+  "cooldown_seconds": 60
+}

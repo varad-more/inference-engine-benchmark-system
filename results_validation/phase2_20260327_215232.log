@@ -1,0 +1,1572 @@
+== Phase 2 start ==
+Fri Mar 27 21:52:32 UTC 2026
+== vLLM Phase 2 ==
+ Container vllm-server  Starting
+ Container vllm-server  Started
+[vllm] health attempt 1
+[2m2026-03-27T21:52:39.594643Z[0m [[33m[1mwarning  [0m] [1mhealth check failed           [0m [[0m[1m[34mVLLMClient[0m][0m [36merror[0m=[35m'Server disconnected without sending a response.'[0m
+                  Engine Health                   
+┏━━━━━━━━┳━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ Engine ┃ Status        ┃ URL                   ┃
+┡━━━━━━━━╇━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━┩
+│ vLLM   │ ✗ unreachable │ http://localhost:8000 │
+│ SGLang │ - skipped     │ http://localhost:8001 │
+└────────┴───────────────┴───────────────────────┘
+[vllm] health attempt 2
+[2m2026-03-27T21:52:57.901425Z[0m [[33m[1mwarning  [0m] [1mhealth check failed           [0m [[0m[1m[34mVLLMClient[0m][0m [36merror[0m=[35m'Server disconnected without sending a response.'[0m
+                  Engine Health                   
+┏━━━━━━━━┳━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ Engine ┃ Status        ┃ URL                   ┃
+┡━━━━━━━━╇━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━┩
+│ vLLM   │ ✗ unreachable │ http://localhost:8000 │
+│ SGLang │ - skipped     │ http://localhost:8001 │
+└────────┴───────────────┴───────────────────────┘
+[vllm] health attempt 3
+[2m2026-03-27T21:53:16.219573Z[0m [[33m[1mwarning  [0m] [1mhealth check failed           [0m [[0m[1m[34mVLLMClient[0m][0m [36merror[0m=[35m'Server disconnected without sending a response.'[0m
+                  Engine Health                   
+┏━━━━━━━━┳━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ Engine ┃ Status        ┃ URL                   ┃
+┡━━━━━━━━╇━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━┩
+│ vLLM   │ ✗ unreachable │ http://localhost:8000 │
+│ SGLang │ - skipped     │ http://localhost:8001 │
+└────────┴───────────────┴───────────────────────┘
+[vllm] health attempt 4
+[2m2026-03-27T21:53:34.525534Z[0m [[33m[1mwarning  [0m] [1mhealth check failed           [0m [[0m[1m[34mVLLMClient[0m][0m [36merror[0m=[35m'Server disconnected without sending a response.'[0m
+                  Engine Health                   
+┏━━━━━━━━┳━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ Engine ┃ Status        ┃ URL                   ┃
+┡━━━━━━━━╇━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━┩
+│ vLLM   │ ✗ unreachable │ http://localhost:8000 │
+│ SGLang │ - skipped     │ http://localhost:8001 │
+└────────┴───────────────┴───────────────────────┘
+[vllm] health attempt 5
+[2m2026-03-27T21:53:52.819957Z[0m [[33m[1mwarning  [0m] [1mhealth check failed           [0m [[0m[1m[34mVLLMClient[0m][0m [36merror[0m=[35m'Server disconnected without sending a response.'[0m
+                  Engine Health                   
+┏━━━━━━━━┳━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ Engine ┃ Status        ┃ URL                   ┃
+┡━━━━━━━━╇━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━┩
+│ vLLM   │ ✗ unreachable │ http://localhost:8000 │
+│ SGLang │ - skipped     │ http://localhost:8001 │
+└────────┴───────────────┴───────────────────────┘
+[vllm] health attempt 6
+[2m2026-03-27T21:54:11.118789Z[0m [[33m[1mwarning  [0m] [1mhealth check failed           [0m [[0m[1m[34mVLLMClient[0m][0m [36merror[0m=[35m'Server disconnected without sending a response.'[0m
+                  Engine Health                   
+┏━━━━━━━━┳━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ Engine ┃ Status        ┃ URL                   ┃
+┡━━━━━━━━╇━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━┩
+│ vLLM   │ ✗ unreachable │ http://localhost:8000 │
+│ SGLang │ - skipped     │ http://localhost:8001 │
+└────────┴───────────────┴───────────────────────┘
+[vllm] health attempt 7
+[2m2026-03-27T21:54:29.424253Z[0m [[33m[1mwarning  [0m] [1mhealth check failed           [0m [[0m[1m[34mVLLMClient[0m][0m [36merror[0m=[35m'Server disconnected without sending a response.'[0m
+                  Engine Health                   
+┏━━━━━━━━┳━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ Engine ┃ Status        ┃ URL                   ┃
+┡━━━━━━━━╇━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━┩
+│ vLLM   │ ✗ unreachable │ http://localhost:8000 │
+│ SGLang │ - skipped     │ http://localhost:8001 │
+└────────┴───────────────┴───────────────────────┘
+[vllm] health attempt 8
+[2m2026-03-27T21:54:47.722585Z[0m [[33m[1mwarning  [0m] [1mhealth check failed           [0m [[0m[1m[34mVLLMClient[0m][0m [36merror[0m=[35m'Server disconnected without sending a response.'[0m
+                  Engine Health                   
+┏━━━━━━━━┳━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ Engine ┃ Status        ┃ URL                   ┃
+┡━━━━━━━━╇━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━┩
+│ vLLM   │ ✗ unreachable │ http://localhost:8000 │
+│ SGLang │ - skipped     │ http://localhost:8001 │
+└────────┴───────────────┴───────────────────────┘
+[vllm] health attempt 9
+[2m2026-03-27T21:55:06.023920Z[0m [[33m[1mwarning  [0m] [1mhealth check failed           [0m [[0m[1m[34mVLLMClient[0m][0m [36merror[0m=[35m'Server disconnected without sending a response.'[0m
+                  Engine Health                   
+┏━━━━━━━━┳━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ Engine ┃ Status        ┃ URL                   ┃
+┡━━━━━━━━╇━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━┩
+│ vLLM   │ ✗ unreachable │ http://localhost:8000 │
+│ SGLang │ - skipped     │ http://localhost:8001 │
+└────────┴───────────────┴───────────────────────┘
+[vllm] health attempt 10
+[2m2026-03-27T21:55:24.320302Z[0m [[33m[1mwarning  [0m] [1mhealth check failed           [0m [[0m[1m[34mVLLMClient[0m][0m [36merror[0m=[35m'Server disconnected without sending a response.'[0m
+                  Engine Health                   
+┏━━━━━━━━┳━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ Engine ┃ Status        ┃ URL                   ┃
+┡━━━━━━━━╇━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━┩
+│ vLLM   │ ✗ unreachable │ http://localhost:8000 │
+│ SGLang │ - skipped     │ http://localhost:8001 │
+└────────┴───────────────┴───────────────────────┘
+[vllm] health attempt 11
+[2m2026-03-27T21:55:42.616692Z[0m [[33m[1mwarning  [0m] [1mhealth check failed           [0m [[0m[1m[34mVLLMClient[0m][0m [36merror[0m=[35m'Server disconnected without sending a response.'[0m
+                  Engine Health                   
+┏━━━━━━━━┳━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ Engine ┃ Status        ┃ URL                   ┃
+┡━━━━━━━━╇━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━┩
+│ vLLM   │ ✗ unreachable │ http://localhost:8000 │
+│ SGLang │ - skipped     │ http://localhost:8001 │
+└────────┴───────────────┴───────────────────────┘
+[vllm] health attempt 12
+[2m2026-03-27T21:56:00.917387Z[0m [[33m[1mwarning  [0m] [1mhealth check failed           [0m [[0m[1m[34mVLLMClient[0m][0m [36merror[0m=[35m'Server disconnected without sending a response.'[0m
+                  Engine Health                   
+┏━━━━━━━━┳━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ Engine ┃ Status        ┃ URL                   ┃
+┡━━━━━━━━╇━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━┩
+│ vLLM   │ ✗ unreachable │ http://localhost:8000 │
+│ SGLang │ - skipped     │ http://localhost:8001 │
+└────────┴───────────────┴───────────────────────┘
+[vllm] health attempt 13
+[2m2026-03-27T21:56:19.217739Z[0m [[33m[1mwarning  [0m] [1mhealth check failed           [0m [[0m[1m[34mVLLMClient[0m][0m [36merror[0m=[35m'Server disconnected without sending a response.'[0m
+                  Engine Health                   
+┏━━━━━━━━┳━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ Engine ┃ Status        ┃ URL                   ┃
+┡━━━━━━━━╇━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━┩
+│ vLLM   │ ✗ unreachable │ http://localhost:8000 │
+│ SGLang │ - skipped     │ http://localhost:8001 │
+└────────┴───────────────┴───────────────────────┘
+[vllm] health attempt 14
+[2m2026-03-27T21:56:37.521799Z[0m [[33m[1mwarning  [0m] [1mhealth check failed           [0m [[0m[1m[34mVLLMClient[0m][0m [36merror[0m=[35m'Server disconnected without sending a response.'[0m
+                  Engine Health                   
+┏━━━━━━━━┳━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ Engine ┃ Status        ┃ URL                   ┃
+┡━━━━━━━━╇━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━┩
+│ vLLM   │ ✗ unreachable │ http://localhost:8000 │
+│ SGLang │ - skipped     │ http://localhost:8001 │
+└────────┴───────────────┴───────────────────────┘
+[vllm] health attempt 15
+[2m2026-03-27T21:56:55.821586Z[0m [[33m[1mwarning  [0m] [1mhealth check failed           [0m [[0m[1m[34mVLLMClient[0m][0m [36merror[0m=[35m'Server disconnected without sending a response.'[0m
+                  Engine Health                   
+┏━━━━━━━━┳━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ Engine ┃ Status        ┃ URL                   ┃
+┡━━━━━━━━╇━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━┩
+│ vLLM   │ ✗ unreachable │ http://localhost:8000 │
+│ SGLang │ - skipped     │ http://localhost:8001 │
+└────────┴───────────────┴───────────────────────┘
+[vllm] health attempt 16
+[1mHTTP Request: GET http://localhost:8000/health "HTTP/1.1 200 OK"[0m
+                Engine Health                 
+┏━━━━━━━━┳━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ Engine ┃ Status    ┃ URL                   ┃
+┡━━━━━━━━╇━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━┩
+│ vLLM   │ ✓ healthy │ http://localhost:8000 │
+│ SGLang │ - skipped │ http://localhost:8001 │
+└────────┴───────────┴───────────────────────┘
+─────────────────────────────── Matrix execution ───────────────────────────────
+  Model          : Qwen/Qwen2.5-1.5B-Instruct
+  Scenarios      : long_context_stress, prefix_sharing_benefit, 
+structured_generation_speed
+  Engines        : vllm
+  Iterations     : 1
+  Cooldown (sec) : 60
+[1mHTTP Request: GET http://localhost:8000/health "HTTP/1.1 200 OK"[0m
+[2m2026-03-27T21:57:11.422071Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mVLLMClient[0m [36mprompt_pack[0m=[35mlong_context[0m [36mscenario[0m=[35mlong_context_stress[0m
+[1mHTTP Request: GET http://localhost:8000/metrics "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: GET http://localhost:8000/metrics "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: GET http://localhost:8000/metrics "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: GET http://localhost:8000/metrics "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: GET http://localhost:8000/metrics "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: GET http://localhost:8000/metrics "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[2m2026-03-27T21:57:22.309858Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_validation/long_context_stress_VLLMClient_1774648631.json[0m
+[1mHTTP Request: GET http://localhost:8000/health "HTTP/1.1 200 OK"[0m
+[2m2026-03-27T21:58:22.397980Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mVLLMClient[0m [36mprompt_pack[0m=[35mshared_prefix[0m [36mscenario[0m=[35mprefix_sharing_benefit[0m
+[1mHTTP Request: GET http://localhost:8000/metrics "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: GET http://localhost:8000/metrics "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: GET http://localhost:8000/metrics "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: GET http://localhost:8000/metrics "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: GET http://localhost:8000/metrics "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: GET http://localhost:8000/metrics "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: GET http://localhost:8000/metrics "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: GET http://localhost:8000/metrics "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[2m2026-03-27T21:58:37.012654Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_validation/prefix_sharing_benefit_VLLMClient_1774648702.json[0m
+[1mHTTP Request: GET http://localhost:8000/health "HTTP/1.1 200 OK"[0m
+[2m2026-03-27T21:59:37.100271Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mVLLMClient[0m [36mprompt_pack[0m=[35mstructured_json[0m [36mscenario[0m=[35mstructured_generation_speed[0m
+[1mHTTP Request: GET http://localhost:8000/metrics "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: GET http://localhost:8000/metrics "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: GET http://localhost:8000/metrics "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: GET http://localhost:8000/metrics "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: GET http://localhost:8000/metrics "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: GET http://localhost:8000/metrics "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8000/tokenize "HTTP/1.1 200 OK"[0m
+[2m2026-03-27T21:59:47.387990Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_validation/structured_generation_speed_VLLMClient_1774648777.json[0m
+✓ Matrix manifest saved to results_validation/matrix_manifest_1774648631.json
+ Container vllm-server  Stopping
+ Container vllm-server  Stopped
+== SGLang Phase 2 ==
+ Container sglang-server  Starting
+ Container sglang-server  Started
+[sglang] health attempt 1
+[2m2026-03-27T22:00:57.811896Z[0m [[33m[1mwarning  [0m] [1mhealth check failed           [0m [[0m[1m[34mSGLangClient[0m][0m [36merror[0m=[35m'Server disconnected without sending a response.'[0m
+                  Engine Health                   
+┏━━━━━━━━┳━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ Engine ┃ Status        ┃ URL                   ┃
+┡━━━━━━━━╇━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━┩
+│ vLLM   │ - skipped     │ http://localhost:8000 │
+│ SGLang │ ✗ unreachable │ http://localhost:8001 │
+└────────┴───────────────┴───────────────────────┘
+[sglang] health attempt 2
+[2m2026-03-27T22:01:16.125394Z[0m [[33m[1mwarning  [0m] [1mhealth check failed           [0m [[0m[1m[34mSGLangClient[0m][0m [36merror[0m=[35m'Server disconnected without sending a response.'[0m
+                  Engine Health                   
+┏━━━━━━━━┳━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ Engine ┃ Status        ┃ URL                   ┃
+┡━━━━━━━━╇━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━┩
+│ vLLM   │ - skipped     │ http://localhost:8000 │
+│ SGLang │ ✗ unreachable │ http://localhost:8001 │
+└────────┴───────────────┴───────────────────────┘
+[sglang] health attempt 3
+[1mHTTP Request: GET http://localhost:8001/health "HTTP/1.1 200 OK"[0m
+                Engine Health                 
+┏━━━━━━━━┳━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ Engine ┃ Status    ┃ URL                   ┃
+┡━━━━━━━━╇━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━┩
+│ vLLM   │ - skipped │ http://localhost:8000 │
+│ SGLang │ ✓ healthy │ http://localhost:8001 │
+└────────┴───────────┴───────────────────────┘
+─────────────────────────────── Matrix execution ───────────────────────────────
+  Model          : Qwen/Qwen2.5-1.5B-Instruct
+  Scenarios      : long_context_stress, prefix_sharing_benefit, 
+structured_generation_speed
+  Engines        : sglang
+  Iterations     : 1
+  Cooldown (sec) : 60
+[1mHTTP Request: GET http://localhost:8001/health "HTTP/1.1 200 OK"[0m
+[2m2026-03-27T22:01:33.736824Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mSGLangClient[0m [36mprompt_pack[0m=[35mlong_context[0m [36mscenario[0m=[35mlong_context_stress[0m
+[1mHTTP Request: GET http://localhost:8001/get_server_info "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: GET http://localhost:8001/get_server_info "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: GET http://localhost:8001/get_server_info "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: GET http://localhost:8001/get_server_info "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: GET http://localhost:8001/get_server_info "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: GET http://localhost:8001/get_server_info "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[2m2026-03-27T22:01:44.454855Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_validation/long_context_stress_SGLangClient_1774648893.json[0m
+[1mHTTP Request: GET http://localhost:8001/health "HTTP/1.1 200 OK"[0m
+[2m2026-03-27T22:02:45.492670Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mSGLangClient[0m [36mprompt_pack[0m=[35mshared_prefix[0m [36mscenario[0m=[35mprefix_sharing_benefit[0m
+[1mHTTP Request: GET http://localhost:8001/get_server_info "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: GET http://localhost:8001/get_server_info "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: GET http://localhost:8001/get_server_info "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: GET http://localhost:8001/get_server_info "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: GET http://localhost:8001/get_server_info "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: GET http://localhost:8001/get_server_info "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: GET http://localhost:8001/get_server_info "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: GET http://localhost:8001/get_server_info "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[2m2026-03-27T22:03:00.418915Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_validation/prefix_sharing_benefit_SGLangClient_1774648965.json[0m
+[1mHTTP Request: GET http://localhost:8001/health "HTTP/1.1 200 OK"[0m
+[2m2026-03-27T22:04:01.507967Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mSGLangClient[0m [36mprompt_pack[0m=[35mstructured_json[0m [36mscenario[0m=[35mstructured_generation_speed[0m
+[1mHTTP Request: GET http://localhost:8001/get_server_info "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: GET http://localhost:8001/get_server_info "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: GET http://localhost:8001/get_server_info "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: GET http://localhost:8001/get_server_info "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: GET http://localhost:8001/get_server_info "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: GET http://localhost:8001/get_server_info "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/v1/completions "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[1mHTTP Request: POST http://localhost:8001/tokenize "HTTP/1.1 200 OK"[0m
+[2m2026-03-27T22:04:12.903236Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_validation/structured_generation_speed_SGLangClient_1774649041.json[0m
+✓ Matrix manifest saved to results_validation/matrix_manifest_1774648892.json
+ Container sglang-server  Stopping
+ Container sglang-server  Stopped
+== Regenerating reports ==
+Generating report from results_validation → results_validation/report.html
+[2m2026-03-27T22:05:17.573484Z[0m [[32m[1minfo     [0m] [1mloaded results                [0m [[0m[1m[34manalysis.report[0m][0m [36mcount[0m=[35m10[0m
+[2m2026-03-27T22:05:17.573712Z[0m [[32m[1minfo     [0m] [1mselected report scope         [0m [[0m[1m[34manalysis.report[0m][0m [36mselected_count[0m=[35m10[0m [36mselected_model[0m=[35mQwen/Qwen2.5-1.5B-Instruct[0m [36mselection_mode[0m=[35msingle-model[0m
+[2m2026-03-27T22:05:17.573835Z[0m [[32m[1minfo     [0m] [1mgenerating CDF chart          [0m [[0m[1m[34manalysis.report[0m][0m
+[2m2026-03-27T22:05:17.836906Z[0m [[32m[1minfo     [0m] [1mgenerating throughput chart   [0m [[0m[1m[34manalysis.report[0m][0m
+[2m2026-03-27T22:05:18.037375Z[0m [[32m[1minfo     [0m] [1mgenerating KV cache chart     [0m [[0m[1m[34manalysis.report[0m][0m
+[2m2026-03-27T22:05:18.162906Z[0m [[32m[1minfo     [0m] [1mgenerating prefix cache chart [0m [[0m[1m[34manalysis.report[0m][0m
+[2m2026-03-27T22:05:18.334656Z[0m [[32m[1minfo     [0m] [1mreport written                [0m [[0m[1m[34manalysis.report[0m][0m [36mpath[0m=[35mresults_validation/report.html[0m [36msize_kb[0m=[35m284[0m
+✓ Report written to results_validation/report.html
+Generating final report from results_validation → 
+results_validation/final_report.md
+✓ Final report written to results_validation/final_report.md from 10 result 
+files
+== Result file count ==
+12
+results_validation/final_report.md
+results_validation/long_context_stress_SGLangClient_1774648893.json
+results_validation/long_context_stress_VLLMClient_1774648631.json
+results_validation/matrix_manifest_1774648631.json
+results_validation/matrix_manifest_1774648892.json
+results_validation/phase2_20260327_215232.log
+results_validation/prefix_sharing_benefit_SGLangClient_1774648965.json
+results_validation/prefix_sharing_benefit_VLLMClient_1774648702.json
+results_validation/report.html
+results_validation/sglang_validation_20260327_212837.log
+results_validation/single_request_latency_SGLangClient_1774647086.json
+results_validation/single_request_latency_VLLMClient_1774646427.json
+results_validation/structured_generation_speed_SGLangClient_1774649041.json
+results_validation/structured_generation_speed_VLLMClient_1774648777.json
+results_validation/throughput_ramp_SGLangClient_1774647131.json
+results_validation/throughput_ramp_VLLMClient_1774646471.json
+results_validation/vllm_validation_20260327_211414.log
+== Phase 2 done ==
+Fri Mar 27 22:05:18 UTC 2026

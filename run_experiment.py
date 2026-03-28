@@ -4,6 +4,9 @@ from __future__ import annotations
 
 import asyncio
 import copy
+import logging
+import os
+import sys
 from pathlib import Path
 
 import structlog
@@ -13,6 +16,68 @@ from rich.console import Console
 from rich.progress import BarColumn, Progress, SpinnerColumn, TextColumn, TimeElapsedColumn
 from rich.table import Table
 
+from engines.base_client import DEFAULT_MODEL
+
+
+def _configure_logging() -> None:
+    """Configure structlog for JSON (production) or colored console (development)."""
+    log_format = os.environ.get("LOG_FORMAT", "console").lower()
+    log_level = os.environ.get("LOG_LEVEL", "INFO").upper()
+
+    shared_processors: list[structlog.types.Processor] = [
+        structlog.contextvars.merge_contextvars,
+        structlog.stdlib.add_log_level,
+        structlog.stdlib.add_logger_name,
+        structlog.processors.TimeStamper(fmt="iso"),
+        structlog.processors.StackInfoRenderer(),
+    ]
+
+    if log_format == "json":
+        shared_processors.append(structlog.processors.format_exc_info)
+        renderer: structlog.types.Processor = structlog.processors.JSONRenderer()
+    else:
+        renderer = structlog.dev.ConsoleRenderer()
+
+    structlog.configure(
+        processors=[
+            *shared_processors,
+            structlog.stdlib.ProcessorFormatter.wrap_for_formatter,
+        ],
+        logger_factory=structlog.stdlib.LoggerFactory(),
+        wrapper_class=structlog.stdlib.BoundLogger,
+        cache_logger_on_first_use=True,
+    )
+
+    formatter = structlog.stdlib.ProcessorFormatter(
+        processors=[
+            structlog.stdlib.ProcessorFormatter.remove_processors_meta,
+            renderer,
+        ],
+    )
+
+    handler = logging.StreamHandler(sys.stderr)
+    handler.setFormatter(formatter)
+    root_logger = logging.getLogger()
+    root_logger.handlers.clear()
+    root_logger.addHandler(handler)
+    root_logger.setLevel(getattr(logging, log_level, logging.INFO))
+
+
+_configure_logging()
+
+
+def _version_callback(value: bool) -> None:
+    if value:
+        from importlib.metadata import version as pkg_version
+
+        try:
+            v = pkg_version("inference-engine-benchmark")
+        except Exception:
+            v = "0.1.0-dev"
+        typer.echo(f"inference-engine-benchmark {v}")
+        raise typer.Exit()
+
+
 app = typer.Typer(
     name="benchmark",
     help="vLLM vs SGLang comparative inference benchmark system.",
@@ -21,12 +86,53 @@ app = typer.Typer(
 console = Console()
 logger = structlog.get_logger(__name__)
 
+
+@app.callback()
+def main(
+    version: bool = typer.Option(
+        False,
+        "--version",
+        "-V",
+        callback=_version_callback,
+        is_eager=True,
+        help="Show version and exit.",
+    ),
+) -> None:
+    """vLLM vs SGLang comparative inference benchmark system."""
+
+
 RESULTS_DIR = Path("results")
 RESULTS_DIR.mkdir(exist_ok=True)
+
+_ENGINE_ORDER = ["vllm", "sglang"]
+_ENGINE_LABELS = {"vllm": "vLLM", "sglang": "SGLang"}
+_ENGINE_PORTS = {"vllm": 8000, "sglang": 8001}
 
 
 def _parse_csv(value: str) -> list[str]:
     return [item.strip() for item in value.split(",") if item.strip()]
+
+
+def _parse_engines(value: str, *, allow_group_aliases: bool = False) -> list[str]:
+    items = [item.lower() for item in _parse_csv(value)]
+    if not items:
+        raise typer.BadParameter("Specify at least one engine.")
+
+    normalized: list[str] = []
+    for item in items:
+        if allow_group_aliases and item in {"all", "both"}:
+            normalized.extend(_ENGINE_ORDER)
+        elif item in _ENGINE_ORDER:
+            normalized.append(item)
+        else:
+            valid = ", ".join([*_ENGINE_ORDER, "both"] if allow_group_aliases else _ENGINE_ORDER)
+            raise typer.BadParameter(f"Unknown engine '{item}'. Valid options: {valid}.")
+
+    deduped: list[str] = []
+    for engine in normalized:
+        if engine not in deduped:
+            deduped.append(engine)
+    return deduped
 
 
 def _make_client(engine: str, model: str, host_override: str | None = None):
@@ -58,18 +164,21 @@ def _get_scenario(scenario_name: str):
 def run(
     scenario: str = typer.Option(..., "--scenario", "-s", help="Scenario name"),
     engines: str = typer.Option("vllm,sglang", "--engines", "-e", help="Comma-separated engines"),
-    model: str = typer.Option("Qwen/Qwen2.5-1.5B-Instruct", "--model", "-m"),
-    prompt_pack: str | None = typer.Option(None, "--prompt-pack", help="Optional prompt-pack override"),
+    model: str = typer.Option(DEFAULT_MODEL, "--model", "-m"),
+    prompt_pack: str | None = typer.Option(
+        None, "--prompt-pack", help="Optional prompt-pack override"
+    ),
     vllm_host: str = typer.Option("localhost", "--vllm-host"),
     sglang_host: str = typer.Option("localhost", "--sglang-host"),
     output_dir: Path | None = typer.Option(None, "--output-dir"),
+    strict: bool = typer.Option(False, "--strict", help="Abort if engine health check fails"),
 ) -> None:
     """Run a benchmark scenario on one or more engines."""
     from benchmarks.runner import BenchmarkRunner, RequestResult
 
     results_dir = output_dir or RESULTS_DIR
     results_dir.mkdir(exist_ok=True)
-    engine_list = [engine.lower() for engine in _parse_csv(engines)]
+    engine_list = _parse_engines(engines)
     bench_scenario = _get_scenario(scenario)
     if prompt_pack:
         bench_scenario.prompt_pack = prompt_pack
@@ -82,53 +191,67 @@ def run(
 
     async def _run() -> None:
         runner = BenchmarkRunner(results_dir=results_dir)
+        active_client = None
 
-        for engine_name in engine_list:
-            host = vllm_host if engine_name == "vllm" else sglang_host
-            client = _make_client(engine_name, model, host)
+        try:
+            for engine_name in engine_list:
+                host = vllm_host if engine_name == "vllm" else sglang_host
+                client = _make_client(engine_name, model, host)
+                active_client = client
 
-            healthy = await client.health_check()
-            if not healthy:
-                console.print(
-                    f"[yellow]Warning: {engine_name} health check failed. Proceeding anyway.[/yellow]"
-                )
+                healthy = await client.health_check()
+                if not healthy:
+                    if strict:
+                        console.print(
+                            f"[red]Error: {engine_name} health check failed (--strict mode).[/red]"
+                        )
+                        await client.aclose()
+                        raise typer.Exit(1)
+                    console.print(
+                        f"[yellow]Warning: {engine_name} health check failed. Proceeding anyway.[/yellow]"
+                    )
 
-            total_reqs = getattr(bench_scenario, "num_requests", None) or getattr(
-                bench_scenario,
-                "requests_per_level",
-                100,
-            )
-
-            with Progress(
-                SpinnerColumn(),
-                TextColumn(f"[bold]{engine_name}[/bold] {{task.description}}"),
-                BarColumn(),
-                TextColumn("{task.completed}/{task.total}"),
-                TimeElapsedColumn(),
-                console=console,
-            ) as progress:
-                task_id = progress.add_task("running...", total=total_reqs)
-
-                def _cb(done: int, total: int, result: RequestResult) -> None:
-                    progress.update(task_id, completed=done)
-
-                results = await runner.run_scenario(
+                total_reqs = getattr(bench_scenario, "num_requests", None) or getattr(
                     bench_scenario,
-                    client,
-                    _cb,
-                    run_metadata={
-                        "model": model,
-                        "engine": engine_name,
-                        "prompt_pack": bench_scenario.prompt_pack,
-                    },
+                    "requests_per_level",
+                    100,
                 )
 
-            path = results.save(results_dir)
-            console.print(f"\n[green]✓[/green] {engine_name} done → [dim]{path}[/dim]")
-            _print_summary_table(engine_name, results)
+                with Progress(
+                    SpinnerColumn(),
+                    TextColumn(f"[bold]{engine_name}[/bold] {{task.description}}"),
+                    BarColumn(),
+                    TextColumn("{task.completed}/{task.total}"),
+                    TimeElapsedColumn(),
+                    console=console,
+                ) as progress:
+                    task_id = progress.add_task("running...", total=total_reqs)
 
-            if hasattr(client, "aclose"):
+                    def _cb(done: int, total: int, result: RequestResult) -> None:
+                        progress.update(task_id, completed=done)
+
+                    results = await runner.run_scenario(
+                        bench_scenario,
+                        client,
+                        _cb,
+                        run_metadata={
+                            "model": model,
+                            "engine": engine_name,
+                            "prompt_pack": bench_scenario.prompt_pack,
+                        },
+                    )
+
+                path = results.save(results_dir)
+                console.print(f"\n[green]✓[/green] {engine_name} done → [dim]{path}[/dim]")
+                _print_summary_table(engine_name, results)
+
                 await client.aclose()
+                active_client = None
+        except KeyboardInterrupt:
+            console.print("\n[yellow]Interrupted — cleaning up...[/yellow]")
+        finally:
+            if active_client is not None:
+                await active_client.aclose()
 
     asyncio.run(_run())
 
@@ -136,7 +259,7 @@ def run(
 @app.command()
 def compare(
     scenario: str = typer.Option(..., "--scenario", "-s"),
-    model: str = typer.Option("Qwen/Qwen2.5-1.5B-Instruct", "--model", "-m"),
+    model: str = typer.Option(DEFAULT_MODEL, "--model", "-m"),
     prompt_pack: str | None = typer.Option(None, "--prompt-pack"),
     vllm_host: str = typer.Option("localhost", "--vllm-host"),
     sglang_host: str = typer.Option("localhost", "--sglang-host"),
@@ -186,8 +309,10 @@ def matrix(
         help="Comma-separated scenarios for the matrix",
     ),
     engines: str = typer.Option("sglang,vllm", "--engines", help="Comma-separated engines"),
-    model: str = typer.Option("Qwen/Qwen2.5-1.5B-Instruct", "--model", "-m"),
-    prompt_pack: str | None = typer.Option(None, "--prompt-pack", help="Optional override for all scenarios"),
+    model: str = typer.Option(DEFAULT_MODEL, "--model", "-m"),
+    prompt_pack: str | None = typer.Option(
+        None, "--prompt-pack", help="Optional override for all scenarios"
+    ),
     iterations: int = typer.Option(1, "--iterations", min=1),
     cooldown_seconds: int = typer.Option(60, "--cooldown-seconds", min=0),
     vllm_host: str = typer.Option("localhost", "--vllm-host"),
@@ -195,7 +320,9 @@ def matrix(
     output_dir: Path | None = typer.Option(None, "--output-dir"),
 ) -> None:
     """Run a sequential scenario x engine x iteration matrix for one active model."""
-    from benchmarks.matrix import run_matrix
+    import json
+    import time
+
     from benchmarks.runner import BenchmarkRunner
 
     results_dir = output_dir or RESULTS_DIR
@@ -204,7 +331,7 @@ def matrix(
     if prompt_pack:
         for scenario_obj in scenario_list:
             scenario_obj.prompt_pack = prompt_pack
-    engine_list = [engine.lower() for engine in _parse_csv(engines)]
+    engine_list = _parse_engines(engines)
 
     console.rule("[bold blue]Matrix execution")
     console.print(f"  Model          : [cyan]{model}[/cyan]")
@@ -213,24 +340,62 @@ def matrix(
     console.print(f"  Iterations     : [cyan]{iterations}[/cyan]")
     console.print(f"  Cooldown (sec) : [cyan]{cooldown_seconds}[/cyan]")
 
-    def _client_factory(engine_name: str, active_model: str):
-        host = vllm_host if engine_name == "vllm" else sglang_host
-        return _make_client(engine_name, active_model, host)
-
     async def _run() -> None:
         runner = BenchmarkRunner(results_dir=results_dir)
-        manifest = await run_matrix(
-            model=model,
-            scenarios=scenario_list,
-            engines=engine_list,
-            iterations=iterations,
-            cooldown_seconds=cooldown_seconds,
-            runner=runner,
-            client_factory=_client_factory,
-            results_dir=results_dir,
-        )
-        manifest_path = results_dir / f"matrix_manifest_{int(manifest.started_at)}.json"
-        manifest.save(manifest_path)
+        started_at = time.time()
+        tasks_log: list[dict] = []
+
+        for bench_scenario in scenario_list:
+            for iteration in range(1, iterations + 1):
+                for engine_name in engine_list:
+                    host = vllm_host if engine_name == "vllm" else sglang_host
+                    client = _make_client(engine_name, model, host)
+                    healthy = await client.health_check()
+                    task_info: dict = {
+                        "model": model,
+                        "scenario_name": bench_scenario.name,
+                        "engine": engine_name,
+                        "iteration": iteration,
+                        "healthy_before_run": healthy,
+                        "started_at": time.time(),
+                    }
+                    if not healthy:
+                        task_info["status"] = "skipped_unhealthy"
+                        tasks_log.append(task_info)
+                        await client.aclose()
+                        continue
+
+                    results = await runner.run_scenario(
+                        bench_scenario,
+                        client,
+                        run_metadata={
+                            "model": model,
+                            "iteration": iteration,
+                            "matrix_execution": True,
+                        },
+                    )
+                    result_path = results.save(results_dir)
+                    task_info.update(
+                        {
+                            "status": "completed",
+                            "finished_at": time.time(),
+                            "result_path": str(result_path),
+                        }
+                    )
+                    tasks_log.append(task_info)
+                    await client.aclose()
+                    if cooldown_seconds > 0:
+                        await asyncio.sleep(cooldown_seconds)
+
+        manifest = {
+            "started_at": started_at,
+            "finished_at": time.time(),
+            "model": model,
+            "tasks": tasks_log,
+            "cooldown_seconds": cooldown_seconds,
+        }
+        manifest_path = results_dir / f"matrix_manifest_{int(started_at)}.json"
+        manifest_path.write_text(json.dumps(manifest, indent=2))
         console.print(f"[green]✓[/green] Matrix manifest saved to {manifest_path}")
 
     asyncio.run(_run())
@@ -240,13 +405,21 @@ def matrix(
 def report(
     output: Path = typer.Option(Path("report.html"), "--output", "-o"),
     results_dir: Path | None = typer.Option(None, "--results-dir"),
+    model: str | None = typer.Option(
+        None,
+        "--model",
+        "-m",
+        help="Restrict the HTML report to a specific model when multiple models exist",
+    ),
 ) -> None:
-    """Generate an HTML report from all saved results."""
+    """Generate an HTML report from saved results."""
     from analysis.report import generate_report
 
     src_dir = results_dir or RESULTS_DIR
     console.print(f"Generating report from [cyan]{src_dir}[/cyan] → [cyan]{output}[/cyan]")
-    generate_report(results_dir=src_dir, output_path=output)
+    if model:
+        console.print(f"  Model filter : [cyan]{model}[/cyan]")
+    generate_report(results_dir=src_dir, output_path=output, model=model)
     console.print(f"[green]✓[/green] Report written to {output}")
 
 
@@ -254,12 +427,21 @@ def report(
 def final_report(
     output: Path = typer.Option(Path("final_report.md"), "--output", "-o"),
     results_dir: Path | None = typer.Option(None, "--results-dir"),
+    model: str | None = typer.Option(
+        None,
+        "--model",
+        "-m",
+        help="Restrict the markdown summary to a specific model when multiple models exist",
+    ),
 ) -> None:
-    """Generate an aggregated markdown summary from all saved result files."""
+    """Generate an aggregated markdown summary from saved result files."""
     from analysis.final_report import generate_final_report
 
     src_dir = results_dir or RESULTS_DIR
-    summary = generate_final_report(results_dir=src_dir, output_path=output)
+    console.print(f"Generating final report from [cyan]{src_dir}[/cyan] → [cyan]{output}[/cyan]")
+    if model:
+        console.print(f"  Model filter : [cyan]{model}[/cyan]")
+    summary = generate_final_report(results_dir=src_dir, output_path=output, model=model)
     console.print(
         f"[green]✓[/green] Final report written to {output} from {summary['total_result_files']} result files"
     )
@@ -267,12 +449,21 @@ def final_report(
 
 @app.command()
 def serve(
-    host: str = typer.Option("0.0.0.0", "--host"),
+    host: str = typer.Option("127.0.0.1", "--host"),
     port: int = typer.Option(3000, "--port"),
     reload: bool = typer.Option(False, "--reload"),
+    results_dir: Path | None = typer.Option(
+        None,
+        "--results-dir",
+        help="Directory of benchmark JSON files to expose in the dashboard",
+    ),
 ) -> None:
     """Start the benchmark dashboard server."""
+    if results_dir is not None:
+        os.environ["RESULTS_DIR"] = str(results_dir)
     console.print(f"[bold]Starting dashboard on http://{host}:{port}[/bold]")
+    if results_dir is not None:
+        console.print(f"  Results dir  : [cyan]{results_dir}[/cyan]")
     uvicorn.run("dashboard.app:app", host=host, port=port, reload=reload, log_level="info")
 
 
@@ -310,37 +501,46 @@ def list_prompt_packs() -> None:
 
 @app.command()
 def health(
+    engines: str = typer.Option(
+        "both",
+        "--engines",
+        "-e",
+        help="Comma-separated engines to check: vllm, sglang, or both",
+    ),
     vllm_host: str = typer.Option("localhost", "--vllm-host"),
     sglang_host: str = typer.Option("localhost", "--sglang-host"),
-    model: str = typer.Option("Qwen/Qwen2.5-1.5B-Instruct", "--model"),
+    model: str = typer.Option(DEFAULT_MODEL, "--model"),
 ) -> None:
-    """Check health of both inference engines."""
-    from engines.sglang_client import SGLangClient
-    from engines.vllm_client import VLLMClient
+    """Check health of one or more inference engines."""
+    engine_list = _parse_engines(engines, allow_group_aliases=True)
+    host_map = {"vllm": vllm_host, "sglang": sglang_host}
 
     async def _check() -> None:
-        vllm = VLLMClient(host=vllm_host, port=8000, model=model)
-        sglang = SGLangClient(host=sglang_host, port=8001, model=model)
+        statuses: dict[str, bool] = {}
 
-        v_ok = await vllm.health_check()
-        s_ok = await sglang.health_check()
-        await vllm.aclose()
-        await sglang.aclose()
+        for engine_name in engine_list:
+            client = _make_client(engine_name, model, host_map[engine_name])
+            try:
+                statuses[engine_name] = await client.health_check()
+            finally:
+                await client.aclose()
 
         table = Table(title="Engine Health")
         table.add_column("Engine")
         table.add_column("Status")
         table.add_column("URL")
-        table.add_row(
-            "vLLM",
-            "[green]✓ healthy[/green]" if v_ok else "[red]✗ unreachable[/red]",
-            f"http://{vllm_host}:8000",
-        )
-        table.add_row(
-            "SGLang",
-            "[green]✓ healthy[/green]" if s_ok else "[red]✗ unreachable[/red]",
-            f"http://{sglang_host}:8001",
-        )
+        for engine_name in _ENGINE_ORDER:
+            host = host_map[engine_name]
+            url = f"http://{host}:{_ENGINE_PORTS[engine_name]}"
+            if engine_name in statuses:
+                status = (
+                    "[green]✓ healthy[/green]"
+                    if statuses[engine_name]
+                    else "[red]✗ unreachable[/red]"
+                )
+            else:
+                status = "[dim]- skipped[/dim]"
+            table.add_row(_ENGINE_LABELS[engine_name], status, url)
         console.print(table)
 
     asyncio.run(_check())

@@ -3,15 +3,18 @@
 from __future__ import annotations
 
 import asyncio
-import json
 import time
+from collections.abc import Callable
 from dataclasses import dataclass, field
-from typing import TYPE_CHECKING, Any, AsyncIterator, Callable
+from typing import TYPE_CHECKING, Any
 
-import httpx
 import structlog
 
-from engines.base_client import BaseInferenceClient, EngineMetrics, GenerationResult
+from engines.base_client import (
+    DEFAULT_MODEL,
+    BaseInferenceClient,
+    EngineMetrics,
+)
 
 if TYPE_CHECKING:
     pass  # sglang imported lazily to keep import optional
@@ -37,97 +40,17 @@ class SGLangClient(BaseInferenceClient):
         self,
         host: str = "localhost",
         port: int = 8001,
-        model: str = "Qwen/Qwen2.5-1.5B-Instruct",
+        model: str = DEFAULT_MODEL,
         timeout: float = 120.0,
         runtime_model_path: str | None = None,
     ) -> None:
-        super().__init__(host, port, model)
-        self._timeout = timeout
+        super().__init__(host, port, model, timeout)
         self._runtime_model_path = runtime_model_path or model
-        self._http = httpx.AsyncClient(
-            base_url=self.base_url,
-            timeout=httpx.Timeout(timeout),
-        )
-        self._sgl_runtime: Any = None  # lazy-initialised sglang.Runtime
+        self._sgl_runtime: Any = None  # lazy initialised sglang.Runtime
 
     # ------------------------------------------------------------------
-    # Core API
+    # Metrics (SGLang-specific: /get_server_info endpoint)
     # ------------------------------------------------------------------
-
-    async def generate(
-        self,
-        prompt: str,
-        max_tokens: int = 256,
-        temperature: float = 0.0,
-    ) -> GenerationResult:
-        tokens: list[str] = []
-        first_token_time: float | None = None
-        start = time.monotonic()
-
-        async for token in self.generate_stream(prompt, max_tokens, temperature):
-            if first_token_time is None:
-                first_token_time = time.monotonic()
-            tokens.append(token)
-
-        end = time.monotonic()
-        first_token_time = first_token_time or end
-        text = "".join(tokens)
-
-        prompt_tokens = len(prompt.split())  # fallback estimate
-        output_tokens = len(tokens)
-
-        return GenerationResult.from_timing(
-            text=text,
-            start_time=start,
-            first_token_time=first_token_time,
-            end_time=end,
-            prompt_tokens=prompt_tokens,
-            output_tokens=output_tokens,
-        )
-
-    async def generate_stream(
-        self,
-        prompt: str,
-        max_tokens: int = 256,
-        temperature: float = 0.0,
-    ) -> AsyncIterator[str]:
-        """Stream tokens from SGLang's /v1/completions (SSE)."""
-        payload = {
-            "model": self.model,
-            "prompt": prompt,
-            "max_tokens": max_tokens,
-            "temperature": temperature,
-            "stream": True,
-        }
-        async with self._http.stream(
-            "POST",
-            "/v1/completions",
-            json=payload,
-            headers={"Accept": "text/event-stream"},
-        ) as response:
-            response.raise_for_status()
-            async for raw_line in response.aiter_lines():
-                line = raw_line.strip()
-                if not line or not line.startswith("data:"):
-                    continue
-                data_str = line[len("data:"):].strip()
-                if data_str == "[DONE]":
-                    break
-                try:
-                    chunk = json.loads(data_str)
-                    text = chunk["choices"][0].get("text", "")
-                    if text:
-                        yield text
-                except (json.JSONDecodeError, KeyError, IndexError):
-                    continue
-
-    async def health_check(self) -> bool:
-        try:
-            r = await self._http.get("/health")
-            return r.status_code == 200
-        except Exception as exc:
-            self._log.warning("sglang health check failed", error=str(exc))
-            return False
 
     async def get_metrics(self) -> EngineMetrics:
         """Fetch metrics from SGLang's /get_server_info endpoint."""
@@ -223,18 +146,12 @@ class SGLangClient(BaseInferenceClient):
         )
 
     async def aclose(self) -> None:
-        await self._http.aclose()
+        await super().aclose()
         if self._sgl_runtime is not None:
             try:
                 self._sgl_runtime.shutdown()
             except Exception:
-                pass
-
-    async def __aenter__(self) -> "SGLangClient":
-        return self
-
-    async def __aexit__(self, *_: object) -> None:
-        await self.aclose()
+                self._log.debug("sglang runtime shutdown error", exc_info=True)
 
 
 if __name__ == "__main__":
