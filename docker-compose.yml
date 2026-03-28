@@ -49,7 +49,7 @@ services:
       - "8000"
       - "--enable-prefix-caching"
       - "--max-model-len"
-      - "8192"
+      - "${MAX_MODEL_LEN:-8192}"
       - "--gpu-memory-utilization"
       - "0.85"
       - "--served-model-name"
@@ -90,7 +90,7 @@ services:
       - "--mem-fraction-static"
       - "0.85"
       - "--context-length"
-      - "8192"
+      - "${MAX_MODEL_LEN:-8192}"
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8001/health"]
       interval: 30s
