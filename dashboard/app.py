@@ -780,7 +780,9 @@ async def get_result(result_id: str) -> JSONResponse:
 
 @app.get("/api/current")
 async def current_activity(
-    model: str | None = Query(default=None, description="Optional model filter for result summaries"),
+    model: str | None = Query(
+        default=None, description="Optional model filter for result summaries"
+    ),
 ) -> JSONResponse:
     """Return active benchmark info and optionally filtered result summaries."""
     return JSONResponse(_current_activity_payload(model=model))
