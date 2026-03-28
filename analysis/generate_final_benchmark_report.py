@@ -6,19 +6,22 @@ import re
 from collections.abc import Iterable
 from pathlib import Path
 
-REPORT_DATE = "2026-03-22"
+REPORT_DATE = "2026-03-28"
 RESULTS_DIR = Path("results")
 OUTPUT_DIR = Path("reports")
 FIGURES_DIR = OUTPUT_DIR / "figures"
 
 TARGET_MODELS = [
-    {"id": "google/gemma-2-2b-it", "name": "Gemma 2B", "size_b": 2},
-    {"id": "microsoft/Phi-3-mini-4k-instruct", "name": "Phi-3 mini", "size_b": 3},
-    {"id": "Qwen/Qwen2.5-7B-Instruct", "name": "Qwen 7B", "size_b": 7},
-    {"id": "mistralai/Mistral-7B-Instruct-v0.3", "name": "Mistral 7B", "size_b": 7},
-    {"id": "google/gemma-2-9b-it", "name": "Gemma 9B", "size_b": 9},
+    {"id": "google/gemma-2-2b-it", "dir": "gemma-2-2b-it", "name": "Gemma 2B", "size_b": 2},
+    {"id": "meta-llama/Llama-3.2-3B-Instruct", "dir": "llama-3.2-3b-instruct", "name": "Llama 3.2 3B", "size_b": 3},
+    {"id": "microsoft/Phi-3-mini-4k-instruct", "dir": "phi-3-mini-4k-instruct", "name": "Phi-3 mini", "size_b": 4},
+    {"id": "Qwen/Qwen2.5-7B-Instruct", "dir": "qwen2.5-7b-instruct", "name": "Qwen 7B", "size_b": 7},
+    {"id": "mistralai/Mistral-7B-Instruct-v0.3", "dir": "mistral-7b-instruct-v0.3", "name": "Mistral 7B", "size_b": 7},
+    {"id": "meta-llama/Llama-3.1-8B-Instruct", "dir": "llama-3.1-8b-instruct", "name": "Llama 3.1 8B", "size_b": 8},
+    {"id": "google/gemma-2-9b-it", "dir": "gemma-2-9b-it", "name": "Gemma 9B", "size_b": 9},
 ]
 TARGET_MODEL_MAP = {entry["id"]: entry for entry in TARGET_MODELS}
+DIR_NAME_TO_MODEL_ID = {entry["dir"]: entry["id"] for entry in TARGET_MODELS}
 MODEL_ORDER = [entry["name"] for entry in TARGET_MODELS]
 SCENARIO_ORDER = ["single_request_latency", "throughput_ramp"]
 ENGINE_ORDER = ["vLLM", "SGLang"]
@@ -30,7 +33,7 @@ MODEL_NOTES = {
         "SGLang could not be included on this setup because the FlashInfer/CUDA graph path failed on unsupported `head_dim=96`.",
     ],
     "google/gemma-2-9b-it": [
-        "vLLM required tuned launch settings on the single A10G: `context=4096` and `gpu_memory_utilization=0.92`.",
+        "vLLM required tuned launch settings on the single A10G: `max_model_len=2048`, `gpu_memory_utilization=0.95`, `--disable-frontend-multiprocessing`, and `--enforce-eager`.",
     ],
 }
 
@@ -141,6 +144,7 @@ def _extract_model_id(
         data.get("model"),
         data.get("model_id"),
         model_map_from_logs.get(path.name),
+        DIR_NAME_TO_MODEL_ID.get(path.parent.name),
     ]
     for candidate in candidates:
         if candidate in TARGET_MODEL_MAP:
@@ -224,7 +228,7 @@ def load_latest_rows() -> list[dict]:
     model_map_from_logs = _load_result_model_map_from_logs()
     snapshot_hints = _load_snapshot_hints()
 
-    for path in sorted(RESULTS_DIR.glob("*Client_*.json")):
+    for path in sorted(RESULTS_DIR.rglob("*Client_*.json")):
         try:
             data = json.loads(path.read_text())
         except Exception:
@@ -517,6 +521,7 @@ def build_markdown(rows: list[dict]) -> str:
     best_rps = best_by(rows, "requests_per_sec", scenario="throughput_ramp")
     takeaways = generate_takeaways(rows)
     notes = sorted({note for model_id, notes in MODEL_NOTES.items() for note in notes})
+    models_included = ", ".join(MODEL_ORDER)
 
     return f"""# Final Multi-Model Benchmark Report ({REPORT_DATE})
 
@@ -536,7 +541,7 @@ This report consolidates the completed benchmark matrix collected on an **AWS g5
 - Instance: **AWS g5.2xlarge**
 - GPU: **NVIDIA A10G, 24 GB VRAM**
 - Execution policy: **one engine at a time**
-- Models included: Gemma 2B, Phi-3 mini, Qwen 7B, Mistral 7B, Gemma 9B
+- Models included: {models_included}
 
 ## Important notes
 
@@ -599,6 +604,7 @@ def build_html(rows: list[dict]) -> str:
     best_tps = best_by(rows, "tokens_per_sec", scenario="throughput_ramp")
     best_rps = best_by(rows, "requests_per_sec", scenario="throughput_ramp")
     notes = sorted({note for model_id, notes in MODEL_NOTES.items() for note in notes})
+    models_included = ", ".join(MODEL_ORDER)
 
     def render_table(table_rows: list[dict]) -> str:
         body = "".join(
@@ -649,6 +655,7 @@ def build_html(rows: list[dict]) -> str:
       <li>AWS <strong>g5.2xlarge</strong></li>
       <li>NVIDIA <strong>A10G 24 GB</strong></li>
       <li>Sequential engine execution on a single GPU</li>
+      <li>Models included: <strong>{html.escape(models_included)}</strong></li>
     </ul>
   </div>
 

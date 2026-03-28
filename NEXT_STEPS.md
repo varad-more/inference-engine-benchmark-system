@@ -155,7 +155,7 @@ Once the pipeline is proven with Qwen 1.5B, repeat with the models from the prio
 - `mistralai/Mistral-7B-Instruct-v0.3`
 - `google/gemma-2-9b-it`
 
-Use `matrix` with `--iterations 2` and `--cooldown-seconds 300` for stable results.
+Use `matrix` with `--iterations 2` and `--cooldown-seconds 120` for the next run.
 
 Store each model in its own result directory to avoid mixed-model comparisons in the dashboard and HTML report. For example:
 

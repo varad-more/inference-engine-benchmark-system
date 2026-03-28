@@ -1,0 +1,118 @@
+{
+  "started_at": 1774729401.7585523,
+  "finished_at": 1774737351.4051096,
+  "model": "google/gemma-2-9b-it",
+  "tasks": [
+    {
+      "model": "google/gemma-2-9b-it",
+      "scenario_name": "single_request_latency",
+      "engine": "vllm",
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1774729401.8069258,
+      "status": "completed",
+      "finished_at": 1774729644.679082,
+      "result_path": "results/gemma-2-9b-it/single_request_latency_VLLMClient_1774729401.json"
+    },
+    {
+      "model": "google/gemma-2-9b-it",
+      "scenario_name": "single_request_latency",
+      "engine": "vllm",
+      "iteration": 2,
+      "healthy_before_run": true,
+      "started_at": 1774729944.779998,
+      "status": "completed",
+      "finished_at": 1774730187.6314743,
+      "result_path": "results/gemma-2-9b-it/single_request_latency_VLLMClient_1774729944.json"
+    },
+    {
+      "model": "google/gemma-2-9b-it",
+      "scenario_name": "throughput_ramp",
+      "engine": "vllm",
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1774730487.765689,
+      "status": "completed",
+      "finished_at": 1774732590.615492,
+      "result_path": "results/gemma-2-9b-it/throughput_ramp_VLLMClient_1774730487.json"
+    },
+    {
+      "model": "google/gemma-2-9b-it",
+      "scenario_name": "throughput_ramp",
+      "engine": "vllm",
+      "iteration": 2,
+      "healthy_before_run": true,
+      "started_at": 1774732890.743381,
+      "status": "completed",
+      "finished_at": 1774735000.122192,
+      "result_path": "results/gemma-2-9b-it/throughput_ramp_VLLMClient_1774732890.json"
+    },
+    {
+      "model": "google/gemma-2-9b-it",
+      "scenario_name": "long_context_stress",
+      "engine": "vllm",
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1774735300.247544,
+      "status": "completed",
+      "finished_at": 1774735326.1603699,
+      "result_path": "results/gemma-2-9b-it/long_context_stress_VLLMClient_1774735300.json"
+    },
+    {
+      "model": "google/gemma-2-9b-it",
+      "scenario_name": "long_context_stress",
+      "engine": "vllm",
+      "iteration": 2,
+      "healthy_before_run": true,
+      "started_at": 1774735626.2884903,
+      "status": "completed",
+      "finished_at": 1774735652.7836695,
+      "result_path": "results/gemma-2-9b-it/long_context_stress_VLLMClient_1774735626.json"
+    },
+    {
+      "model": "google/gemma-2-9b-it",
+      "scenario_name": "prefix_sharing_benefit",
+      "engine": "vllm",
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1774735952.9184284,
+      "status": "completed",
+      "finished_at": 1774736007.331875,
+      "result_path": "results/gemma-2-9b-it/prefix_sharing_benefit_VLLMClient_1774735952.json"
+    },
+    {
+      "model": "google/gemma-2-9b-it",
+      "scenario_name": "prefix_sharing_benefit",
+      "engine": "vllm",
+      "iteration": 2,
+      "healthy_before_run": true,
+      "started_at": 1774736307.4461215,
+      "status": "completed",
+      "finished_at": 1774736361.7467136,
+      "result_path": "results/gemma-2-9b-it/prefix_sharing_benefit_VLLMClient_1774736307.json"
+    },
+    {
+      "model": "google/gemma-2-9b-it",
+      "scenario_name": "structured_generation_speed",
+      "engine": "vllm",
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1774736661.8648624,
+      "status": "completed",
+      "finished_at": 1774736707.1573062,
+      "result_path": "results/gemma-2-9b-it/structured_generation_speed_VLLMClient_1774736661.json"
+    },
+    {
+      "model": "google/gemma-2-9b-it",
+      "scenario_name": "structured_generation_speed",
+      "engine": "vllm",
+      "iteration": 2,
+      "healthy_before_run": true,
+      "started_at": 1774737007.251874,
+      "status": "completed",
+      "finished_at": 1774737051.3202055,
+      "result_path": "results/gemma-2-9b-it/structured_generation_speed_VLLMClient_1774737007.json"
+    }
+  ],
+  "cooldown_seconds": 300
+}
