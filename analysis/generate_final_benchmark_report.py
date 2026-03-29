@@ -29,9 +29,6 @@ ENGINE_LABELS = {"VLLMClient": "vLLM", "SGLangClient": "SGLang"}
 COLORS = {"vLLM": "#5B8DEF", "SGLang": "#F5A524"}
 
 MODEL_NOTES = {
-    "microsoft/Phi-3-mini-4k-instruct": [
-        "SGLang could not be included on this setup because the FlashInfer/CUDA graph path failed on unsupported `head_dim=96`.",
-    ],
     "google/gemma-2-9b-it": [
         "vLLM required tuned launch settings on the single A10G: `max_model_len=2048`, `gpu_memory_utilization=0.95`, `--disable-frontend-multiprocessing`, and `--enforce-eager`.",
     ],
