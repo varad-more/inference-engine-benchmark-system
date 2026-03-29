@@ -478,6 +478,7 @@ async def dashboard_home() -> HTMLResponse:
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <title>Inference Benchmark Dashboard</title>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
         <style>
           :root {
             --bg: #0b1020;
@@ -513,6 +514,7 @@ async def dashboard_home() -> HTMLResponse:
           .small { font-size: 0.88rem; }
           .compare-grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(220px,1fr)); gap:0.75rem; }
           .compare-item { background: var(--panel-3); border:1px solid var(--border); border-radius: 10px; padding: 0.75rem; }
+          .chart-container { position: relative; height: 350px; width: 100%; background: var(--panel-3); border: 1px solid var(--border); border-radius: 10px; padding: 1rem; padding-bottom: 2rem; box-sizing: border-box; }
         </style>
       </head>
       <body>
@@ -555,6 +557,13 @@ async def dashboard_home() -> HTMLResponse:
           <div class="card wide">
             <h2>Latest result files</h2>
             <div id="results">Loading…</div>
+          </div>
+          <div class="card wide">
+            <h2>Visualizations</h2>
+            <div class="compare-grid" style="gap: 1.5rem">
+              <div class="chart-container"><canvas id="latencyChart"></canvas></div>
+              <div class="chart-container"><canvas id="throughputChart"></canvas></div>
+            </div>
           </div>
           <div class="card">
             <h2>single_request_latency compare</h2>
@@ -742,8 +751,51 @@ async def dashboard_home() -> HTMLResponse:
               try { if (throughputRes && throughputRes.ok) throughput = await throughputRes.json(); } catch (_) {}
               renderCompare('compare-latency', latency, 'No latency comparison yet.');
               renderCompare('compare-throughput', throughput, 'No throughput comparison yet.');
+              renderCharts(results);
             } catch (err) {
               document.getElementById('current').innerHTML = `<pre>Failed to load dashboard data: ${esc(err)}</pre>`;
+            }
+          }
+
+          let latencyChartInstance = null;
+          let throughputChartInstance = null;
+
+          function renderCharts(results) {
+            const chartData = results.filter(r => r.type === 'result');
+            const latencyData = chartData.filter(r => r.scenario === 'single_request_latency' && r.ttft_p95_ms);
+            const tpsData = chartData.filter(r => r.scenario === 'throughput_ramp' && r.tokens_per_sec);
+            const models = [...new Set(chartData.map(r => r.model).filter(Boolean))];
+
+            const ctxL = document.getElementById('latencyChart');
+            if (ctxL && models.length > 0) {
+              if (latencyChartInstance) latencyChartInstance.destroy();
+              latencyChartInstance = new Chart(ctxL, {
+                type: 'bar',
+                data: {
+                  labels: models,
+                  datasets: [
+                    { label: 'vLLM', backgroundColor: '#5B8DEF', data: models.map(m => latencyData.find(d => d.model === m && d.engine === 'vLLM')?.ttft_p95_ms || 0) },
+                    { label: 'SGLang', backgroundColor: '#F5A524', data: models.map(m => latencyData.find(d => d.model === m && d.engine === 'SGLang')?.ttft_p95_ms || 0) }
+                  ]
+                },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { title: { display: true, text: 'Single Request TTFT p95 (ms) [Lower is Better]', color: '#e8eefc' }, legend: { labels: { color: '#e8eefc' } } }, scales: { y: { ticks: { color: '#9fb0d0' }, grid: { color: '#27335a' } }, x: { ticks: { color: '#9fb0d0' }, grid: { color: '#27335a' } } } }
+              });
+            }
+
+            const ctxT = document.getElementById('throughputChart');
+            if (ctxT && models.length > 0) {
+              if (throughputChartInstance) throughputChartInstance.destroy();
+              throughputChartInstance = new Chart(ctxT, {
+                type: 'bar',
+                data: {
+                  labels: models,
+                  datasets: [
+                    { label: 'vLLM', backgroundColor: '#5B8DEF', data: models.map(m => tpsData.find(d => d.model === m && d.engine === 'vLLM')?.tokens_per_sec || 0) },
+                    { label: 'SGLang', backgroundColor: '#F5A524', data: models.map(m => tpsData.find(d => d.model === m && d.engine === 'SGLang')?.tokens_per_sec || 0) }
+                  ]
+                },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { title: { display: true, text: 'Throughput (Tokens / sec) [Higher is Better]', color: '#e8eefc' }, legend: { labels: { color: '#e8eefc' } } }, scales: { y: { ticks: { color: '#9fb0d0' }, grid: { color: '#27335a' } }, x: { ticks: { color: '#9fb0d0' }, grid: { color: '#27335a' } } } }
+              });
             }
           }
 

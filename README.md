@@ -838,6 +838,20 @@ terraform destroy \
 
 **140 benchmark runs** across 7 models, 5 scenarios, and 2 inference engines on a single NVIDIA A10G 24GB (AWS g5.2xlarge). Each scenario-engine-model combination was run twice and averaged. All runs executed sequentially — one engine at a time — to avoid GPU memory contention.
 
+### Visual Summary
+
+#### Single-request latency (TTFT p95)
+![Single request TTFT p95](reports/figures/single_request_ttft_p95.svg)
+
+#### Throughput tokens/sec
+![Throughput tokens per second](reports/figures/throughput_tokens_per_sec.svg)
+
+#### Throughput requests/sec
+![Throughput requests per second](reports/figures/throughput_requests_per_sec.svg)
+
+#### Throughput tradeoff map
+![Throughput tradeoff map](reports/figures/throughput_tradeoff.svg)
+
 ### Key Findings
 
 - **vLLM wins time-to-first-token (TTFT) in 31 of 35 paired comparisons.** The gap is largest on small models (Gemma 2B: 22.5 ms vs 31.6 ms) and narrows at 7B+ scale.
