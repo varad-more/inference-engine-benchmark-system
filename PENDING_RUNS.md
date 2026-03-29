@@ -2,10 +2,11 @@
 
 ## What's missing
 
-**Nothing pending right now.**
+**Main benchmark matrix:** complete.
 
-Gemma 9B on vLLM was the last missing benchmark leg, and it has now completed.
-Everything else is complete (7 models, both engines where supported, except the known Phi-3 mini SGLang exclusion).
+Gemma 9B on vLLM was the last missing leg in the original validated matrix, and it has now completed.
+
+**Optional follow-up:** Phi-3 mini on SGLang is now potentially recoverable with a custom workaround config (`docker-compose.phi3mini-sglang-a10g.yml`), but it has not been rerun into the published benchmark set yet.
 
 ## Automation scripts
 
@@ -16,10 +17,18 @@ Use these repo-root scripts to run and verify the remaining work:
 ./pending_run_gemma9b_vllm_verify.sh
 ```
 
-Known-good compose override for this machine:
+Known-good compose overrides for this machine:
 
 ```bash
 docker compose -f docker-compose.yml -f docker-compose.gemma9b-vllm-a10g.yml --profile vllm up -d vllm
+docker compose -f docker-compose.yml -f docker-compose.phi3mini-sglang-a10g.yml --profile sglang up -d sglang
+```
+
+Optional Phi-3 mini SGLang rerun helpers:
+
+```bash
+./pending_run_phi3mini_sglang.sh
+./pending_run_phi3mini_sglang_verify.sh
 ```
 
 ## Debugging the 404 on /v1/completions
