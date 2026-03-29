@@ -3,8 +3,7 @@
 Source directory: `results/gemma-2-9b-it`
 Result files considered: **20**
 
-Model filter: `google/gemma-2-9b-it`
-Selection mode: `explicit-model`
+Models detected: `google/gemma-2-9b-it`
 
 ## google/gemma-2-9b-it
 
