@@ -19,7 +19,13 @@ def load_results(results_dir: Path = RESULTS_DIR) -> list[dict[str, Any]]:
     Each returned dict has an extra ``_filename`` key with the source filename
     and is guaranteed to contain ``scenario_name``, ``engine_name``, and ``metrics``.
     """
-    files = sorted(results_dir.glob("*.json"), key=lambda p: p.stat().st_mtime)
+    def safe_mtime(p: Path) -> float:
+        try:
+            return p.stat().st_mtime
+        except PermissionError:
+            return 0.0
+
+    files = sorted(results_dir.glob("*.json"), key=safe_mtime)
     data: list[dict[str, Any]] = []
     for f in files:
         try:
