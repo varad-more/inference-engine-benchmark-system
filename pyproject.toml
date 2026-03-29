@@ -65,6 +65,9 @@ select = ["E", "F", "I", "UP"]
 "run_experiment.py" = ["E501"]
 "tests/test_dashboard.py" = ["E501"]
 
+[tool.ruff.format]
+exclude = ["analysis/generate_final_benchmark_report.py"]
+
 [tool.mypy]
 python_version = "3.11"
 ignore_missing_imports = true
