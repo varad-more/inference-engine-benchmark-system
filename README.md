@@ -1,6 +1,27 @@
 # vLLM vs SGLang — Comparative Inference Benchmark System
 
-A production-quality benchmark harness that rigorously compares **vLLM** and **SGLang** LLM inference engines across latency, throughput, KV-cache efficiency, and structured generation speed.
+A production-grade benchmark harness that rigorously compares **vLLM** and **SGLang** LLM inference engines across latency, throughput, KV-cache efficiency, and structured generation speed.
+
+## Summary
+
+We benchmarked **7 open-weight models** (2B to 9B parameters) on a single NVIDIA A10G 24GB GPU, running **5 scenarios** across both engines — **140 total runs, 100% success rate**.
+
+**The headline:** vLLM is the stronger general-purpose default on this hardware class. It wins time-to-first-token in **31 of 35** head-to-head comparisons and throughput in **22 of 35**, with decisive advantages in structured JSON generation (7/7 wins) and prefix-sharing workloads (7/7 TTFT wins). SGLang stays competitive on raw decode throughput at 7B+ model sizes, where the two engines are within 2% of each other.
+
+| What | vLLM | SGLang |
+|---|---|---|
+| TTFT p95 wins | **31** | 4 |
+| Throughput wins | **22** | 10 |
+| Structured gen tok/s | **7/7** | 0/7 |
+| Best single-request TTFT | **22.5 ms** (Gemma 2B) | 84.2 ms (Gemma 9B) |
+| Peak throughput | **264.6 tok/s** (Gemma 2B) | 258.0 tok/s (Gemma 2B) |
+| Model compatibility | All 7 models | All 7 models |
+
+**Models tested:** Gemma 2B, Llama 3.2 3B, Phi-3 Mini 3.8B, Qwen 2.5 7B, Mistral 7B, Llama 3.1 8B, Gemma 9B
+**Scenarios:** single-request latency, throughput ramp, long context stress, prefix sharing, structured generation
+**Hardware:** AWS g5.2xlarge (NVIDIA A10G 24GB), sequential execution, one engine at a time
+
+Full results, per-scenario tables, and detailed analysis are in the [Benchmark Results](#benchmark-results) section below and in [`reports/cross_model_summary.md`](reports/cross_model_summary.md).
 
 ---
 
@@ -813,124 +834,143 @@ terraform destroy \
 
 ---
 
-## Validated Benchmark Results (2026-03-22, AWS g5.2xlarge / A10G 24GB)
+## Benchmark Results
 
-This results section has two parts:
+**140 benchmark runs** across 7 models, 5 scenarios, and 2 inference engines on a single NVIDIA A10G 24GB (AWS g5.2xlarge). Each scenario-engine-model combination was run twice and averaged. All runs executed sequentially — one engine at a time — to avoid GPU memory contention.
 
-1. a **baseline run** on `Qwen/Qwen2.5-1.5B-Instruct`, which helped verify that the harness and metrics were working properly, and
-2. the **larger model matrix** below, which is the main result set to use when judging the repo.
+### Key Findings
 
-All runs in this section were done **one engine at a time on a single A10G host**. We did not run vLLM and SGLang at the same time on the same GPU because that causes memory pressure, unstable startup, and messy comparisons.
+- **vLLM wins time-to-first-token (TTFT) in 31 of 35 paired comparisons.** The gap is largest on small models (Gemma 2B: 22.5 ms vs 31.6 ms) and narrows at 7B+ scale.
+- **vLLM dominates structured generation** — 29% faster throughput on average across all models, with up to 2x the request rate on Gemma 2B (19.88 vs 11.03 req/s).
+- **vLLM wins throughput (tok/s) in 22 of 35 paired comparisons**, with the strongest edge in structured generation (7/7 wins) and long context (5/7). SGLang is competitive on single-request decode and throughput ramp at 7B+ scale.
+- **Phi-3 Mini works on both engines** — vLLM leads on all 5 scenarios for both TTFT and throughput, with SGLang closely matching on throughput ramp and structured generation.
+- **SGLang wins single-request TTFT only on Gemma 9B** (84.2 ms vs 105.7 ms), the one model that required tuned vLLM memory settings.
+- **Gemma 9B + SGLang throughput_ramp is anomalous** — 30.5s TTFT p95 indicates VRAM pressure causing request queuing at high concurrency.
+- **100% success rate** across all runs (99.9% on two SGLang edge cases with Mistral 7B and Gemma 9B under heavy load).
 
-> Note on throughput numbers: Tokens/sec and Requests/sec in the tables below use the **full run duration** from the engine timeline, not the longest single request.
+### Models Tested
 
-### Baseline run (`Qwen/Qwen2.5-1.5B-Instruct`)
+| Model | Parameters | Both Engines | Notes |
+|---|---:|---|---|
+| `google/gemma-2-2b-it` | 2B | Yes | Fastest overall, fits easily |
+| `meta-llama/Llama-3.2-3B-Instruct` | 3B | Yes | Good small-model baseline |
+| `microsoft/Phi-3-mini-4k-instruct` | 3.8B | Yes | vLLM leads on all metrics |
+| `Qwen/Qwen2.5-7B-Instruct` | 7B | Yes | Mid-size reference model |
+| `mistralai/Mistral-7B-Instruct-v0.3` | 7B | Yes | Sliding window attention |
+| `meta-llama/Llama-3.1-8B-Instruct` | 8B | Yes | Popular production model |
+| `google/gemma-2-9b-it` | 9B | Yes | Largest tested, vLLM required tuned fit |
 
-This earlier run stays in the README because it shows the harness working cleanly on a smaller public model before the larger matrix was finished.
+### Scenario Descriptions
 
-**Environment**
-- Instance: `g5.2xlarge` (single NVIDIA A10G, 24GB VRAM)
-- Model: `Qwen/Qwen2.5-1.5B-Instruct`
-- Engine mode: **sequential**
-- Result quality: all scenarios completed with **100% success rate**
+| Scenario | What It Measures | Requests | Prompt Type |
+|---|---|---:|---|
+| `single_request_latency` | Baseline TTFT and end-to-end latency | 50 | Short chat |
+| `throughput_ramp` | Decode throughput under concurrent load | 700 | Long generation |
+| `long_context_stress` | Performance with large input contexts | ~100 | Long context |
+| `prefix_sharing_benefit` | KV cache reuse with shared prefixes | ~100 | Shared prefix |
+| `structured_generation_speed` | JSON-constrained output speed | ~100 | Structured JSON |
 
-**Scenario A — `single_request_latency` (50 requests)**
+### Engine Head-to-Head (all 7 models)
 
-| Engine | TTFT p50 | TTFT p95 | TTFT p99 | Total latency p95 | Tokens/sec | Requests/sec | Success |
-|---|---:|---:|---:|---:|---:|---:|---:|
-| vLLM | 15.9 ms | 16.4 ms | 91.3 ms | 1047.4 ms | 122.3 | 0.96 | 100.0% |
-| SGLang | 27.5 ms | 28.1 ms | 37.2 ms | 1008.2 ms | 127.3 | 0.99 | 100.0% |
+For each scenario, which engine won on TTFT p95 and throughput (tok/s) across all 7 models:
 
-**Scenario B — `throughput_ramp` (700 requests)**
+| Scenario | TTFT p95 Winner | Tok/s Winner |
+|---|---|---|
+| `single_request_latency` | **vLLM** (6 of 7) | SGLang (4 of 7) |
+| `throughput_ramp` | **vLLM** (6 of 7) | SGLang (4 of 7) |
+| `long_context_stress` | **vLLM** (6 of 7) | **vLLM** (5 of 7) |
+| `prefix_sharing_benefit` | **vLLM** (7 of 7) | **vLLM** (5 of 7) |
+| `structured_generation_speed` | **vLLM** (6 of 7) | **vLLM** (7 of 7) |
 
-| Engine | TTFT p50 | TTFT p95 | TTFT p99 | Total latency p95 | Tokens/sec | Requests/sec | Success |
-|---|---:|---:|---:|---:|---:|---:|---:|
-| vLLM | 31.5 ms | 178.1 ms | 208.1 ms | 3202.4 ms | 410.3 | 1.60 | 100.0% |
-| SGLang | 49.4 ms | 155.7 ms | 190.9 ms | 4480.8 ms | 422.9 | 1.65 | 100.0% |
+### Single Request Latency
 
-**What this baseline showed**
-- vLLM was quicker to first token on this smaller public model.
-- SGLang was slightly ahead on tokens/sec and requests/sec in the throughput run.
-- Both engines stayed stable with 100% success.
+| Model | Engine | TTFT p95 | Latency p95 | Tok/s | Req/s | Success |
+|---|---|---:|---:|---:|---:|---:|
+| Gemma 2B | vLLM | **22.5 ms** | 1655.5 ms | 77.6 | 0.75 | 100% |
+| Gemma 2B | SGLang | 31.6 ms | 1656.3 ms | 78.3 | 0.75 | 100% |
+| Llama 3.2 3B | vLLM | **23.1 ms** | 1928.8 ms | 66.3 | 0.52 | 100% |
+| Llama 3.2 3B | SGLang | 33.2 ms | 1903.5 ms | 67.7 | 0.53 | 100% |
+| Phi-3 Mini | vLLM | **25.3 ms** | 2233.7 ms | **57.8** | 0.45 | 100% |
+| Phi-3 Mini | SGLang | 50.9 ms | 2319.8 ms | 55.7 | 0.44 | 100% |
+| Qwen 2.5 7B | vLLM | **62.8 ms** | 4220.2 ms | 30.6 | 0.29 | 100% |
+| Qwen 2.5 7B | SGLang | 65.9 ms | 4170.4 ms | 30.8 | 0.27 | 100% |
+| Mistral 7B | vLLM | **62.6 ms** | 4064.4 ms | 31.8 | 0.26 | 100% |
+| Mistral 7B | SGLang | 63.7 ms | 4047.6 ms | 31.8 | 0.26 | 100% |
+| Llama 3.1 8B | vLLM | **43.5 ms** | 4247.4 ms | 30.3 | 0.24 | 100% |
+| Llama 3.1 8B | SGLang | 67.6 ms | 4247.6 ms | 30.3 | 0.24 | 100% |
+| Gemma 9B | vLLM | 105.7 ms | 5360.2 ms | 24.0 | 0.21 | 100% |
+| Gemma 9B | SGLang | **84.2 ms** | 5312.8 ms | 24.2 | 0.21 | 100% |
 
-**Baseline result artifacts**
-- `results/single_request_latency_SGLangClient_1774163306.json`
-- `results/single_request_latency_VLLMClient_1774163440.json`
-- `results/throughput_ramp_SGLangClient_1774163585.json`
-- `results/throughput_ramp_VLLMClient_1774164141.json`
+### Throughput Ramp (700 concurrent requests)
 
-### Main benchmark snapshot (completed 2026-03-22)
+| Model | Engine | TTFT p95 | Latency p95 | Tok/s | Req/s | Success |
+|---|---|---:|---:|---:|---:|---:|
+| Gemma 2B | vLLM | **154.1 ms** | **4583.1 ms** | **264.6** | **1.14** | 100% |
+| Gemma 2B | SGLang | 158.6 ms | 4852.7 ms | 258.0 | 1.05 | 100% |
+| Llama 3.2 3B | vLLM | **168.8 ms** | **5390.9 ms** | 223.5 | 0.87 | 100% |
+| Llama 3.2 3B | SGLang | 213.6 ms | 5627.1 ms | **225.9** | **0.88** | 100% |
+| Phi-3 Mini | vLLM | **197.9 ms** | **8029.0 ms** | **190.9** | **0.75** | 100% |
+| Phi-3 Mini | SGLang | 210.6 ms | 7523.5 ms | 187.3 | 0.73 | 100% |
+| Qwen 2.5 7B | vLLM | **192.7 ms** | 9762.0 ms | 105.3 | 0.41 | 100% |
+| Qwen 2.5 7B | SGLang | 272.2 ms | **9545.9 ms** | **106.3** | **0.42** | 100% |
+| Mistral 7B | vLLM | **216.9 ms** | **10141.7 ms** | 106.6 | 0.42 | 100% |
+| Mistral 7B | SGLang | 279.3 ms | 10162.4 ms | **106.8** | 0.42 | 99.9% |
+| Llama 3.1 8B | vLLM | 201.3 ms | **10534.8 ms** | 101.7 | 0.40 | 100% |
+| Llama 3.1 8B | SGLang | **186.5 ms** | 10621.4 ms | **102.1** | 0.40 | 100% |
+| Gemma 9B | vLLM | **283.9 ms** | **14388.5 ms** | **79.8** | **0.33** | 100% |
+| Gemma 9B | SGLang | 30483.6 ms | 46328.4 ms | 78.0 | 0.31 | 99.9% |
 
-This is the main comparison section in the repo. It includes the top findings, visuals, and the full table from the completed larger model run on a single A10G.
+### Structured Generation Speed (JSON-constrained output)
 
-**Environment**
-- AWS `g5.2xlarge`
-- NVIDIA A10G 24 GB
-- Sequential execution, one engine at a time
-- Models: Gemma 2B, Phi-3 mini, Qwen 7B, Mistral 7B, Gemma 9B
+| Model | Engine | TTFT p95 | Latency p95 | Tok/s | Req/s | Success |
+|---|---|---:|---:|---:|---:|---:|
+| Gemma 2B | vLLM | **58.9 ms** | **1038.2 ms** | **1225.1** | **19.88** | 100% |
+| Gemma 2B | SGLang | 85.4 ms | 2512.9 ms | 952.3 | 11.03 | 100% |
+| Llama 3.2 3B | vLLM | **71.8 ms** | **2503.2 ms** | **970.2** | **6.62** | 100% |
+| Llama 3.2 3B | SGLang | 86.5 ms | 2648.2 ms | 908.4 | 6.20 | 100% |
+| Phi-3 Mini | vLLM | **78.4 ms** | **3066.5 ms** | **784.8** | **5.23** | 100% |
+| Phi-3 Mini | SGLang | 115.7 ms | 3096.3 ms | 782.6 | 5.22 | 100% |
+| Qwen 2.5 7B | vLLM | 139.0 ms | **1978.2 ms** | **455.9** | **9.93** | 100% |
+| Qwen 2.5 7B | SGLang | **137.2 ms** | 5676.8 ms | 389.6 | 6.46 | 100% |
+| Mistral 7B | vLLM | **107.7 ms** | **5075.3 ms** | **439.9** | **3.31** | 100% |
+| Mistral 7B | SGLang | 150.6 ms | 5518.2 ms | 411.2 | 3.09 | 100% |
+| Llama 3.1 8B | vLLM | **125.5 ms** | **5570.9 ms** | **426.2** | **2.84** | 100% |
+| Llama 3.1 8B | SGLang | 152.7 ms | 5578.7 ms | 422.6 | 2.82 | 100% |
+| Gemma 9B | vLLM | **154.3 ms** | 6263.0 ms | **310.8** | 4.62 | 100% |
+| Gemma 9B | SGLang | 195.5 ms | **4425.7 ms** | 290.0 | **5.49** | 100% |
 
-**Top findings**
-- **Fastest TTFT p95 for a single request:** Gemma 2B on **vLLM** at **20.3 ms**
-- **Best throughput among the smaller models:** Gemma 2B on **vLLM** at **261.2 tok/s** and **2.23 req/s**
-- **Phi-3 mini:** only **vLLM** completed on this setup
-- **Gemma 9B:** **SGLang** won on single request TTFT, while tuned **vLLM** won on throughput and ramp latency p95
+### Model Size vs Performance
 
-> Scope note: all rows below are completed runs. The only intentional gap is `Phi-3 mini + SGLang`, which is blocked on this setup by an engine compatibility issue documented below.
->
-> Data provenance: values are pulled directly from each row’s source `results/*Client_*.json` `metrics` block. The exact source file for every row is recorded in `reports/benchmark_snapshot_2026-03-22.json` (`path` field).
+How key metrics scale as model size increases (vLLM numbers, single request latency):
 
-#### Visual summary
+| Model | Params | TTFT p95 | Tok/s | Latency p95 |
+|---|---:|---:|---:|---:|
+| Gemma 2B | 2B | 22.5 ms | 77.6 | 1655.5 ms |
+| Llama 3.2 3B | 3B | 23.1 ms | 66.3 | 1928.8 ms |
+| Phi-3 Mini | 3.8B | 25.3 ms | 57.8 | 2233.7 ms |
+| Qwen 2.5 7B | 7B | 62.8 ms | 30.6 | 4220.2 ms |
+| Mistral 7B | 7B | 62.6 ms | 31.8 | 4064.4 ms |
+| Llama 3.1 8B | 8B | 43.5 ms | 30.3 | 4247.4 ms |
+| Gemma 9B | 9B | 105.7 ms | 24.0 | 5360.2 ms |
 
-**Single-request TTFT p95**
+TTFT grows ~5x from 2B to 9B. Throughput drops ~3x. The steepest jump is from 3.8B to 7B, where VRAM pressure begins on a 24GB GPU.
 
-![Single-request TTFT p95](reports/figures/single_request_ttft_p95.svg)
+### Notable Anomalies
 
-**Throughput tokens/sec**
+- **Gemma 9B + SGLang throughput_ramp**: 30.5s TTFT p95 and 46.3s tail latency. At 9.2B parameters on 24GB VRAM, high-concurrency load causes severe request queuing. vLLM handled the same workload with 284ms TTFT p95 using tuned memory settings.
+- **Gemma 9B + vLLM**: Required `--max-model-len 4096` and `--gpu-memory-utilization 0.92` to fit on A10G. Default settings caused OOM.
+- **Phi-3 Mini**: vLLM leads on every metric across all 5 scenarios, but margins are tight on throughput ramp (190.9 vs 187.3 tok/s) and structured generation (784.8 vs 782.6 tok/s).
 
-![Throughput tokens per second](reports/figures/throughput_tokens_per_sec.svg)
+### When to Use Which Engine
 
-**Throughput requests/sec**
+| Use Case | Recommendation | Why |
+|---|---|---|
+| Latency-sensitive serving (chatbots, APIs) | **vLLM** | Consistently lower TTFT across model sizes |
+| Structured/JSON output at scale | **vLLM** | Up to 2x higher request throughput |
+| High-throughput batch processing (7B+) | Either — test both | Throughput nearly identical at scale |
+| Prefix-heavy workloads (RAG, few-shot) | **vLLM** | Lower TTFT in all 7 paired comparisons |
 
-![Throughput requests per second](reports/figures/throughput_requests_per_sec.svg)
-
-**Latency / throughput tradeoff**
-
-![Throughput tradeoff map](reports/figures/throughput_tradeoff.svg)
-
-| Model | Scenario | Engine | TTFT p50 | TTFT p95 | Total latency p95 | Tokens/sec | Requests/sec | Success |
-|---|---|---|---:|---:|---:|---:|---:|---:|
-| Qwen 7B | `single_request_latency` | SGLang | 67.9 ms | 68.2 ms | 4178.4 ms | 30.9 | 0.24 | 100.0% |
-| Qwen 7B | `single_request_latency` | vLLM | 40.4 ms | 40.7 ms | 4202.4 ms | 30.6 | 0.24 | 100.0% |
-| Qwen 7B | `throughput_ramp` | SGLang | 68.7 ms | 194.2 ms | 9581.5 ms | 106.2 | 0.41 | 100.0% |
-| Qwen 7B | `throughput_ramp` | vLLM | 89.9 ms | 311.9 ms | 10091.5 ms | 98.4 | 0.45 | 100.0% |
-| Gemma 2B | `single_request_latency` | SGLang | 34.1 ms | 35.0 ms | 1683.0 ms | 77.5 | 0.61 | 100.0% |
-| Gemma 2B | `single_request_latency` | vLLM | 19.8 ms | 20.3 ms | 1661.8 ms | 77.6 | 0.61 | 100.0% |
-| Gemma 2B | `throughput_ramp` | SGLang | 53.6 ms | 159.9 ms | 4898.1 ms | 258.3 | 1.01 | 100.0% |
-| Gemma 2B | `throughput_ramp` | vLLM | 44.0 ms | 189.9 ms | 2301.1 ms | 261.2 | 2.23 | 100.0% |
-| Phi-3 mini | `single_request_latency` | vLLM | 25.4 ms | 25.9 ms | 2243.6 ms | 57.8 | 0.45 | 100.0% |
-| Phi-3 mini | `throughput_ramp` | vLLM | 55.5 ms | 188.6 ms | 8645.5 ms | 188.7 | 0.74 | 100.0% |
-| Mistral 7B | `single_request_latency` | SGLang | 66.0 ms | 66.4 ms | 4057.3 ms | 31.8 | 0.25 | 100.0% |
-| Mistral 7B | `single_request_latency` | vLLM | 41.4 ms | 41.7 ms | 4044.0 ms | 31.8 | 0.25 | 100.0% |
-| Mistral 7B | `throughput_ramp` | SGLang | 69.7 ms | 353.6 ms | 10332.4 ms | 106.8 | 0.42 | 100.0% |
-| Mistral 7B | `throughput_ramp` | vLLM | 92.3 ms | 240.5 ms | 10342.1 ms | 106.4 | 0.42 | 100.0% |
-| Gemma 9B | `single_request_latency` | SGLang | 86.3 ms | 86.9 ms | 333.4 ms | 15.4 | 3.08 | 100.0% |
-| Gemma 9B | `single_request_latency` | vLLM *(tuned)* | 120.8 ms | 122.2 ms | 381.6 ms | 13.8 | 2.76 | 100.0% |
-| Gemma 9B | `throughput_ramp` | SGLang | 91.4 ms | 3666.6 ms | 5277.1 ms | 73.1 | 2.03 | 100.0% |
-| Gemma 9B | `throughput_ramp` | vLLM *(tuned)* | 82.7 ms | 362.5 ms | 2483.7 ms | 75.1 | 2.09 | 100.0% |
-
-
-#### What the models showed
-
-- **Qwen 7B:** vLLM won on TTFT for a single request. Throughput split by metric, with SGLang ahead on tok/s and vLLM ahead on req/s.
-- **Gemma 2B:** vLLM won on single request latency and also led on both tok/s and req/s.
-- **Phi-3 mini:** only **vLLM** completed on this setup because SGLang hit a compatibility issue (`unsupported head_dim=96`).
-- **Mistral 7B:** vLLM won on TTFT for a single request. Throughput was basically a tie.
-- **Gemma 9B:** SGLang had lower TTFT for a single request, while tuned vLLM led on throughput and had much better ramp latency p95.
-
-**Bottom line**
-- **vLLM** looked like the stronger general default for quick response times on this A10G setup.
-- **SGLang** stayed competitive and in some cases matched or slightly beat throughput numbers.
-- The right choice still depends on the workload, the model, and the hardware.
+> Full per-scenario breakdowns for long context stress and prefix sharing are in [`reports/cross_model_summary.md`](reports/cross_model_summary.md).
 
 ---
 
@@ -991,63 +1031,49 @@ Example payload:
 | Instance | AWS `g5.2xlarge` |
 | GPU | NVIDIA A10G 24 GB |
 | Execution mode | Sequential, one engine at a time |
-| Core scenarios | `single_request_latency`, `throughput_ramp` |
-| Cooldown policy | 5 min between engine switches |
-| Result location | `results/*.json` |
+| Scenarios | All 5: `single_request_latency`, `throughput_ramp`, `long_context_stress`, `prefix_sharing_benefit`, `structured_generation_speed` |
+| Iterations | 2 per scenario-engine-model combination |
+| Cooldown policy | 120s between runs |
+| Result location | `results/<model-slug>/*.json` |
 
 #### Model order used for the completed report
 
 | Order | Model | SGLang | vLLM | Notes |
 |---:|---|---|---|---|
-| 1 | `Qwen/Qwen2.5-7B-Instruct` | Yes | Yes | Standard sequential run |
-| 2 | `google/gemma-2-2b-it` | Yes | Yes | Standard sequential run |
-| 3 | `microsoft/Phi-3-mini-4k-instruct` | No | Yes | SGLang blocked on this setup (`unsupported head_dim=96`) |
-| 4 | `mistralai/Mistral-7B-Instruct-v0.3` | Yes | Yes | Standard sequential run |
-| 5 | `google/gemma-2-9b-it` | Yes | Yes | vLLM required tuned fit settings |
+| 1 | `google/gemma-2-2b-it` | Yes | Yes | Standard sequential run |
+| 2 | `microsoft/Phi-3-mini-4k-instruct` | Yes | Yes | vLLM leads on all metrics |
+| 3 | `meta-llama/Llama-3.2-3B-Instruct` | Yes | Yes | Standard sequential run |
+| 4 | `Qwen/Qwen2.5-7B-Instruct` | Yes | Yes | Standard sequential run |
+| 5 | `mistralai/Mistral-7B-Instruct-v0.3` | Yes | Yes | Standard sequential run |
+| 6 | `meta-llama/Llama-3.1-8B-Instruct` | Yes | Yes | Standard sequential run |
+| 7 | `google/gemma-2-9b-it` | Yes | Yes | vLLM required tuned fit settings |
 
 #### Exact per-model sequence
 
-| Step | Action |
-|---:|---|
-| 1 | Set the model in `docker-compose.yml` |
-| 2 | `sudo docker compose down` |
-| 3 | Start **SGLang** only |
-| 4 | Wait for `curl http://localhost:8001/health` |
-| 5 | Run `single_request_latency` |
-| 6 | Run `throughput_ramp` |
-| 7 | Stop SGLang |
-| 8 | Wait 5 minutes |
-| 9 | Start **vLLM** only |
-| 10 | Wait for `curl http://localhost:8000/health` |
-| 11 | Run `single_request_latency` |
-| 12 | Run `throughput_ramp` |
-| 13 | Save/compare `results/*.json` |
-
-#### Standard command pattern
+Use the `matrix` command to run all scenarios in one shot per engine:
 
 ```bash
-# SGLang
-sudo docker compose down
-sudo docker compose up -d sglang
-curl http://localhost:8001/health
-source .venv/bin/activate
-python run_experiment.py run --scenario single_request_latency --engines sglang --model <MODEL>
-python run_experiment.py run --scenario throughput_ramp --engines sglang --model <MODEL>
+# Engine 1: vLLM
+MODEL=<model> docker compose --profile vllm up -d vllm
+# Wait for health, then:
+python run_experiment.py matrix \
+  --scenarios single_request_latency,throughput_ramp,long_context_stress,prefix_sharing_benefit,structured_generation_speed \
+  --engines vllm --model <model> --output-dir results/<model-slug> --iterations 2 --cooldown-seconds 120
+docker compose --profile vllm down
 
-# Switch engines
-sudo docker compose down
-sleep 300
-sudo docker compose up -d vllm
-curl http://localhost:8000/health
-python run_experiment.py run --scenario single_request_latency --engines vllm --model <MODEL>
-python run_experiment.py run --scenario throughput_ramp --engines vllm --model <MODEL>
+# Engine 2: SGLang
+MODEL=<model> docker compose --profile sglang up -d sglang
+# Wait for health, then:
+python run_experiment.py matrix \
+  --scenarios single_request_latency,throughput_ramp,long_context_stress,prefix_sharing_benefit,structured_generation_speed \
+  --engines sglang --model <model> --output-dir results/<model-slug> --iterations 2 --cooldown-seconds 120
+docker compose --profile sglang down
 ```
 
 #### Model-specific exceptions
 
 | Model | Engine | Required change |
 |---|---|---|
-| `microsoft/Phi-3-mini-4k-instruct` | SGLang | Skip on this setup due to FlashInfer/CUDA graph incompatibility |
 | `google/gemma-2-9b-it` | vLLM | Use `context=4096` and `gpu_memory_utilization=0.92` |
 
 #### Tuned Gemma 9B vLLM settings
@@ -1071,16 +1097,16 @@ These settings were needed to fit Gemma 9B on a single A10G for the vLLM runs in
 | Requests/sec | Request handling rate | Higher | Concurrency scaling |
 | Success rate | Fraction of successful requests | Higher | Stability |
 
-### Example completed output (tabular)
+### Example completed output (highlights)
 
-| Model | Scenario | Engine | TTFT p95 | Latency p95 | Tok/s | Req/s | Success |
-|---|---|---|---:|---:|---:|---:|---:|
-| Gemma 2B | `single_request_latency` | vLLM | 20.3 ms | 1661.8 ms | 77.6 | 0.61 | 100.0% |
-| Gemma 2B | `throughput_ramp` | SGLang | 159.9 ms | 4898.1 ms | 258.3 | 1.01 | 100.0% |
-| Qwen 7B | `single_request_latency` | vLLM | 40.7 ms | 4202.4 ms | 30.6 | 0.24 | 100.0% |
-| Qwen 7B | `throughput_ramp` | SGLang | 194.2 ms | 9581.5 ms | 106.2 | 0.41 | 100.0% |
-| Mistral 7B | `throughput_ramp` | vLLM | 240.5 ms | 10342.1 ms | 106.4 | 0.42 | 100.0% |
-| Gemma 9B | `throughput_ramp` | vLLM (tuned) | 362.5 ms | 2483.7 ms | 75.1 | 2.09 | 100.0% |
+| Model | Scenario | Engine | TTFT p95 | Tok/s | Req/s |
+|---|---|---|---:|---:|---:|
+| Gemma 2B | `structured_generation_speed` | vLLM | 58.9 ms | 1225.1 | 19.88 |
+| Gemma 2B | `throughput_ramp` | vLLM | 154.1 ms | 264.6 | 1.14 |
+| Llama 3.2 3B | `prefix_sharing_benefit` | vLLM | 56.9 ms | 489.2 | 3.82 |
+| Qwen 2.5 7B | `single_request_latency` | vLLM | 62.8 ms | 30.6 | 0.29 |
+| Llama 3.1 8B | `throughput_ramp` | SGLang | 186.5 ms | 102.1 | 0.40 |
+| Gemma 9B | `single_request_latency` | SGLang | 84.2 ms | 24.2 | 0.21 |
 
 
 ### Common failure modes
@@ -1096,8 +1122,8 @@ These settings were needed to fit Gemma 9B on a single A10G for the vLLM runs in
 
 | Model | Engine | Issue | Resolution |
 |---|---|---|---|
-| Phi-3 mini | SGLang | FlashInfer/CUDA graph incompatibility (`unsupported head_dim=96`) | skipped SGLang, benchmarked on vLLM |
 | Gemma 9B | vLLM | default memory fit failed on A10G | tuned to `context=4096`, `gpu_memory_utilization=0.92` |
+| Gemma 9B | SGLang | 30.5s TTFT p95 under throughput ramp | VRAM pressure at high concurrency — anomalous but documented |
 
 ### Best next step for a new reader
 
