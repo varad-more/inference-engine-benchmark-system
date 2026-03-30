@@ -1,13 +1,21 @@
 # =============================================================================
 # vLLM vs SGLang Comparative Benchmark System
 #
-# Services:
-#   vllm      — vLLM OpenAI-compatible server (port 8000)
-#   sglang    — SGLang server                  (port 8001)
-#   dashboard — FastAPI benchmark dashboard    (port 3000)
+# Baseline services:
+#   vllm          — vLLM OpenAI-compatible server        (port 8000)
+#   sglang        — SGLang server                         (port 8001)
 #
-# Model weights are cached in ./model-cache (mounted into both engine containers).
+# Speculative decoding variants (one per port — run sequentially):
+#   vllm-eagle3   — vLLM + Eagle3 speculative decoding   (port 8000)
+#   vllm-ngram    — vLLM + Ngram speculative decoding    (port 8000)
+#   sglang-eagle3 — SGLang + Eagle3 spec decoding        (port 8001)
+#   sglang-ngram  — SGLang + Ngram spec decoding         (port 8001)
+#
+#   dashboard     — FastAPI benchmark dashboard           (port 3000)
+#
+# Model weights are cached in ./model-cache (mounted into all engine containers).
 # Set HUGGING_FACE_HUB_TOKEN in a .env file for gated models.
+# Set EAGLE3_VLLM_DRAFT / EAGLE3_SGLANG_DRAFT for custom Eagle3 draft models.
 # =============================================================================
 
 x-gpu-resources: &gpu-resources
@@ -42,7 +50,7 @@ services:
     shm_size: "10gb"
     command:
       - "--model"
-      - "${MODEL:-Qwen/Qwen2.5-1.5B-Instruct}"
+      - "${MODEL:-Qwen/Qwen3-8B}"
       - "--host"
       - "0.0.0.0"
       - "--port"
@@ -53,7 +61,7 @@ services:
       - "--gpu-memory-utilization"
       - "0.85"
       - "--served-model-name"
-      - "${MODEL:-Qwen/Qwen2.5-1.5B-Instruct}"
+      - "${MODEL:-Qwen/Qwen3-8B}"
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
       interval: 30s
@@ -82,7 +90,7 @@ services:
       - "-m"
       - "sglang.launch_server"
       - "--model-path"
-      - "${MODEL:-Qwen/Qwen2.5-1.5B-Instruct}"
+      - "${MODEL:-Qwen/Qwen3-8B}"
       - "--host"
       - "0.0.0.0"
       - "--port"
@@ -91,6 +99,177 @@ services:
       - "0.85"
       - "--context-length"
       - "${MAX_MODEL_LEN:-8192}"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 120s
+    <<: *gpu-resources
+
+  # ---------------------------------------------------------------------------
+  # vLLM + Eagle3 speculative decoding
+  # Requires: EAGLE3_VLLM_DRAFT (default: RedHatAI/Llama-3.1-8B-Instruct-speculator.eagle3)
+  # gpu-memory-utilization reduced to 0.80 to leave room for the draft model weights.
+  # start_period extended to 180s — two models load on startup.
+  # ---------------------------------------------------------------------------
+  vllm-eagle3:
+    profiles: ["vllm-eagle3"]
+    image: ${VLLM_IMAGE:-vllm/vllm-openai:v0.18.0-cu130}
+    container_name: vllm-eagle3-server
+    ports:
+      - "8000:8000"
+    environment:
+      - HUGGING_FACE_HUB_TOKEN=${HUGGING_FACE_HUB_TOKEN:-}
+      - CUDA_VISIBLE_DEVICES=0
+      - EAGLE3_VLLM_DRAFT=${EAGLE3_VLLM_DRAFT:-RedHatAI/Llama-3.1-8B-Instruct-speculator.eagle3}
+    volumes:
+      - <<: *model-cache
+    shm_size: "10gb"
+    entrypoint: ["sh", "-c"]
+    command:
+      - >
+        python -m vllm.entrypoints.openai.api_server
+        --model "${MODEL:-meta-llama/Llama-3.1-8B-Instruct}"
+        --host 0.0.0.0
+        --port 8000
+        --enable-prefix-caching
+        --max-model-len "${MAX_MODEL_LEN:-8192}"
+        --gpu-memory-utilization 0.80
+        --served-model-name "${MODEL:-meta-llama/Llama-3.1-8B-Instruct}"
+        --speculative-config "{\"method\":\"eagle3\",\"model\":\"${EAGLE3_VLLM_DRAFT:-RedHatAI/Llama-3.1-8B-Instruct-speculator.eagle3}\",\"num_speculative_tokens\":3}"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 180s
+    <<: *gpu-resources
+
+  # ---------------------------------------------------------------------------
+  # vLLM + Ngram speculative decoding
+  # No draft model needed — uses prompt n-gram lookup for speculation.
+  # ---------------------------------------------------------------------------
+  vllm-ngram:
+    profiles: ["vllm-ngram"]
+    image: ${VLLM_IMAGE:-vllm/vllm-openai:v0.18.0-cu130}
+    container_name: vllm-ngram-server
+    ports:
+      - "8000:8000"
+    environment:
+      - HUGGING_FACE_HUB_TOKEN=${HUGGING_FACE_HUB_TOKEN:-}
+      - CUDA_VISIBLE_DEVICES=0
+    volumes:
+      - <<: *model-cache
+    shm_size: "10gb"
+    command:
+      - "--model"
+      - "${MODEL:-Qwen/Qwen3-8B}"
+      - "--host"
+      - "0.0.0.0"
+      - "--port"
+      - "8000"
+      - "--enable-prefix-caching"
+      - "--max-model-len"
+      - "${MAX_MODEL_LEN:-8192}"
+      - "--gpu-memory-utilization"
+      - "0.85"
+      - "--served-model-name"
+      - "${MODEL:-Qwen/Qwen3-8B}"
+      - "--speculative-config"
+      - '{"method":"ngram","num_speculative_tokens":5,"prompt_lookup_max":4}'
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 120s
+    <<: *gpu-resources
+
+  # ---------------------------------------------------------------------------
+  # SGLang + Eagle3 speculative decoding
+  # Requires: EAGLE3_SGLANG_DRAFT (default: jamesliu1/sglang-EAGLE3-Llama-3.1-Instruct-8B)
+  # mem-fraction-static reduced to 0.70 to leave room for the draft model weights.
+  # start_period extended to 180s — two models load on startup.
+  # ---------------------------------------------------------------------------
+  sglang-eagle3:
+    profiles: ["sglang-eagle3"]
+    image: ${SGLANG_IMAGE:-lmsysorg/sglang:nightly-dev-cu13-20260321-94194537}
+    container_name: sglang-eagle3-server
+    ports:
+      - "8001:8001"
+    environment:
+      - HUGGING_FACE_HUB_TOKEN=${HUGGING_FACE_HUB_TOKEN:-}
+      - CUDA_VISIBLE_DEVICES=0
+    volumes:
+      - <<: *model-cache
+    shm_size: "10gb"
+    command:
+      - "python"
+      - "-m"
+      - "sglang.launch_server"
+      - "--model-path"
+      - "${MODEL:-meta-llama/Llama-3.1-8B-Instruct}"
+      - "--host"
+      - "0.0.0.0"
+      - "--port"
+      - "8001"
+      - "--mem-fraction-static"
+      - "0.70"
+      - "--context-length"
+      - "${MAX_MODEL_LEN:-8192}"
+      - "--speculative-algorithm"
+      - "EAGLE3"
+      - "--speculative-draft-model-path"
+      - "${EAGLE3_SGLANG_DRAFT:-jamesliu1/sglang-EAGLE3-Llama-3.1-Instruct-8B}"
+      - "--speculative-num-steps"
+      - "3"
+      - "--speculative-eagle-topk"
+      - "4"
+      - "--speculative-num-draft-tokens"
+      - "16"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 180s
+    <<: *gpu-resources
+
+  # ---------------------------------------------------------------------------
+  # SGLang + Ngram speculative decoding
+  # No draft model needed.
+  # ---------------------------------------------------------------------------
+  sglang-ngram:
+    profiles: ["sglang-ngram"]
+    image: ${SGLANG_IMAGE:-lmsysorg/sglang:nightly-dev-cu13-20260321-94194537}
+    container_name: sglang-ngram-server
+    ports:
+      - "8001:8001"
+    environment:
+      - HUGGING_FACE_HUB_TOKEN=${HUGGING_FACE_HUB_TOKEN:-}
+      - CUDA_VISIBLE_DEVICES=0
+    volumes:
+      - <<: *model-cache
+    shm_size: "10gb"
+    command:
+      - "python"
+      - "-m"
+      - "sglang.launch_server"
+      - "--model-path"
+      - "${MODEL:-Qwen/Qwen3-8B}"
+      - "--host"
+      - "0.0.0.0"
+      - "--port"
+      - "8001"
+      - "--mem-fraction-static"
+      - "0.85"
+      - "--context-length"
+      - "${MAX_MODEL_LEN:-8192}"
+      - "--speculative-algorithm"
+      - "NGRAM"
+      - "--speculative-num-draft-tokens"
+      - "16"
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8001/health"]
       interval: 30s

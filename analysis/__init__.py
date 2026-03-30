@@ -41,6 +41,26 @@ def load_results(results_dir: Path = RESULTS_DIR) -> list[dict[str, Any]]:
     return data
 
 
+def get_engine_variant(result: dict[str, Any]) -> str:
+    """Return the engine variant key (e.g. 'vllm-eagle3') for a result.
+
+    Falls back to ``engine_name`` for results produced before variant tracking
+    was introduced (backward-compatible).
+    """
+    variant = result.get("run_metadata", {}).get("engine_variant")
+    if isinstance(variant, str) and variant.strip():
+        return variant.strip()
+    return str(result.get("engine_name", "unknown"))
+
+
+def get_spec_method(result: dict[str, Any]) -> str | None:
+    """Return the speculative decoding method ('eagle3', 'ngram') or None for baseline."""
+    method = result.get("run_metadata", {}).get("spec_method")
+    if isinstance(method, str) and method.strip():
+        return method.strip()
+    return None
+
+
 def get_result_model(result: dict[str, Any]) -> str | None:
     """Return the canonical model name for a result payload when available."""
     model = result.get("run_metadata", {}).get("model")

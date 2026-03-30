@@ -4,7 +4,7 @@ A production-grade benchmark harness that rigorously compares **vLLM** and **SGL
 
 ## Summary
 
-We benchmarked **7 open-weight models** (2B to 9B parameters) on a single NVIDIA A10G 24GB GPU, running **5 scenarios** across both engines — **140 total runs, 100% success rate**.
+We benchmarked **7 open-weight models** (2B to 9B parameters) on a single NVIDIA A10G 24GB GPU, running **5 scenarios** across both engines — **140 total runs, 99.5%+ success rate on every run**.
 
 **The headline:** vLLM is the stronger general-purpose default on this hardware class. It wins time-to-first-token in **31 of 35** head-to-head comparisons and throughput in **22 of 35**, with decisive advantages in structured JSON generation (7/7 wins) and prefix-sharing workloads (7/7 TTFT wins). SGLang stays competitive on raw decode throughput at 7B+ model sizes, where the two engines are within 2% of each other.
 
@@ -13,7 +13,7 @@ We benchmarked **7 open-weight models** (2B to 9B parameters) on a single NVIDIA
 | TTFT p95 wins | **31** | 4 |
 | Throughput wins | **22** | 10 |
 | Structured gen tok/s | **7/7** | 0/7 |
-| Best single-request TTFT | **22.5 ms** (Gemma 2B) | 84.2 ms (Gemma 9B) |
+| Best single-request TTFT | **22.5 ms** (Gemma 2B) | 31.6 ms (Gemma 2B) |
 | Peak throughput | **264.6 tok/s** (Gemma 2B) | 258.0 tok/s (Gemma 2B) |
 | Model compatibility | All 7 models | All 7 models |
 
@@ -54,7 +54,7 @@ graph TB
         SR --> CD
     end
 
-    GPU["GPU (NVIDIA A100/H100)<br/>CUDA + NCCL"]
+    GPU["GPU (NVIDIA A10G 24 GB)<br/>CUDA"]
 
     Runner -->|"httpx SSE"| VR
     Runner -->|"httpx SSE"| SR
@@ -107,14 +107,23 @@ inference-engine-benchmark-system/
 │
 ├── tests/
 │   ├── conftest.py
-│   ├── test_metrics.py         # LatencyStats, ThroughputStats, CDF, compare_metrics tests
-│   ├── test_base_client.py     # GenerationResult, VLLMClient, SGLangClient with respx mocks
-│   └── test_scenarios.py       # Scenario dataclasses and prompt generator tests
+│   ├── test_metrics.py              # LatencyStats, ThroughputStats, CDF, compare_metrics tests
+│   ├── test_base_client.py          # GenerationResult, VLLMClient, SGLangClient with respx mocks
+│   ├── test_scenarios.py            # Scenario dataclasses and prompt generator tests
+│   ├── test_cli.py                  # CLI commands and engine variant parsing
+│   └── test_result_metadata.py      # Result filename and run_metadata correctness
 │
 ├── results/                    # Auto-created; stores JSON result files
-├── docs/                       # Operational runbooks / limitations for production-style use
-├── run_experiment.py           # Typer CLI (run / compare / report / serve / health)
-├── docker-compose.yml          # Sequential-friendly compose services for one-engine-at-a-time runs
+├── docs/
+│   ├── GETTING_STARTED.md           # Onboarding guide — setup, first run, reports
+│   ├── SPECULATIVE_DECODING.md      # Eagle3 + Ngram runbook and draft model reference
+│   ├── ROADMAP.md                   # Next steps: quantization, multi-GPU, CI, production API
+│   ├── MODEL_CATALOG.md             # 2025/2026 model catalog with GPU tier requirements
+│   ├── SINGLE_GPU_OPERATION.md      # Single-GPU sequential workflow guide
+│   ├── VALIDATED_BENCHMARK_RUNBOOK.md  # Validated A10G benchmark reproduction steps
+│   └── KNOWN_LIMITATIONS.md         # Known issues and hardware constraints
+├── run_experiment.py           # Typer CLI (run / compare / matrix / report / serve / health)
+├── docker-compose.yml          # 6 engine profiles: baseline + Eagle3 + Ngram for vLLM and SGLang
 ├── Dockerfile.dashboard        # Lightweight dashboard container
 └── pyproject.toml              # Python 3.11+ project metadata
 ```
@@ -170,8 +179,12 @@ python run_experiment.py health --engines both
 > In single-GPU sequential workflows, one engine may appear unreachable if it is intentionally stopped between phases.
 
 For the exact validated A10G flow, see:
+- [`docs/GETTING_STARTED.md`](docs/GETTING_STARTED.md) — full onboarding guide
 - [`docs/SINGLE_GPU_OPERATION.md`](docs/SINGLE_GPU_OPERATION.md)
 - [`docs/VALIDATED_BENCHMARK_RUNBOOK.md`](docs/VALIDATED_BENCHMARK_RUNBOOK.md)
+- [`docs/SPECULATIVE_DECODING.md`](docs/SPECULATIVE_DECODING.md) — Eagle3 and Ngram runbook
+- [`docs/ROADMAP.md`](docs/ROADMAP.md) — next steps: quantization, multi-GPU, production inference, CI
+- [`docs/MODEL_CATALOG.md`](docs/MODEL_CATALOG.md) — full 2025/2026 model catalog with GPU requirements
 - [`docs/KNOWN_LIMITATIONS.md`](docs/KNOWN_LIMITATIONS.md)
 
 ---
@@ -297,6 +310,81 @@ Default scenario→pack mapping is automatic (unless overridden with `--prompt-p
 
 ---
 
+## Speculative Decoding
+
+Speculative decoding is an **engine startup configuration**, not a separate scenario. The same 5 scenarios run against 6 engine variants — baseline, Eagle3, and Ngram — so you get an apples-to-apples speedup measurement.
+
+| Variant | Engine | Method | Draft model needed | Expected TTFT speedup |
+|---|---|---|---|---|
+| `vllm` | vLLM | — (baseline) | No | — |
+| `vllm-eagle3` | vLLM | Eagle3 | Yes (~1–2 GB) | 1.8–2.4× |
+| `vllm-ngram` | vLLM | Ngram | No | 1.2–1.5× |
+| `sglang` | SGLang | — (baseline) | No | — |
+| `sglang-eagle3` | SGLang | Eagle3 | Yes (~1–2 GB) | 1.8–2.4× |
+| `sglang-ngram` | SGLang | Ngram | No | 1.2–1.5× |
+
+> Speedup figures are for single-request workloads on A10G. Performance degrades at concurrency > 16 as the GPU becomes compute-saturated.
+
+**Quick start (Eagle3, Llama 3.1 8B, vLLM):**
+
+```bash
+export MODEL=meta-llama/Llama-3.1-8B-Instruct
+
+# Baseline
+docker compose --profile vllm up -d && sleep 120
+python run_experiment.py run -s single_request_latency -e vllm --model $MODEL
+docker compose --profile vllm down
+
+# Eagle3 — loads two models, needs ~180s
+docker compose --profile vllm-eagle3 up -d && sleep 180
+python run_experiment.py run -s single_request_latency -e vllm-eagle3 --model $MODEL
+docker compose --profile vllm-eagle3 down
+
+# Ngram — no draft model
+docker compose --profile vllm-ngram up -d && sleep 120
+python run_experiment.py run -s single_request_latency -e vllm-ngram --model $MODEL
+docker compose --profile vllm-ngram down
+
+# All three variants feed into the same report
+python run_experiment.py final-report --model $MODEL --output spec_dec_summary.md
+```
+
+Full runbook, draft model reference table, and SGLang instructions: [`docs/SPECULATIVE_DECODING.md`](docs/SPECULATIVE_DECODING.md)
+
+---
+
+## Models — 2025/2026
+
+### A10G 24GB (benchmarkable today)
+
+| Model | HF ID | VRAM | Spec-dec | Token needed |
+|---|---|---|---|---|
+| **Qwen3-8B** (default) | `Qwen/Qwen3-8B` | ~16 GB | Eagle3 + Ngram (vLLM), Ngram (SGLang) | No |
+| Llama 3.1 8B | `meta-llama/Llama-3.1-8B-Instruct` | ~16 GB | Eagle3 + Ngram, both engines | Yes |
+| Gemma 3 4B | `google/gemma-3-4b-it` | ~8 GB | Ngram only | Yes |
+| DeepSeek-R1 Distill 7B | `deepseek-ai/DeepSeek-R1-Distill-Qwen-7B` | ~14 GB | Ngram only | No |
+| Llama 3.2 3B | `meta-llama/Llama-3.2-3B-Instruct` | ~6 GB | Ngram | Yes |
+
+> For Eagle3 on 8B models, set `gpu-memory-utilization=0.80` (vLLM) or `mem-fraction-static=0.70` (SGLang) to leave headroom for the draft model.
+
+### A100/H100 (larger hardware)
+
+| Model | HF ID | Min GPU | Notes |
+|---|---|---|---|
+| Mistral Small 3.2 24B | `mistralai/Mistral-Small-3.2-24B-Instruct-2506` | A100 40GB | Strong multilingual |
+| Qwen3 32B | `Qwen/Qwen3-32B` | A100 80GB | Top open-weight at 32B |
+| Llama 3.3 70B | `meta-llama/Llama-3.3-70B-Instruct` | 2× A100 80GB | Full Eagle3 draft support |
+
+---
+
+## Getting Started
+
+New to the system? Start here: [`docs/GETTING_STARTED.md`](docs/GETTING_STARTED.md)
+
+Covers: environment setup → first benchmark run → speculative decoding → report generation → direct inference API.
+
+---
+
 ## Dashboard API
 
 | Method | Endpoint | Description |
@@ -366,9 +454,9 @@ pytest tests/ --cov=engines --cov=benchmarks --cov-report=term-missing
 
 ### Key Benchmark Insights
 
-1. **Prefix sharing**: SGLang's radix tree gives higher cache hit rates on workloads with long shared system prompts
-2. **Parallel programs**: `sgl.fork()` runs N branches in one batch vs N sequential HTTP calls — 2-3x speedup on multi-hypothesis workloads
-3. **Constrained decode**: SGLang's native regex constraint eliminates JSON parse failures and reduces average output length by 20-30%
+1. **Prefix sharing**: Both engines support KV cache reuse for shared prefixes. In this benchmark, vLLM won TTFT on all 7 models and throughput on 5 of 7 in the prefix-sharing scenario
+2. **Parallel programs**: `sgl.fork()` runs N branches in one batch vs N sequential HTTP calls — theoretically faster on multi-hypothesis workloads (not tested in this benchmark)
+3. **Constrained decode**: SGLang's native regex constraint enforces valid tokens at decode time, reducing JSON parse failures in principle (not directly measured in this benchmark)
 4. **Throughput at high concurrency**: vLLM's continuous batching is highly competitive at concurrency >= 16
 
 ---
@@ -392,7 +480,7 @@ pytest tests/ --cov=engines --cov=benchmarks --cov-report=term-missing
 ## Requirements
 
 - Python 3.11+
-- NVIDIA GPU with >= 16 GB VRAM (A100/H100 recommended)
+- NVIDIA GPU with >= 24 GB VRAM (A10G validated; A100/H100 also supported)
 - Docker + NVIDIA Container Toolkit (for `docker compose`)
 - `pip install -e ".[dev]"` for local development
 
@@ -855,12 +943,12 @@ terraform destroy \
 ### Key Findings
 
 - **vLLM wins time-to-first-token (TTFT) in 31 of 35 paired comparisons.** The gap is largest on small models (Gemma 2B: 22.5 ms vs 31.6 ms) and narrows at 7B+ scale.
-- **vLLM dominates structured generation** — 29% faster throughput on average across all models, with up to 2x the request rate on Gemma 2B (19.88 vs 11.03 req/s).
+- **vLLM dominates structured generation** — up to 29% faster throughput (Gemma 2B), ~10% faster on average across all 7 models, with up to 1.8x the request rate on Gemma 2B (19.88 vs 11.03 req/s).
 - **vLLM wins throughput (tok/s) in 22 of 35 paired comparisons**, with the strongest edge in structured generation (7/7 wins) and long context (5/7). SGLang is competitive on single-request decode and throughput ramp at 7B+ scale.
 - **Phi-3 Mini works on both engines** — vLLM leads on all 5 scenarios for both TTFT and throughput, with SGLang closely matching on throughput ramp and structured generation.
 - **SGLang wins single-request TTFT only on Gemma 9B** (84.2 ms vs 105.7 ms), the one model that required tuned vLLM memory settings.
 - **Gemma 9B + SGLang throughput_ramp is anomalous** — 30.5s TTFT p95 indicates VRAM pressure causing request queuing at high concurrency.
-- **100% success rate** across all runs (99.9% on two SGLang edge cases with Mistral 7B and Gemma 9B under heavy load).
+- **99.5%+ success rate** on every run (99.9% on SGLang Mistral 7B and Gemma 9B throughput ramp; 99.5% on SGLang Mistral 7B prefix sharing).
 
 ### Models Tested
 
@@ -880,9 +968,9 @@ terraform destroy \
 |---|---|---:|---|
 | `single_request_latency` | Baseline TTFT and end-to-end latency | 50 | Short chat |
 | `throughput_ramp` | Decode throughput under concurrent load | 700 | Long generation |
-| `long_context_stress` | Performance with large input contexts | ~100 | Long context |
-| `prefix_sharing_benefit` | KV cache reuse with shared prefixes | ~100 | Shared prefix |
-| `structured_generation_speed` | JSON-constrained output speed | ~100 | Structured JSON |
+| `long_context_stress` | Performance with large input contexts | 20 | Long context |
+| `prefix_sharing_benefit` | KV cache reuse with shared prefixes | 100 | Shared prefix |
+| `structured_generation_speed` | JSON-constrained output speed | 200 | Structured JSON |
 
 ### Engine Head-to-Head (all 7 models)
 
@@ -915,7 +1003,7 @@ For each scenario, which engine won on TTFT p95 and throughput (tok/s) across al
 | Gemma 9B | vLLM | 105.7 ms | 5360.2 ms | 24.0 | 0.21 | 100% |
 | Gemma 9B | SGLang | **84.2 ms** | 5312.8 ms | 24.2 | 0.21 | 100% |
 
-### Throughput Ramp (700 concurrent requests)
+### Throughput Ramp (700 total requests across 7 concurrency levels)
 
 | Model | Engine | TTFT p95 | Latency p95 | Tok/s | Req/s | Success |
 |---|---|---:|---:|---:|---:|---:|

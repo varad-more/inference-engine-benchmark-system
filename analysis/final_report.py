@@ -7,7 +7,7 @@ from pathlib import Path
 from statistics import mean
 from typing import Any
 
-from analysis import load_results, select_model_results
+from analysis import get_engine_variant, get_spec_method, load_results, select_model_results
 
 
 def aggregate_results(results_dir: Path, model: str | None = None) -> dict[str, Any]:
@@ -31,16 +31,21 @@ def aggregate_results(results_dir: Path, model: str | None = None) -> dict[str, 
     for record in records:
         run_meta = record.get("run_metadata", {})
         record_model = run_meta.get("model", "unknown-model")
-        grouped[(record_model, record["scenario_name"], record["engine_name"])].append(record)
+        # Use engine_variant when present (spec-dec runs); fall back to engine_name
+        variant = get_engine_variant(record)
+        grouped[(record_model, record["scenario_name"], variant)].append(record)
 
     summary_rows: list[dict[str, Any]] = []
-    for (row_model, scenario_name, engine_name), items in sorted(grouped.items()):
+    for (row_model, scenario_name, engine_variant), items in sorted(grouped.items()):
         metrics_list = [item["metrics"] for item in items]
+        spec_method = get_spec_method(items[0]) if items else None
         summary_rows.append(
             {
                 "model": row_model,
                 "scenario_name": scenario_name,
-                "engine_name": engine_name,
+                "engine_name": engine_variant,
+                "engine_variant": engine_variant,
+                "spec_method": spec_method,
                 "runs": len(items),
                 "ttft_p50_ms": mean(m["ttft"]["p50"] for m in metrics_list),
                 "ttft_p95_ms": mean(m["ttft"]["p95"] for m in metrics_list),
