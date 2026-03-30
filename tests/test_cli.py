@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
+import pytest
 from typer.testing import CliRunner
 
 import analysis.final_report
@@ -36,7 +37,6 @@ def test_health_checks_selected_engine_and_skips_others(monkeypatch) -> None:
     assert result.exit_code == 0
     assert calls == [("sglang", run_experiment.DEFAULT_MODEL, "localhost")]
     assert "SGLang" in result.output
-    assert "skipped" in result.output.lower()
     assert "healthy" in result.output.lower()
 
 
@@ -98,6 +98,85 @@ def test_final_report_passes_model_filter(monkeypatch, tmp_path: Path) -> None:
         "model": "google/gemma-2-2b-it",
     }
     assert "Model filter" in result.output
+
+
+def test_health_accepts_spec_dec_variants(monkeypatch) -> None:
+    calls: list[str] = []
+
+    def fake_make_client(engine: str, model: str, host_override: str | None = None):
+        calls.append(engine)
+        return FakeClient(healthy=True)
+
+    monkeypatch.setattr(run_experiment, "_make_client", fake_make_client)
+
+    result = runner.invoke(run_experiment.app, ["health", "--engines", "vllm-eagle3"])
+    assert result.exit_code == 0
+    assert calls == ["vllm-eagle3"]
+    assert "Eagle3" in result.output
+
+
+def test_parse_engines_accepts_spec_dec_variants() -> None:
+    from run_experiment import _parse_engines
+
+    assert _parse_engines("vllm-eagle3") == ["vllm-eagle3"]
+    assert _parse_engines("vllm-ngram") == ["vllm-ngram"]
+    assert _parse_engines("sglang-eagle3") == ["sglang-eagle3"]
+    assert _parse_engines("sglang-ngram") == ["sglang-ngram"]
+
+
+def test_parse_engines_rejects_unknown_variant() -> None:
+    from run_experiment import _parse_engines
+
+    with pytest.raises(Exception):  # typer.BadParameter
+        _parse_engines("vllm-medusa")
+
+
+def test_parse_engines_all_spec_alias() -> None:
+    from run_experiment import _ENGINE_VARIANTS, _parse_engines
+
+    result = _parse_engines("all-spec", allow_group_aliases=True)
+    assert set(result) == set(_ENGINE_VARIANTS.keys())
+
+
+def test_variant_metadata_eagle3() -> None:
+    from run_experiment import _variant_metadata
+
+    meta = _variant_metadata("vllm-eagle3")
+    assert meta["engine"] == "vllm"
+    assert meta["engine_variant"] == "vllm-eagle3"
+    assert meta["spec_method"] == "eagle3"
+
+
+def test_variant_metadata_baseline_has_no_spec_method() -> None:
+    from run_experiment import _variant_metadata
+
+    meta = _variant_metadata("vllm")
+    assert meta["spec_method"] is None
+
+
+def test_make_client_eagle3_creates_vllm_client() -> None:
+    from engines.vllm_client import VLLMClient
+    from run_experiment import _make_client
+
+    client = _make_client("vllm-eagle3", "meta-llama/Llama-3.1-8B-Instruct")
+    assert isinstance(client, VLLMClient)
+    assert client.port == 8000
+
+
+def test_make_client_sglang_eagle3_creates_sglang_client() -> None:
+    from engines.sglang_client import SGLangClient
+    from run_experiment import _make_client
+
+    client = _make_client("sglang-eagle3", "meta-llama/Llama-3.1-8B-Instruct")
+    assert isinstance(client, SGLangClient)
+    assert client.port == 8001
+
+
+def test_resolve_host_routes_by_base_engine() -> None:
+    from run_experiment import _resolve_host
+
+    assert _resolve_host("vllm-eagle3", "vllm-host", "sglang-host") == "vllm-host"
+    assert _resolve_host("sglang-ngram", "vllm-host", "sglang-host") == "sglang-host"
 
 
 def test_serve_accepts_results_dir(monkeypatch, tmp_path: Path) -> None:

@@ -93,7 +93,8 @@ class ScenarioResults:
 
     def save(self, results_dir: Path = RESULTS_DIR) -> Path:
         ts = int(self.timestamp)
-        fname = f"{self.scenario_name}_{self.engine_name}_{ts}.json"
+        variant = self.run_metadata.get("engine_variant", self.engine_name)
+        fname = f"{self.scenario_name}_{variant}_{ts}.json"
         path = results_dir / fname
         path.write_text(json.dumps(self.to_dict(), indent=2))
         logger.info("saved results", path=str(path))
