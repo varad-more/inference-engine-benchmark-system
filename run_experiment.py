@@ -62,6 +62,10 @@ def _configure_logging() -> None:
     root_logger.addHandler(handler)
     root_logger.setLevel(getattr(logging, log_level, logging.INFO))
 
+    # Silence noisy HTTP/connection loggers
+    for noisy in ("httpx", "httpcore", "urllib3", "aiohttp", "hpack"):
+        logging.getLogger(noisy).setLevel(logging.WARNING)
+
 
 _configure_logging()
 
@@ -396,14 +400,67 @@ def matrix(
     console.print(f"  Iterations     : [cyan]{iterations}[/cyan]")
     console.print(f"  Cooldown (sec) : [cyan]{cooldown_seconds}[/cyan]")
 
+    def _gpu_vram_info() -> str:
+        """Return a short GPU VRAM usage string, or empty if nvidia-smi is unavailable."""
+        import shutil
+        import subprocess
+
+        if not shutil.which("nvidia-smi"):
+            return ""
+        try:
+            out = subprocess.check_output(
+                ["nvidia-smi", "--query-gpu=memory.used,memory.total", "--format=csv,noheader,nounits"],
+                text=True,
+                timeout=5,
+            ).strip()
+            used, total = (int(x.strip()) for x in out.split(","))
+            pct = used / total * 100 if total else 0
+            return f"  GPU VRAM  : [magenta]{used} MiB / {total} MiB ({pct:.0f}%)[/magenta]"
+        except Exception:
+            return ""
+
+    def _fmt_duration(seconds: float) -> str:
+        """Format seconds into a human-readable string like '1h 23m 45s'."""
+        h, rem = divmod(int(seconds), 3600)
+        m, s = divmod(rem, 60)
+        if h > 0:
+            return f"{h}h {m:02d}m {s:02d}s"
+        if m > 0:
+            return f"{m}m {s:02d}s"
+        return f"{s}s"
+
     async def _run() -> None:
         runner = BenchmarkRunner(results_dir=results_dir)
         started_at = time.time()
         tasks_log: list[dict] = []
+        step_durations: list[float] = []
+        total_steps = len(scenario_list) * iterations * len(engine_list)
+        current_step = 0
 
         for bench_scenario in scenario_list:
             for iteration in range(1, iterations + 1):
                 for engine_name in engine_list:
+                    current_step += 1
+                    console.rule(
+                        f"[bold yellow]Step {current_step}/{total_steps}[/bold yellow]"
+                    )
+                    # ETA based on average step duration so far
+                    eta_str = ""
+                    if step_durations:
+                        avg = sum(step_durations) / len(step_durations)
+                        eta_secs = avg * (total_steps - current_step + 1)
+                        eta_str = f"  ETA       : [yellow]~{_fmt_duration(eta_secs)}[/yellow]"
+                    vram_str = _gpu_vram_info()
+                    console.print(
+                        f"  Scenario  : [cyan]{bench_scenario.name}[/cyan]\n"
+                        f"  Engine    : [cyan]{engine_name}[/cyan]\n"
+                        f"  Iteration : [cyan]{iteration}/{iterations}[/cyan]\n"
+                        f"  Model     : [cyan]{model}[/cyan]"
+                    )
+                    if vram_str:
+                        console.print(vram_str)
+                    if eta_str:
+                        console.print(eta_str)
                     host = _resolve_host(engine_name, vllm_host, sglang_host)
                     client = _make_client(engine_name, model, host)
                     healthy = await client.health_check()
@@ -419,6 +476,11 @@ def matrix(
                         task_info["status"] = "skipped_unhealthy"
                         tasks_log.append(task_info)
                         await client.aclose()
+                        elapsed = time.time() - started_at
+                        console.print(
+                            f"  [red]✗ SKIPPED[/red] (engine unhealthy)"
+                            f"  — elapsed {_fmt_duration(elapsed)}"
+                        )
                         continue
 
                     results = await runner.run_scenario(
@@ -441,12 +503,56 @@ def matrix(
                     )
                     tasks_log.append(task_info)
                     await client.aclose()
+                    elapsed = time.time() - started_at
+                    step_duration = task_info["finished_at"] - task_info["started_at"]
+                    step_durations.append(step_duration)
+                    completed = sum(1 for t in tasks_log if t["status"] == "completed")
+                    skipped = sum(
+                        1 for t in tasks_log if t.get("status") == "skipped_unhealthy"
+                    )
+                    console.print(
+                        f"  [green]✓ DONE[/green] in {_fmt_duration(step_duration)}"
+                        f"  — saved to {result_path.name}\n"
+                        f"  Progress: {completed} completed, {skipped} skipped,"
+                        f" {total_steps - current_step} remaining"
+                        f"  — total elapsed {_fmt_duration(elapsed)}"
+                    )
                     if cooldown_seconds > 0:
                         await asyncio.sleep(cooldown_seconds)
+
+        # ── End-of-matrix summary table ──
+        total_elapsed = time.time() - started_at
+        console.rule("[bold green]Matrix complete")
+        console.print(f"  Total time: [bold]{_fmt_duration(total_elapsed)}[/bold]\n")
+
+        summary_table = Table(title="Matrix Results Summary")
+        summary_table.add_column("Scenario", style="cyan")
+        summary_table.add_column("Engine", style="cyan")
+        summary_table.add_column("Iter", justify="center")
+        summary_table.add_column("Status", justify="center")
+        summary_table.add_column("Duration", justify="right")
+        summary_table.add_column("Output File", style="dim")
+        for t in tasks_log:
+            status = t.get("status", "unknown")
+            style = "green" if status == "completed" else "red"
+            dur = ""
+            if "finished_at" in t and "started_at" in t:
+                dur = _fmt_duration(t["finished_at"] - t["started_at"])
+            out_file = Path(t.get("result_path", "")).name if t.get("result_path") else "—"
+            summary_table.add_row(
+                t["scenario_name"],
+                t.get("engine", t.get("engine_label", "?")),
+                str(t.get("iteration", "")),
+                f"[{style}]{status}[/{style}]",
+                dur,
+                out_file,
+            )
+        console.print(summary_table)
 
         manifest = {
             "started_at": started_at,
             "finished_at": time.time(),
+            "total_elapsed_seconds": total_elapsed,
             "model": model,
             "tasks": tasks_log,
             "cooldown_seconds": cooldown_seconds,
