@@ -1,0 +1,34 @@
+{
+  "started_at": 1774926564.7481866,
+  "finished_at": 1774928780.3274198,
+  "model": "meta-llama/Llama-3.1-8B-Instruct",
+  "tasks": [
+    {
+      "model": "meta-llama/Llama-3.1-8B-Instruct",
+      "scenario_name": "single_request_latency",
+      "engine": "vllm",
+      "engine_variant": "vllm",
+      "spec_method": null,
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1774926564.7966876,
+      "status": "completed",
+      "finished_at": 1774926777.5438583,
+      "result_path": "/home/ubuntu/repos/inference-engine-benchmark-system-speculative/results_specdec/20260331_llama31_rerun/llama-3.1-8b-instruct/single_request_latency_vllm_1774926564.json"
+    },
+    {
+      "model": "meta-llama/Llama-3.1-8B-Instruct",
+      "scenario_name": "throughput_ramp",
+      "engine": "vllm",
+      "engine_variant": "vllm",
+      "spec_method": null,
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1774926897.577763,
+      "status": "completed",
+      "finished_at": 1774928660.287825,
+      "result_path": "/home/ubuntu/repos/inference-engine-benchmark-system-speculative/results_specdec/20260331_llama31_rerun/llama-3.1-8b-instruct/throughput_ramp_vllm_1774926897.json"
+    }
+  ],
+  "cooldown_seconds": 120
+}

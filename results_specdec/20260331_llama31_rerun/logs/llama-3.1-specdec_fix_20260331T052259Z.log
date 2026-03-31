@@ -1,0 +1,13 @@
+[2026-03-31T05:22:59Z] ##### LLAMA 3.1 SPEC-DEC FIX START #####
+[2026-03-31T05:22:59Z] === BEGIN engine=vllm-eagle3 ===
+[2026-03-31T05:22:59Z] cleanup: docker compose down --remove-orphans
+ Network inference-engine-benchmark-system-speculative_default  Removing
+ Network inference-engine-benchmark-system-speculative_default  Removed
+[2026-03-31T05:23:08Z] gpu after cleanup
+2026/03/31 05:23:09.833, 4, 0, 23028
+ Network inference-engine-benchmark-system-speculative_default  Creating
+ Network inference-engine-benchmark-system-speculative_default  Created
+ Container vllm-eagle3-server  Creating
+ Container vllm-eagle3-server  Created
+ Container vllm-eagle3-server  Starting
+ Container vllm-eagle3-server  Started
