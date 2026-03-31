@@ -582,7 +582,10 @@ def matrix(
             "tasks": tasks_log,
             "cooldown_seconds": cooldown_seconds,
         }
-        manifest_path = results_dir / f"matrix_manifest_{int(started_at)}.json"
+        model_slug = model.split("/")[-1].lower()
+        model_dir = results_dir / model_slug
+        model_dir.mkdir(parents=True, exist_ok=True)
+        manifest_path = model_dir / f"matrix_manifest_{int(started_at)}.json"
         manifest_path.write_text(json.dumps(manifest, indent=2))
         console.print(f"[green]✓[/green] Matrix manifest saved to {manifest_path}")
 

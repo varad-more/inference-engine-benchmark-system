@@ -95,7 +95,18 @@ class ScenarioResults:
         ts = int(self.timestamp)
         variant = self.run_metadata.get("engine_variant", self.engine_name)
         fname = f"{self.scenario_name}_{variant}_{ts}.json"
-        path = results_dir / fname
+
+        # Organise results into model-specific subfolders
+        model_id = self.run_metadata.get("model", "")
+        if model_id:
+            # "Qwen/Qwen3-8B" -> "qwen3-8b", "meta-llama/Llama-3.1-8B-Instruct" -> "llama-3.1-8b-instruct"
+            model_slug = model_id.split("/")[-1].lower()
+            model_dir = results_dir / model_slug
+        else:
+            model_dir = results_dir
+
+        model_dir.mkdir(parents=True, exist_ok=True)
+        path = model_dir / fname
         path.write_text(json.dumps(self.to_dict(), indent=2))
         logger.info("saved results", path=str(path))
         return path
