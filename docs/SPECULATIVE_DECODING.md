@@ -78,21 +78,21 @@ This guide covers how to run speculative decoding benchmarks using the two suppo
 
 ```bash
 # 1. Run baseline
-docker compose --profile vllm up -d
+docker compose --profile vllm up -d vllm
 sleep 120  # wait for model to load
 python run_experiment.py run -s single_request_latency -e vllm --model meta-llama/Llama-3.1-8B-Instruct
 python run_experiment.py run -s throughput_ramp -e vllm --model meta-llama/Llama-3.1-8B-Instruct
 docker compose --profile vllm down
 
 # 2. Run Eagle3
-docker compose --profile vllm-eagle3 up -d
+docker compose --profile vllm-eagle3 up -d vllm-eagle3
 sleep 180  # two models load — takes longer
 python run_experiment.py run -s single_request_latency -e vllm-eagle3 --model meta-llama/Llama-3.1-8B-Instruct
 python run_experiment.py run -s throughput_ramp -e vllm-eagle3 --model meta-llama/Llama-3.1-8B-Instruct
 docker compose --profile vllm-eagle3 down
 
 # 3. Run Ngram
-docker compose --profile vllm-ngram up -d
+docker compose --profile vllm-ngram up -d vllm-ngram
 sleep 120
 python run_experiment.py run -s single_request_latency -e vllm-ngram --model meta-llama/Llama-3.1-8B-Instruct
 python run_experiment.py run -s throughput_ramp -e vllm-ngram --model meta-llama/Llama-3.1-8B-Instruct
@@ -108,17 +108,17 @@ python run_experiment.py report --output spec_dec_report.html
 
 ```bash
 # 1. Baseline
-docker compose --profile sglang up -d && sleep 120
+docker compose --profile sglang up -d sglang && sleep 120
 python run_experiment.py run -s single_request_latency -e sglang --model meta-llama/Llama-3.1-8B-Instruct
 docker compose --profile sglang down
 
 # 2. Eagle3
-docker compose --profile sglang-eagle3 up -d && sleep 180
+docker compose --profile sglang-eagle3 up -d sglang-eagle3 && sleep 180
 python run_experiment.py run -s single_request_latency -e sglang-eagle3 --model meta-llama/Llama-3.1-8B-Instruct
 docker compose --profile sglang-eagle3 down
 
 # 3. Ngram
-docker compose --profile sglang-ngram up -d && sleep 120
+docker compose --profile sglang-ngram up -d sglang-ngram && sleep 120
 python run_experiment.py run -s single_request_latency -e sglang-ngram --model meta-llama/Llama-3.1-8B-Instruct
 docker compose --profile sglang-ngram down
 ```
@@ -131,21 +131,21 @@ docker compose --profile sglang-ngram down
 MODEL=meta-llama/Llama-3.1-8B-Instruct
 
 # Baseline vLLM
-docker compose --profile vllm up -d && sleep 120
+docker compose --profile vllm up -d vllm && sleep 120
 python run_experiment.py matrix \
   --scenarios single_request_latency,throughput_ramp,long_context_stress,prefix_sharing_benefit,structured_generation_speed \
   --engines vllm --model $MODEL --iterations 2 --cooldown-seconds 120
 docker compose --profile vllm down
 
 # vLLM Eagle3
-docker compose --profile vllm-eagle3 up -d && sleep 180
+docker compose --profile vllm-eagle3 up -d vllm-eagle3 && sleep 180
 python run_experiment.py matrix \
   --scenarios single_request_latency,throughput_ramp \
   --engines vllm-eagle3 --model $MODEL --iterations 2 --cooldown-seconds 120
 docker compose --profile vllm-eagle3 down
 
 # vLLM Ngram
-docker compose --profile vllm-ngram up -d && sleep 120
+docker compose --profile vllm-ngram up -d vllm-ngram && sleep 120
 python run_experiment.py matrix \
   --scenarios single_request_latency,throughput_ramp \
   --engines vllm-ngram --model $MODEL --iterations 2 --cooldown-seconds 120

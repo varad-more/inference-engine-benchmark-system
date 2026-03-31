@@ -33,14 +33,14 @@ All models below fit unquantized on a single A10G 24GB. Run sequentially, one en
 MODEL=Qwen/Qwen3-8B
 
 # vLLM
-docker compose --profile vllm up -d && sleep 120
+docker compose --profile vllm up -d vllm && sleep 120
 python run_experiment.py matrix \
   --scenarios single_request_latency,throughput_ramp,long_context_stress,prefix_sharing_benefit,structured_generation_speed \
   --engines vllm --model $MODEL --iterations 2 --cooldown-seconds 120
 docker compose --profile vllm down && sleep 60
 
 # SGLang
-docker compose --profile sglang up -d && sleep 120
+docker compose --profile sglang up -d sglang && sleep 120
 python run_experiment.py matrix \
   --scenarios single_request_latency,throughput_ramp,long_context_stress,prefix_sharing_benefit,structured_generation_speed \
   --engines sglang --model $MODEL --iterations 2 --cooldown-seconds 120
@@ -63,7 +63,7 @@ MODEL=meta-llama/Llama-3.1-8B-Instruct
 SCENARIOS=single_request_latency,throughput_ramp
 
 for PROFILE in vllm vllm-eagle3 vllm-ngram sglang sglang-eagle3 sglang-ngram; do
-  docker compose --profile $PROFILE up -d
+  docker compose --profile $PROFILE up -d $PROFILE
   sleep $([ "$PROFILE" = *eagle3* ] && echo 180 || echo 120)
   python run_experiment.py matrix \
     --scenarios $SCENARIOS --engines $PROFILE \
@@ -234,7 +234,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: pip install -e ".[dev]"
-      - run: docker compose --profile vllm up -d && sleep 120
+      - run: docker compose --profile vllm up -d vllm && sleep 120
       - run: python run_experiment.py run --scenario ci_smoke --engines vllm --strict
       - run: python run_experiment.py final-report --output ci_report.md
       - uses: actions/upload-artifact@v4

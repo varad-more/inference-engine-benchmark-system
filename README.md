@@ -331,17 +331,17 @@ Speculative decoding is an **engine startup configuration**, not a separate scen
 export MODEL=meta-llama/Llama-3.1-8B-Instruct
 
 # Baseline
-docker compose --profile vllm up -d && sleep 120
+docker compose --profile vllm up -d vllm && sleep 120
 python run_experiment.py run -s single_request_latency -e vllm --model $MODEL
 docker compose --profile vllm down
 
 # Eagle3 — loads two models, needs ~180s
-docker compose --profile vllm-eagle3 up -d && sleep 180
+docker compose --profile vllm-eagle3 up -d vllm-eagle3 && sleep 180
 python run_experiment.py run -s single_request_latency -e vllm-eagle3 --model $MODEL
 docker compose --profile vllm-eagle3 down
 
 # Ngram — no draft model
-docker compose --profile vllm-ngram up -d && sleep 120
+docker compose --profile vllm-ngram up -d vllm-ngram && sleep 120
 python run_experiment.py run -s single_request_latency -e vllm-ngram --model $MODEL
 docker compose --profile vllm-ngram down
 

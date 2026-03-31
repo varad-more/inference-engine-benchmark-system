@@ -62,7 +62,7 @@ Run **one engine at a time** on a single GPU — both engines share the same GPU
 
 ```bash
 # vLLM (port 8000)
-docker compose --profile vllm up -d
+docker compose --profile vllm up -d vllm
 sleep 120   # wait for model to load into GPU memory
 
 # Verify it's ready
@@ -73,7 +73,7 @@ Or for SGLang:
 
 ```bash
 # SGLang (port 8001)
-docker compose --profile sglang up -d
+docker compose --profile sglang up -d sglang
 sleep 120
 
 curl http://localhost:8001/health
@@ -128,7 +128,7 @@ Switch engines and repeat:
 docker compose --profile vllm down
 sleep 60
 
-docker compose --profile sglang up -d && sleep 120
+docker compose --profile sglang up -d sglang && sleep 120
 python run_experiment.py matrix \
   --scenarios single_request_latency,throughput_ramp,long_context_stress,prefix_sharing_benefit,structured_generation_speed \
   --engines sglang \
@@ -167,17 +167,17 @@ Speculative decoding is configured at engine startup — not a separate scenario
 export MODEL=meta-llama/Llama-3.1-8B-Instruct
 
 # 1. Baseline
-docker compose --profile vllm up -d && sleep 120
+docker compose --profile vllm up -d vllm && sleep 120
 python run_experiment.py run -s single_request_latency -e vllm --model $MODEL
 docker compose --profile vllm down
 
 # 2. Eagle3 (loads two models — wait longer)
-docker compose --profile vllm-eagle3 up -d && sleep 180
+docker compose --profile vllm-eagle3 up -d vllm-eagle3 && sleep 180
 python run_experiment.py run -s single_request_latency -e vllm-eagle3 --model $MODEL
 docker compose --profile vllm-eagle3 down
 
 # 3. Ngram (no draft model needed)
-docker compose --profile vllm-ngram up -d && sleep 120
+docker compose --profile vllm-ngram up -d vllm-ngram && sleep 120
 python run_experiment.py run -s single_request_latency -e vllm-ngram --model $MODEL
 docker compose --profile vllm-ngram down
 ```
@@ -217,7 +217,7 @@ python run_experiment.py report --output report.html
 python run_experiment.py serve --results-dir results/
 
 # Or via docker compose (runs on port 3000)
-docker compose --profile dashboard up -d
+docker compose --profile dashboard up -d dashboard
 # Open http://localhost:3000
 ```
 
