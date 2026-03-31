@@ -483,16 +483,41 @@ def matrix(
                         )
                         continue
 
-                    results = await runner.run_scenario(
-                        bench_scenario,
-                        client,
-                        run_metadata={
-                            "model": model,
-                            **_variant_metadata(engine_name),
-                            "iteration": iteration,
-                            "matrix_execution": True,
-                        },
-                    )
+                    total_reqs = getattr(bench_scenario, "num_requests", None)
+                    if total_reqs is None:
+                        total_reqs = getattr(bench_scenario, "requests_per_level", 100) * len(
+                            getattr(bench_scenario, "concurrency_levels", [1])
+                        )
+
+                    with Progress(
+                        SpinnerColumn(),
+                        TextColumn(
+                            f"[bold]{engine_name}[/bold] {bench_scenario.name}"
+                            " {task.description}"
+                        ),
+                        BarColumn(),
+                        TextColumn("{task.completed}/{task.total}"),
+                        TimeElapsedColumn(),
+                        console=console,
+                    ) as prog:
+                        prog_task = prog.add_task("", total=total_reqs)
+
+                        def _progress_cb(
+                            done: int, total: int, result: Any
+                        ) -> None:
+                            prog.update(prog_task, completed=done)
+
+                        results = await runner.run_scenario(
+                            bench_scenario,
+                            client,
+                            progress_cb=_progress_cb,
+                            run_metadata={
+                                "model": model,
+                                **_variant_metadata(engine_name),
+                                "iteration": iteration,
+                                "matrix_execution": True,
+                            },
+                        )
                     result_path = results.save(results_dir)
                     task_info.update(
                         {
