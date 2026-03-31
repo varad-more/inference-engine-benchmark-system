@@ -1,0 +1,364 @@
+[2026-03-31T05:08:20Z] ##### LLAMA 3.1 SPEC-DEC FIX START #####
+[2026-03-31T05:08:20Z] === BEGIN engine=vllm-eagle3 ===
+[2026-03-31T05:08:20Z] cleanup: docker compose down --remove-orphans
+ Network inference-engine-benchmark-system-speculative_default  Removing
+ Network inference-engine-benchmark-system-speculative_default  Resource is still in use
+[2026-03-31T05:08:30Z] gpu after cleanup
+2026/03/31 05:08:31.895, 4, 0, 23028
+time="2026-03-31T05:08:34Z" level=warning msg="Docker Compose is configured to build using Bake, but buildx isn't installed"
+#0 building with "default" instance using docker driver
+
+#1 [dashboard internal] load build definition from Dockerfile.dashboard
+#1 transferring dockerfile: 687B done
+#1 DONE 0.0s
+
+#2 [dashboard internal] load metadata for docker.io/library/python:3.11-slim
+#2 DONE 0.1s
+
+#3 [dashboard internal] load .dockerignore
+#3 transferring context: 2B done
+#3 DONE 0.0s
+
+#4 [dashboard  1/12] FROM docker.io/library/python:3.11-slim@sha256:9358444059ed78e2975ada2c189f1c1a3144a5dab6f35bff8c981afb38946634
+#4 DONE 0.0s
+
+#5 [dashboard internal] load build context
+#5 transferring context: 2.48kB done
+#5 DONE 0.0s
+
+#6 [dashboard  2/12] WORKDIR /app
+#6 CACHED
+
+#7 [dashboard  8/12] COPY sglang_programs/ ./sglang_programs/
+#7 CACHED
+
+#8 [dashboard  9/12] COPY dashboard/ ./dashboard/
+#8 CACHED
+
+#9 [dashboard  6/12] COPY engines/ ./engines/
+#9 CACHED
+
+#10 [dashboard  4/12] COPY pyproject.toml ./
+#10 CACHED
+
+#11 [dashboard  5/12] COPY run_experiment.py ./
+#11 CACHED
+
+#12 [dashboard 10/12] COPY analysis/ ./analysis/
+#12 CACHED
+
+#13 [dashboard  7/12] COPY benchmarks/ ./benchmarks/
+#13 CACHED
+
+#14 [dashboard  3/12] RUN apt-get update && apt-get install -y --no-install-recommends     curl     && rm -rf /var/lib/apt/lists/*
+#14 CACHED
+
+#15 [dashboard 11/12] COPY prompts/ ./prompts/
+#15 CACHED
+
+#16 [dashboard 12/12] RUN pip install --no-cache-dir .
+#16 2.295 Processing /app
+#16 2.297   Installing build dependencies: started
+#16 3.319   Installing build dependencies: finished with status 'done'
+#16 3.319   Getting requirements to build wheel: started
+#16 3.413   Getting requirements to build wheel: finished with status 'done'
+#16 3.414   Preparing metadata (pyproject.toml): started
+#16 3.545   Preparing metadata (pyproject.toml): finished with status 'error'
+#16 3.550   error: subprocess-exited-with-error
+#16 3.550   
+#16 3.550   × Preparing metadata (pyproject.toml) did not run successfully.
+#16 3.550   │ exit code: 1
+#16 3.550   ╰─> [21 lines of output]
+#16 3.550       Traceback (most recent call last):
+#16 3.550         File "/usr/local/lib/python3.11/site-packages/pip/_vendor/pyproject_hooks/_in_process/_in_process.py", line 353, in <module>
+#16 3.550           main()
+#16 3.550         File "/usr/local/lib/python3.11/site-packages/pip/_vendor/pyproject_hooks/_in_process/_in_process.py", line 335, in main
+#16 3.550           json_out['return_val'] = hook(**hook_input['kwargs'])
+#16 3.550                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+#16 3.550         File "/usr/local/lib/python3.11/site-packages/pip/_vendor/pyproject_hooks/_in_process/_in_process.py", line 152, in prepare_metadata_for_build_wheel
+#16 3.550           whl_basename = backend.build_wheel(metadata_directory, config_settings)
+#16 3.550                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+#16 3.550         File "/tmp/pip-build-env-66l62cqx/overlay/lib/python3.11/site-packages/hatchling/build.py", line 58, in build_wheel
+#16 3.550           return os.path.basename(next(builder.build(directory=wheel_directory, versions=["standard"])))
+#16 3.550                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+#16 3.550         File "/tmp/pip-build-env-66l62cqx/overlay/lib/python3.11/site-packages/hatchling/builders/plugin/interface.py", line 92, in build
+#16 3.550           self.metadata.validate_fields()
+#16 3.550         File "/tmp/pip-build-env-66l62cqx/overlay/lib/python3.11/site-packages/hatchling/metadata/core.py", line 266, in validate_fields
+#16 3.550           self.core.validate_fields()
+#16 3.550         File "/tmp/pip-build-env-66l62cqx/overlay/lib/python3.11/site-packages/hatchling/metadata/core.py", line 1366, in validate_fields
+#16 3.550           getattr(self, attribute)
+#16 3.550         File "/tmp/pip-build-env-66l62cqx/overlay/lib/python3.11/site-packages/hatchling/metadata/core.py", line 531, in readme
+#16 3.550           raise OSError(message)
+#16 3.550       OSError: Readme file does not exist: README.md
+#16 3.550       [end of output]
+#16 3.550   
+#16 3.550   note: This error originates from a subprocess, and is likely not a problem with pip.
+#16 3.551 error: metadata-generation-failed
+#16 3.551 
+#16 3.551 × Encountered error while generating package metadata.
+#16 3.551 ╰─> See above for output.
+#16 3.551 
+#16 3.551 note: This is an issue with the package mentioned above, not pip.
+#16 3.551 hint: See above for details.
+#16 3.628 
+#16 3.628 [notice] A new release of pip is available: 24.0 -> 26.0.1
+#16 3.628 [notice] To update, run: pip install --upgrade pip
+#16 ERROR: process "/bin/sh -c pip install --no-cache-dir ." did not complete successfully: exit code: 1
+------
+ > [dashboard 12/12] RUN pip install --no-cache-dir .:
+3.551 error: metadata-generation-failed
+3.551 
+3.551 × Encountered error while generating package metadata.
+3.551 ╰─> See above for output.
+3.551 
+3.551 note: This is an issue with the package mentioned above, not pip.
+3.551 hint: See above for details.
+3.628 
+3.628 [notice] A new release of pip is available: 24.0 -> 26.0.1
+3.628 [notice] To update, run: pip install --upgrade pip
+------
+failed to solve: process "/bin/sh -c pip install --no-cache-dir ." did not complete successfully: exit code: 1
+[2026-03-31T05:08:38Z] compose up failed for vllm-eagle3 rc=1
+[2026-03-31T05:08:38Z] === BEGIN engine=vllm-ngram ===
+[2026-03-31T05:08:38Z] cleanup: docker compose down --remove-orphans
+ Network inference-engine-benchmark-system-speculative_default  Removing
+ Network inference-engine-benchmark-system-speculative_default  Removed
+[2026-03-31T05:08:46Z] gpu after cleanup
+2026/03/31 05:08:47.903, 4, 0, 23028
+time="2026-03-31T05:08:50Z" level=warning msg="Docker Compose is configured to build using Bake, but buildx isn't installed"
+#0 building with "default" instance using docker driver
+
+#1 [dashboard internal] load build definition from Dockerfile.dashboard
+#1 transferring dockerfile: 687B done
+#1 DONE 0.0s
+
+#2 [dashboard internal] load metadata for docker.io/library/python:3.11-slim
+#2 DONE 0.1s
+
+#3 [dashboard internal] load .dockerignore
+#3 transferring context: 2B done
+#3 DONE 0.0s
+
+#4 [dashboard  1/12] FROM docker.io/library/python:3.11-slim@sha256:9358444059ed78e2975ada2c189f1c1a3144a5dab6f35bff8c981afb38946634
+#4 DONE 0.0s
+
+#5 [dashboard internal] load build context
+#5 transferring context: 2.48kB done
+#5 DONE 0.0s
+
+#6 [dashboard  3/12] RUN apt-get update && apt-get install -y --no-install-recommends     curl     && rm -rf /var/lib/apt/lists/*
+#6 CACHED
+
+#7 [dashboard  7/12] COPY benchmarks/ ./benchmarks/
+#7 CACHED
+
+#8 [dashboard  8/12] COPY sglang_programs/ ./sglang_programs/
+#8 CACHED
+
+#9 [dashboard  6/12] COPY engines/ ./engines/
+#9 CACHED
+
+#10 [dashboard  9/12] COPY dashboard/ ./dashboard/
+#10 CACHED
+
+#11 [dashboard  2/12] WORKDIR /app
+#11 CACHED
+
+#12 [dashboard  5/12] COPY run_experiment.py ./
+#12 CACHED
+
+#13 [dashboard 10/12] COPY analysis/ ./analysis/
+#13 CACHED
+
+#14 [dashboard  4/12] COPY pyproject.toml ./
+#14 CACHED
+
+#15 [dashboard 11/12] COPY prompts/ ./prompts/
+#15 CACHED
+
+#16 [dashboard 12/12] RUN pip install --no-cache-dir .
+#16 1.822 Processing /app
+#16 1.825   Installing build dependencies: started
+#16 2.858   Installing build dependencies: finished with status 'done'
+#16 2.859   Getting requirements to build wheel: started
+#16 2.947   Getting requirements to build wheel: finished with status 'done'
+#16 2.948   Preparing metadata (pyproject.toml): started
+#16 3.077   Preparing metadata (pyproject.toml): finished with status 'error'
+#16 3.082   error: subprocess-exited-with-error
+#16 3.082   
+#16 3.082   × Preparing metadata (pyproject.toml) did not run successfully.
+#16 3.082   │ exit code: 1
+#16 3.082   ╰─> [21 lines of output]
+#16 3.082       Traceback (most recent call last):
+#16 3.082         File "/usr/local/lib/python3.11/site-packages/pip/_vendor/pyproject_hooks/_in_process/_in_process.py", line 353, in <module>
+#16 3.082           main()
+#16 3.082         File "/usr/local/lib/python3.11/site-packages/pip/_vendor/pyproject_hooks/_in_process/_in_process.py", line 335, in main
+#16 3.082           json_out['return_val'] = hook(**hook_input['kwargs'])
+#16 3.082                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+#16 3.082         File "/usr/local/lib/python3.11/site-packages/pip/_vendor/pyproject_hooks/_in_process/_in_process.py", line 152, in prepare_metadata_for_build_wheel
+#16 3.082           whl_basename = backend.build_wheel(metadata_directory, config_settings)
+#16 3.082                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+#16 3.082         File "/tmp/pip-build-env-m2ec79zc/overlay/lib/python3.11/site-packages/hatchling/build.py", line 58, in build_wheel
+#16 3.082           return os.path.basename(next(builder.build(directory=wheel_directory, versions=["standard"])))
+#16 3.082                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+#16 3.082         File "/tmp/pip-build-env-m2ec79zc/overlay/lib/python3.11/site-packages/hatchling/builders/plugin/interface.py", line 92, in build
+#16 3.082           self.metadata.validate_fields()
+#16 3.082         File "/tmp/pip-build-env-m2ec79zc/overlay/lib/python3.11/site-packages/hatchling/metadata/core.py", line 266, in validate_fields
+#16 3.082           self.core.validate_fields()
+#16 3.082         File "/tmp/pip-build-env-m2ec79zc/overlay/lib/python3.11/site-packages/hatchling/metadata/core.py", line 1366, in validate_fields
+#16 3.082           getattr(self, attribute)
+#16 3.082         File "/tmp/pip-build-env-m2ec79zc/overlay/lib/python3.11/site-packages/hatchling/metadata/core.py", line 531, in readme
+#16 3.082           raise OSError(message)
+#16 3.082       OSError: Readme file does not exist: README.md
+#16 3.082       [end of output]
+#16 3.082   
+#16 3.082   note: This error originates from a subprocess, and is likely not a problem with pip.
+#16 3.083 error: metadata-generation-failed
+#16 3.083 
+#16 3.083 × Encountered error while generating package metadata.
+#16 3.083 ╰─> See above for output.
+#16 3.083 
+#16 3.083 note: This is an issue with the package mentioned above, not pip.
+#16 3.083 hint: See above for details.
+#16 3.162 
+#16 3.162 [notice] A new release of pip is available: 24.0 -> 26.0.1
+#16 3.162 [notice] To update, run: pip install --upgrade pip
+#16 ERROR: process "/bin/sh -c pip install --no-cache-dir ." did not complete successfully: exit code: 1
+------
+ > [dashboard 12/12] RUN pip install --no-cache-dir .:
+3.083 error: metadata-generation-failed
+3.083 
+3.083 × Encountered error while generating package metadata.
+3.083 ╰─> See above for output.
+3.083 
+3.083 note: This is an issue with the package mentioned above, not pip.
+3.083 hint: See above for details.
+3.162 
+3.162 [notice] A new release of pip is available: 24.0 -> 26.0.1
+3.162 [notice] To update, run: pip install --upgrade pip
+------
+failed to solve: process "/bin/sh -c pip install --no-cache-dir ." did not complete successfully: exit code: 1
+[2026-03-31T05:08:53Z] compose up failed for vllm-ngram rc=1
+[2026-03-31T05:08:53Z] === BEGIN engine=sglang ===
+[2026-03-31T05:08:53Z] cleanup: docker compose down --remove-orphans
+[2026-03-31T05:09:01Z] gpu after cleanup
+2026/03/31 05:09:03.235, 4, 0, 23028
+time="2026-03-31T05:09:05Z" level=warning msg="Docker Compose is configured to build using Bake, but buildx isn't installed"
+#0 building with "default" instance using docker driver
+
+#1 [dashboard internal] load build definition from Dockerfile.dashboard
+#1 DONE 0.0s
+
+#1 [dashboard internal] load build definition from Dockerfile.dashboard
+#1 transferring dockerfile: 687B done
+#1 DONE 0.0s
+
+#2 [dashboard internal] load metadata for docker.io/library/python:3.11-slim
+#2 DONE 0.1s
+
+#3 [dashboard internal] load .dockerignore
+#3 transferring context: 2B done
+#3 DONE 0.0s
+
+#4 [dashboard  1/12] FROM docker.io/library/python:3.11-slim@sha256:9358444059ed78e2975ada2c189f1c1a3144a5dab6f35bff8c981afb38946634
+#4 DONE 0.0s
+
+#5 [dashboard internal] load build context
+#5 transferring context: 2.48kB done
+#5 DONE 0.0s
+
+#6 [dashboard  5/12] COPY run_experiment.py ./
+#6 CACHED
+
+#7 [dashboard  8/12] COPY sglang_programs/ ./sglang_programs/
+#7 CACHED
+
+#8 [dashboard 10/12] COPY analysis/ ./analysis/
+#8 CACHED
+
+#9 [dashboard  2/12] WORKDIR /app
+#9 CACHED
+
+#10 [dashboard  7/12] COPY benchmarks/ ./benchmarks/
+#10 CACHED
+
+#11 [dashboard  9/12] COPY dashboard/ ./dashboard/
+#11 CACHED
+
+#12 [dashboard  3/12] RUN apt-get update && apt-get install -y --no-install-recommends     curl     && rm -rf /var/lib/apt/lists/*
+#12 CACHED
+
+#13 [dashboard  6/12] COPY engines/ ./engines/
+#13 CACHED
+
+#14 [dashboard  4/12] COPY pyproject.toml ./
+#14 CACHED
+
+#15 [dashboard 11/12] COPY prompts/ ./prompts/
+#15 CACHED
+
+#16 [dashboard 12/12] RUN pip install --no-cache-dir .
+#16 1.841 Processing /app
+#16 1.843   Installing build dependencies: started
+#16 2.867   Installing build dependencies: finished with status 'done'
+#16 2.868   Getting requirements to build wheel: started
+#16 2.956   Getting requirements to build wheel: finished with status 'done'
+#16 2.957   Preparing metadata (pyproject.toml): started
+#16 3.086   Preparing metadata (pyproject.toml): finished with status 'error'
+#16 3.091   error: subprocess-exited-with-error
+#16 3.091   
+#16 3.091   × Preparing metadata (pyproject.toml) did not run successfully.
+#16 3.091   │ exit code: 1
+#16 3.091   ╰─> [21 lines of output]
+#16 3.091       Traceback (most recent call last):
+#16 3.091         File "/usr/local/lib/python3.11/site-packages/pip/_vendor/pyproject_hooks/_in_process/_in_process.py", line 353, in <module>
+#16 3.091           main()
+#16 3.091         File "/usr/local/lib/python3.11/site-packages/pip/_vendor/pyproject_hooks/_in_process/_in_process.py", line 335, in main
+#16 3.091           json_out['return_val'] = hook(**hook_input['kwargs'])
+#16 3.091                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+#16 3.091         File "/usr/local/lib/python3.11/site-packages/pip/_vendor/pyproject_hooks/_in_process/_in_process.py", line 152, in prepare_metadata_for_build_wheel
+#16 3.091           whl_basename = backend.build_wheel(metadata_directory, config_settings)
+#16 3.091                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+#16 3.091         File "/tmp/pip-build-env-a_xr6ouu/overlay/lib/python3.11/site-packages/hatchling/build.py", line 58, in build_wheel
+#16 3.091           return os.path.basename(next(builder.build(directory=wheel_directory, versions=["standard"])))
+#16 3.091                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+#16 3.091         File "/tmp/pip-build-env-a_xr6ouu/overlay/lib/python3.11/site-packages/hatchling/builders/plugin/interface.py", line 92, in build
+#16 3.091           self.metadata.validate_fields()
+#16 3.091         File "/tmp/pip-build-env-a_xr6ouu/overlay/lib/python3.11/site-packages/hatchling/metadata/core.py", line 266, in validate_fields
+#16 3.091           self.core.validate_fields()
+#16 3.091         File "/tmp/pip-build-env-a_xr6ouu/overlay/lib/python3.11/site-packages/hatchling/metadata/core.py", line 1366, in validate_fields
+#16 3.091           getattr(self, attribute)
+#16 3.091         File "/tmp/pip-build-env-a_xr6ouu/overlay/lib/python3.11/site-packages/hatchling/metadata/core.py", line 531, in readme
+#16 3.091           raise OSError(message)
+#16 3.091       OSError: Readme file does not exist: README.md
+#16 3.091       [end of output]
+#16 3.091   
+#16 3.091   note: This error originates from a subprocess, and is likely not a problem with pip.
+#16 3.092 error: metadata-generation-failed
+#16 3.092 
+#16 3.092 × Encountered error while generating package metadata.
+#16 3.092 ╰─> See above for output.
+#16 3.092 
+#16 3.092 note: This is an issue with the package mentioned above, not pip.
+#16 3.092 hint: See above for details.
+#16 3.168 
+#16 3.168 [notice] A new release of pip is available: 24.0 -> 26.0.1
+#16 3.168 [notice] To update, run: pip install --upgrade pip
+#16 ERROR: process "/bin/sh -c pip install --no-cache-dir ." did not complete successfully: exit code: 1
+------
+ > [dashboard 12/12] RUN pip install --no-cache-dir .:
+3.092 error: metadata-generation-failed
+3.092 
+3.092 × Encountered error while generating package metadata.
+3.092 ╰─> See above for output.
+3.092 
+3.092 note: This is an issue with the package mentioned above, not pip.
+3.092 hint: See above for details.
+3.168 
+3.168 [notice] A new release of pip is available: 24.0 -> 26.0.1
+3.168 [notice] To update, run: pip install --upgrade pip
+------
+failed to solve: process "/bin/sh -c pip install --no-cache-dir ." did not complete successfully: exit code: 1
+[2026-03-31T05:09:08Z] compose up failed for sglang rc=1
+[2026-03-31T05:09:08Z] === BEGIN engine=sglang-ngram ===
+[2026-03-31T05:09:08Z] cleanup: docker compose down --remove-orphans
