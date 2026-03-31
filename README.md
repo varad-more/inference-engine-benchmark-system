@@ -4,7 +4,7 @@ A production-grade benchmark harness that rigorously compares **vLLM** and **SGL
 
 ## Summary
 
-We benchmarked **7 open-weight models** (2B to 9B parameters) on a single NVIDIA A10G 24GB GPU, running **5 scenarios** across both engines — **140 total runs, 99.5%+ success rate on every run**.
+We benchmarked a **7-model core matrix** (2B to 9B parameters) on a single NVIDIA A10G 24GB GPU, running **5 scenarios** across both engines — **140 total runs, 99.5%+ success rate on every run**.
 
 **The headline:** vLLM is the stronger general-purpose default on this hardware class. It wins time-to-first-token in **31 of 35** head-to-head comparisons and throughput in **22 of 35**, with decisive advantages in structured JSON generation (7/7 wins) and prefix-sharing workloads (7/7 TTFT wins). SGLang stays competitive on raw decode throughput at 7B+ model sizes, where the two engines are within 2% of each other.
 
@@ -17,11 +17,12 @@ We benchmarked **7 open-weight models** (2B to 9B parameters) on a single NVIDIA
 | Peak throughput | **264.6 tok/s** (Gemma 2B) | 258.0 tok/s (Gemma 2B) |
 | Model compatibility | All 7 models | All 7 models |
 
-**Models tested:** Gemma 2B, Llama 3.2 3B, Phi-3 Mini 3.8B, Qwen 2.5 7B, Mistral 7B, Llama 3.1 8B, Gemma 9B
+**Core matrix models:** Gemma 2B, Llama 3.2 3B, Phi-3 Mini 3.8B, Qwen 2.5 7B, Mistral 7B, Llama 3.1 8B, Gemma 9B
+**Follow-on A10G runs:** Qwen3 8B, DeepSeek-R1 Distill Qwen 7B
 **Scenarios:** single-request latency, throughput ramp, long context stress, prefix sharing, structured generation
 **Hardware:** AWS g5.2xlarge (NVIDIA A10G 24GB), sequential execution, one engine at a time
 
-Full results, per-scenario tables, and detailed analysis are in the [Benchmark Results](#benchmark-results) section below and in [`reports/cross_model_summary.md`](reports/cross_model_summary.md).
+Full results, the Qwen3/DeepSeek follow-on values, and detailed analysis are in the [Benchmark Results](#benchmark-results) section below and in [`reports/cross_model_summary.md`](reports/cross_model_summary.md).
 
 ---
 
@@ -924,7 +925,9 @@ terraform destroy \
 
 ## Benchmark Results
 
-**140 benchmark runs** across 7 models, 5 scenarios, and 2 inference engines on a single NVIDIA A10G 24GB (AWS g5.2xlarge). Each scenario-engine-model combination was run twice and averaged. All runs executed sequentially — one engine at a time — to avoid GPU memory contention.
+**140 core benchmark runs** across 7 models, 5 scenarios, and 2 inference engines on a single NVIDIA A10G 24GB (AWS g5.2xlarge). Each scenario-engine-model combination was run twice and averaged. All runs executed sequentially — one engine at a time — to avoid GPU memory contention.
+
+Follow-on A10G baseline runs were added later for **Qwen3-8B** and **DeepSeek-R1-Distill-Qwen-7B**. The visual-summary figures below now include those newer runs as well, while the exact win/loss counts in the “Key Findings” and “Engine Head-to-Head” sections still refer to the original 7-model core matrix.
 
 ### Visual Summary
 
@@ -958,9 +961,38 @@ terraform destroy \
 | `meta-llama/Llama-3.2-3B-Instruct` | 3B | Yes | Good small-model baseline |
 | `microsoft/Phi-3-mini-4k-instruct` | 3.8B | Yes | vLLM leads on all metrics |
 | `Qwen/Qwen2.5-7B-Instruct` | 7B | Yes | Mid-size reference model |
+| `deepseek-ai/DeepSeek-R1-Distill-Qwen-7B` | 7B | Yes | Follow-on A10G baseline run; reasoning-tuned Qwen distill |
 | `mistralai/Mistral-7B-Instruct-v0.3` | 7B | Yes | Sliding window attention |
 | `meta-llama/Llama-3.1-8B-Instruct` | 8B | Yes | Popular production model |
+| `Qwen/Qwen3-8B` | 8B | Yes | Follow-on A10G baseline run; current-generation Qwen baseline |
 | `google/gemma-2-9b-it` | 9B | Yes | Largest tested, vLLM required tuned fit |
+
+### Follow-on A10G Baseline Runs (2026-03-30)
+
+These values come from the later sequential A10G rerun stored under `results_afk/20260330_speculative/`. They are useful reference points for newer-model comparisons and speculative-decoding follow-up work.
+
+| Model | Scenario | Engine | TTFT p95 | Latency p95 | Tok/s | Req/s | Success |
+|---|---|---|---:|---:|---:|---:|---:|
+| DeepSeek-R1 Distill 7B | `single_request_latency` | vLLM | **62.8 ms** | 4215.8 ms | 30.5 | **0.28** | 100% |
+| DeepSeek-R1 Distill 7B | `single_request_latency` | SGLang | 66.3 ms | **4177.2 ms** | **30.9** | 0.24 | 100% |
+| DeepSeek-R1 Distill 7B | `throughput_ramp` | vLLM | **184.7 ms** | **9322.1 ms** | 105.6 | 0.41 | 100% |
+| DeepSeek-R1 Distill 7B | `throughput_ramp` | SGLang | 313.3 ms | 9603.0 ms | **106.1** | 0.41 | 100% |
+| DeepSeek-R1 Distill 7B | `long_context_stress` | vLLM | **93.1 ms** | 8470.5 ms | 121.2 | 0.47 | 100% |
+| DeepSeek-R1 Distill 7B | `long_context_stress` | SGLang | 105.3 ms | **8465.7 ms** | **125.9** | **0.49** | 100% |
+| DeepSeek-R1 Distill 7B | `prefix_sharing_benefit` | vLLM | **95.9 ms** | **4302.2 ms** | **235.7** | 1.84 | 100% |
+| DeepSeek-R1 Distill 7B | `prefix_sharing_benefit` | SGLang | 281.1 ms | 4393.6 ms | 235.1 | 1.84 | 100% |
+| DeepSeek-R1 Distill 7B | `structured_generation_speed` | vLLM | **115.0 ms** | **5153.5 ms** | **451.7** | **3.01** | 100% |
+| DeepSeek-R1 Distill 7B | `structured_generation_speed` | SGLang | 184.1 ms | 5186.4 ms | 450.7 | 3.00 | 100% |
+| Qwen3 8B | `single_request_latency` | vLLM | **44.6 ms** | **4377.4 ms** | **29.5** | 0.23 | 100% |
+| Qwen3 8B | `single_request_latency` | SGLang | 71.4 ms | 4382.9 ms | 29.2 | 0.23 | 100% |
+| Qwen3 8B | `throughput_ramp` | vLLM | 203.7 ms | **11529.1 ms** | 98.4 | 0.38 | 100% |
+| Qwen3 8B | `throughput_ramp` | SGLang | **199.3 ms** | 11749.9 ms | **98.6** | **0.39** | 100% |
+| Qwen3 8B | `long_context_stress` | vLLM | **104.4 ms** | 9298.6 ms | 110.7 | 0.43 | 100% |
+| Qwen3 8B | `long_context_stress` | SGLang | 117.1 ms | **9296.3 ms** | **115.5** | **0.45** | 100% |
+| Qwen3 8B | `prefix_sharing_benefit` | vLLM | **105.3 ms** | **4739.6 ms** | **212.2** | **1.66** | 100% |
+| Qwen3 8B | `prefix_sharing_benefit` | SGLang | 206.8 ms | 4806.8 ms | 210.4 | 1.64 | 100% |
+| Qwen3 8B | `structured_generation_speed` | vLLM | **147.3 ms** | **5816.2 ms** | **398.5** | **2.69** | 100% |
+| Qwen3 8B | `structured_generation_speed` | SGLang | 198.1 ms | 5829.2 ms | 397.8 | 2.67 | 100% |
 
 ### Scenario Descriptions
 
