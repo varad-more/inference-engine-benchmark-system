@@ -6,8 +6,10 @@ import re
 from collections.abc import Iterable
 from pathlib import Path
 
-REPORT_DATE = "2026-03-28"
+REPORT_DATE = "2026-03-31"
 RESULTS_DIR = Path("results")
+RESULTS_AFK_DIR = Path("results_afk")
+RESULT_ROOTS = [RESULTS_DIR, RESULTS_AFK_DIR]
 OUTPUT_DIR = Path("reports")
 FIGURES_DIR = OUTPUT_DIR / "figures"
 
@@ -16,8 +18,10 @@ TARGET_MODELS = [
     {"id": "meta-llama/Llama-3.2-3B-Instruct", "dir": "llama-3.2-3b-instruct", "name": "Llama 3.2 3B", "size_b": 3},
     {"id": "microsoft/Phi-3-mini-4k-instruct", "dir": "phi-3-mini-4k-instruct", "name": "Phi-3 mini", "size_b": 4},
     {"id": "Qwen/Qwen2.5-7B-Instruct", "dir": "qwen2.5-7b-instruct", "name": "Qwen 7B", "size_b": 7},
+    {"id": "deepseek-ai/DeepSeek-R1-Distill-Qwen-7B", "dir": "deepseek-r1-distill-qwen-7b", "name": "DeepSeek-R1 Distill 7B", "size_b": 7},
     {"id": "mistralai/Mistral-7B-Instruct-v0.3", "dir": "mistral-7b-instruct-v0.3", "name": "Mistral 7B", "size_b": 7},
     {"id": "meta-llama/Llama-3.1-8B-Instruct", "dir": "llama-3.1-8b-instruct", "name": "Llama 3.1 8B", "size_b": 8},
+    {"id": "Qwen/Qwen3-8B", "dir": "qwen3-8b", "name": "Qwen3 8B", "size_b": 8},
     {"id": "google/gemma-2-9b-it", "dir": "gemma-2-9b-it", "name": "Gemma 9B", "size_b": 9},
 ]
 TARGET_MODEL_MAP = {entry["id"]: entry for entry in TARGET_MODELS}
@@ -53,7 +57,12 @@ def _load_result_model_map_from_logs() -> dict[str, str]:
     pattern = re.compile(r"path=(results/[^\s]+\.json)")
     done_pattern = re.compile(r"results/[^\s]+\.json")
 
-    for log_path in sorted(RESULTS_DIR.glob("*.log")):
+    log_paths: list[Path] = []
+    for root in RESULT_ROOTS:
+        if root.exists():
+            log_paths.extend(sorted(root.rglob("*.log")))
+
+    for log_path in log_paths:
         current_model: str | None = None
         for raw_line in log_path.read_text(errors="ignore").splitlines():
             line = raw_line.strip()
@@ -225,7 +234,12 @@ def load_latest_rows() -> list[dict]:
     model_map_from_logs = _load_result_model_map_from_logs()
     snapshot_hints = _load_snapshot_hints()
 
-    for path in sorted(RESULTS_DIR.rglob("*Client_*.json")):
+    result_paths: list[Path] = []
+    for root in RESULT_ROOTS:
+        if root.exists():
+            result_paths.extend(sorted(root.rglob("*.json")))
+
+    for path in result_paths:
         try:
             data = json.loads(path.read_text())
         except Exception:
@@ -397,14 +411,19 @@ def render_scatter_svg(rows: Iterable[dict], output: Path) -> None:
         and r.get("latency_p95") is not None
         and r.get("tokens_per_sec") is not None
     ]
-    width, height = 1200, 680
-    left, right, top, bottom = 110, 50, 90, 80
+    data.sort(key=lambda r: (r["size_b"], _engine_rank(r["engine"]), r["model"]))
+
+    width, height = 1480, 860
+    left, right, top, bottom = 110, 360, 96, 90
     plot_w = width - left - right
     plot_h = height - top - bottom
-    min_x = min((r["latency_p95"] for r in data), default=0)
-    max_x = max((r["latency_p95"] for r in data), default=1)
+    min_x_raw = min((r["latency_p95"] for r in data), default=0.0)
+    max_x_raw = max((r["latency_p95"] for r in data), default=1.0)
+    min_x = max(0.0, min_x_raw * 0.9)
+    max_x = max_x_raw * 1.08 if max_x_raw else 1.0
     min_y = 0.0
-    max_y = max((r["tokens_per_sec"] for r in data), default=1.0) * 1.1
+    max_y_raw = max((r["tokens_per_sec"] for r in data), default=1.0)
+    max_y = max_y_raw * 1.12 if max_y_raw else 1.0
 
     def x_pos(v: float) -> float:
         span = max(max_x - min_x, 1.0)
@@ -414,48 +433,93 @@ def render_scatter_svg(rows: Iterable[dict], output: Path) -> None:
         span = max(max_y - min_y, 1.0)
         return top + plot_h - ((v - min_y) / span) * plot_h
 
+    x_ticks = 6
+    y_ticks = 6
+
     svg = []
     svg.append(
         f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}">'
     )
     svg.append(
-        "<style>text{font-family:system-ui,-apple-system,sans-serif;fill:#e8eefc}.muted{fill:#9fb0d0}.title{font-size:28px;font-weight:700}.subtitle{font-size:14px}.axis{stroke:#5c6b91;stroke-width:1}.grid{stroke:#27335a;stroke-width:1}.small{font-size:12px}.label{font-size:14px}</style>"
+        "<style>text{font-family:system-ui,-apple-system,sans-serif;fill:#e8eefc}.muted{fill:#9fb0d0}.title{font-size:28px;font-weight:700}.subtitle{font-size:14px}.axis{stroke:#5c6b91;stroke-width:1}.grid{stroke:#27335a;stroke-width:1}.small{font-size:12px}.label{font-size:14px}.legend-title{font-size:16px;font-weight:700}.legend-row{font-size:12px}.point-id{font-size:11px;font-weight:700;fill:#08101e}.hint{font-size:13px;fill:#9fb0d0}</style>"
     )
     svg.append(f'<rect width="{width}" height="{height}" fill="#0b1020"/>')
     svg.append(f'<text x="{left}" y="40" class="title">Throughput tradeoff map</text>')
     svg.append(
-        f'<text x="{left}" y="64" class="subtitle muted">Each point is a completed throughput-ramp run. Top-left is ideal: lower latency p95, higher tokens/sec.</text>'
+        f'<text x="{left}" y="64" class="subtitle muted">Throughput-ramp runs only. Top-left is ideal: lower latency p95, higher tokens/sec. Numbered points map to the legend on the right.</text>'
     )
-    for i in range(6):
-        x = left + plot_w * i / 5
-        y = top + plot_h * i / 5
-        xv = min_x + (max_x - min_x) * i / 5
-        yv = max_y * i / 5
+
+    for i in range(x_ticks + 1):
+        x = left + plot_w * i / x_ticks
+        xv = min_x + (max_x - min_x) * i / x_ticks
         svg.append(f'<line x1="{x:.1f}" y1="{top}" x2="{x:.1f}" y2="{top + plot_h}" class="grid"/>')
         svg.append(
-            f'<line x1="{left}" y1="{top + plot_h - y + top:.1f}" x2="{left + plot_w}" y2="{top + plot_h - y + top:.1f}" class="grid"/>'
+            f'<text x="{x:.1f}" y="{top + plot_h + 24:.1f}" text-anchor="middle" class="small muted">{xv:.0f}</text>'
         )
+
+    for i in range(y_ticks + 1):
+        y = top + plot_h - (plot_h * i / y_ticks)
+        yv = min_y + (max_y - min_y) * i / y_ticks
+        svg.append(f'<line x1="{left}" y1="{y:.1f}" x2="{left + plot_w}" y2="{y:.1f}" class="grid"/>')
         svg.append(
-            f'<text x="{x:.1f}" y="{top + plot_h + 22:.1f}" text-anchor="middle" class="small muted">{xv:.0f}</text>'
+            f'<text x="{left - 12}" y="{y + 4:.1f}" text-anchor="end" class="small muted">{yv:.0f}</text>'
         )
-        svg.append(
-            f'<text x="{left - 12}" y="{top + plot_h - (plot_h * i / 5) + 4:.1f}" text-anchor="end" class="small muted">{yv:.0f}</text>'
-        )
+
     svg.append(f'<line x1="{left}" y1="{top}" x2="{left}" y2="{top + plot_h}" class="axis"/>')
     svg.append(
         f'<line x1="{left}" y1="{top + plot_h}" x2="{left + plot_w}" y2="{top + plot_h}" class="axis"/>'
     )
-    for row in data:
+
+    svg.append(
+        f'<path d="M {left + 40} {top + 70} L {left + 10} {top + 40}" fill="none" stroke="#9fb0d0" stroke-width="1.5" stroke-dasharray="4 4"/>'
+    )
+    svg.append(
+        f'<text x="{left + 48}" y="{top + 74}" class="hint">better</text>'
+    )
+
+    for idx, row in enumerate(data, start=1):
         x = x_pos(row["latency_p95"])
         y = y_pos(row["tokens_per_sec"])
         color = COLORS[row["engine"]]
         svg.append(
-            f'<circle cx="{x:.1f}" cy="{y:.1f}" r="8" fill="{color}" stroke="#ffffff" stroke-width="1.5"/>'
+            f'<circle cx="{x:.1f}" cy="{y:.1f}" r="12" fill="{color}" stroke="#ffffff" stroke-width="1.8"/>'
         )
-        label = f"{row['model']} • {row['engine']}"
         svg.append(
-            f'<text x="{x + 12:.1f}" y="{y - 10:.1f}" class="small">{html.escape(label)}</text>'
+            f'<text x="{x:.1f}" y="{y + 4:.1f}" text-anchor="middle" class="point-id">{idx}</text>'
         )
+
+    legend_x = left + plot_w + 28
+    legend_y = top
+    svg.append(
+        f'<rect x="{legend_x - 18}" y="{legend_y - 26}" width="{right - 12}" height="{plot_h + 36}" rx="14" fill="#101933" stroke="#27335a" stroke-width="1"/>'
+    )
+    svg.append(f'<text x="{legend_x}" y="{legend_y}" class="legend-title">Legend</text>')
+    svg.append(
+        f'<text x="{legend_x}" y="{legend_y + 24}" class="small muted"># • model • engine • latency p95 • tok/s</text>'
+    )
+
+    for idx, row in enumerate(data, start=1):
+        yy = legend_y + 52 + (idx - 1) * 28
+        color = COLORS[row["engine"]]
+        svg.append(
+            f'<circle cx="{legend_x + 10}" cy="{yy - 4}" r="10" fill="{color}" stroke="#ffffff" stroke-width="1.3"/>'
+        )
+        svg.append(
+            f'<text x="{legend_x + 10}" y="{yy}" text-anchor="middle" class="point-id">{idx}</text>'
+        )
+        label = f"{row['model']} • {row['engine']} • {row['latency_p95']:.0f} ms • {row['tokens_per_sec']:.1f} tok/s"
+        svg.append(
+            f'<text x="{legend_x + 30}" y="{yy}" class="legend-row">{html.escape(label)}</text>'
+        )
+
+    engine_legend_y = top + plot_h - 42
+    for offset, engine in enumerate(ENGINE_ORDER):
+        yy = engine_legend_y + offset * 22
+        svg.append(
+            f'<rect x="{legend_x}" y="{yy - 11}" width="14" height="14" rx="3" fill="{COLORS[engine]}"/>'
+        )
+        svg.append(f'<text x="{legend_x + 22}" y="{yy}" class="small">{engine}</text>')
+
     svg.append(
         f'<text x="{left + plot_w / 2:.1f}" y="{height - 18}" text-anchor="middle" class="label muted">Latency p95 (ms)</text>'
     )
