@@ -282,6 +282,7 @@ services:
   # Dashboard
   # ---------------------------------------------------------------------------
   dashboard:
+    profiles: ["dashboard"]
     build:
       context: .
       dockerfile: Dockerfile.dashboard
