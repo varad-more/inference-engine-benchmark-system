@@ -99,8 +99,8 @@ class ScenarioResults:
         # Organise results into model-specific subfolders
         model_id = self.run_metadata.get("model", "")
         if model_id:
-            # "Qwen/Qwen3-8B" -> "qwen3-8b", "meta-llama/Llama-3.1-8B-Instruct" -> "llama-3.1-8b-instruct"
-            model_slug = model_id.split("/")[-1].lower()
+            # "meta-llama/Llama-3.1-8B-Instruct" -> "llama-3-1-8b-instruct" (dots replaced with hyphens)
+            model_slug = model_id.split("/")[-1].lower().replace(".", "-")
             model_dir = results_dir / model_slug
         else:
             model_dir = results_dir
@@ -215,6 +215,8 @@ class BenchmarkRunner:
         max_output_tokens: int,
         temperature: float,
         progress_cb: ProgressCallback | None,
+        progress_offset: int = 0,
+        progress_total: int | None = None,
     ) -> tuple[list[RequestResult], list[dict[str, Any]]]:
         """Shared fan-out/gather logic used by most scenario handlers."""
         semaphore = asyncio.Semaphore(concurrency)
@@ -223,6 +225,8 @@ class BenchmarkRunner:
 
         stop_event = asyncio.Event()
         poll_task = asyncio.create_task(self._poll_metrics(client, engine_timeline, stop_event))
+
+        cb_total = progress_total if progress_total is not None else num_requests
 
         async def _req(idx: int) -> RequestResult:
             async with semaphore:
@@ -242,7 +246,7 @@ class BenchmarkRunner:
             r = await coro
             results.append(r)
             if progress_cb:
-                progress_cb(i + 1, num_requests, r)
+                progress_cb(progress_offset + i + 1, cb_total, r)
 
         stop_event.set()
         await poll_task
@@ -302,6 +306,8 @@ class BenchmarkRunner:
                 scenario.max_output_tokens,
                 scenario.temperature,
                 progress_cb,
+                progress_offset=global_idx,
+                progress_total=total_requests,
             )
             engine_timeline.extend(level_timeline)
             global_idx += scenario.requests_per_level

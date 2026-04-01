@@ -1,0 +1,74 @@
+{
+  "started_at": 1775022166.181139,
+  "finished_at": 1775023167.9972432,
+  "total_elapsed_seconds": 1001.8112692832947,
+  "model": "HuggingFaceTB/SmolLM3-3B",
+  "tasks": [
+    {
+      "model": "HuggingFaceTB/SmolLM3-3B",
+      "scenario_name": "single_request_latency",
+      "engine": "vllm",
+      "engine_variant": "vllm",
+      "spec_method": null,
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1775022166.2323108,
+      "status": "completed",
+      "finished_at": 1775022260.627145,
+      "result_path": "results/smollm3-3b/single_request_latency_vllm_1775022166.json"
+    },
+    {
+      "model": "HuggingFaceTB/SmolLM3-3B",
+      "scenario_name": "throughput_ramp",
+      "engine": "vllm",
+      "engine_variant": "vllm",
+      "spec_method": null,
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1775022270.6765985,
+      "status": "completed",
+      "finished_at": 1775023052.1532385,
+      "result_path": "results/smollm3-3b/throughput_ramp_vllm_1775022270.json"
+    },
+    {
+      "model": "HuggingFaceTB/SmolLM3-3B",
+      "scenario_name": "long_context_stress",
+      "engine": "vllm",
+      "engine_variant": "vllm",
+      "spec_method": null,
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1775023062.1960194,
+      "status": "completed",
+      "finished_at": 1775023082.004473,
+      "result_path": "results/smollm3-3b/long_context_stress_vllm_1775023062.json"
+    },
+    {
+      "model": "HuggingFaceTB/SmolLM3-3B",
+      "scenario_name": "prefix_sharing_benefit",
+      "engine": "vllm",
+      "engine_variant": "vllm",
+      "spec_method": null,
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1775023092.0385199,
+      "status": "completed",
+      "finished_at": 1775023113.951786,
+      "result_path": "results/smollm3-3b/prefix_sharing_benefit_vllm_1775023092.json"
+    },
+    {
+      "model": "HuggingFaceTB/SmolLM3-3B",
+      "scenario_name": "structured_generation_speed",
+      "engine": "vllm",
+      "engine_variant": "vllm",
+      "spec_method": null,
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1775023123.9920917,
+      "status": "completed",
+      "finished_at": 1775023157.986507,
+      "result_path": "results/smollm3-3b/structured_generation_speed_vllm_1775023123.json"
+    }
+  ],
+  "cooldown_seconds": 10
+}

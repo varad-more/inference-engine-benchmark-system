@@ -1,0 +1,74 @@
+{
+  "started_at": 1775026251.5336185,
+  "finished_at": 1775028664.8243177,
+  "total_elapsed_seconds": 2413.2847316265106,
+  "model": "ibm-granite/granite-3.3-8b-instruct",
+  "tasks": [
+    {
+      "model": "ibm-granite/granite-3.3-8b-instruct",
+      "scenario_name": "single_request_latency",
+      "engine": "sglang",
+      "engine_variant": "sglang",
+      "spec_method": null,
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1775026252.5857408,
+      "status": "completed",
+      "finished_at": 1775026485.272165,
+      "result_path": "results/granite-3.3-8b-instruct/single_request_latency_sglang_1775026252.json"
+    },
+    {
+      "model": "ibm-granite/granite-3.3-8b-instruct",
+      "scenario_name": "throughput_ramp",
+      "engine": "sglang",
+      "engine_variant": "sglang",
+      "spec_method": null,
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1775026496.4521823,
+      "status": "completed",
+      "finished_at": 1775028429.6158571,
+      "result_path": "results/granite-3.3-8b-instruct/throughput_ramp_sglang_1775026496.json"
+    },
+    {
+      "model": "ibm-granite/granite-3.3-8b-instruct",
+      "scenario_name": "long_context_stress",
+      "engine": "sglang",
+      "engine_variant": "sglang",
+      "spec_method": null,
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1775028440.6600764,
+      "status": "completed",
+      "finished_at": 1775028490.126083,
+      "result_path": "results/granite-3.3-8b-instruct/long_context_stress_sglang_1775028440.json"
+    },
+    {
+      "model": "ibm-granite/granite-3.3-8b-instruct",
+      "scenario_name": "prefix_sharing_benefit",
+      "engine": "sglang",
+      "engine_variant": "sglang",
+      "spec_method": null,
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1775028501.16264,
+      "status": "completed",
+      "finished_at": 1775028566.0687344,
+      "result_path": "results/granite-3.3-8b-instruct/prefix_sharing_benefit_sglang_1775028501.json"
+    },
+    {
+      "model": "ibm-granite/granite-3.3-8b-instruct",
+      "scenario_name": "structured_generation_speed",
+      "engine": "sglang",
+      "engine_variant": "sglang",
+      "spec_method": null,
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1775028577.1050837,
+      "status": "completed",
+      "finished_at": 1775028654.8071516,
+      "result_path": "results/granite-3.3-8b-instruct/structured_generation_speed_sglang_1775028577.json"
+    }
+  ],
+  "cooldown_seconds": 10
+}

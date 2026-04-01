@@ -8,21 +8,27 @@ from pathlib import Path
 
 REPORT_DATE = "2026-03-31"
 RESULTS_DIR = Path("results")
-RESULTS_AFK_DIR = Path("results_afk")
-RESULT_ROOTS = [RESULTS_DIR, RESULTS_AFK_DIR]
+RESULT_ROOTS = [RESULTS_DIR]
 OUTPUT_DIR = Path("reports")
 FIGURES_DIR = OUTPUT_DIR / "figures"
 
 TARGET_MODELS = [
-    {"id": "google/gemma-2-2b-it", "dir": "gemma-2-2b-it", "name": "Gemma 2B", "size_b": 2},
-    {"id": "meta-llama/Llama-3.2-3B-Instruct", "dir": "llama-3.2-3b-instruct", "name": "Llama 3.2 3B", "size_b": 3},
+    {"id": "google/gemma-2-2b-it", "dir": "gemma-2-2b-it", "name": "Gemma 2 2B", "size_b": 2},
+    {"id": "HuggingFaceTB/SmolLM3-3B", "dir": "smollm3-3b", "name": "SmolLM3 3B", "size_b": 3},
+    {"id": "meta-llama/Llama-3.2-3B-Instruct", "dir": "llama-3-2-3b-instruct", "name": "Llama 3.2 3B", "size_b": 3},
     {"id": "microsoft/Phi-3-mini-4k-instruct", "dir": "phi-3-mini-4k-instruct", "name": "Phi-3 mini", "size_b": 4},
-    {"id": "Qwen/Qwen2.5-7B-Instruct", "dir": "qwen2.5-7b-instruct", "name": "Qwen 7B", "size_b": 7},
-    {"id": "deepseek-ai/DeepSeek-R1-Distill-Qwen-7B", "dir": "deepseek-r1-distill-qwen-7b", "name": "DeepSeek-R1 Distill 7B", "size_b": 7},
-    {"id": "mistralai/Mistral-7B-Instruct-v0.3", "dir": "mistral-7b-instruct-v0.3", "name": "Mistral 7B", "size_b": 7},
-    {"id": "meta-llama/Llama-3.1-8B-Instruct", "dir": "llama-3.1-8b-instruct", "name": "Llama 3.1 8B", "size_b": 8},
+    {"id": "microsoft/Phi-4-mini-instruct", "dir": "phi-4-mini-instruct", "name": "Phi-4 mini", "size_b": 4},
+    {"id": "google/gemma-3-4b-it", "dir": "gemma-3-4b-it", "name": "Gemma 3 4B", "size_b": 4},
+    {"id": "Qwen/Qwen2.5-7B-Instruct", "dir": "qwen2-5-7b-instruct", "name": "Qwen 2.5 7B", "size_b": 7},
+    {"id": "deepseek-ai/DeepSeek-R1-Distill-Qwen-7B", "dir": "deepseek-r1-distill-qwen-7b", "name": "DS-R1 Qwen 7B", "size_b": 7},
+    {"id": "mistralai/Mistral-7B-Instruct-v0.3", "dir": "mistral-7b-instruct-v0-3", "name": "Mistral 7B", "size_b": 7},
+    {"id": "meta-llama/Llama-3.1-8B-Instruct", "dir": "llama-3-1-8b-instruct", "name": "Llama 3.1 8B", "size_b": 8},
     {"id": "Qwen/Qwen3-8B", "dir": "qwen3-8b", "name": "Qwen3 8B", "size_b": 8},
-    {"id": "google/gemma-2-9b-it", "dir": "gemma-2-9b-it", "name": "Gemma 9B", "size_b": 9},
+    {"id": "ibm-granite/granite-3.3-8b-instruct", "dir": "granite-3-3-8b-instruct", "name": "Granite 8B", "size_b": 8},
+    {"id": "deepseek-ai/DeepSeek-R1-Distill-Llama-8B", "dir": "deepseek-r1-distill-llama-8b", "name": "DS-R1 Llama 8B", "size_b": 8},
+    {"id": "google/gemma-2-9b-it", "dir": "gemma-2-9b-it", "name": "Gemma 2 9B", "size_b": 9},
+    {"id": "google/gemma-3-12b-it", "dir": "gemma-3-12b-it", "name": "Gemma 3 12B", "size_b": 12},
+    {"id": "Qwen/Qwen3-30B-A3B", "dir": "qwen3-30b-a3b", "name": "Qwen3 30B-A3B", "size_b": 30},
 ]
 TARGET_MODEL_MAP = {entry["id"]: entry for entry in TARGET_MODELS}
 DIR_NAME_TO_MODEL_ID = {entry["dir"]: entry["id"] for entry in TARGET_MODELS}
@@ -308,13 +314,16 @@ def best_by(
 
 
 def grouped_metric(rows: Iterable[dict], scenario: str, metric: str) -> dict[str, dict[str, float]]:
-    grouped = {model: {} for model in MODEL_ORDER}
+    grouped: dict[str, dict[str, float]] = {model: {} for model in MODEL_ORDER}
     for row in rows:
         if row["scenario"] != scenario:
             continue
         value = row.get(metric)
         if value is not None:
-            grouped[row["model"]][row["engine"]] = value
+            model_name = row["model"]
+            if model_name not in grouped:
+                grouped[model_name] = {}
+            grouped[model_name][row["engine"]] = value
     return grouped
 
 
@@ -327,24 +336,35 @@ def render_grouped_bar_svg(
     *,
     lower_is_better: bool = False,
 ) -> None:
-    width, height = 1200, 650
-    left, right, top, bottom = 100, 40, 90, 110
+    # Only include models that have data
+    active_models = [m for m in MODEL_ORDER if grouped.get(m)]
+    n_models = max(len(active_models), 1)
+
+    # Dynamic width: ~110px per model, min 900, max 1800
+    width = max(900, min(1800, 120 + n_models * 110))
+    height = 720
+    left, right, top, bottom = 100, 40, 90, 150
     plot_w = width - left - right
     plot_h = height - top - bottom
     max_val = (
-        max((value for engines in grouped.values() for value in engines.values()), default=1.0)
-        * 1.15
+        max((value for m in active_models for value in grouped[m].values()), default=1.0)
+        * 1.18
     )
     ticks = 5
-    group_w = plot_w / max(len(MODEL_ORDER), 1)
-    bar_w = group_w * 0.26
+    group_w = plot_w / n_models
+    bar_w = min(group_w * 0.30, 36)
 
     svg: list[str] = []
     svg.append(
         f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="{height}" viewBox="0 0 {width} {height}">'
     )
     svg.append(
-        "<style>text{font-family:system-ui,-apple-system,sans-serif;fill:#e8eefc}.muted{fill:#9fb0d0}.small{font-size:12px}.label{font-size:14px}.title{font-size:28px;font-weight:700}.subtitle{font-size:14px}.axis{stroke:#5c6b91;stroke-width:1}.grid{stroke:#27335a;stroke-width:1}.value{font-size:12px;font-weight:700}.legend{font-size:13px}</style>"
+        "<style>text{font-family:system-ui,-apple-system,sans-serif;fill:#e8eefc}"
+        ".muted{fill:#9fb0d0}.small{font-size:11px}.label{font-size:13px}"
+        ".title{font-size:26px;font-weight:700}.subtitle{font-size:13px}"
+        ".axis{stroke:#5c6b91;stroke-width:1}.grid{stroke:#27335a;stroke-width:1}"
+        ".value{font-size:10px;font-weight:700}.legend{font-size:13px}"
+        ".xlbl{font-size:12px}</style>"
     )
     svg.append(f'<rect width="{width}" height="{height}" fill="#0b1020"/>')
     svg.append(f'<text x="{left}" y="40" class="title">{html.escape(title)}</text>')
@@ -365,23 +385,31 @@ def render_grouped_bar_svg(
         f'<line x1="{left}" y1="{height - bottom}" x2="{width - right}" y2="{height - bottom}" class="axis"/>'
     )
 
-    for gi, model in enumerate(MODEL_ORDER):
-        gx = left + gi * group_w + group_w * 0.18
+    for gi, model in enumerate(active_models):
+        gx = left + gi * group_w + group_w * 0.15
+        bar_gap = group_w * 0.06
         for ei, engine in enumerate(ENGINE_ORDER):
             if engine not in grouped[model]:
                 continue
             value = grouped[model][engine]
             bh = (value / max_val) * plot_h if max_val else 0
-            x = gx + ei * (bar_w + group_w * 0.08)
+            x = gx + ei * (bar_w + bar_gap)
             y = top + plot_h - bh
             svg.append(
-                f'<rect x="{x:.1f}" y="{y:.1f}" width="{bar_w:.1f}" height="{bh:.1f}" rx="6" fill="{COLORS[engine]}"/>'
+                f'<rect x="{x:.1f}" y="{y:.1f}" width="{bar_w:.1f}" height="{bh:.1f}" rx="4" fill="{COLORS[engine]}"/>'
             )
+            # Value label above bar
+            fmt = f"{value:.0f}" if value >= 100 else f"{value:.1f}"
             svg.append(
-                f'<text x="{x + bar_w / 2:.1f}" y="{y - 8:.1f}" text-anchor="middle" class="value">{value:.1f}</text>'
+                f'<text x="{x + bar_w / 2:.1f}" y="{y - 6:.1f}" text-anchor="middle" class="value">{fmt}</text>'
             )
+        # Angled model name label
+        label_x = gx + (bar_w + bar_gap) * 0.5 + bar_w * 0.5
+        label_y = height - bottom + 16
         svg.append(
-            f'<text x="{gx + group_w * 0.28:.1f}" y="{height - bottom + 28}" text-anchor="middle" class="label">{html.escape(model)}</text>'
+            f'<text x="{label_x:.1f}" y="{label_y}" text-anchor="end" '
+            f'transform="rotate(-35 {label_x:.1f} {label_y})" class="xlbl">'
+            f'{html.escape(model)}</text>'
         )
 
     lx = width - right - 180
@@ -396,8 +424,9 @@ def render_grouped_bar_svg(
     svg.append(
         f'<text x="24" y="{top + plot_h / 2:.1f}" transform="rotate(-90 24 {top + plot_h / 2:.1f})" class="label muted">{html.escape(y_label)}</text>'
     )
+    direction = "Lower is better \u2193" if lower_is_better else "Higher is better \u2191"
     svg.append(
-        f'<text x="{left}" y="{height - 20}" class="small muted">{"Lower is better" if lower_is_better else "Higher is better"}</text>'
+        f'<text x="{left}" y="{height - 16}" class="small muted">{direction} \u2022 {n_models} models with data</text>'
     )
     svg.append("</svg>")
     output.write_text("".join(svg))
@@ -413,8 +442,14 @@ def render_scatter_svg(rows: Iterable[dict], output: Path) -> None:
     ]
     data.sort(key=lambda r: (r["size_b"], _engine_rank(r["engine"]), r["model"]))
 
-    width, height = 1480, 860
-    left, right, top, bottom = 110, 360, 96, 90
+    # Dynamic height: accommodate legend entries (~22px each)
+    legend_rows = len(data)
+    min_legend_h = legend_rows * 22 + 120
+    plot_min_h = 500
+    height = max(860, 96 + 90 + max(plot_min_h, min_legend_h))
+
+    width = 1520
+    left, right, top, bottom = 110, 380, 96, 90
     plot_w = width - left - right
     plot_h = height - top - bottom
     min_x_raw = min((r["latency_p95"] for r in data), default=0.0)
