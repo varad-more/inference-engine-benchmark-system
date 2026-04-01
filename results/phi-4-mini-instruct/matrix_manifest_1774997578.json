@@ -1,0 +1,74 @@
+{
+  "started_at": 1774997578.9776561,
+  "finished_at": 1774998693.1021228,
+  "total_elapsed_seconds": 1114.118174314499,
+  "model": "microsoft/Phi-4-mini-instruct",
+  "tasks": [
+    {
+      "model": "microsoft/Phi-4-mini-instruct",
+      "scenario_name": "single_request_latency",
+      "engine": "sglang",
+      "engine_variant": "sglang",
+      "spec_method": null,
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1774997580.050184,
+      "status": "completed",
+      "finished_at": 1774997675.8039129,
+      "result_path": "results/phi-4-mini-instruct/single_request_latency_sglang_1774997580.json"
+    },
+    {
+      "model": "microsoft/Phi-4-mini-instruct",
+      "scenario_name": "throughput_ramp",
+      "engine": "sglang",
+      "engine_variant": "sglang",
+      "spec_method": null,
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1774997686.8658535,
+      "status": "completed",
+      "finished_at": 1774998570.5435812,
+      "result_path": "results/phi-4-mini-instruct/throughput_ramp_sglang_1774997686.json"
+    },
+    {
+      "model": "microsoft/Phi-4-mini-instruct",
+      "scenario_name": "long_context_stress",
+      "engine": "sglang",
+      "engine_variant": "sglang",
+      "spec_method": null,
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1774998581.604974,
+      "status": "completed",
+      "finished_at": 1774998607.044668,
+      "result_path": "results/phi-4-mini-instruct/long_context_stress_sglang_1774998581.json"
+    },
+    {
+      "model": "microsoft/Phi-4-mini-instruct",
+      "scenario_name": "prefix_sharing_benefit",
+      "engine": "sglang",
+      "engine_variant": "sglang",
+      "spec_method": null,
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1774998618.1183097,
+      "status": "completed",
+      "finished_at": 1774998649.2121894,
+      "result_path": "results/phi-4-mini-instruct/prefix_sharing_benefit_sglang_1774998618.json"
+    },
+    {
+      "model": "microsoft/Phi-4-mini-instruct",
+      "scenario_name": "structured_generation_speed",
+      "engine": "sglang",
+      "engine_variant": "sglang",
+      "spec_method": null,
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1774998660.2682807,
+      "status": "completed",
+      "finished_at": 1774998683.0847201,
+      "result_path": "results/phi-4-mini-instruct/structured_generation_speed_sglang_1774998660.json"
+    }
+  ],
+  "cooldown_seconds": 10
+}

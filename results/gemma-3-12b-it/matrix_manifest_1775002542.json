@@ -1,0 +1,64 @@
+{
+  "started_at": 1775002542.1783726,
+  "finished_at": 1775002566.1416392,
+  "total_elapsed_seconds": 23.957343578338623,
+  "model": "google/gemma-3-12b-it",
+  "tasks": [
+    {
+      "model": "google/gemma-3-12b-it",
+      "scenario_name": "single_request_latency",
+      "engine": "vllm",
+      "engine_variant": "vllm",
+      "spec_method": null,
+      "iteration": 1,
+      "healthy_before_run": false,
+      "started_at": 1775002546.990047,
+      "status": "skipped_unhealthy"
+    },
+    {
+      "model": "google/gemma-3-12b-it",
+      "scenario_name": "throughput_ramp",
+      "engine": "vllm",
+      "engine_variant": "vllm",
+      "spec_method": null,
+      "iteration": 1,
+      "healthy_before_run": false,
+      "started_at": 1775002551.7738512,
+      "status": "skipped_unhealthy"
+    },
+    {
+      "model": "google/gemma-3-12b-it",
+      "scenario_name": "long_context_stress",
+      "engine": "vllm",
+      "engine_variant": "vllm",
+      "spec_method": null,
+      "iteration": 1,
+      "healthy_before_run": false,
+      "started_at": 1775002556.5628314,
+      "status": "skipped_unhealthy"
+    },
+    {
+      "model": "google/gemma-3-12b-it",
+      "scenario_name": "prefix_sharing_benefit",
+      "engine": "vllm",
+      "engine_variant": "vllm",
+      "spec_method": null,
+      "iteration": 1,
+      "healthy_before_run": false,
+      "started_at": 1775002561.3423066,
+      "status": "skipped_unhealthy"
+    },
+    {
+      "model": "google/gemma-3-12b-it",
+      "scenario_name": "structured_generation_speed",
+      "engine": "vllm",
+      "engine_variant": "vllm",
+      "spec_method": null,
+      "iteration": 1,
+      "healthy_before_run": false,
+      "started_at": 1775002566.135204,
+      "status": "skipped_unhealthy"
+    }
+  ],
+  "cooldown_seconds": 10
+}

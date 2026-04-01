@@ -1,0 +1,64 @@
+{
+  "started_at": 1774994554.6328132,
+  "finished_at": 1774994578.6152353,
+  "total_elapsed_seconds": 23.973066806793213,
+  "model": "HuggingFaceTB/SmolLM3-3B",
+  "tasks": [
+    {
+      "model": "HuggingFaceTB/SmolLM3-3B",
+      "scenario_name": "single_request_latency",
+      "engine": "vllm",
+      "engine_variant": "vllm",
+      "spec_method": null,
+      "iteration": 1,
+      "healthy_before_run": false,
+      "started_at": 1774994559.4791603,
+      "status": "skipped_unhealthy"
+    },
+    {
+      "model": "HuggingFaceTB/SmolLM3-3B",
+      "scenario_name": "throughput_ramp",
+      "engine": "vllm",
+      "engine_variant": "vllm",
+      "spec_method": null,
+      "iteration": 1,
+      "healthy_before_run": false,
+      "started_at": 1774994564.2622287,
+      "status": "skipped_unhealthy"
+    },
+    {
+      "model": "HuggingFaceTB/SmolLM3-3B",
+      "scenario_name": "long_context_stress",
+      "engine": "vllm",
+      "engine_variant": "vllm",
+      "spec_method": null,
+      "iteration": 1,
+      "healthy_before_run": false,
+      "started_at": 1774994569.0421968,
+      "status": "skipped_unhealthy"
+    },
+    {
+      "model": "HuggingFaceTB/SmolLM3-3B",
+      "scenario_name": "prefix_sharing_benefit",
+      "engine": "vllm",
+      "engine_variant": "vllm",
+      "spec_method": null,
+      "iteration": 1,
+      "healthy_before_run": false,
+      "started_at": 1774994573.8205404,
+      "status": "skipped_unhealthy"
+    },
+    {
+      "model": "HuggingFaceTB/SmolLM3-3B",
+      "scenario_name": "structured_generation_speed",
+      "engine": "vllm",
+      "engine_variant": "vllm",
+      "spec_method": null,
+      "iteration": 1,
+      "healthy_before_run": false,
+      "started_at": 1774994578.605257,
+      "status": "skipped_unhealthy"
+    }
+  ],
+  "cooldown_seconds": 10
+}

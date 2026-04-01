@@ -1,0 +1,64 @@
+{
+  "started_at": 1775002959.196427,
+  "finished_at": 1775002974.5253456,
+  "total_elapsed_seconds": 15.32077169418335,
+  "model": "deepseek-ai/DeepSeek-R1-Distill-Llama-8B",
+  "tasks": [
+    {
+      "model": "deepseek-ai/DeepSeek-R1-Distill-Llama-8B",
+      "scenario_name": "single_request_latency",
+      "engine": "vllm",
+      "engine_variant": "vllm",
+      "spec_method": null,
+      "iteration": 1,
+      "healthy_before_run": false,
+      "started_at": 1775002962.275533,
+      "status": "skipped_unhealthy"
+    },
+    {
+      "model": "deepseek-ai/DeepSeek-R1-Distill-Llama-8B",
+      "scenario_name": "throughput_ramp",
+      "engine": "vllm",
+      "engine_variant": "vllm",
+      "spec_method": null,
+      "iteration": 1,
+      "healthy_before_run": false,
+      "started_at": 1775002965.333711,
+      "status": "skipped_unhealthy"
+    },
+    {
+      "model": "deepseek-ai/DeepSeek-R1-Distill-Llama-8B",
+      "scenario_name": "long_context_stress",
+      "engine": "vllm",
+      "engine_variant": "vllm",
+      "spec_method": null,
+      "iteration": 1,
+      "healthy_before_run": false,
+      "started_at": 1775002968.3991416,
+      "status": "skipped_unhealthy"
+    },
+    {
+      "model": "deepseek-ai/DeepSeek-R1-Distill-Llama-8B",
+      "scenario_name": "prefix_sharing_benefit",
+      "engine": "vllm",
+      "engine_variant": "vllm",
+      "spec_method": null,
+      "iteration": 1,
+      "healthy_before_run": false,
+      "started_at": 1775002971.4557939,
+      "status": "skipped_unhealthy"
+    },
+    {
+      "model": "deepseek-ai/DeepSeek-R1-Distill-Llama-8B",
+      "scenario_name": "structured_generation_speed",
+      "engine": "vllm",
+      "engine_variant": "vllm",
+      "spec_method": null,
+      "iteration": 1,
+      "healthy_before_run": false,
+      "started_at": 1775002974.5165267,
+      "status": "skipped_unhealthy"
+    }
+  ],
+  "cooldown_seconds": 10
+}

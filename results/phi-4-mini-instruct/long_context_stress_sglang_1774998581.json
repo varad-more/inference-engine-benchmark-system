@@ -1,0 +1,461 @@
+{
+  "scenario_name": "long_context_stress",
+  "engine_name": "SGLangClient",
+  "run_id": "39ca6780",
+  "timestamp": 1774998581.6056585,
+  "requests": [
+    {
+      "request_id": 0,
+      "prompt_len": 35,
+      "success": true,
+      "prompt_id": "context_001",
+      "prompt_category": "long_context",
+      "ttft_ms": 39.81683000074554,
+      "total_ms": 5087.722247000784,
+      "output_tokens": 256,
+      "tokens_per_sec": 50.31721221631393,
+      "error": ""
+    },
+    {
+      "request_id": 1,
+      "prompt_len": 37,
+      "success": true,
+      "prompt_id": "context_002",
+      "prompt_category": "long_context",
+      "ttft_ms": 31.15380599956552,
+      "total_ms": 5066.111224999986,
+      "output_tokens": 256,
+      "tokens_per_sec": 50.531855427236636,
+      "error": ""
+    },
+    {
+      "request_id": 2,
+      "prompt_len": 28,
+      "success": true,
+      "prompt_id": "context_003",
+      "prompt_category": "long_context",
+      "ttft_ms": 30.73869800027751,
+      "total_ms": 5064.924852000331,
+      "output_tokens": 256,
+      "tokens_per_sec": 50.5436916598863,
+      "error": ""
+    },
+    {
+      "request_id": 3,
+      "prompt_len": 35,
+      "success": true,
+      "prompt_id": "context_001",
+      "prompt_category": "long_context",
+      "ttft_ms": 37.5533770002221,
+      "total_ms": 5086.353501000303,
+      "output_tokens": 256,
+      "tokens_per_sec": 50.330752659966315,
+      "error": ""
+    },
+    {
+      "request_id": 4,
+      "prompt_len": 37,
+      "success": true,
+      "prompt_id": "context_002",
+      "prompt_category": "long_context",
+      "ttft_ms": 37.62117800033593,
+      "total_ms": 5068.193704000805,
+      "output_tokens": 256,
+      "tokens_per_sec": 50.51109230452557,
+      "error": ""
+    },
+    {
+      "request_id": 5,
+      "prompt_len": 28,
+      "success": true,
+      "prompt_id": "context_003",
+      "prompt_category": "long_context",
+      "ttft_ms": 31.56639400003769,
+      "total_ms": 5062.767812999482,
+      "output_tokens": 256,
+      "tokens_per_sec": 50.56522626668327,
+      "error": ""
+    },
+    {
+      "request_id": 6,
+      "prompt_len": 35,
+      "success": true,
+      "prompt_id": "context_001",
+      "prompt_category": "long_context",
+      "ttft_ms": 37.96636500010209,
+      "total_ms": 5071.831895000287,
+      "output_tokens": 256,
+      "tokens_per_sec": 50.474859044985266,
+      "error": ""
+    },
+    {
+      "request_id": 7,
+      "prompt_len": 37,
+      "success": true,
+      "prompt_id": "context_002",
+      "prompt_category": "long_context",
+      "ttft_ms": 30.404481999539712,
+      "total_ms": 5062.148592000085,
+      "output_tokens": 256,
+      "tokens_per_sec": 50.57141159478546,
+      "error": ""
+    },
+    {
+      "request_id": 8,
+      "prompt_len": 28,
+      "success": true,
+      "prompt_id": "context_003",
+      "prompt_category": "long_context",
+      "ttft_ms": 44.1113110000515,
+      "total_ms": 5101.946349999707,
+      "output_tokens": 256,
+      "tokens_per_sec": 50.17692904591493,
+      "error": ""
+    },
+    {
+      "request_id": 9,
+      "prompt_len": 35,
+      "success": true,
+      "prompt_id": "context_001",
+      "prompt_category": "long_context",
+      "ttft_ms": 65.81224799992924,
+      "total_ms": 5100.417581000329,
+      "output_tokens": 256,
+      "tokens_per_sec": 50.19196878185639,
+      "error": ""
+    },
+    {
+      "request_id": 10,
+      "prompt_len": 37,
+      "success": true,
+      "prompt_id": "context_002",
+      "prompt_category": "long_context",
+      "ttft_ms": 33.70474399980594,
+      "total_ms": 5064.5810569994865,
+      "output_tokens": 256,
+      "tokens_per_sec": 50.54712267783652,
+      "error": ""
+    },
+    {
+      "request_id": 11,
+      "prompt_len": 28,
+      "success": true,
+      "prompt_id": "context_003",
+      "prompt_category": "long_context",
+      "ttft_ms": 37.862853000660834,
+      "total_ms": 5071.979806000854,
+      "output_tokens": 256,
+      "tokens_per_sec": 50.473387077984135,
+      "error": ""
+    },
+    {
+      "request_id": 12,
+      "prompt_len": 35,
+      "success": true,
+      "prompt_id": "context_001",
+      "prompt_category": "long_context",
+      "ttft_ms": 31.913689999782946,
+      "total_ms": 5065.213869999752,
+      "output_tokens": 256,
+      "tokens_per_sec": 50.540807667813745,
+      "error": ""
+    },
+    {
+      "request_id": 13,
+      "prompt_len": 37,
+      "success": true,
+      "prompt_id": "context_002",
+      "prompt_category": "long_context",
+      "ttft_ms": 44.55525899993518,
+      "total_ms": 5092.018516999815,
+      "output_tokens": 256,
+      "tokens_per_sec": 50.27475826046948,
+      "error": ""
+    },
+    {
+      "request_id": 14,
+      "prompt_len": 28,
+      "success": true,
+      "prompt_id": "context_003",
+      "prompt_category": "long_context",
+      "ttft_ms": 48.88966100043035,
+      "total_ms": 5086.050245000479,
+      "output_tokens": 256,
+      "tokens_per_sec": 50.333753633606875,
+      "error": ""
+    },
+    {
+      "request_id": 15,
+      "prompt_len": 35,
+      "success": true,
+      "prompt_id": "context_001",
+      "prompt_category": "long_context",
+      "ttft_ms": 66.20624600054725,
+      "total_ms": 5101.182965000589,
+      "output_tokens": 256,
+      "tokens_per_sec": 50.18443795418156,
+      "error": ""
+    },
+    {
+      "request_id": 16,
+      "prompt_len": 37,
+      "success": true,
+      "prompt_id": "context_002",
+      "prompt_category": "long_context",
+      "ttft_ms": 65.39935099954164,
+      "total_ms": 5099.573464999594,
+      "output_tokens": 256,
+      "tokens_per_sec": 50.20027689708366,
+      "error": ""
+    },
+    {
+      "request_id": 17,
+      "prompt_len": 28,
+      "success": true,
+      "prompt_id": "context_003",
+      "prompt_category": "long_context",
+      "ttft_ms": 31.924700999297784,
+      "total_ms": 5063.863032999507,
+      "output_tokens": 256,
+      "tokens_per_sec": 50.554289942625495,
+      "error": ""
+    },
+    {
+      "request_id": 18,
+      "prompt_len": 35,
+      "success": true,
+      "prompt_id": "context_001",
+      "prompt_category": "long_context",
+      "ttft_ms": 32.10834500077908,
+      "total_ms": 5065.347891000783,
+      "output_tokens": 256,
+      "tokens_per_sec": 50.53947043890423,
+      "error": ""
+    },
+    {
+      "request_id": 19,
+      "prompt_len": 37,
+      "success": true,
+      "prompt_id": "context_002",
+      "prompt_category": "long_context",
+      "ttft_ms": 30.819380000139063,
+      "total_ms": 5063.212513000508,
+      "output_tokens": 256,
+      "tokens_per_sec": 50.56078514237436,
+      "error": ""
+    }
+  ],
+  "metrics": {
+    "scenario_name": "long_context_stress",
+    "engine_name": "SGLangClient",
+    "latency": {
+      "mean": 5077.272056100173,
+      "median": 5070.012799500546,
+      "p50": 5070.012799500546,
+      "p90": 5100.494119400355,
+      "p95": 5101.221134250545,
+      "p99": 5101.801306849875,
+      "stdev": 15.186669358097177,
+      "min": 5062.148592000085,
+      "max": 5101.946349999707,
+      "count": 20
+    },
+    "throughput": {
+      "total_requests": 20,
+      "successful_requests": 20,
+      "failed_requests": 0,
+      "total_tokens_generated": 5120,
+      "wall_time_sec": 24.169635772705078,
+      "requests_per_sec": 0.8274845425095784,
+      "tokens_per_sec": 211.83604288245206,
+      "mean_tokens_per_request": 256.0
+    },
+    "ttft": {
+      "mean": 40.506445950086345,
+      "median": 37.587277500279015,
+      "p50": 37.587277500279015,
+      "p90": 65.4406406995804,
+      "p95": 65.83194789996014,
+      "p99": 66.13138638042983,
+      "stdev": 12.083296699592761,
+      "min": 30.404481999539712,
+      "max": 66.20624600054725,
+      "count": 20
+    },
+    "concurrency_sweep": [],
+    "kv_cache_timeline": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "gpu_memory_timeline": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "error_rate": 0.0,
+    "extra": {}
+  },
+  "engine_metrics_timeline": [
+    {
+      "timestamp": 1774998581.6130202,
+      "gpu_memory_used_gb": 0.0,
+      "kv_cache_usage_pct": 0.0,
+      "pending_requests": 0,
+      "running_requests": 0
+    },
+    {
+      "timestamp": 1774998583.6208267,
+      "gpu_memory_used_gb": 0.0,
+      "kv_cache_usage_pct": 0.0,
+      "pending_requests": 0,
+      "running_requests": 0
+    },
+    {
+      "timestamp": 1774998585.6375005,
+      "gpu_memory_used_gb": 0.0,
+      "kv_cache_usage_pct": 0.0,
+      "pending_requests": 0,
+      "running_requests": 0
+    },
+    {
+      "timestamp": 1774998587.651809,
+      "gpu_memory_used_gb": 0.0,
+      "kv_cache_usage_pct": 0.0,
+      "pending_requests": 0,
+      "running_requests": 0
+    },
+    {
+      "timestamp": 1774998589.664174,
+      "gpu_memory_used_gb": 0.0,
+      "kv_cache_usage_pct": 0.0,
+      "pending_requests": 0,
+      "running_requests": 0
+    },
+    {
+      "timestamp": 1774998591.682296,
+      "gpu_memory_used_gb": 0.0,
+      "kv_cache_usage_pct": 0.0,
+      "pending_requests": 0,
+      "running_requests": 0
+    },
+    {
+      "timestamp": 1774998593.6911519,
+      "gpu_memory_used_gb": 0.0,
+      "kv_cache_usage_pct": 0.0,
+      "pending_requests": 0,
+      "running_requests": 0
+    },
+    {
+      "timestamp": 1774998595.7087388,
+      "gpu_memory_used_gb": 0.0,
+      "kv_cache_usage_pct": 0.0,
+      "pending_requests": 0,
+      "running_requests": 0
+    },
+    {
+      "timestamp": 1774998597.7243247,
+      "gpu_memory_used_gb": 0.0,
+      "kv_cache_usage_pct": 0.0,
+      "pending_requests": 0,
+      "running_requests": 0
+    },
+    {
+      "timestamp": 1774998599.7363634,
+      "gpu_memory_used_gb": 0.0,
+      "kv_cache_usage_pct": 0.0,
+      "pending_requests": 0,
+      "running_requests": 0
+    },
+    {
+      "timestamp": 1774998601.7544365,
+      "gpu_memory_used_gb": 0.0,
+      "kv_cache_usage_pct": 0.0,
+      "pending_requests": 0,
+      "running_requests": 0
+    },
+    {
+      "timestamp": 1774998603.7661283,
+      "gpu_memory_used_gb": 0.0,
+      "kv_cache_usage_pct": 0.0,
+      "pending_requests": 0,
+      "running_requests": 0
+    },
+    {
+      "timestamp": 1774998605.782656,
+      "gpu_memory_used_gb": 0.0,
+      "kv_cache_usage_pct": 0.0,
+      "pending_requests": 0,
+      "running_requests": 0
+    }
+  ],
+  "scenario_config": {
+    "name": "long_context_stress",
+    "scenario_type": "long_context_stress",
+    "description": "20 requests with ~4096-token prompts, concurrency=4.",
+    "prompt_pack": "long_context",
+    "num_requests": 20,
+    "concurrency": 4,
+    "prompt_tokens": 4096,
+    "max_output_tokens": 256
+  },
+  "workload_metadata": {
+    "prompt_pack": "long_context",
+    "prompt_source": "prompt_pack",
+    "prompt_ids": [
+      "context_001",
+      "context_002",
+      "context_003",
+      "context_001",
+      "context_002",
+      "context_003",
+      "context_001",
+      "context_002",
+      "context_003",
+      "context_001",
+      "context_002",
+      "context_003",
+      "context_001",
+      "context_002",
+      "context_003",
+      "context_001",
+      "context_002",
+      "context_003",
+      "context_001",
+      "context_002"
+    ],
+    "categories": [
+      "long_context"
+    ]
+  },
+  "run_metadata": {
+    "model": "microsoft/Phi-4-mini-instruct",
+    "engine": "sglang",
+    "engine_variant": "sglang",
+    "spec_method": null,
+    "iteration": 1,
+    "matrix_execution": true,
+    "host": "localhost",
+    "port": 8001
+  }
+}

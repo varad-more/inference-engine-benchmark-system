@@ -106,8 +106,9 @@ run_engine() {
     sleep "$sleep_time"
 
     # Check container is still running
-    if ! docker compose --profile "$profile" ps --status running | grep -q "$profile"; then
+    if ! docker compose --profile "$profile" ps | grep -q "Up\|running"; then
         error "${profile} container died during startup for ${model}"
+        echo "  Container logs (last 50 lines):"
         docker compose --profile "$profile" logs --tail 50 2>&1
         docker compose --profile "$profile" down 2>/dev/null
         return 1
@@ -177,29 +178,42 @@ mkdir -p logs
 
 # =============================================================================
 #  PART 1: BASELINE RUNS (7 pending models)
+#  COMMENTED OUT — already partially complete, re-run manually if needed
 # =============================================================================
-log "PART 1: BASELINE RUNS (7 models)"
-
-run_model "HuggingFaceTB/SmolLM3-3B" 120
-
-run_model "microsoft/Phi-4-mini-instruct" 120
-
-run_model "Qwen/Qwen3-30B-A3B" 180
-
-run_model "ibm-granite/granite-3.3-8b-instruct" 120
-
-run_model "google/gemma-3-4b-it" 120
-
-export MAX_MODEL_LEN=4096
-run_model "google/gemma-3-12b-it" 180
-unset MAX_MODEL_LEN
-
-run_model "deepseek-ai/DeepSeek-R1-Distill-Llama-8B" 120
+# log "PART 1: BASELINE RUNS (7 models)"
+#
+# run_model "HuggingFaceTB/SmolLM3-3B" 120
+#
+# run_model "microsoft/Phi-4-mini-instruct" 120
+#
+# run_model "Qwen/Qwen3-30B-A3B" 180
+#
+# run_model "ibm-granite/granite-3.3-8b-instruct" 120
+#
+# run_model "google/gemma-3-4b-it" 120
+#
+# export MAX_MODEL_LEN=4096
+# run_model "google/gemma-3-12b-it" 180
+# unset MAX_MODEL_LEN
+#
+# run_model "deepseek-ai/DeepSeek-R1-Distill-Llama-8B" 120
 
 # =============================================================================
 #  PART 2: SPECULATIVE DECODING (Llama 3.1 8B + Qwen3-8B)
 # =============================================================================
 log "PART 2: SPECULATIVE DECODING RUNS"
+
+# --- Qwen3-8B ---
+log "START SPEC-DEC: Qwen3-8B (baseline + Eagle3 vLLM + Ngram both engines)"
+QWEN="Qwen/Qwen3-8B"
+
+run_specdec "$QWEN" "vllm" 120
+run_specdec "$QWEN" "sglang" 120
+run_specdec "$QWEN" "vllm-eagle3" 180
+run_specdec "$QWEN" "vllm-ngram" 120
+run_specdec "$QWEN" "sglang-ngram" 120
+
+log "DONE SPEC-DEC: Qwen3-8B"
 
 # --- Llama 3.1 8B ---
 log "START SPEC-DEC: Llama 3.1 8B (baseline + Eagle3 + Ngram, both engines)"
@@ -213,18 +227,6 @@ run_specdec "$LLAMA" "vllm-ngram" 120
 run_specdec "$LLAMA" "sglang-ngram" 120
 
 log "DONE SPEC-DEC: Llama 3.1 8B"
-
-# --- Qwen3-8B ---
-log "START SPEC-DEC: Qwen3-8B (baseline + Eagle3 vLLM + Ngram both engines)"
-QWEN="Qwen/Qwen3-8B"
-
-run_specdec "$QWEN" "vllm" 120
-run_specdec "$QWEN" "sglang" 120
-run_specdec "$QWEN" "vllm-eagle3" 180
-run_specdec "$QWEN" "vllm-ngram" 120
-run_specdec "$QWEN" "sglang-ngram" 120
-
-log "DONE SPEC-DEC: Qwen3-8B"
 
 # =============================================================================
 #  FINAL SUMMARY
