@@ -16,6 +16,11 @@
 # Model weights are cached in ./model-cache (mounted into all engine containers).
 # Set HUGGING_FACE_HUB_TOKEN in a .env file for gated models.
 # Set EAGLE3_VLLM_DRAFT / EAGLE3_SGLANG_DRAFT for custom Eagle3 draft models.
+#
+# NOTE: All engine services use array-style commands so Docker passes args
+# directly to the image's built-in entrypoint — no shell, no PATH issues.
+# For models that need extra vLLM flags (e.g. Gemma 3 --enforce-eager),
+# use a docker-compose.override.yml or pass via the run script.
 # =============================================================================
 
 x-gpu-resources: &gpu-resources
@@ -45,25 +50,23 @@ services:
     environment:
       - HUGGING_FACE_HUB_TOKEN=${HUGGING_FACE_HUB_TOKEN:-}
       - CUDA_VISIBLE_DEVICES=0
-      - MODEL=${MODEL:-Qwen/Qwen3-8B}
-      - MAX_MODEL_LEN=${MAX_MODEL_LEN:-8192}
-      # Optional extra flags (e.g. --enforce-eager --disable-frontend-multiprocessing for Gemma 3)
-      - EXTRA_VLLM_ARGS=${EXTRA_VLLM_ARGS:-}
     volumes:
       - <<: *model-cache
     shm_size: "10gb"
-    entrypoint: ["sh", "-c"]
     command:
-      - >
-        python3 -m vllm.entrypoints.openai.api_server
-        --model "$MODEL"
-        --host 0.0.0.0
-        --port 8000
-        --enable-prefix-caching
-        --max-model-len "$MAX_MODEL_LEN"
-        --gpu-memory-utilization 0.85
-        --served-model-name "$MODEL"
-        $EXTRA_VLLM_ARGS
+      - "--model"
+      - "${MODEL:-Qwen/Qwen3-8B}"
+      - "--host"
+      - "0.0.0.0"
+      - "--port"
+      - "8000"
+      - "--enable-prefix-caching"
+      - "--max-model-len"
+      - "${MAX_MODEL_LEN:-8192}"
+      - "--gpu-memory-utilization"
+      - "${GPU_MEM_UTIL:-0.85}"
+      - "--served-model-name"
+      - "${MODEL:-Qwen/Qwen3-8B}"
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
       interval: 30s
@@ -126,24 +129,25 @@ services:
     environment:
       - HUGGING_FACE_HUB_TOKEN=${HUGGING_FACE_HUB_TOKEN:-}
       - CUDA_VISIBLE_DEVICES=0
-      - MODEL=${MODEL:-meta-llama/Llama-3.1-8B-Instruct}
-      - EAGLE3_VLLM_DRAFT=${EAGLE3_VLLM_DRAFT:-RedHatAI/Llama-3.1-8B-Instruct-speculator.eagle3}
-      - MAX_MODEL_LEN=${MAX_MODEL_LEN:-4096}
     volumes:
       - <<: *model-cache
     shm_size: "10gb"
-    entrypoint: ["sh", "-c"]
     command:
-      - >
-        python3 -m vllm.entrypoints.openai.api_server
-        --model "$MODEL"
-        --host 0.0.0.0
-        --port 8000
-        --enable-prefix-caching
-        --max-model-len "$MAX_MODEL_LEN"
-        --gpu-memory-utilization 0.75
-        --served-model-name "$MODEL"
-        --speculative-config "{\"method\":\"eagle3\",\"model\":\"$EAGLE3_VLLM_DRAFT\",\"num_speculative_tokens\":3}"
+      - "--model"
+      - "${MODEL:-meta-llama/Llama-3.1-8B-Instruct}"
+      - "--host"
+      - "0.0.0.0"
+      - "--port"
+      - "8000"
+      - "--enable-prefix-caching"
+      - "--max-model-len"
+      - "${MAX_MODEL_LEN:-4096}"
+      - "--gpu-memory-utilization"
+      - "0.75"
+      - "--served-model-name"
+      - "${MODEL:-meta-llama/Llama-3.1-8B-Instruct}"
+      - "--speculative-config"
+      - '{"method":"eagle3","model":"RedHatAI/Llama-3.1-8B-Instruct-speculator.eagle3","num_speculative_tokens":3}'
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
       interval: 30s
@@ -165,25 +169,25 @@ services:
     environment:
       - HUGGING_FACE_HUB_TOKEN=${HUGGING_FACE_HUB_TOKEN:-}
       - CUDA_VISIBLE_DEVICES=0
-      - MODEL=${MODEL:-Qwen/Qwen3-8B}
-      - MAX_MODEL_LEN=${MAX_MODEL_LEN:-8192}
-      - EXTRA_VLLM_ARGS=${EXTRA_VLLM_ARGS:-}
     volumes:
       - <<: *model-cache
     shm_size: "10gb"
-    entrypoint: ["sh", "-c"]
     command:
-      - >
-        python3 -m vllm.entrypoints.openai.api_server
-        --model "$MODEL"
-        --host 0.0.0.0
-        --port 8000
-        --enable-prefix-caching
-        --max-model-len "$MAX_MODEL_LEN"
-        --gpu-memory-utilization 0.85
-        --served-model-name "$MODEL"
-        --speculative-config '{"method":"ngram","num_speculative_tokens":5,"prompt_lookup_max":4}'
-        $EXTRA_VLLM_ARGS
+      - "--model"
+      - "${MODEL:-Qwen/Qwen3-8B}"
+      - "--host"
+      - "0.0.0.0"
+      - "--port"
+      - "8000"
+      - "--enable-prefix-caching"
+      - "--max-model-len"
+      - "${MAX_MODEL_LEN:-8192}"
+      - "--gpu-memory-utilization"
+      - "0.85"
+      - "--served-model-name"
+      - "${MODEL:-Qwen/Qwen3-8B}"
+      - "--speculative-config"
+      - '{"method":"ngram","num_speculative_tokens":5,"prompt_lookup_max":4}'
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
       interval: 30s
@@ -209,32 +213,39 @@ services:
     environment:
       - HUGGING_FACE_HUB_TOKEN=${HUGGING_FACE_HUB_TOKEN:-}
       - CUDA_VISIBLE_DEVICES=0
-      - MODEL=${MODEL:-meta-llama/Llama-3.1-8B-Instruct}
-      - EAGLE3_SGLANG_DRAFT=${EAGLE3_SGLANG_DRAFT:-jamesliu1/sglang-EAGLE3-Llama-3.1-Instruct-8B}
-      - MAX_MODEL_LEN=${MAX_MODEL_LEN:-4096}
     volumes:
       - <<: *model-cache
     shm_size: "10gb"
-    entrypoint: ["sh", "-c"]
     command:
-      - >
-        python -m sglang.launch_server
-        --model-path "$MODEL"
-        --host 0.0.0.0
-        --port 8001
-        --mem-fraction-static 0.65
-        --context-length "$MAX_MODEL_LEN"
-        --speculative-algorithm EAGLE3
-        --speculative-draft-model-path "$EAGLE3_SGLANG_DRAFT"
-        --speculative-num-steps 3
-        --speculative-eagle-topk 4
-        --speculative-num-draft-tokens 16
+      - "python"
+      - "-m"
+      - "sglang.launch_server"
+      - "--model-path"
+      - "${MODEL:-meta-llama/Llama-3.1-8B-Instruct}"
+      - "--host"
+      - "0.0.0.0"
+      - "--port"
+      - "8001"
+      - "--mem-fraction-static"
+      - "0.65"
+      - "--context-length"
+      - "${MAX_MODEL_LEN:-4096}"
+      - "--speculative-algorithm"
+      - "EAGLE3"
+      - "--speculative-draft-model-path"
+      - "${EAGLE3_SGLANG_DRAFT:-jamesliu1/sglang-EAGLE3-Llama-3.1-Instruct-8B}"
+      - "--speculative-num-steps"
+      - "3"
+      - "--speculative-eagle-topk"
+      - "4"
+      - "--speculative-num-draft-tokens"
+      - "16"
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8001/health"]
       interval: 30s
       timeout: 10s
       retries: 5
-      start_period: 180s
+      start_period: 240s
     <<: *gpu-resources
 
   # ---------------------------------------------------------------------------
@@ -298,8 +309,6 @@ services:
       - SGLANG_HOST=sglang
       - SGLANG_PORT=8001
       - RESULTS_DIR=/app/results
-    # Keep dashboard decoupled from engine startup so single-GPU benchmark flows
-    # can run one engine at a time without compose forcing both to be healthy.
     command:
       - "python"
       - "-m"
