@@ -1,0 +1,74 @@
+{
+  "started_at": 1775003164.860551,
+  "finished_at": 1775005366.339604,
+  "total_elapsed_seconds": 2201.4727499485016,
+  "model": "deepseek-ai/DeepSeek-R1-Distill-Llama-8B",
+  "tasks": [
+    {
+      "model": "deepseek-ai/DeepSeek-R1-Distill-Llama-8B",
+      "scenario_name": "single_request_latency",
+      "engine": "sglang",
+      "engine_variant": "sglang",
+      "spec_method": null,
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1775003165.9328344,
+      "status": "completed",
+      "finished_at": 1775003378.6530387,
+      "result_path": "results/deepseek-r1-distill-llama-8b/single_request_latency_sglang_1775003165.json"
+    },
+    {
+      "model": "deepseek-ai/DeepSeek-R1-Distill-Llama-8B",
+      "scenario_name": "throughput_ramp",
+      "engine": "sglang",
+      "engine_variant": "sglang",
+      "spec_method": null,
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1775003389.7094374,
+      "status": "completed",
+      "finished_at": 1775005147.7091672,
+      "result_path": "results/deepseek-r1-distill-llama-8b/throughput_ramp_sglang_1775003389.json"
+    },
+    {
+      "model": "deepseek-ai/DeepSeek-R1-Distill-Llama-8B",
+      "scenario_name": "long_context_stress",
+      "engine": "sglang",
+      "engine_variant": "sglang",
+      "spec_method": null,
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1775005158.769655,
+      "status": "completed",
+      "finished_at": 1775005203.359697,
+      "result_path": "results/deepseek-r1-distill-llama-8b/long_context_stress_sglang_1775005158.json"
+    },
+    {
+      "model": "deepseek-ai/DeepSeek-R1-Distill-Llama-8B",
+      "scenario_name": "prefix_sharing_benefit",
+      "engine": "sglang",
+      "engine_variant": "sglang",
+      "spec_method": null,
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1775005214.4142632,
+      "status": "completed",
+      "finished_at": 1775005273.0394893,
+      "result_path": "results/deepseek-r1-distill-llama-8b/prefix_sharing_benefit_sglang_1775005214.json"
+    },
+    {
+      "model": "deepseek-ai/DeepSeek-R1-Distill-Llama-8B",
+      "scenario_name": "structured_generation_speed",
+      "engine": "sglang",
+      "engine_variant": "sglang",
+      "spec_method": null,
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1775005284.0928917,
+      "status": "completed",
+      "finished_at": 1775005356.3218763,
+      "result_path": "results/deepseek-r1-distill-llama-8b/structured_generation_speed_sglang_1775005284.json"
+    }
+  ],
+  "cooldown_seconds": 10
+}

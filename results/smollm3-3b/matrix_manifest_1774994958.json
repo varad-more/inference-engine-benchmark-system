@@ -1,0 +1,74 @@
+{
+  "started_at": 1774994958.2519958,
+  "finished_at": 1774996079.65161,
+  "total_elapsed_seconds": 1121.39346909523,
+  "model": "HuggingFaceTB/SmolLM3-3B",
+  "tasks": [
+    {
+      "model": "HuggingFaceTB/SmolLM3-3B",
+      "scenario_name": "single_request_latency",
+      "engine": "sglang",
+      "engine_variant": "sglang",
+      "spec_method": null,
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1774994959.3514688,
+      "status": "completed",
+      "finished_at": 1774995062.3716638,
+      "result_path": "results/smollm3-3b/single_request_latency_sglang_1774994959.json"
+    },
+    {
+      "model": "HuggingFaceTB/SmolLM3-3B",
+      "scenario_name": "throughput_ramp",
+      "engine": "sglang",
+      "engine_variant": "sglang",
+      "spec_method": null,
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1774995073.5728407,
+      "status": "completed",
+      "finished_at": 1774995950.0890415,
+      "result_path": "results/smollm3-3b/throughput_ramp_sglang_1774995073.json"
+    },
+    {
+      "model": "HuggingFaceTB/SmolLM3-3B",
+      "scenario_name": "long_context_stress",
+      "engine": "sglang",
+      "engine_variant": "sglang",
+      "spec_method": null,
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1774995961.151621,
+      "status": "completed",
+      "finished_at": 1774995982.3592417,
+      "result_path": "results/smollm3-3b/long_context_stress_sglang_1774995961.json"
+    },
+    {
+      "model": "HuggingFaceTB/SmolLM3-3B",
+      "scenario_name": "prefix_sharing_benefit",
+      "engine": "sglang",
+      "engine_variant": "sglang",
+      "spec_method": null,
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1774995993.414567,
+      "status": "completed",
+      "finished_at": 1774996019.7321625,
+      "result_path": "results/smollm3-3b/prefix_sharing_benefit_sglang_1774995993.json"
+    },
+    {
+      "model": "HuggingFaceTB/SmolLM3-3B",
+      "scenario_name": "structured_generation_speed",
+      "engine": "sglang",
+      "engine_variant": "sglang",
+      "spec_method": null,
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1774996030.795203,
+      "status": "completed",
+      "finished_at": 1774996069.6340485,
+      "result_path": "results/smollm3-3b/structured_generation_speed_sglang_1774996030.json"
+    }
+  ],
+  "cooldown_seconds": 10
+}

@@ -1,0 +1,73 @@
+{
+  "started_at": 1774920241.0162718,
+  "finished_at": 1774922883.9569073,
+  "model": "deepseek-ai/DeepSeek-R1-Distill-Qwen-7B",
+  "tasks": [
+    {
+      "model": "deepseek-ai/DeepSeek-R1-Distill-Qwen-7B",
+      "scenario_name": "single_request_latency",
+      "engine": "vllm",
+      "engine_variant": "vllm",
+      "spec_method": null,
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1774920241.0646546,
+      "status": "completed",
+      "finished_at": 1774920421.3746254,
+      "result_path": "/home/ubuntu/repos/inference-engine-benchmark-system-speculative/results_afk/20260330_speculative/deepseek-r1-distill-qwen-7b/single_request_latency_vllm_1774920241.json"
+    },
+    {
+      "model": "deepseek-ai/DeepSeek-R1-Distill-Qwen-7B",
+      "scenario_name": "throughput_ramp",
+      "engine": "vllm",
+      "engine_variant": "vllm",
+      "spec_method": null,
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1774920541.438063,
+      "status": "completed",
+      "finished_at": 1774922238.6072986,
+      "result_path": "/home/ubuntu/repos/inference-engine-benchmark-system-speculative/results_afk/20260330_speculative/deepseek-r1-distill-qwen-7b/throughput_ramp_vllm_1774920541.json"
+    },
+    {
+      "model": "deepseek-ai/DeepSeek-R1-Distill-Qwen-7B",
+      "scenario_name": "long_context_stress",
+      "engine": "vllm",
+      "engine_variant": "vllm",
+      "spec_method": null,
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1774922358.710654,
+      "status": "completed",
+      "finished_at": 1774922401.093909,
+      "result_path": "/home/ubuntu/repos/inference-engine-benchmark-system-speculative/results_afk/20260330_speculative/deepseek-r1-distill-qwen-7b/long_context_stress_vllm_1774922358.json"
+    },
+    {
+      "model": "deepseek-ai/DeepSeek-R1-Distill-Qwen-7B",
+      "scenario_name": "prefix_sharing_benefit",
+      "engine": "vllm",
+      "engine_variant": "vllm",
+      "spec_method": null,
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1774922521.1237004,
+      "status": "completed",
+      "finished_at": 1774922577.0146444,
+      "result_path": "/home/ubuntu/repos/inference-engine-benchmark-system-speculative/results_afk/20260330_speculative/deepseek-r1-distill-qwen-7b/prefix_sharing_benefit_vllm_1774922521.json"
+    },
+    {
+      "model": "deepseek-ai/DeepSeek-R1-Distill-Qwen-7B",
+      "scenario_name": "structured_generation_speed",
+      "engine": "vllm",
+      "engine_variant": "vllm",
+      "spec_method": null,
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1774922697.1423326,
+      "status": "completed",
+      "finished_at": 1774922763.8563554,
+      "result_path": "/home/ubuntu/repos/inference-engine-benchmark-system-speculative/results_afk/20260330_speculative/deepseek-r1-distill-qwen-7b/structured_generation_speed_vllm_1774922697.json"
+    }
+  ],
+  "cooldown_seconds": 120
+}
