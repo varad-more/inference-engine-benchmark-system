@@ -84,7 +84,8 @@ if [ -d "model-cache" ]; then echo "exists"; else mkdir -p model-cache && echo "
 echo -n "  results/ model folders: "
 ls -d ${RESULTS_DIR}/*/ 2>/dev/null | wc -l | tr -d ' '
 
-echo -n "  Pruning stale Docker networks: "
+echo -n "  Cleaning up Docker state: "
+docker compose down --remove-orphans 2>/dev/null
 docker network prune -f 2>&1 | tail -1
 
 log "PREFLIGHT COMPLETE"
@@ -102,9 +103,11 @@ run_engine() {
     log "  Starting ${profile} for ${model}"
     export MODEL="$model"
 
-    # Tear down ALL compose services + networks (no profile = clears all stale state)
+    # Clean up any leftover containers/networks before starting
     docker compose down --remove-orphans 2>/dev/null
-    docker compose --profile "$profile" up -d "$profile"
+    sleep 3
+
+    docker compose --profile "$profile" up -d
     if [ $? -ne 0 ]; then
         error "${profile} docker up failed for ${model}"
         return 1
@@ -117,7 +120,7 @@ run_engine() {
         error "${profile} container died during startup for ${model}"
         echo "  Container logs (last 50 lines):"
         docker compose --profile "$profile" logs --tail 50 2>&1
-        docker compose --profile "$profile" down 2>/dev/null
+        docker compose down --remove-orphans 2>/dev/null
         return 1
     fi
 
@@ -135,7 +138,85 @@ run_engine() {
         docker compose --profile "$profile" logs --tail 30 2>&1
     fi
 
-    docker compose --profile "$profile" down 2>/dev/null
+    docker compose down --remove-orphans 2>/dev/null
+    sleep 15
+    return $rc
+}
+
+# ── Helper: start vLLM via docker run (for models needing extra flags) ───────
+# Args: model  container_name  sleep_time  [extra vllm args...]
+run_vllm_direct() {
+    local model="$1"
+    local container_name="$2"
+    local sleep_time="$3"
+    shift 3
+    local extra_args=("$@")
+
+    local max_model_len="${MAX_MODEL_LEN:-8192}"
+    local gpu_mem_util="${GPU_MEM_UTIL:-0.85}"
+
+    log "  Starting vllm (direct) for ${model}"
+
+    # Load HF token from .env
+    local hf_token=""
+    if [ -f .env ]; then
+        hf_token=$(grep "^HUGGING_FACE_HUB_TOKEN=" .env | cut -d= -f2)
+    fi
+
+    # Clean up any leftover containers/networks
+    docker compose down --remove-orphans 2>/dev/null
+    docker rm -f "$container_name" 2>/dev/null
+    sleep 3
+
+    docker run -d \
+        --name "$container_name" \
+        --gpus '"device=0"' \
+        -p 8000:8000 \
+        --shm-size 10g \
+        -v "$(pwd)/model-cache:/root/.cache/huggingface" \
+        -e "HUGGING_FACE_HUB_TOKEN=${hf_token}" \
+        -e "CUDA_VISIBLE_DEVICES=0" \
+        "${VLLM_IMAGE:-vllm/vllm-openai:v0.18.0-cu130}" \
+        --model "$model" \
+        --host 0.0.0.0 \
+        --port 8000 \
+        --enable-prefix-caching \
+        --max-model-len "$max_model_len" \
+        --gpu-memory-utilization "$gpu_mem_util" \
+        --served-model-name "$model" \
+        "${extra_args[@]}"
+
+    if [ $? -ne 0 ]; then
+        error "vllm docker run failed for ${model}"
+        return 1
+    fi
+
+    log "  Waiting ${sleep_time}s for model to load..."
+    sleep "$sleep_time"
+
+    if ! docker ps --filter "name=${container_name}" --format '{{.Status}}' | grep -q "Up"; then
+        error "vllm container died during startup for ${model}"
+        echo "  Container logs (last 50 lines):"
+        docker logs "$container_name" --tail 50 2>&1
+        docker rm -f "$container_name" 2>/dev/null
+        return 1
+    fi
+
+    $PYTHON run_experiment.py matrix \
+        --scenarios "$SCENARIOS" \
+        --engines "vllm" \
+        -m "$model" \
+        --cooldown-seconds "$COOLDOWN" \
+        --output-dir "$RESULTS_DIR"
+    local rc=$?
+
+    if [ $rc -ne 0 ]; then
+        error "vllm benchmark failed for ${model} (exit code ${rc})"
+        echo "  Last 30 lines of container logs:"
+        docker logs "$container_name" --tail 30 2>&1
+    fi
+
+    docker rm -f "$container_name" 2>/dev/null
     sleep 15
     return $rc
 }
@@ -229,9 +310,8 @@ run_vllm_only "deepseek-ai/DeepSeek-R1-Distill-Llama-8B" 120
 log "START BASELINE: google/gemma-3-4b-it"
 
 export MAX_MODEL_LEN=4096
-export EXTRA_VLLM_ARGS="--enforce-eager --disable-frontend-multiprocessing"
-run_engine "google/gemma-3-4b-it" "vllm" "$SCENARIOS" 150
-unset EXTRA_VLLM_ARGS
+run_vllm_direct "google/gemma-3-4b-it" "vllm-server" 150 \
+    --enforce-eager --disable-frontend-multiprocessing
 
 run_engine "google/gemma-3-4b-it" "sglang" "$SCENARIOS" 150
 unset MAX_MODEL_LEN
@@ -241,15 +321,16 @@ log "DONE BASELINE: google/gemma-3-4b-it"
 # ---------------------------------------------------------------------------
 # Gemma 3 12B — 0/10 — both engines needed
 # Tight fit on A10G: max_model_len=2048, gpu_memory_utilization=0.95
-# vLLM: --enforce-eager required; higher utilization flag passed via EXTRA_VLLM_ARGS
+# vLLM: --enforce-eager required; higher utilization to fit in 24GB
 # ---------------------------------------------------------------------------
 log "START BASELINE: google/gemma-3-12b-it"
 
 export MAX_MODEL_LEN=2048
-export EXTRA_VLLM_ARGS="--enforce-eager --disable-frontend-multiprocessing --gpu-memory-utilization 0.95"
-run_engine "google/gemma-3-12b-it" "vllm" "$SCENARIOS" 210
-unset EXTRA_VLLM_ARGS
+export GPU_MEM_UTIL=0.95
+run_vllm_direct "google/gemma-3-12b-it" "vllm-server" 210 \
+    --enforce-eager --disable-frontend-multiprocessing
 
+unset GPU_MEM_UTIL
 run_engine "google/gemma-3-12b-it" "sglang" "$SCENARIOS" 210
 unset MAX_MODEL_LEN
 
@@ -277,14 +358,12 @@ log "SKIP SPEC-DEC: Qwen3-8B Eagle3 — no draft model available yet"
 log "START SPEC-DEC: Llama 3.1 8B Eagle3"
 LLAMA="meta-llama/Llama-3.1-8B-Instruct"
 
-export EAGLE3_VLLM_DRAFT="RedHatAI/Llama-3.1-8B-Instruct-speculator.eagle3"
-export EAGLE3_SGLANG_DRAFT="jamesliu1/sglang-EAGLE3-Llama-3.1-Instruct-8B"
 export MAX_MODEL_LEN=4096
 
 run_specdec "$LLAMA" "vllm-eagle3"   240
 run_specdec "$LLAMA" "sglang-eagle3" 240
 
-unset EAGLE3_VLLM_DRAFT EAGLE3_SGLANG_DRAFT MAX_MODEL_LEN
+unset MAX_MODEL_LEN
 log "DONE SPEC-DEC: Llama 3.1 8B Eagle3"
 
 # =============================================================================
