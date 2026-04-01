@@ -4,25 +4,26 @@ A production-grade benchmark harness that rigorously compares **vLLM** and **SGL
 
 ## Summary
 
-We benchmarked a **7-model core matrix** (2B to 9B parameters) on a single NVIDIA A10G 24GB GPU, running **5 scenarios** across both engines — **140 total runs, 99.5%+ success rate on every run**.
+We benchmarked **13 models** (2B to 9B parameters) on a single NVIDIA A10G 24GB GPU, running **5 scenarios** across both engines — **115 total runs, 99.5%+ success rate on every run**. 10 models have both-engine results; 3 models (SmolLM3 3B, Granite 8B, DS-R1 Llama 8B) have SGLang-only results so far.
 
-**The headline:** vLLM is the stronger general-purpose default on this hardware class. It wins time-to-first-token in **31 of 35** head-to-head comparisons and throughput in **22 of 35**, with decisive advantages in structured JSON generation (7/7 wins) and prefix-sharing workloads (7/7 TTFT wins). SGLang stays competitive on raw decode throughput at 7B+ model sizes, where the two engines are within 2% of each other.
+**The headline:** vLLM is the stronger general-purpose default on this hardware class. Across 50 paired comparisons (10 models x 5 scenarios), vLLM wins TTFT in **34 of 50** and throughput in **31 of 50**, with decisive advantages in structured JSON generation (10/10 wins) and prefix-sharing TTFT (9/10). SGLang stays competitive on throughput ramp and single-request decode at 7B+ scale.
 
 | What | vLLM | SGLang |
 |---|---|---|
-| TTFT p95 wins | **31** | 4 |
-| Throughput wins | **22** | 10 |
-| Structured gen tok/s | **7/7** | 0/7 |
-| Best single-request TTFT | **22.5 ms** (Gemma 2B) | 31.6 ms (Gemma 2B) |
-| Peak throughput | **264.6 tok/s** (Gemma 2B) | 258.0 tok/s (Gemma 2B) |
-| Model compatibility | All 7 models | All 7 models |
+| TTFT p95 wins (50 pairs) | **34** | 16 |
+| Throughput wins (50 pairs) | **31** | 19 |
+| Structured gen tok/s | **10/10** | 0/10 |
+| Best single-request TTFT | **22.5 ms** (Gemma 2 2B) | 31.5 ms (Gemma 2 2B) |
+| Peak throughput | **264.7 tok/s** (Gemma 2 2B) | 258.0 tok/s (Gemma 2 2B) |
+| Models tested | 10 (both engines) | 13 (10 both + 3 SGLang-only) |
 
-**Core matrix models:** Gemma 2B, Llama 3.2 3B, Phi-3 Mini 3.8B, Qwen 2.5 7B, Mistral 7B, Llama 3.1 8B, Gemma 9B
-**Follow-on A10G runs:** Qwen3 8B, DeepSeek-R1 Distill Qwen 7B
+**Models with both engines:** Gemma 2 2B, Llama 3.2 3B, Phi-3 mini, Phi-4 mini, Qwen 2.5 7B, DS-R1 Qwen 7B, Mistral 7B, Llama 3.1 8B, Qwen3 8B, Gemma 2 9B
+**SGLang-only (vLLM runs pending):** SmolLM3 3B, Granite 8B, DS-R1 Llama 8B
+**Pending (0% complete):** Qwen3 30B-A3B, Gemma 3 4B, Gemma 3 12B
 **Scenarios:** single-request latency, throughput ramp, long context stress, prefix sharing, structured generation
 **Hardware:** AWS g5.2xlarge (NVIDIA A10G 24GB), sequential execution, one engine at a time
 
-Full results, the Qwen3/DeepSeek follow-on values, and detailed analysis are in the [Benchmark Results](#benchmark-results) section below and in [`reports/cross_model_summary.md`](reports/cross_model_summary.md).
+Full results and detailed analysis are in the [Benchmark Results](#benchmark-results) section below and in [`reports/final_benchmark_report_2026-03-31.md`](reports/final_benchmark_report_2026-03-31.md).
 
 ---
 
@@ -925,9 +926,7 @@ terraform destroy \
 
 ## Benchmark Results
 
-**140 core benchmark runs** across 7 models, 5 scenarios, and 2 inference engines on a single NVIDIA A10G 24GB (AWS g5.2xlarge). Each scenario-engine-model combination was run twice and averaged. All runs executed sequentially — one engine at a time — to avoid GPU memory contention.
-
-Follow-on A10G baseline runs were added later for **Qwen3-8B** and **DeepSeek-R1-Distill-Qwen-7B**. The visual-summary figures below now include those newer runs as well, while the exact win/loss counts in the “Key Findings” and “Engine Head-to-Head” sections still refer to the original 7-model core matrix.
+**115 benchmark runs** across 13 models (2B to 9B), 5 scenarios, and 2 inference engines on a single NVIDIA A10G 24GB (AWS g5.2xlarge). All runs executed sequentially — one engine at a time — to avoid GPU memory contention. 10 models have both-engine data; 3 have SGLang-only results pending vLLM re-runs.
 
 ### Visual Summary
 
@@ -945,166 +944,138 @@ Follow-on A10G baseline runs were added later for **Qwen3-8B** and **DeepSeek-R1
 
 ### Key Findings
 
-- **vLLM wins time-to-first-token (TTFT) in 31 of 35 paired comparisons.** The gap is largest on small models (Gemma 2B: 22.5 ms vs 31.6 ms) and narrows at 7B+ scale.
-- **vLLM dominates structured generation** — up to 29% faster throughput (Gemma 2B), ~10% faster on average across all 7 models, with up to 1.8x the request rate on Gemma 2B (19.88 vs 11.03 req/s).
-- **vLLM wins throughput (tok/s) in 22 of 35 paired comparisons**, with the strongest edge in structured generation (7/7 wins) and long context (5/7). SGLang is competitive on single-request decode and throughput ramp at 7B+ scale.
-- **Phi-3 Mini works on both engines** — vLLM leads on all 5 scenarios for both TTFT and throughput, with SGLang closely matching on throughput ramp and structured generation.
-- **SGLang wins single-request TTFT only on Gemma 9B** (84.2 ms vs 105.7 ms), the one model that required tuned vLLM memory settings.
-- **Gemma 9B + SGLang throughput_ramp is anomalous** — 30.5s TTFT p95 indicates VRAM pressure causing request queuing at high concurrency.
-- **99.5%+ success rate** on every run (99.9% on SGLang Mistral 7B and Gemma 9B throughput ramp; 99.5% on SGLang Mistral 7B prefix sharing).
+- **vLLM wins TTFT p95 in 34 of 50 paired comparisons** (10 models x 5 scenarios). The gap is largest on small models (Gemma 2 2B: 22.5 ms vs 31.5 ms) and narrows at 7B+ scale.
+- **vLLM wins throughput (tok/s) in 31 of 50 paired comparisons**, with the strongest edge in structured generation (10/10 wins) and prefix sharing (8/10).
+- **SGLang wins throughput ramp TTFT on 6/10 models** — it handles concurrent load better at larger model sizes.
+- **SGLang wins single-request decode throughput on 7/10 models** — marginally faster raw decode speed, though vLLM wins on TTFT.
+- **Phi-4 mini** (new model) performs comparably to Phi-3 mini, with vLLM leading TTFT and SGLang competitive on throughput.
+- **Gemma 2 9B + SGLang throughput_ramp remains anomalous** — 26s TTFT p95 indicates severe VRAM pressure at high concurrency.
+- **99.5%+ success rate** on every completed run.
 
 ### Models Tested
 
-| Model | Parameters | Both Engines | Notes |
-|---|---:|---|---|
-| `google/gemma-2-2b-it` | 2B | Yes | Fastest overall, fits easily |
-| `meta-llama/Llama-3.2-3B-Instruct` | 3B | Yes | Good small-model baseline |
-| `microsoft/Phi-3-mini-4k-instruct` | 3.8B | Yes | vLLM leads on all metrics |
-| `Qwen/Qwen2.5-7B-Instruct` | 7B | Yes | Mid-size reference model |
-| `deepseek-ai/DeepSeek-R1-Distill-Qwen-7B` | 7B | Yes | Follow-on A10G baseline run; reasoning-tuned Qwen distill |
-| `mistralai/Mistral-7B-Instruct-v0.3` | 7B | Yes | Sliding window attention |
-| `meta-llama/Llama-3.1-8B-Instruct` | 8B | Yes | Popular production model |
-| `Qwen/Qwen3-8B` | 8B | Yes | Follow-on A10G baseline run; current-generation Qwen baseline |
-| `google/gemma-2-9b-it` | 9B | Yes | Largest tested, vLLM required tuned fit |
+| Model | Params | vLLM | SGLang | Status | Notes |
+|---|---:|---|---|---|---|
+| `google/gemma-2-2b-it` | 2B | 10 | 10 | Complete | Fastest overall |
+| `HuggingFaceTB/SmolLM3-3B` | 3B | -- | 5 | SGLang only | vLLM pending |
+| `meta-llama/Llama-3.2-3B-Instruct` | 3B | 10 | 10 | Complete | |
+| `microsoft/Phi-3-mini-4k-instruct` | 3.8B | 10 | 10 | Complete | |
+| `microsoft/Phi-4-mini-instruct` | 3.8B | 5 | 5 | Complete | New model |
+| `Qwen/Qwen2.5-7B-Instruct` | 7B | 10 | 10 | Complete | |
+| `deepseek-ai/DeepSeek-R1-Distill-Qwen-7B` | 7B | 5 | 5 | Complete | Reasoning-tuned |
+| `mistralai/Mistral-7B-Instruct-v0.3` | 7B | 10 | 10 | Complete | |
+| `meta-llama/Llama-3.1-8B-Instruct` | 8B | 10 | 10 | Complete | |
+| `Qwen/Qwen3-8B` | 8B | 5 | 5 | Complete | |
+| `ibm-granite/granite-3.3-8b-instruct` | 8B | -- | 5 | SGLang only | vLLM pending |
+| `deepseek-ai/DeepSeek-R1-Distill-Llama-8B` | 8B | -- | 5 | SGLang only | vLLM pending |
+| `google/gemma-2-9b-it` | 9B | 10 | 10 | Complete | Tuned vLLM fit |
 
-### Follow-on A10G Baseline Runs (2026-03-30)
+**Pending models (not yet started):** Qwen3 30B-A3B (MoE), Gemma 3 4B, Gemma 3 12B
 
-These values come from the later sequential A10G rerun stored under `results_afk/20260330_speculative/`. They are useful reference points for newer-model comparisons and speculative-decoding follow-up work.
-
-| Model | Scenario | Engine | TTFT p95 | Latency p95 | Tok/s | Req/s | Success |
-|---|---|---|---:|---:|---:|---:|---:|
-| DeepSeek-R1 Distill 7B | `single_request_latency` | vLLM | **62.8 ms** | 4215.8 ms | 30.5 | **0.28** | 100% |
-| DeepSeek-R1 Distill 7B | `single_request_latency` | SGLang | 66.3 ms | **4177.2 ms** | **30.9** | 0.24 | 100% |
-| DeepSeek-R1 Distill 7B | `throughput_ramp` | vLLM | **184.7 ms** | **9322.1 ms** | 105.6 | 0.41 | 100% |
-| DeepSeek-R1 Distill 7B | `throughput_ramp` | SGLang | 313.3 ms | 9603.0 ms | **106.1** | 0.41 | 100% |
-| DeepSeek-R1 Distill 7B | `long_context_stress` | vLLM | **93.1 ms** | 8470.5 ms | 121.2 | 0.47 | 100% |
-| DeepSeek-R1 Distill 7B | `long_context_stress` | SGLang | 105.3 ms | **8465.7 ms** | **125.9** | **0.49** | 100% |
-| DeepSeek-R1 Distill 7B | `prefix_sharing_benefit` | vLLM | **95.9 ms** | **4302.2 ms** | **235.7** | 1.84 | 100% |
-| DeepSeek-R1 Distill 7B | `prefix_sharing_benefit` | SGLang | 281.1 ms | 4393.6 ms | 235.1 | 1.84 | 100% |
-| DeepSeek-R1 Distill 7B | `structured_generation_speed` | vLLM | **115.0 ms** | **5153.5 ms** | **451.7** | **3.01** | 100% |
-| DeepSeek-R1 Distill 7B | `structured_generation_speed` | SGLang | 184.1 ms | 5186.4 ms | 450.7 | 3.00 | 100% |
-| Qwen3 8B | `single_request_latency` | vLLM | **44.6 ms** | **4377.4 ms** | **29.5** | 0.23 | 100% |
-| Qwen3 8B | `single_request_latency` | SGLang | 71.4 ms | 4382.9 ms | 29.2 | 0.23 | 100% |
-| Qwen3 8B | `throughput_ramp` | vLLM | 203.7 ms | **11529.1 ms** | 98.4 | 0.38 | 100% |
-| Qwen3 8B | `throughput_ramp` | SGLang | **199.3 ms** | 11749.9 ms | **98.6** | **0.39** | 100% |
-| Qwen3 8B | `long_context_stress` | vLLM | **104.4 ms** | 9298.6 ms | 110.7 | 0.43 | 100% |
-| Qwen3 8B | `long_context_stress` | SGLang | 117.1 ms | **9296.3 ms** | **115.5** | **0.45** | 100% |
-| Qwen3 8B | `prefix_sharing_benefit` | vLLM | **105.3 ms** | **4739.6 ms** | **212.2** | **1.66** | 100% |
-| Qwen3 8B | `prefix_sharing_benefit` | SGLang | 206.8 ms | 4806.8 ms | 210.4 | 1.64 | 100% |
-| Qwen3 8B | `structured_generation_speed` | vLLM | **147.3 ms** | **5816.2 ms** | **398.5** | **2.69** | 100% |
-| Qwen3 8B | `structured_generation_speed` | SGLang | 198.1 ms | 5829.2 ms | 397.8 | 2.67 | 100% |
-
-### Scenario Descriptions
-
-| Scenario | What It Measures | Requests | Prompt Type |
-|---|---|---:|---|
-| `single_request_latency` | Baseline TTFT and end-to-end latency | 50 | Short chat |
-| `throughput_ramp` | Decode throughput under concurrent load | 700 | Long generation |
-| `long_context_stress` | Performance with large input contexts | 20 | Long context |
-| `prefix_sharing_benefit` | KV cache reuse with shared prefixes | 100 | Shared prefix |
-| `structured_generation_speed` | JSON-constrained output speed | 200 | Structured JSON |
-
-### Engine Head-to-Head (all 7 models)
-
-For each scenario, which engine won on TTFT p95 and throughput (tok/s) across all 7 models:
+### Engine Head-to-Head (10 models with both engines)
 
 | Scenario | TTFT p95 Winner | Tok/s Winner |
 |---|---|---|
-| `single_request_latency` | **vLLM** (6 of 7) | SGLang (4 of 7) |
-| `throughput_ramp` | **vLLM** (6 of 7) | SGLang (4 of 7) |
-| `long_context_stress` | **vLLM** (6 of 7) | **vLLM** (5 of 7) |
-| `prefix_sharing_benefit` | **vLLM** (7 of 7) | **vLLM** (5 of 7) |
-| `structured_generation_speed` | **vLLM** (6 of 7) | **vLLM** (7 of 7) |
+| `single_request_latency` | **vLLM** (9 of 10) | SGLang (7 of 10) |
+| `throughput_ramp` | SGLang (6 of 10) | SGLang (6 of 10) |
+| `long_context_stress` | Tied (5 / 5) | **vLLM** (6 of 10) |
+| `prefix_sharing_benefit` | **vLLM** (9 of 10) | **vLLM** (8 of 10) |
+| `structured_generation_speed` | **vLLM** (7 of 10) | **vLLM** (10 of 10) |
 
-### Single Request Latency
-
-| Model | Engine | TTFT p95 | Latency p95 | Tok/s | Req/s | Success |
-|---|---|---:|---:|---:|---:|---:|
-| Gemma 2B | vLLM | **22.5 ms** | 1655.5 ms | 77.6 | 0.75 | 100% |
-| Gemma 2B | SGLang | 31.6 ms | 1656.3 ms | 78.3 | 0.75 | 100% |
-| Llama 3.2 3B | vLLM | **23.1 ms** | 1928.8 ms | 66.3 | 0.52 | 100% |
-| Llama 3.2 3B | SGLang | 33.2 ms | 1903.5 ms | 67.7 | 0.53 | 100% |
-| Phi-3 Mini | vLLM | **25.3 ms** | 2233.7 ms | **57.8** | 0.45 | 100% |
-| Phi-3 Mini | SGLang | 50.9 ms | 2319.8 ms | 55.7 | 0.44 | 100% |
-| Qwen 2.5 7B | vLLM | **62.8 ms** | 4220.2 ms | 30.6 | 0.29 | 100% |
-| Qwen 2.5 7B | SGLang | 65.9 ms | 4170.4 ms | 30.8 | 0.27 | 100% |
-| Mistral 7B | vLLM | **62.6 ms** | 4064.4 ms | 31.8 | 0.26 | 100% |
-| Mistral 7B | SGLang | 63.7 ms | 4047.6 ms | 31.8 | 0.26 | 100% |
-| Llama 3.1 8B | vLLM | **43.5 ms** | 4247.4 ms | 30.3 | 0.24 | 100% |
-| Llama 3.1 8B | SGLang | 67.6 ms | 4247.6 ms | 30.3 | 0.24 | 100% |
-| Gemma 9B | vLLM | 105.7 ms | 5360.2 ms | 24.0 | 0.21 | 100% |
-| Gemma 9B | SGLang | **84.2 ms** | 5312.8 ms | 24.2 | 0.21 | 100% |
-
-### Throughput Ramp (700 total requests across 7 concurrency levels)
+### Single Request Latency (all 13 models)
 
 | Model | Engine | TTFT p95 | Latency p95 | Tok/s | Req/s | Success |
 |---|---|---:|---:|---:|---:|---:|
-| Gemma 2B | vLLM | **154.1 ms** | **4583.1 ms** | **264.6** | **1.14** | 100% |
-| Gemma 2B | SGLang | 158.6 ms | 4852.7 ms | 258.0 | 1.05 | 100% |
-| Llama 3.2 3B | vLLM | **168.8 ms** | **5390.9 ms** | 223.5 | 0.87 | 100% |
-| Llama 3.2 3B | SGLang | 213.6 ms | 5627.1 ms | **225.9** | **0.88** | 100% |
-| Phi-3 Mini | vLLM | **197.9 ms** | **8029.0 ms** | **190.9** | **0.75** | 100% |
-| Phi-3 Mini | SGLang | 210.6 ms | 7523.5 ms | 187.3 | 0.73 | 100% |
-| Qwen 2.5 7B | vLLM | **192.7 ms** | 9762.0 ms | 105.3 | 0.41 | 100% |
-| Qwen 2.5 7B | SGLang | 272.2 ms | **9545.9 ms** | **106.3** | **0.42** | 100% |
-| Mistral 7B | vLLM | **216.9 ms** | **10141.7 ms** | 106.6 | 0.42 | 100% |
-| Mistral 7B | SGLang | 279.3 ms | 10162.4 ms | **106.8** | 0.42 | 99.9% |
-| Llama 3.1 8B | vLLM | 201.3 ms | **10534.8 ms** | 101.7 | 0.40 | 100% |
-| Llama 3.1 8B | SGLang | **186.5 ms** | 10621.4 ms | **102.1** | 0.40 | 100% |
-| Gemma 9B | vLLM | **283.9 ms** | **14388.5 ms** | **79.8** | **0.33** | 100% |
-| Gemma 9B | SGLang | 30483.6 ms | 46328.4 ms | 78.0 | 0.31 | 99.9% |
+| Gemma 2 2B | vLLM | **22.5 ms** | 1655.6 ms | 77.6 | 0.75 | 100% |
+| Gemma 2 2B | SGLang | 31.5 ms | 1656.1 ms | 78.2 | 0.75 | 100% |
+| SmolLM3 3B | SGLang | 59.8 ms | 2052.8 ms | 62.1 | 0.49 | 100% |
+| Llama 3.2 3B | vLLM | **23.3 ms** | 1928.7 ms | 66.3 | 0.52 | 100% |
+| Llama 3.2 3B | SGLang | 33.2 ms | 1903.4 ms | 67.7 | 0.53 | 100% |
+| Phi-3 mini | vLLM | **25.3 ms** | 2233.8 ms | **57.8** | 0.45 | 100% |
+| Phi-3 mini | SGLang | 50.5 ms | 2319.8 ms | 55.7 | 0.44 | 100% |
+| Phi-4 mini | vLLM | **33.4 ms** | 2269.0 ms | **56.8** | 0.55 | 100% |
+| Phi-4 mini | SGLang | 39.9 ms | 2411.7 ms | 52.7 | 0.53 | 100% |
+| Qwen 2.5 7B | vLLM | **62.7 ms** | 4220.3 ms | 30.6 | 0.29 | 100% |
+| Qwen 2.5 7B | SGLang | 65.7 ms | 4170.2 ms | 30.9 | 0.27 | 100% |
+| DS-R1 Qwen 7B | vLLM | **62.8 ms** | 4215.8 ms | 30.5 | 0.28 | 100% |
+| DS-R1 Qwen 7B | SGLang | 66.3 ms | 4177.2 ms | 30.9 | 0.24 | 100% |
+| Mistral 7B | vLLM | **62.5 ms** | 4064.0 ms | 31.8 | 0.26 | 100% |
+| Mistral 7B | SGLang | 62.7 ms | 4047.0 ms | 31.8 | 0.26 | 100% |
+| Llama 3.1 8B | vLLM | **43.8 ms** | 4247.3 ms | 30.3 | 0.24 | 100% |
+| Llama 3.1 8B | SGLang | 67.0 ms | 4247.2 ms | 30.3 | 0.24 | 100% |
+| Qwen3 8B | vLLM | **44.6 ms** | 4377.4 ms | 29.5 | 0.23 | 100% |
+| Qwen3 8B | SGLang | 71.4 ms | 4382.9 ms | 29.2 | 0.23 | 100% |
+| Granite 8B | SGLang | 76.4 ms | 4646.1 ms | 27.6 | 0.22 | 100% |
+| DS-R1 Llama 8B | SGLang | 68.9 ms | 4253.0 ms | 30.3 | 0.24 | 100% |
+| Gemma 2 9B | vLLM | 105.8 ms | 5360.3 ms | 24.0 | 0.21 | 100% |
+| Gemma 2 9B | SGLang | **83.4 ms** | 5312.4 ms | 24.1 | 0.21 | 100% |
 
-### Structured Generation Speed (JSON-constrained output)
+### Throughput Ramp (700 requests across 7 concurrency levels)
 
 | Model | Engine | TTFT p95 | Latency p95 | Tok/s | Req/s | Success |
 |---|---|---:|---:|---:|---:|---:|
-| Gemma 2B | vLLM | **58.9 ms** | **1038.2 ms** | **1225.1** | **19.88** | 100% |
-| Gemma 2B | SGLang | 85.4 ms | 2512.9 ms | 952.3 | 11.03 | 100% |
-| Llama 3.2 3B | vLLM | **71.8 ms** | **2503.2 ms** | **970.2** | **6.62** | 100% |
-| Llama 3.2 3B | SGLang | 86.5 ms | 2648.2 ms | 908.4 | 6.20 | 100% |
-| Phi-3 Mini | vLLM | **78.4 ms** | **3066.5 ms** | **784.8** | **5.23** | 100% |
-| Phi-3 Mini | SGLang | 115.7 ms | 3096.3 ms | 782.6 | 5.22 | 100% |
-| Qwen 2.5 7B | vLLM | 139.0 ms | **1978.2 ms** | **455.9** | **9.93** | 100% |
-| Qwen 2.5 7B | SGLang | **137.2 ms** | 5676.8 ms | 389.6 | 6.46 | 100% |
-| Mistral 7B | vLLM | **107.7 ms** | **5075.3 ms** | **439.9** | **3.31** | 100% |
-| Mistral 7B | SGLang | 150.6 ms | 5518.2 ms | 411.2 | 3.09 | 100% |
-| Llama 3.1 8B | vLLM | **125.5 ms** | **5570.9 ms** | **426.2** | **2.84** | 100% |
-| Llama 3.1 8B | SGLang | 152.7 ms | 5578.7 ms | 422.6 | 2.82 | 100% |
-| Gemma 9B | vLLM | **154.3 ms** | 6263.0 ms | **310.8** | 4.62 | 100% |
-| Gemma 9B | SGLang | 195.5 ms | **4425.7 ms** | 290.0 | **5.49** | 100% |
+| Gemma 2 2B | vLLM | **135.5 ms** | **4588.2 ms** | **264.7** | **1.14** | 100% |
+| Gemma 2 2B | SGLang | 156.1 ms | 4844.5 ms | 258.0 | 1.05 | 100% |
+| SmolLM3 3B | SGLang | 371.9 ms | 10724.5 ms | 204.6 | 0.80 | 100% |
+| Llama 3.2 3B | vLLM | 174.9 ms | **5415.8 ms** | 223.5 | 0.87 | 100% |
+| Llama 3.2 3B | SGLang | **159.5 ms** | 5544.7 ms | **226.0** | **0.88** | 100% |
+| Phi-3 mini | vLLM | 228.9 ms | 8063.6 ms | **190.9** | **0.75** | 100% |
+| Phi-3 mini | SGLang | **167.3 ms** | **7538.7 ms** | 187.2 | 0.73 | 100% |
+| Phi-4 mini | vLLM | **153.1 ms** | **7511.6 ms** | **188.6** | 0.74 | 100% |
+| Phi-4 mini | SGLang | 160.9 ms | 8410.8 ms | 175.9 | **0.79** | 100% |
+| Qwen 2.5 7B | vLLM | 196.5 ms | 9772.7 ms | 105.3 | 0.41 | 100% |
+| Qwen 2.5 7B | SGLang | **175.1 ms** | **9542.9 ms** | **106.3** | **0.42** | 100% |
+| DS-R1 Qwen 7B | vLLM | **184.7 ms** | **9322.1 ms** | 105.6 | 0.41 | 100% |
+| DS-R1 Qwen 7B | SGLang | 313.3 ms | 9603.0 ms | **106.1** | 0.41 | 100% |
+| Mistral 7B | vLLM | 209.8 ms | 10139.1 ms | 106.6 | 0.42 | 100% |
+| Mistral 7B | SGLang | **179.3 ms** | **10122.3 ms** | **106.8** | 0.42 | 99.9% |
+| Llama 3.1 8B | vLLM | 195.6 ms | **10523.5 ms** | 101.7 | 0.40 | 100% |
+| Llama 3.1 8B | SGLang | **183.0 ms** | 10617.4 ms | **102.1** | 0.40 | 100% |
+| Qwen3 8B | vLLM | 203.7 ms | **11529.1 ms** | 98.4 | 0.38 | 100% |
+| Qwen3 8B | SGLang | **199.3 ms** | 11749.9 ms | **98.6** | **0.39** | 100% |
+| Granite 8B | SGLang | 199.1 ms | 12471.4 ms | 92.8 | 0.36 | 100% |
+| DS-R1 Llama 8B | SGLang | 177.8 ms | 10611.2 ms | 102.0 | 0.40 | 100% |
+| Gemma 2 9B | vLLM | **280.3 ms** | **14399.0 ms** | **79.8** | **0.33** | 100% |
+| Gemma 2 9B | SGLang | 25982.1 ms | 46027.4 ms | 77.5 | 0.30 | 99.7% |
 
 ### Model Size vs Performance
 
-How key metrics scale as model size increases (vLLM numbers, single request latency):
+How key metrics scale as model size increases (best available engine, single request latency):
 
 | Model | Params | TTFT p95 | Tok/s | Latency p95 |
 |---|---:|---:|---:|---:|
-| Gemma 2B | 2B | 22.5 ms | 77.6 | 1655.5 ms |
-| Llama 3.2 3B | 3B | 23.1 ms | 66.3 | 1928.8 ms |
-| Phi-3 Mini | 3.8B | 25.3 ms | 57.8 | 2233.7 ms |
-| Qwen 2.5 7B | 7B | 62.8 ms | 30.6 | 4220.2 ms |
-| Mistral 7B | 7B | 62.6 ms | 31.8 | 4064.4 ms |
-| Llama 3.1 8B | 8B | 43.5 ms | 30.3 | 4247.4 ms |
-| Gemma 9B | 9B | 105.7 ms | 24.0 | 5360.2 ms |
+| Gemma 2 2B | 2B | 22.5 ms | 78.2 | 1655.6 ms |
+| SmolLM3 3B | 3B | 59.8 ms | 62.1 | 2052.8 ms |
+| Llama 3.2 3B | 3B | 23.3 ms | 67.7 | 1903.4 ms |
+| Phi-3 mini | 3.8B | 25.3 ms | 57.8 | 2233.8 ms |
+| Phi-4 mini | 3.8B | 33.4 ms | 56.8 | 2269.0 ms |
+| Qwen 2.5 7B | 7B | 62.7 ms | 30.9 | 4170.2 ms |
+| DS-R1 Qwen 7B | 7B | 62.8 ms | 30.9 | 4177.2 ms |
+| Mistral 7B | 7B | 62.5 ms | 31.8 | 4047.0 ms |
+| Llama 3.1 8B | 8B | 43.8 ms | 30.3 | 4247.2 ms |
+| Qwen3 8B | 8B | 44.6 ms | 29.5 | 4377.4 ms |
+| Granite 8B | 8B | 76.4 ms | 27.6 | 4646.1 ms |
+| DS-R1 Llama 8B | 8B | 68.9 ms | 30.3 | 4253.0 ms |
+| Gemma 2 9B | 9B | 83.4 ms | 24.1 | 5312.4 ms |
 
-TTFT grows ~5x from 2B to 9B. Throughput drops ~3x. The steepest jump is from 3.8B to 7B, where VRAM pressure begins on a 24GB GPU.
+TTFT grows ~4x from 2B to 9B. Throughput drops ~3x. The steepest jump is from 3.8B to 7B, where VRAM pressure begins on a 24GB GPU.
 
 ### Notable Anomalies
 
-- **Gemma 9B + SGLang throughput_ramp**: 30.5s TTFT p95 and 46.3s tail latency. At 9.2B parameters on 24GB VRAM, high-concurrency load causes severe request queuing. vLLM handled the same workload with 284ms TTFT p95 using tuned memory settings.
-- **Gemma 9B + vLLM**: Required `--max-model-len 4096` and `--gpu-memory-utilization 0.92` to fit on A10G. Default settings caused OOM.
-- **Phi-3 Mini**: vLLM leads on every metric across all 5 scenarios, but margins are tight on throughput ramp (190.9 vs 187.3 tok/s) and structured generation (784.8 vs 782.6 tok/s).
+- **Gemma 2 9B + SGLang throughput_ramp**: 26s TTFT p95 and 46s tail latency. At 9.2B parameters on 24GB VRAM, high-concurrency load causes severe request queuing. vLLM handled the same workload with 280ms TTFT p95.
+- **Gemma 2 9B + vLLM**: Required `--max-model-len 4096` and `--gpu-memory-utilization 0.92` to fit on A10G.
+- **SmolLM3 3B**: Higher TTFT than other 3B models (59.8 ms vs 23-33 ms for Llama 3.2 3B), suggesting less optimized attention kernels in current engine builds.
 
 ### When to Use Which Engine
 
 | Use Case | Recommendation | Why |
 |---|---|---|
-| Latency-sensitive serving (chatbots, APIs) | **vLLM** | Consistently lower TTFT across model sizes |
-| Structured/JSON output at scale | **vLLM** | Up to 2x higher request throughput |
-| High-throughput batch processing (7B+) | Either — test both | Throughput nearly identical at scale |
-| Prefix-heavy workloads (RAG, few-shot) | **vLLM** | Lower TTFT in all 7 paired comparisons |
+| Latency-sensitive serving (chatbots, APIs) | **vLLM** | Wins TTFT in 9/10 single-request comparisons |
+| Structured/JSON output at scale | **vLLM** | Wins throughput in 10/10 structured gen comparisons |
+| High-throughput batch processing (7B+) | **SGLang** (slight edge) | Wins throughput ramp tok/s on 6/10 models |
+| Prefix-heavy workloads (RAG, few-shot) | **vLLM** | Wins TTFT in 9/10 prefix sharing comparisons |
 
-> Full per-scenario breakdowns for long context stress and prefix sharing are in [`reports/cross_model_summary.md`](reports/cross_model_summary.md).
+> Full report with all 5 scenarios: [`reports/final_benchmark_report_2026-03-31.md`](reports/final_benchmark_report_2026-03-31.md)
 
 ---
 
@@ -1174,13 +1145,19 @@ Example payload:
 
 | Order | Model | SGLang | vLLM | Notes |
 |---:|---|---|---|---|
-| 1 | `google/gemma-2-2b-it` | Yes | Yes | Standard sequential run |
-| 2 | `microsoft/Phi-3-mini-4k-instruct` | Yes | Yes | vLLM leads on all metrics |
-| 3 | `meta-llama/Llama-3.2-3B-Instruct` | Yes | Yes | Standard sequential run |
-| 4 | `Qwen/Qwen2.5-7B-Instruct` | Yes | Yes | Standard sequential run |
-| 5 | `mistralai/Mistral-7B-Instruct-v0.3` | Yes | Yes | Standard sequential run |
-| 6 | `meta-llama/Llama-3.1-8B-Instruct` | Yes | Yes | Standard sequential run |
-| 7 | `google/gemma-2-9b-it` | Yes | Yes | vLLM required tuned fit settings |
+| 1 | `google/gemma-2-2b-it` | Yes | Yes | Fastest overall |
+| 2 | `HuggingFaceTB/SmolLM3-3B` | Yes | Pending | |
+| 3 | `meta-llama/Llama-3.2-3B-Instruct` | Yes | Yes | |
+| 4 | `microsoft/Phi-3-mini-4k-instruct` | Yes | Yes | |
+| 5 | `microsoft/Phi-4-mini-instruct` | Yes | Yes | New model |
+| 6 | `Qwen/Qwen2.5-7B-Instruct` | Yes | Yes | |
+| 7 | `deepseek-ai/DeepSeek-R1-Distill-Qwen-7B` | Yes | Yes | Reasoning-tuned |
+| 8 | `mistralai/Mistral-7B-Instruct-v0.3` | Yes | Yes | |
+| 9 | `meta-llama/Llama-3.1-8B-Instruct` | Yes | Yes | |
+| 10 | `Qwen/Qwen3-8B` | Yes | Yes | |
+| 11 | `ibm-granite/granite-3.3-8b-instruct` | Yes | Pending | |
+| 12 | `deepseek-ai/DeepSeek-R1-Distill-Llama-8B` | Yes | Pending | |
+| 13 | `google/gemma-2-9b-it` | Yes | Yes | vLLM required tuned fit |
 
 #### Exact per-model sequence
 
@@ -1256,8 +1233,11 @@ These settings were needed to fit Gemma 9B on a single A10G for the vLLM runs in
 
 | Model | Engine | Issue | Resolution |
 |---|---|---|---|
-| Gemma 9B | vLLM | default memory fit failed on A10G | tuned to `context=4096`, `gpu_memory_utilization=0.92` |
-| Gemma 9B | SGLang | 30.5s TTFT p95 under throughput ramp | VRAM pressure at high concurrency — anomalous but documented |
+| Gemma 2 9B | vLLM | Default memory fit failed on A10G | Tuned to `context=4096`, `gpu_memory_utilization=0.92` |
+| Gemma 2 9B | SGLang | 26s TTFT p95 under throughput ramp | VRAM pressure at high concurrency — documented |
+| SmolLM3 3B | vLLM | vLLM runs failed (SGLang worked) | Under investigation — vLLM pending re-run |
+| Granite 8B | vLLM | vLLM runs failed (SGLang worked) | Under investigation — vLLM pending re-run |
+| DS-R1 Llama 8B | vLLM | vLLM runs failed (SGLang worked) | Under investigation — vLLM pending re-run |
 
 ### Best next step for a new reader
 

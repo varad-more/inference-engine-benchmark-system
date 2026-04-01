@@ -1,7 +1,7 @@
 [
   {
     "model_id": "google/gemma-2-2b-it",
-    "model": "Gemma 2B",
+    "model": "Gemma 2 2B",
     "size_b": 2,
     "scenario": "single_request_latency",
     "engine": "vLLM",
@@ -17,7 +17,7 @@
   },
   {
     "model_id": "google/gemma-2-2b-it",
-    "model": "Gemma 2B",
+    "model": "Gemma 2 2B",
     "size_b": 2,
     "scenario": "single_request_latency",
     "engine": "SGLang",
@@ -33,7 +33,7 @@
   },
   {
     "model_id": "google/gemma-2-2b-it",
-    "model": "Gemma 2B",
+    "model": "Gemma 2 2B",
     "size_b": 2,
     "scenario": "throughput_ramp",
     "engine": "vLLM",
@@ -49,7 +49,7 @@
   },
   {
     "model_id": "google/gemma-2-2b-it",
-    "model": "Gemma 2B",
+    "model": "Gemma 2 2B",
     "size_b": 2,
     "scenario": "throughput_ramp",
     "engine": "SGLang",
@@ -65,7 +65,7 @@
   },
   {
     "model_id": "google/gemma-2-2b-it",
-    "model": "Gemma 2B",
+    "model": "Gemma 2 2B",
     "size_b": 2,
     "scenario": "long_context_stress",
     "engine": "vLLM",
@@ -81,7 +81,7 @@
   },
   {
     "model_id": "google/gemma-2-2b-it",
-    "model": "Gemma 2B",
+    "model": "Gemma 2 2B",
     "size_b": 2,
     "scenario": "prefix_sharing_benefit",
     "engine": "vLLM",
@@ -97,7 +97,7 @@
   },
   {
     "model_id": "google/gemma-2-2b-it",
-    "model": "Gemma 2B",
+    "model": "Gemma 2 2B",
     "size_b": 2,
     "scenario": "structured_generation_speed",
     "engine": "vLLM",
@@ -113,7 +113,7 @@
   },
   {
     "model_id": "google/gemma-2-2b-it",
-    "model": "Gemma 2B",
+    "model": "Gemma 2 2B",
     "size_b": 2,
     "scenario": "long_context_stress",
     "engine": "SGLang",
@@ -129,7 +129,7 @@
   },
   {
     "model_id": "google/gemma-2-2b-it",
-    "model": "Gemma 2B",
+    "model": "Gemma 2 2B",
     "size_b": 2,
     "scenario": "prefix_sharing_benefit",
     "engine": "SGLang",
@@ -145,7 +145,7 @@
   },
   {
     "model_id": "google/gemma-2-2b-it",
-    "model": "Gemma 2B",
+    "model": "Gemma 2 2B",
     "size_b": 2,
     "scenario": "structured_generation_speed",
     "engine": "SGLang",
@@ -192,6 +192,22 @@
     "path": "results/llama-3.2-3b-instruct/single_request_latency_SGLangClient_1774694908.json"
   },
   {
+    "model_id": "HuggingFaceTB/SmolLM3-3B",
+    "model": "SmolLM3 3B",
+    "size_b": 3,
+    "scenario": "single_request_latency",
+    "engine": "SGLang",
+    "ttft_p50": 58.02023349997398,
+    "ttft_p95": 59.8388338499376,
+    "ttft_p99": 251.70223346999973,
+    "latency_p95": 2052.8496732998406,
+    "tokens_per_sec": 62.1,
+    "requests_per_sec": 0.49,
+    "success_pct": 100.0,
+    "wall_time_sec": 102.99,
+    "path": "results/smollm3-3b/single_request_latency_sglang_1774994959.json"
+  },
+  {
     "model_id": "meta-llama/Llama-3.2-3B-Instruct",
     "model": "Llama 3.2 3B",
     "size_b": 3,
@@ -222,6 +238,22 @@
     "success_pct": 100.0,
     "wall_time_sec": 792.852,
     "path": "results/llama-3.2-3b-instruct/throughput_ramp_SGLangClient_1774695920.json"
+  },
+  {
+    "model_id": "HuggingFaceTB/SmolLM3-3B",
+    "model": "SmolLM3 3B",
+    "size_b": 3,
+    "scenario": "throughput_ramp",
+    "engine": "SGLang",
+    "ttft_p50": 95.0863104999371,
+    "ttft_p95": 371.93123580020705,
+    "ttft_p99": 746.8173963601566,
+    "latency_p95": 10724.459911450185,
+    "tokens_per_sec": 204.6,
+    "requests_per_sec": 0.8,
+    "success_pct": 100.0,
+    "wall_time_sec": 875.816,
+    "path": "results/smollm3-3b/throughput_ramp_sglang_1774995073.json"
   },
   {
     "model_id": "meta-llama/Llama-3.2-3B-Instruct",
@@ -320,6 +352,54 @@
     "path": "results/llama-3.2-3b-instruct/structured_generation_speed_SGLangClient_1774697207.json"
   },
   {
+    "model_id": "HuggingFaceTB/SmolLM3-3B",
+    "model": "SmolLM3 3B",
+    "size_b": 3,
+    "scenario": "long_context_stress",
+    "engine": "SGLang",
+    "ttft_p50": 71.36897350005711,
+    "ttft_p95": 90.97485354998298,
+    "ttft_p99": 91.37118671013468,
+    "latency_p95": 4471.005553699933,
+    "tokens_per_sec": 234.6,
+    "requests_per_sec": 0.99,
+    "success_pct": 100.0,
+    "wall_time_sec": 20.159,
+    "path": "results/smollm3-3b/long_context_stress_sglang_1774995961.json"
+  },
+  {
+    "model_id": "HuggingFaceTB/SmolLM3-3B",
+    "model": "SmolLM3 3B",
+    "size_b": 3,
+    "scenario": "prefix_sharing_benefit",
+    "engine": "SGLang",
+    "ttft_p50": 71.99059100003069,
+    "ttft_p95": 130.67702984994867,
+    "ttft_p99": 131.66614068979024,
+    "latency_p95": 2522.971694699845,
+    "tokens_per_sec": 398.6,
+    "requests_per_sec": 3.81,
+    "success_pct": 100.0,
+    "wall_time_sec": 26.269,
+    "path": "results/smollm3-3b/prefix_sharing_benefit_sglang_1774995993.json"
+  },
+  {
+    "model_id": "HuggingFaceTB/SmolLM3-3B",
+    "model": "SmolLM3 3B",
+    "size_b": 3,
+    "scenario": "structured_generation_speed",
+    "engine": "SGLang",
+    "ttft_p50": 111.60829799996463,
+    "ttft_p95": 134.88154170004236,
+    "ttft_p99": 137.56728033036325,
+    "latency_p95": 3035.8560672998237,
+    "tokens_per_sec": 773.8,
+    "requests_per_sec": 5.22,
+    "success_pct": 100.0,
+    "wall_time_sec": 38.307,
+    "path": "results/smollm3-3b/structured_generation_speed_sglang_1774996030.json"
+  },
+  {
     "model_id": "microsoft/Phi-3-mini-4k-instruct",
     "model": "Phi-3 mini",
     "size_b": 4,
@@ -334,6 +414,22 @@
     "success_pct": 100.0,
     "wall_time_sec": 110.657,
     "path": "results/phi-3-mini-4k-instruct/single_request_latency_VLLMClient_1774661376.json"
+  },
+  {
+    "model_id": "microsoft/Phi-4-mini-instruct",
+    "model": "Phi-4 mini",
+    "size_b": 4,
+    "scenario": "single_request_latency",
+    "engine": "vLLM",
+    "ttft_p50": 32.673329000090234,
+    "ttft_p95": 33.38611514984677,
+    "ttft_p99": 61.212137720071844,
+    "latency_p95": 2269.023674199775,
+    "tokens_per_sec": 56.8,
+    "requests_per_sec": 0.55,
+    "success_pct": 100.0,
+    "wall_time_sec": 90.507,
+    "path": "results/phi-4-mini-instruct/single_request_latency_vllm_1774996242.json"
   },
   {
     "model_id": "microsoft/Phi-3-mini-4k-instruct",
@@ -352,6 +448,22 @@
     "path": "results/phi-3-mini-4k-instruct/single_request_latency_SGLangClient_1774744939.json"
   },
   {
+    "model_id": "microsoft/Phi-4-mini-instruct",
+    "model": "Phi-4 mini",
+    "size_b": 4,
+    "scenario": "single_request_latency",
+    "engine": "SGLang",
+    "ttft_p50": 39.61078349993841,
+    "ttft_p95": 39.850160600190065,
+    "ttft_p99": 216.1143012401037,
+    "latency_p95": 2411.739985599934,
+    "tokens_per_sec": 52.7,
+    "requests_per_sec": 0.53,
+    "success_pct": 100.0,
+    "wall_time_sec": 95.086,
+    "path": "results/phi-4-mini-instruct/single_request_latency_sglang_1774997580.json"
+  },
+  {
     "model_id": "microsoft/Phi-3-mini-4k-instruct",
     "model": "Phi-3 mini",
     "size_b": 4,
@@ -368,6 +480,22 @@
     "path": "results/phi-3-mini-4k-instruct/throughput_ramp_VLLMClient_1774662547.json"
   },
   {
+    "model_id": "microsoft/Phi-4-mini-instruct",
+    "model": "Phi-4 mini",
+    "size_b": 4,
+    "scenario": "throughput_ramp",
+    "engine": "vLLM",
+    "ttft_p50": 55.53594550019625,
+    "ttft_p95": 153.08084905050222,
+    "ttft_p99": 211.4189077397441,
+    "latency_p95": 7511.636347150261,
+    "tokens_per_sec": 188.6,
+    "requests_per_sec": 0.74,
+    "success_pct": 100.0,
+    "wall_time_sec": 949.772,
+    "path": "results/phi-4-mini-instruct/throughput_ramp_vllm_1774996345.json"
+  },
+  {
     "model_id": "microsoft/Phi-3-mini-4k-instruct",
     "model": "Phi-3 mini",
     "size_b": 4,
@@ -382,6 +510,22 @@
     "success_pct": 100.0,
     "wall_time_sec": 957.175,
     "path": "results/phi-3-mini-4k-instruct/throughput_ramp_SGLangClient_1774746254.json"
+  },
+  {
+    "model_id": "microsoft/Phi-4-mini-instruct",
+    "model": "Phi-4 mini",
+    "size_b": 4,
+    "scenario": "throughput_ramp",
+    "engine": "SGLang",
+    "ttft_p50": 56.7869139999857,
+    "ttft_p95": 160.9173974502482,
+    "ttft_p99": 269.2668370395313,
+    "latency_p95": 8410.80684700055,
+    "tokens_per_sec": 175.9,
+    "requests_per_sec": 0.79,
+    "success_pct": 100.0,
+    "wall_time_sec": 882.703,
+    "path": "results/phi-4-mini-instruct/throughput_ramp_sglang_1774997686.json"
   },
   {
     "model_id": "microsoft/Phi-3-mini-4k-instruct",
@@ -432,6 +576,54 @@
     "path": "results/phi-3-mini-4k-instruct/structured_generation_speed_VLLMClient_1774663998.json"
   },
   {
+    "model_id": "microsoft/Phi-4-mini-instruct",
+    "model": "Phi-4 mini",
+    "size_b": 4,
+    "scenario": "long_context_stress",
+    "engine": "vLLM",
+    "ttft_p50": 46.910773000490735,
+    "ttft_p95": 60.10046800060991,
+    "ttft_p99": 60.10241360007967,
+    "latency_p95": 4884.240278899506,
+    "tokens_per_sec": 212.0,
+    "requests_per_sec": 0.83,
+    "success_pct": 100.0,
+    "wall_time_sec": 24.149,
+    "path": "results/phi-4-mini-instruct/long_context_stress_vllm_1774997306.json"
+  },
+  {
+    "model_id": "microsoft/Phi-4-mini-instruct",
+    "model": "Phi-4 mini",
+    "size_b": 4,
+    "scenario": "prefix_sharing_benefit",
+    "engine": "vLLM",
+    "ttft_p50": 51.096094000058656,
+    "ttft_p95": 63.9619406501879,
+    "ttft_p99": 81.94704722974166,
+    "latency_p95": 2511.4300076994823,
+    "tokens_per_sec": 403.9,
+    "requests_per_sec": 3.55,
+    "success_pct": 100.0,
+    "wall_time_sec": 28.166,
+    "path": "results/phi-4-mini-instruct/prefix_sharing_benefit_vllm_1774997341.json"
+  },
+  {
+    "model_id": "microsoft/Phi-4-mini-instruct",
+    "model": "Phi-4 mini",
+    "size_b": 4,
+    "scenario": "structured_generation_speed",
+    "engine": "vLLM",
+    "ttft_p50": 54.202137000174844,
+    "ttft_p95": 70.59631845058901,
+    "ttft_p99": 92.49578972052404,
+    "latency_p95": 3076.335598099786,
+    "tokens_per_sec": 736.4,
+    "requests_per_sec": 6.63,
+    "success_pct": 100.0,
+    "wall_time_sec": 30.187,
+    "path": "results/phi-4-mini-instruct/structured_generation_speed_vllm_1774997379.json"
+  },
+  {
     "model_id": "microsoft/Phi-3-mini-4k-instruct",
     "model": "Phi-3 mini",
     "size_b": 4,
@@ -480,6 +672,70 @@
     "path": "results/phi-3-mini-4k-instruct/structured_generation_speed_SGLangClient_1774748094.json"
   },
   {
+    "model_id": "microsoft/Phi-4-mini-instruct",
+    "model": "Phi-4 mini",
+    "size_b": 4,
+    "scenario": "long_context_stress",
+    "engine": "SGLang",
+    "ttft_p50": 37.587277500279015,
+    "ttft_p95": 65.83194789996014,
+    "ttft_p99": 66.13138638042983,
+    "latency_p95": 5101.221134250545,
+    "tokens_per_sec": 211.8,
+    "requests_per_sec": 0.83,
+    "success_pct": 100.0,
+    "wall_time_sec": 24.17,
+    "path": "results/phi-4-mini-instruct/long_context_stress_sglang_1774998581.json"
+  },
+  {
+    "model_id": "microsoft/Phi-4-mini-instruct",
+    "model": "Phi-4 mini",
+    "size_b": 4,
+    "scenario": "prefix_sharing_benefit",
+    "engine": "SGLang",
+    "ttft_p50": 55.99222249975355,
+    "ttft_p95": 115.33614660015701,
+    "ttft_p99": 116.89398293973682,
+    "latency_p95": 2722.616986150433,
+    "tokens_per_sec": 375.6,
+    "requests_per_sec": 3.29,
+    "success_pct": 100.0,
+    "wall_time_sec": 30.356,
+    "path": "results/phi-4-mini-instruct/prefix_sharing_benefit_sglang_1774998618.json"
+  },
+  {
+    "model_id": "microsoft/Phi-4-mini-instruct",
+    "model": "Phi-4 mini",
+    "size_b": 4,
+    "scenario": "structured_generation_speed",
+    "engine": "SGLang",
+    "ttft_p50": 54.43595399992773,
+    "ttft_p95": 99.85382484937873,
+    "ttft_p99": 111.96500007986288,
+    "latency_p95": 2569.062008750143,
+    "tokens_per_sec": 669.3,
+    "requests_per_sec": 9.01,
+    "success_pct": 100.0,
+    "wall_time_sec": 22.195,
+    "path": "results/phi-4-mini-instruct/structured_generation_speed_sglang_1774998660.json"
+  },
+  {
+    "model_id": "Qwen/Qwen2.5-7B-Instruct",
+    "model": "Qwen 2.5 7B",
+    "size_b": 7,
+    "scenario": "single_request_latency",
+    "engine": "vLLM",
+    "ttft_p50": 40.85588300006293,
+    "ttft_p95": 62.72195040002657,
+    "ttft_p99": 62.75447331997043,
+    "latency_p95": 4220.285963049997,
+    "tokens_per_sec": 30.6,
+    "requests_per_sec": 0.29,
+    "success_pct": 100.0,
+    "wall_time_sec": 173.0,
+    "path": "results/qwen2.5-7b-instruct/single_request_latency_VLLMClient_1774665731.json"
+  },
+  {
     "model_id": "mistralai/Mistral-7B-Instruct-v0.3",
     "model": "Mistral 7B",
     "size_b": 7,
@@ -496,24 +752,8 @@
     "path": "results/mistral-7b-instruct-v0.3/single_request_latency_VLLMClient_1774675281.json"
   },
   {
-    "model_id": "Qwen/Qwen2.5-7B-Instruct",
-    "model": "Qwen 7B",
-    "size_b": 7,
-    "scenario": "single_request_latency",
-    "engine": "vLLM",
-    "ttft_p50": 40.85588300006293,
-    "ttft_p95": 62.72195040002657,
-    "ttft_p99": 62.75447331997043,
-    "latency_p95": 4220.285963049997,
-    "tokens_per_sec": 30.6,
-    "requests_per_sec": 0.29,
-    "success_pct": 100.0,
-    "wall_time_sec": 173.0,
-    "path": "results/qwen2.5-7b-instruct/single_request_latency_VLLMClient_1774665731.json"
-  },
-  {
     "model_id": "deepseek-ai/DeepSeek-R1-Distill-Qwen-7B",
-    "model": "DeepSeek-R1 Distill 7B",
+    "model": "DS-R1 Qwen 7B",
     "size_b": 7,
     "scenario": "single_request_latency",
     "engine": "vLLM",
@@ -525,7 +765,23 @@
     "requests_per_sec": 0.28,
     "success_pct": 100.0,
     "wall_time_sec": 178.989,
-    "path": "results_afk/20260330_speculative/deepseek-r1-distill-qwen-7b/single_request_latency_vllm_1774920241.json"
+    "path": "results/deepseek-r1-distill-qwen-7b/single_request_latency_vllm_1774920241.json"
+  },
+  {
+    "model_id": "Qwen/Qwen2.5-7B-Instruct",
+    "model": "Qwen 2.5 7B",
+    "size_b": 7,
+    "scenario": "single_request_latency",
+    "engine": "SGLang",
+    "ttft_p50": 65.56236649976199,
+    "ttft_p95": 65.72128924976823,
+    "ttft_p99": 65.88291091995416,
+    "latency_p95": 4170.201247200066,
+    "tokens_per_sec": 30.9,
+    "requests_per_sec": 0.27,
+    "success_pct": 100.0,
+    "wall_time_sec": 186.626,
+    "path": "results/qwen2.5-7b-instruct/single_request_latency_SGLangClient_1774670440.json"
   },
   {
     "model_id": "mistralai/Mistral-7B-Instruct-v0.3",
@@ -544,24 +800,8 @@
     "path": "results/mistral-7b-instruct-v0.3/single_request_latency_SGLangClient_1774680131.json"
   },
   {
-    "model_id": "Qwen/Qwen2.5-7B-Instruct",
-    "model": "Qwen 7B",
-    "size_b": 7,
-    "scenario": "single_request_latency",
-    "engine": "SGLang",
-    "ttft_p50": 65.56236649976199,
-    "ttft_p95": 65.72128924976823,
-    "ttft_p99": 65.88291091995416,
-    "latency_p95": 4170.201247200066,
-    "tokens_per_sec": 30.9,
-    "requests_per_sec": 0.27,
-    "success_pct": 100.0,
-    "wall_time_sec": 186.626,
-    "path": "results/qwen2.5-7b-instruct/single_request_latency_SGLangClient_1774670440.json"
-  },
-  {
     "model_id": "deepseek-ai/DeepSeek-R1-Distill-Qwen-7B",
-    "model": "DeepSeek-R1 Distill 7B",
+    "model": "DS-R1 Qwen 7B",
     "size_b": 7,
     "scenario": "single_request_latency",
     "engine": "SGLang",
@@ -573,7 +813,23 @@
     "requests_per_sec": 0.24,
     "success_pct": 100.0,
     "wall_time_sec": 207.338,
-    "path": "results_afk/20260330_speculative/deepseek-r1-distill-qwen-7b/single_request_latency_sglang_1774922973.json"
+    "path": "results/deepseek-r1-distill-qwen-7b/single_request_latency_sglang_1774922973.json"
+  },
+  {
+    "model_id": "Qwen/Qwen2.5-7B-Instruct",
+    "model": "Qwen 2.5 7B",
+    "size_b": 7,
+    "scenario": "throughput_ramp",
+    "engine": "vLLM",
+    "ttft_p50": 92.53276549975453,
+    "ttft_p95": 196.52210065028152,
+    "ttft_p99": 254.16115440034446,
+    "latency_p95": 9772.709994900015,
+    "tokens_per_sec": 105.3,
+    "requests_per_sec": 0.41,
+    "success_pct": 100.0,
+    "wall_time_sec": 1701.487,
+    "path": "results/qwen2.5-7b-instruct/throughput_ramp_VLLMClient_1774667729.json"
   },
   {
     "model_id": "mistralai/Mistral-7B-Instruct-v0.3",
@@ -592,24 +848,8 @@
     "path": "results/mistral-7b-instruct-v0.3/throughput_ramp_VLLMClient_1774677279.json"
   },
   {
-    "model_id": "Qwen/Qwen2.5-7B-Instruct",
-    "model": "Qwen 7B",
-    "size_b": 7,
-    "scenario": "throughput_ramp",
-    "engine": "vLLM",
-    "ttft_p50": 92.53276549975453,
-    "ttft_p95": 196.52210065028152,
-    "ttft_p99": 254.16115440034446,
-    "latency_p95": 9772.709994900015,
-    "tokens_per_sec": 105.3,
-    "requests_per_sec": 0.41,
-    "success_pct": 100.0,
-    "wall_time_sec": 1701.487,
-    "path": "results/qwen2.5-7b-instruct/throughput_ramp_VLLMClient_1774667729.json"
-  },
-  {
     "model_id": "deepseek-ai/DeepSeek-R1-Distill-Qwen-7B",
-    "model": "DeepSeek-R1 Distill 7B",
+    "model": "DS-R1 Qwen 7B",
     "size_b": 7,
     "scenario": "throughput_ramp",
     "engine": "vLLM",
@@ -621,7 +861,23 @@
     "requests_per_sec": 0.41,
     "success_pct": 100.0,
     "wall_time_sec": 1697.062,
-    "path": "results_afk/20260330_speculative/deepseek-r1-distill-qwen-7b/throughput_ramp_vllm_1774920541.json"
+    "path": "results/deepseek-r1-distill-qwen-7b/throughput_ramp_vllm_1774920541.json"
+  },
+  {
+    "model_id": "Qwen/Qwen2.5-7B-Instruct",
+    "model": "Qwen 2.5 7B",
+    "size_b": 7,
+    "scenario": "throughput_ramp",
+    "engine": "SGLang",
+    "ttft_p50": 65.8682714997667,
+    "ttft_p95": 175.11268520074736,
+    "ttft_p99": 202.99923090953598,
+    "latency_p95": 9542.879212800835,
+    "tokens_per_sec": 106.3,
+    "requests_per_sec": 0.42,
+    "success_pct": 100.0,
+    "wall_time_sec": 1686.406,
+    "path": "results/qwen2.5-7b-instruct/throughput_ramp_SGLangClient_1774672438.json"
   },
   {
     "model_id": "mistralai/Mistral-7B-Instruct-v0.3",
@@ -640,24 +896,8 @@
     "path": "results/mistral-7b-instruct-v0.3/throughput_ramp_SGLangClient_1774682128.json"
   },
   {
-    "model_id": "Qwen/Qwen2.5-7B-Instruct",
-    "model": "Qwen 7B",
-    "size_b": 7,
-    "scenario": "throughput_ramp",
-    "engine": "SGLang",
-    "ttft_p50": 65.8682714997667,
-    "ttft_p95": 175.11268520074736,
-    "ttft_p99": 202.99923090953598,
-    "latency_p95": 9542.879212800835,
-    "tokens_per_sec": 106.3,
-    "requests_per_sec": 0.42,
-    "success_pct": 100.0,
-    "wall_time_sec": 1686.406,
-    "path": "results/qwen2.5-7b-instruct/throughput_ramp_SGLangClient_1774672438.json"
-  },
-  {
     "model_id": "deepseek-ai/DeepSeek-R1-Distill-Qwen-7B",
-    "model": "DeepSeek-R1 Distill 7B",
+    "model": "DS-R1 Qwen 7B",
     "size_b": 7,
     "scenario": "throughput_ramp",
     "engine": "SGLang",
@@ -669,7 +909,55 @@
     "requests_per_sec": 0.41,
     "success_pct": 100.0,
     "wall_time_sec": 1689.005,
-    "path": "results_afk/20260330_speculative/deepseek-r1-distill-qwen-7b/throughput_ramp_sglang_1774923303.json"
+    "path": "results/deepseek-r1-distill-qwen-7b/throughput_ramp_sglang_1774923303.json"
+  },
+  {
+    "model_id": "deepseek-ai/DeepSeek-R1-Distill-Qwen-7B",
+    "model": "DS-R1 Qwen 7B",
+    "size_b": 7,
+    "scenario": "long_context_stress",
+    "engine": "vLLM",
+    "ttft_p50": 87.41423099945678,
+    "ttft_p95": 93.13519455045025,
+    "ttft_p99": 93.15310851005052,
+    "latency_p95": 8470.52424915064,
+    "tokens_per_sec": 121.2,
+    "requests_per_sec": 0.47,
+    "success_pct": 100.0,
+    "wall_time_sec": 42.228,
+    "path": "results/deepseek-r1-distill-qwen-7b/long_context_stress_vllm_1774922358.json"
+  },
+  {
+    "model_id": "deepseek-ai/DeepSeek-R1-Distill-Qwen-7B",
+    "model": "DS-R1 Qwen 7B",
+    "size_b": 7,
+    "scenario": "prefix_sharing_benefit",
+    "engine": "vLLM",
+    "ttft_p50": 86.78197249992081,
+    "ttft_p95": 95.91826444993785,
+    "ttft_p99": 108.63700281030106,
+    "latency_p95": 4302.223954250985,
+    "tokens_per_sec": 235.7,
+    "requests_per_sec": 1.84,
+    "success_pct": 100.0,
+    "wall_time_sec": 54.3,
+    "path": "results/deepseek-r1-distill-qwen-7b/prefix_sharing_benefit_vllm_1774922521.json"
+  },
+  {
+    "model_id": "deepseek-ai/DeepSeek-R1-Distill-Qwen-7B",
+    "model": "DS-R1 Qwen 7B",
+    "size_b": 7,
+    "scenario": "structured_generation_speed",
+    "engine": "vLLM",
+    "ttft_p50": 85.84681800039107,
+    "ttft_p95": 114.99330365013519,
+    "ttft_p99": 133.8691867189118,
+    "latency_p95": 5153.540157899533,
+    "tokens_per_sec": 451.7,
+    "requests_per_sec": 3.01,
+    "success_pct": 100.0,
+    "wall_time_sec": 66.394,
+    "path": "results/deepseek-r1-distill-qwen-7b/structured_generation_speed_vllm_1774922697.json"
   },
   {
     "model_id": "mistralai/Mistral-7B-Instruct-v0.3",
@@ -721,7 +1009,7 @@
   },
   {
     "model_id": "Qwen/Qwen2.5-7B-Instruct",
-    "model": "Qwen 7B",
+    "model": "Qwen 2.5 7B",
     "size_b": 7,
     "scenario": "long_context_stress",
     "engine": "vLLM",
@@ -737,7 +1025,7 @@
   },
   {
     "model_id": "Qwen/Qwen2.5-7B-Instruct",
-    "model": "Qwen 7B",
+    "model": "Qwen 2.5 7B",
     "size_b": 7,
     "scenario": "prefix_sharing_benefit",
     "engine": "vLLM",
@@ -753,7 +1041,7 @@
   },
   {
     "model_id": "Qwen/Qwen2.5-7B-Instruct",
-    "model": "Qwen 7B",
+    "model": "Qwen 2.5 7B",
     "size_b": 7,
     "scenario": "structured_generation_speed",
     "engine": "vLLM",
@@ -769,51 +1057,51 @@
   },
   {
     "model_id": "deepseek-ai/DeepSeek-R1-Distill-Qwen-7B",
-    "model": "DeepSeek-R1 Distill 7B",
+    "model": "DS-R1 Qwen 7B",
     "size_b": 7,
     "scenario": "long_context_stress",
-    "engine": "vLLM",
-    "ttft_p50": 87.41423099945678,
-    "ttft_p95": 93.13519455045025,
-    "ttft_p99": 93.15310851005052,
-    "latency_p95": 8470.52424915064,
-    "tokens_per_sec": 121.2,
-    "requests_per_sec": 0.47,
+    "engine": "SGLang",
+    "ttft_p50": 58.38400250013365,
+    "ttft_p95": 105.30461305070276,
+    "ttft_p99": 105.32201780946707,
+    "latency_p95": 8465.670248100105,
+    "tokens_per_sec": 125.9,
+    "requests_per_sec": 0.49,
     "success_pct": 100.0,
-    "wall_time_sec": 42.228,
-    "path": "results_afk/20260330_speculative/deepseek-r1-distill-qwen-7b/long_context_stress_vllm_1774922358.json"
+    "wall_time_sec": 40.664,
+    "path": "results/deepseek-r1-distill-qwen-7b/long_context_stress_sglang_1774925114.json"
   },
   {
     "model_id": "deepseek-ai/DeepSeek-R1-Distill-Qwen-7B",
-    "model": "DeepSeek-R1 Distill 7B",
+    "model": "DS-R1 Qwen 7B",
     "size_b": 7,
     "scenario": "prefix_sharing_benefit",
-    "engine": "vLLM",
-    "ttft_p50": 86.78197249992081,
-    "ttft_p95": 95.91826444993785,
-    "ttft_p99": 108.63700281030106,
-    "latency_p95": 4302.223954250985,
-    "tokens_per_sec": 235.7,
+    "engine": "SGLang",
+    "ttft_p50": 77.52038699982222,
+    "ttft_p95": 281.06272635004626,
+    "ttft_p99": 342.955878521625,
+    "latency_p95": 4393.643464249816,
+    "tokens_per_sec": 235.1,
     "requests_per_sec": 1.84,
     "success_pct": 100.0,
-    "wall_time_sec": 54.3,
-    "path": "results_afk/20260330_speculative/deepseek-r1-distill-qwen-7b/prefix_sharing_benefit_vllm_1774922521.json"
+    "wall_time_sec": 54.452,
+    "path": "results/deepseek-r1-distill-qwen-7b/prefix_sharing_benefit_sglang_1774925277.json"
   },
   {
     "model_id": "deepseek-ai/DeepSeek-R1-Distill-Qwen-7B",
-    "model": "DeepSeek-R1 Distill 7B",
+    "model": "DS-R1 Qwen 7B",
     "size_b": 7,
     "scenario": "structured_generation_speed",
-    "engine": "vLLM",
-    "ttft_p50": 85.84681800039107,
-    "ttft_p95": 114.99330365013519,
-    "ttft_p99": 133.8691867189118,
-    "latency_p95": 5153.540157899533,
-    "tokens_per_sec": 451.7,
-    "requests_per_sec": 3.01,
+    "engine": "SGLang",
+    "ttft_p50": 94.89303949976602,
+    "ttft_p95": 184.12667564989533,
+    "ttft_p99": 187.11948577951262,
+    "latency_p95": 5186.420090750016,
+    "tokens_per_sec": 450.7,
+    "requests_per_sec": 3.0,
     "success_pct": 100.0,
-    "wall_time_sec": 66.394,
-    "path": "results_afk/20260330_speculative/deepseek-r1-distill-qwen-7b/structured_generation_speed_vllm_1774922697.json"
+    "wall_time_sec": 66.563,
+    "path": "results/deepseek-r1-distill-qwen-7b/structured_generation_speed_sglang_1774925455.json"
   },
   {
     "model_id": "mistralai/Mistral-7B-Instruct-v0.3",
@@ -865,7 +1153,7 @@
   },
   {
     "model_id": "Qwen/Qwen2.5-7B-Instruct",
-    "model": "Qwen 7B",
+    "model": "Qwen 2.5 7B",
     "size_b": 7,
     "scenario": "long_context_stress",
     "engine": "SGLang",
@@ -881,7 +1169,7 @@
   },
   {
     "model_id": "Qwen/Qwen2.5-7B-Instruct",
-    "model": "Qwen 7B",
+    "model": "Qwen 2.5 7B",
     "size_b": 7,
     "scenario": "prefix_sharing_benefit",
     "engine": "SGLang",
@@ -897,7 +1185,7 @@
   },
   {
     "model_id": "Qwen/Qwen2.5-7B-Instruct",
-    "model": "Qwen 7B",
+    "model": "Qwen 2.5 7B",
     "size_b": 7,
     "scenario": "structured_generation_speed",
     "engine": "SGLang",
@@ -910,54 +1198,6 @@
     "success_pct": 100.0,
     "wall_time_sec": 28.218,
     "path": "results/qwen2.5-7b-instruct/structured_generation_speed_SGLangClient_1774674720.json"
-  },
-  {
-    "model_id": "deepseek-ai/DeepSeek-R1-Distill-Qwen-7B",
-    "model": "DeepSeek-R1 Distill 7B",
-    "size_b": 7,
-    "scenario": "long_context_stress",
-    "engine": "SGLang",
-    "ttft_p50": 58.38400250013365,
-    "ttft_p95": 105.30461305070276,
-    "ttft_p99": 105.32201780946707,
-    "latency_p95": 8465.670248100105,
-    "tokens_per_sec": 125.9,
-    "requests_per_sec": 0.49,
-    "success_pct": 100.0,
-    "wall_time_sec": 40.664,
-    "path": "results_afk/20260330_speculative/deepseek-r1-distill-qwen-7b/long_context_stress_sglang_1774925114.json"
-  },
-  {
-    "model_id": "deepseek-ai/DeepSeek-R1-Distill-Qwen-7B",
-    "model": "DeepSeek-R1 Distill 7B",
-    "size_b": 7,
-    "scenario": "prefix_sharing_benefit",
-    "engine": "SGLang",
-    "ttft_p50": 77.52038699982222,
-    "ttft_p95": 281.06272635004626,
-    "ttft_p99": 342.955878521625,
-    "latency_p95": 4393.643464249816,
-    "tokens_per_sec": 235.1,
-    "requests_per_sec": 1.84,
-    "success_pct": 100.0,
-    "wall_time_sec": 54.452,
-    "path": "results_afk/20260330_speculative/deepseek-r1-distill-qwen-7b/prefix_sharing_benefit_sglang_1774925277.json"
-  },
-  {
-    "model_id": "deepseek-ai/DeepSeek-R1-Distill-Qwen-7B",
-    "model": "DeepSeek-R1 Distill 7B",
-    "size_b": 7,
-    "scenario": "structured_generation_speed",
-    "engine": "SGLang",
-    "ttft_p50": 94.89303949976602,
-    "ttft_p95": 184.12667564989533,
-    "ttft_p99": 187.11948577951262,
-    "latency_p95": 5186.420090750016,
-    "tokens_per_sec": 450.7,
-    "requests_per_sec": 3.0,
-    "success_pct": 100.0,
-    "wall_time_sec": 66.563,
-    "path": "results_afk/20260330_speculative/deepseek-r1-distill-qwen-7b/structured_generation_speed_sglang_1774925455.json"
   },
   {
     "model_id": "meta-llama/Llama-3.1-8B-Instruct",
@@ -989,7 +1229,39 @@
     "requests_per_sec": 0.23,
     "success_pct": 100.0,
     "wall_time_sec": 217.159,
-    "path": "results_afk/20260330_speculative/qwen3-8b/single_request_latency_vllm_1774914315.json"
+    "path": "results/qwen3-8b/single_request_latency_vllm_1774914315.json"
+  },
+  {
+    "model_id": "deepseek-ai/DeepSeek-R1-Distill-Llama-8B",
+    "model": "DS-R1 Llama 8B",
+    "size_b": 8,
+    "scenario": "single_request_latency",
+    "engine": "SGLang",
+    "ttft_p50": 68.58529799956159,
+    "ttft_p95": 68.86167075017511,
+    "ttft_p99": 69.83525311959966,
+    "latency_p95": 4252.987646299425,
+    "tokens_per_sec": 30.3,
+    "requests_per_sec": 0.24,
+    "success_pct": 100.0,
+    "wall_time_sec": 211.256,
+    "path": "results/deepseek-r1-distill-llama-8b/single_request_latency_sglang_1775003165.json"
+  },
+  {
+    "model_id": "ibm-granite/granite-3.3-8b-instruct",
+    "model": "Granite 8B",
+    "size_b": 8,
+    "scenario": "single_request_latency",
+    "engine": "SGLang",
+    "ttft_p50": 75.5966084998363,
+    "ttft_p95": 76.39578200041797,
+    "ttft_p99": 252.04071912032236,
+    "latency_p95": 4646.12455240017,
+    "tokens_per_sec": 27.6,
+    "requests_per_sec": 0.22,
+    "success_pct": 100.0,
+    "wall_time_sec": 232.206,
+    "path": "results/granite-3.3-8b-instruct/single_request_latency_sglang_1774999551.json"
   },
   {
     "model_id": "meta-llama/Llama-3.1-8B-Instruct",
@@ -1021,7 +1293,7 @@
     "requests_per_sec": 0.23,
     "success_pct": 100.0,
     "wall_time_sec": 219.097,
-    "path": "results_afk/20260330_speculative/qwen3-8b/single_request_latency_sglang_1774917225.json"
+    "path": "results/qwen3-8b/single_request_latency_sglang_1774917225.json"
   },
   {
     "model_id": "meta-llama/Llama-3.1-8B-Instruct",
@@ -1053,7 +1325,39 @@
     "requests_per_sec": 0.38,
     "success_pct": 100.0,
     "wall_time_sec": 1822.034,
-    "path": "results_afk/20260330_speculative/qwen3-8b/throughput_ramp_vllm_1774914655.json"
+    "path": "results/qwen3-8b/throughput_ramp_vllm_1774914655.json"
+  },
+  {
+    "model_id": "deepseek-ai/DeepSeek-R1-Distill-Llama-8B",
+    "model": "DS-R1 Llama 8B",
+    "size_b": 8,
+    "scenario": "throughput_ramp",
+    "engine": "SGLang",
+    "ttft_p50": 94.10871600084647,
+    "ttft_p95": 177.7896850493562,
+    "ttft_p99": 213.08172528137206,
+    "latency_p95": 10611.16598790095,
+    "tokens_per_sec": 102.0,
+    "requests_per_sec": 0.4,
+    "success_pct": 100.0,
+    "wall_time_sec": 1757.23,
+    "path": "results/deepseek-r1-distill-llama-8b/throughput_ramp_sglang_1775003389.json"
+  },
+  {
+    "model_id": "ibm-granite/granite-3.3-8b-instruct",
+    "model": "Granite 8B",
+    "size_b": 8,
+    "scenario": "throughput_ramp",
+    "engine": "SGLang",
+    "ttft_p50": 75.7111480002095,
+    "ttft_p95": 199.12269824999385,
+    "ttft_p99": 244.36083690990927,
+    "latency_p95": 12471.43262454947,
+    "tokens_per_sec": 92.8,
+    "requests_per_sec": 0.36,
+    "success_pct": 100.0,
+    "wall_time_sec": 1930.554,
+    "path": "results/granite-3.3-8b-instruct/throughput_ramp_sglang_1774999795.json"
   },
   {
     "model_id": "meta-llama/Llama-3.1-8B-Instruct",
@@ -1085,7 +1389,7 @@
     "requests_per_sec": 0.39,
     "success_pct": 100.0,
     "wall_time_sec": 1817.965,
-    "path": "results_afk/20260330_speculative/qwen3-8b/throughput_ramp_sglang_1774917566.json"
+    "path": "results/qwen3-8b/throughput_ramp_sglang_1774917566.json"
   },
   {
     "model_id": "meta-llama/Llama-3.1-8B-Instruct",
@@ -1149,7 +1453,7 @@
     "requests_per_sec": 0.43,
     "success_pct": 100.0,
     "wall_time_sec": 46.255,
-    "path": "results_afk/20260330_speculative/qwen3-8b/long_context_stress_vllm_1774916597.json"
+    "path": "results/qwen3-8b/long_context_stress_vllm_1774916597.json"
   },
   {
     "model_id": "Qwen/Qwen3-8B",
@@ -1165,7 +1469,7 @@
     "requests_per_sec": 1.66,
     "success_pct": 100.0,
     "wall_time_sec": 60.319,
-    "path": "results_afk/20260330_speculative/qwen3-8b/prefix_sharing_benefit_vllm_1774916764.json"
+    "path": "results/qwen3-8b/prefix_sharing_benefit_vllm_1774916764.json"
   },
   {
     "model_id": "Qwen/Qwen3-8B",
@@ -1181,7 +1485,103 @@
     "requests_per_sec": 2.69,
     "success_pct": 100.0,
     "wall_time_sec": 74.42,
-    "path": "results_afk/20260330_speculative/qwen3-8b/structured_generation_speed_vllm_1774916945.json"
+    "path": "results/qwen3-8b/structured_generation_speed_vllm_1774916945.json"
+  },
+  {
+    "model_id": "deepseek-ai/DeepSeek-R1-Distill-Llama-8B",
+    "model": "DS-R1 Llama 8B",
+    "size_b": 8,
+    "scenario": "long_context_stress",
+    "engine": "SGLang",
+    "ttft_p50": 63.27391800004989,
+    "ttft_p95": 105.08725815006983,
+    "ttft_p99": 105.23527802926765,
+    "latency_p95": 8943.152532550448,
+    "tokens_per_sec": 115.3,
+    "requests_per_sec": 0.45,
+    "success_pct": 100.0,
+    "wall_time_sec": 44.394,
+    "path": "results/deepseek-r1-distill-llama-8b/long_context_stress_sglang_1775005158.json"
+  },
+  {
+    "model_id": "deepseek-ai/DeepSeek-R1-Distill-Llama-8B",
+    "model": "DS-R1 Llama 8B",
+    "size_b": 8,
+    "scenario": "prefix_sharing_benefit",
+    "engine": "SGLang",
+    "ttft_p50": 54.56977149970044,
+    "ttft_p95": 191.87698664982236,
+    "ttft_p99": 193.2571544687744,
+    "latency_p95": 4623.389142499946,
+    "tokens_per_sec": 225.8,
+    "requests_per_sec": 1.76,
+    "success_pct": 100.0,
+    "wall_time_sec": 56.697,
+    "path": "results/deepseek-r1-distill-llama-8b/prefix_sharing_benefit_sglang_1775005214.json"
+  },
+  {
+    "model_id": "deepseek-ai/DeepSeek-R1-Distill-Llama-8B",
+    "model": "DS-R1 Llama 8B",
+    "size_b": 8,
+    "scenario": "structured_generation_speed",
+    "engine": "SGLang",
+    "ttft_p50": 108.73603250001906,
+    "ttft_p95": 179.55083025053682,
+    "ttft_p99": 206.21819758076526,
+    "latency_p95": 5627.91118374862,
+    "tokens_per_sec": 422.4,
+    "requests_per_sec": 2.82,
+    "success_pct": 100.0,
+    "wall_time_sec": 71.031,
+    "path": "results/deepseek-r1-distill-llama-8b/structured_generation_speed_sglang_1775005284.json"
+  },
+  {
+    "model_id": "ibm-granite/granite-3.3-8b-instruct",
+    "model": "Granite 8B",
+    "size_b": 8,
+    "scenario": "long_context_stress",
+    "engine": "SGLang",
+    "ttft_p50": 112.11181850012508,
+    "ttft_p95": 116.94319154985351,
+    "ttft_p99": 116.99419591064725,
+    "latency_p95": 9975.866083050369,
+    "tokens_per_sec": 102.9,
+    "requests_per_sec": 0.43,
+    "success_pct": 100.0,
+    "wall_time_sec": 46.743,
+    "path": "results/granite-3.3-8b-instruct/long_context_stress_sglang_1775001738.json"
+  },
+  {
+    "model_id": "ibm-granite/granite-3.3-8b-instruct",
+    "model": "Granite 8B",
+    "size_b": 8,
+    "scenario": "prefix_sharing_benefit",
+    "engine": "SGLang",
+    "ttft_p50": 63.94493600055284,
+    "ttft_p95": 250.25588409998818,
+    "ttft_p99": 251.29305486010708,
+    "latency_p95": 5154.948132200843,
+    "tokens_per_sec": 197.9,
+    "requests_per_sec": 1.55,
+    "success_pct": 100.0,
+    "wall_time_sec": 64.665,
+    "path": "results/granite-3.3-8b-instruct/prefix_sharing_benefit_sglang_1775001797.json"
+  },
+  {
+    "model_id": "ibm-granite/granite-3.3-8b-instruct",
+    "model": "Granite 8B",
+    "size_b": 8,
+    "scenario": "structured_generation_speed",
+    "engine": "SGLang",
+    "ttft_p50": 107.9799005001405,
+    "ttft_p95": 227.2715665008036,
+    "ttft_p99": 228.98688423079875,
+    "latency_p95": 6305.048256749433,
+    "tokens_per_sec": 369.5,
+    "requests_per_sec": 2.54,
+    "success_pct": 100.0,
+    "wall_time_sec": 78.723,
+    "path": "results/granite-3.3-8b-instruct/structured_generation_speed_sglang_1775001874.json"
   },
   {
     "model_id": "meta-llama/Llama-3.1-8B-Instruct",
@@ -1245,7 +1645,7 @@
     "requests_per_sec": 0.45,
     "success_pct": 100.0,
     "wall_time_sec": 44.346,
-    "path": "results_afk/20260330_speculative/qwen3-8b/long_context_stress_sglang_1774919506.json"
+    "path": "results/qwen3-8b/long_context_stress_sglang_1774919506.json"
   },
   {
     "model_id": "Qwen/Qwen3-8B",
@@ -1261,7 +1661,7 @@
     "requests_per_sec": 1.64,
     "success_pct": 100.0,
     "wall_time_sec": 60.849,
-    "path": "results_afk/20260330_speculative/qwen3-8b/prefix_sharing_benefit_sglang_1774919673.json"
+    "path": "results/qwen3-8b/prefix_sharing_benefit_sglang_1774919673.json"
   },
   {
     "model_id": "Qwen/Qwen3-8B",
@@ -1277,11 +1677,11 @@
     "requests_per_sec": 2.67,
     "success_pct": 100.0,
     "wall_time_sec": 74.954,
-    "path": "results_afk/20260330_speculative/qwen3-8b/structured_generation_speed_sglang_1774919855.json"
+    "path": "results/qwen3-8b/structured_generation_speed_sglang_1774919855.json"
   },
   {
     "model_id": "google/gemma-2-9b-it",
-    "model": "Gemma 9B",
+    "model": "Gemma 2 9B",
     "size_b": 9,
     "scenario": "single_request_latency",
     "engine": "vLLM",
@@ -1297,7 +1697,7 @@
   },
   {
     "model_id": "google/gemma-2-9b-it",
-    "model": "Gemma 9B",
+    "model": "Gemma 2 9B",
     "size_b": 9,
     "scenario": "single_request_latency",
     "engine": "SGLang",
@@ -1313,7 +1713,7 @@
   },
   {
     "model_id": "google/gemma-2-9b-it",
-    "model": "Gemma 9B",
+    "model": "Gemma 2 9B",
     "size_b": 9,
     "scenario": "throughput_ramp",
     "engine": "vLLM",
@@ -1329,7 +1729,7 @@
   },
   {
     "model_id": "google/gemma-2-9b-it",
-    "model": "Gemma 9B",
+    "model": "Gemma 2 9B",
     "size_b": 9,
     "scenario": "throughput_ramp",
     "engine": "SGLang",
@@ -1345,7 +1745,7 @@
   },
   {
     "model_id": "google/gemma-2-9b-it",
-    "model": "Gemma 9B",
+    "model": "Gemma 2 9B",
     "size_b": 9,
     "scenario": "long_context_stress",
     "engine": "vLLM",
@@ -1361,7 +1761,7 @@
   },
   {
     "model_id": "google/gemma-2-9b-it",
-    "model": "Gemma 9B",
+    "model": "Gemma 2 9B",
     "size_b": 9,
     "scenario": "prefix_sharing_benefit",
     "engine": "vLLM",
@@ -1377,7 +1777,7 @@
   },
   {
     "model_id": "google/gemma-2-9b-it",
-    "model": "Gemma 9B",
+    "model": "Gemma 2 9B",
     "size_b": 9,
     "scenario": "structured_generation_speed",
     "engine": "vLLM",
@@ -1393,7 +1793,7 @@
   },
   {
     "model_id": "google/gemma-2-9b-it",
-    "model": "Gemma 9B",
+    "model": "Gemma 2 9B",
     "size_b": 9,
     "scenario": "long_context_stress",
     "engine": "SGLang",
@@ -1409,7 +1809,7 @@
   },
   {
     "model_id": "google/gemma-2-9b-it",
-    "model": "Gemma 9B",
+    "model": "Gemma 2 9B",
     "size_b": 9,
     "scenario": "prefix_sharing_benefit",
     "engine": "SGLang",
@@ -1425,7 +1825,7 @@
   },
   {
     "model_id": "google/gemma-2-9b-it",
-    "model": "Gemma 9B",
+    "model": "Gemma 2 9B",
     "size_b": 9,
     "scenario": "structured_generation_speed",
     "engine": "SGLang",
