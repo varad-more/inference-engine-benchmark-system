@@ -84,6 +84,9 @@ if [ -d "model-cache" ]; then echo "exists"; else mkdir -p model-cache && echo "
 echo -n "  results/ model folders: "
 ls -d ${RESULTS_DIR}/*/ 2>/dev/null | wc -l | tr -d ' '
 
+echo -n "  Pruning stale Docker networks: "
+docker network prune -f 2>&1 | tail -1
+
 log "PREFLIGHT COMPLETE"
 
 mkdir -p logs
@@ -99,6 +102,8 @@ run_engine() {
     log "  Starting ${profile} for ${model}"
     export MODEL="$model"
 
+    # Tear down ALL compose services + networks (no profile = clears all stale state)
+    docker compose down --remove-orphans 2>/dev/null
     docker compose --profile "$profile" up -d "$profile"
     if [ $? -ne 0 ]; then
         error "${profile} docker up failed for ${model}"
