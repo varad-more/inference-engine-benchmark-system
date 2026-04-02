@@ -1,0 +1,73 @@
+{
+  "started_at": 1774917224.711715,
+  "finished_at": 1774920050.7158668,
+  "model": "Qwen/Qwen3-8B",
+  "tasks": [
+    {
+      "model": "Qwen/Qwen3-8B",
+      "scenario_name": "single_request_latency",
+      "engine": "sglang",
+      "engine_variant": "sglang",
+      "spec_method": null,
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1774917225.7609134,
+      "status": "completed",
+      "finished_at": 1774917445.286204,
+      "result_path": "/home/ubuntu/repos/inference-engine-benchmark-system-speculative/results_afk/20260330_speculative/qwen3-8b/single_request_latency_sglang_1774917225.json"
+    },
+    {
+      "model": "Qwen/Qwen3-8B",
+      "scenario_name": "throughput_ramp",
+      "engine": "sglang",
+      "engine_variant": "sglang",
+      "spec_method": null,
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1774917566.413006,
+      "status": "completed",
+      "finished_at": 1774919384.874627,
+      "result_path": "/home/ubuntu/repos/inference-engine-benchmark-system-speculative/results_afk/20260330_speculative/qwen3-8b/throughput_ramp_sglang_1774917566.json"
+    },
+    {
+      "model": "Qwen/Qwen3-8B",
+      "scenario_name": "long_context_stress",
+      "engine": "sglang",
+      "engine_variant": "sglang",
+      "spec_method": null,
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1774919506.003093,
+      "status": "completed",
+      "finished_at": 1774919552.3541825,
+      "result_path": "/home/ubuntu/repos/inference-engine-benchmark-system-speculative/results_afk/20260330_speculative/qwen3-8b/long_context_stress_sglang_1774919506.json"
+    },
+    {
+      "model": "Qwen/Qwen3-8B",
+      "scenario_name": "prefix_sharing_benefit",
+      "engine": "sglang",
+      "engine_variant": "sglang",
+      "spec_method": null,
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1774919673.4562001,
+      "status": "completed",
+      "finished_at": 1774919734.397538,
+      "result_path": "/home/ubuntu/repos/inference-engine-benchmark-system-speculative/results_afk/20260330_speculative/qwen3-8b/prefix_sharing_benefit_sglang_1774919673.json"
+    },
+    {
+      "model": "Qwen/Qwen3-8B",
+      "scenario_name": "structured_generation_speed",
+      "engine": "sglang",
+      "engine_variant": "sglang",
+      "spec_method": null,
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1774919855.4859262,
+      "status": "completed",
+      "finished_at": 1774919930.711249,
+      "result_path": "/home/ubuntu/repos/inference-engine-benchmark-system-speculative/results_afk/20260330_speculative/qwen3-8b/structured_generation_speed_sglang_1774919855.json"
+    }
+  ],
+  "cooldown_seconds": 120
+}

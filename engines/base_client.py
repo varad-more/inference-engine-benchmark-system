@@ -15,7 +15,7 @@ import structlog
 
 logger = structlog.get_logger(__name__)
 
-DEFAULT_MODEL = "Qwen/Qwen2.5-1.5B-Instruct"
+DEFAULT_MODEL = "Qwen/Qwen3-8B"
 
 T = TypeVar("T")
 

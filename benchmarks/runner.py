@@ -93,8 +93,20 @@ class ScenarioResults:
 
     def save(self, results_dir: Path = RESULTS_DIR) -> Path:
         ts = int(self.timestamp)
-        fname = f"{self.scenario_name}_{self.engine_name}_{ts}.json"
-        path = results_dir / fname
+        variant = self.run_metadata.get("engine_variant", self.engine_name)
+        fname = f"{self.scenario_name}_{variant}_{ts}.json"
+
+        # Organise results into model-specific subfolders
+        model_id = self.run_metadata.get("model", "")
+        if model_id:
+            # "meta-llama/Llama-3.1-8B-Instruct" -> "llama-3-1-8b-instruct" (dots replaced with hyphens)
+            model_slug = model_id.split("/")[-1].lower().replace(".", "-")
+            model_dir = results_dir / model_slug
+        else:
+            model_dir = results_dir
+
+        model_dir.mkdir(parents=True, exist_ok=True)
+        path = model_dir / fname
         path.write_text(json.dumps(self.to_dict(), indent=2))
         logger.info("saved results", path=str(path))
         return path
@@ -148,6 +160,7 @@ class BenchmarkRunner:
         run_metadata: dict[str, Any] | None = None,
     ) -> ScenarioResults:
         """Dispatch to the appropriate scenario handler."""
+        print()  # visual separator between scenarios
         self._log.info(
             "starting scenario",
             scenario=scenario.name,
@@ -203,6 +216,8 @@ class BenchmarkRunner:
         max_output_tokens: int,
         temperature: float,
         progress_cb: ProgressCallback | None,
+        progress_offset: int = 0,
+        progress_total: int | None = None,
     ) -> tuple[list[RequestResult], list[dict[str, Any]]]:
         """Shared fan-out/gather logic used by most scenario handlers."""
         semaphore = asyncio.Semaphore(concurrency)
@@ -211,6 +226,8 @@ class BenchmarkRunner:
 
         stop_event = asyncio.Event()
         poll_task = asyncio.create_task(self._poll_metrics(client, engine_timeline, stop_event))
+
+        cb_total = progress_total if progress_total is not None else num_requests
 
         async def _req(idx: int) -> RequestResult:
             async with semaphore:
@@ -230,7 +247,7 @@ class BenchmarkRunner:
             r = await coro
             results.append(r)
             if progress_cb:
-                progress_cb(i + 1, num_requests, r)
+                progress_cb(progress_offset + i + 1, cb_total, r)
 
         stop_event.set()
         await poll_task
@@ -290,6 +307,8 @@ class BenchmarkRunner:
                 scenario.max_output_tokens,
                 scenario.temperature,
                 progress_cb,
+                progress_offset=global_idx,
+                progress_total=total_requests,
             )
             engine_timeline.extend(level_timeline)
             global_idx += scenario.requests_per_level

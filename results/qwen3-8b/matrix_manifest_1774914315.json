@@ -1,0 +1,73 @@
+{
+  "started_at": 1774914315.9064772,
+  "finished_at": 1774917140.9362726,
+  "model": "Qwen/Qwen3-8B",
+  "tasks": [
+    {
+      "model": "Qwen/Qwen3-8B",
+      "scenario_name": "single_request_latency",
+      "engine": "vllm",
+      "engine_variant": "vllm",
+      "spec_method": null,
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1774914315.954566,
+      "status": "completed",
+      "finished_at": 1774914535.0763113,
+      "result_path": "/home/ubuntu/repos/inference-engine-benchmark-system-speculative/results_afk/20260330_speculative/qwen3-8b/single_request_latency_vllm_1774914315.json"
+    },
+    {
+      "model": "Qwen/Qwen3-8B",
+      "scenario_name": "throughput_ramp",
+      "engine": "vllm",
+      "engine_variant": "vllm",
+      "spec_method": null,
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1774914655.1156373,
+      "status": "completed",
+      "finished_at": 1774916477.5625296,
+      "result_path": "/home/ubuntu/repos/inference-engine-benchmark-system-speculative/results_afk/20260330_speculative/qwen3-8b/throughput_ramp_vllm_1774914655.json"
+    },
+    {
+      "model": "Qwen/Qwen3-8B",
+      "scenario_name": "long_context_stress",
+      "engine": "vllm",
+      "engine_variant": "vllm",
+      "spec_method": null,
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1774916597.6444252,
+      "status": "completed",
+      "finished_at": 1774916644.1599467,
+      "result_path": "/home/ubuntu/repos/inference-engine-benchmark-system-speculative/results_afk/20260330_speculative/qwen3-8b/long_context_stress_vllm_1774916597.json"
+    },
+    {
+      "model": "Qwen/Qwen3-8B",
+      "scenario_name": "prefix_sharing_benefit",
+      "engine": "vllm",
+      "engine_variant": "vllm",
+      "spec_method": null,
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1774916764.1970935,
+      "status": "completed",
+      "finished_at": 1774916825.7458756,
+      "result_path": "/home/ubuntu/repos/inference-engine-benchmark-system-speculative/results_afk/20260330_speculative/qwen3-8b/prefix_sharing_benefit_vllm_1774916764.json"
+    },
+    {
+      "model": "Qwen/Qwen3-8B",
+      "scenario_name": "structured_generation_speed",
+      "engine": "vllm",
+      "engine_variant": "vllm",
+      "spec_method": null,
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1774916945.7787797,
+      "status": "completed",
+      "finished_at": 1774917020.8679926,
+      "result_path": "/home/ubuntu/repos/inference-engine-benchmark-system-speculative/results_afk/20260330_speculative/qwen3-8b/structured_generation_speed_vllm_1774916945.json"
+    }
+  ],
+  "cooldown_seconds": 120
+}

@@ -9,6 +9,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 # Copy project files
 COPY pyproject.toml ./
+COPY README.md ./
 COPY run_experiment.py ./
 COPY engines/ ./engines/
 COPY benchmarks/ ./benchmarks/
@@ -18,6 +19,8 @@ COPY analysis/ ./analysis/
 COPY prompts/ ./prompts/
 
 # Install from pyproject.toml (no sglang extra, no GPU needed for dashboard)
+# README.md is copied above because hatchling validates the declared readme during
+# package metadata generation.
 RUN pip install --no-cache-dir .
 
 EXPOSE 3000

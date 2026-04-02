@@ -8,6 +8,7 @@ import logging
 import os
 import sys
 from pathlib import Path
+from typing import Any
 
 import structlog
 import typer
@@ -62,6 +63,10 @@ def _configure_logging() -> None:
     root_logger.addHandler(handler)
     root_logger.setLevel(getattr(logging, log_level, logging.INFO))
 
+    # Silence noisy HTTP/connection loggers
+    for noisy in ("httpx", "httpcore", "urllib3", "aiohttp", "hpack"):
+        logging.getLogger(noisy).setLevel(logging.WARNING)
+
 
 _configure_logging()
 
@@ -104,9 +109,30 @@ def main(
 RESULTS_DIR = Path("results")
 RESULTS_DIR.mkdir(exist_ok=True)
 
-_ENGINE_ORDER = ["vllm", "sglang"]
-_ENGINE_LABELS = {"vllm": "vLLM", "sglang": "SGLang"}
-_ENGINE_PORTS = {"vllm": 8000, "sglang": 8001}
+# ---------------------------------------------------------------------------
+# Engine variant registry
+# ---------------------------------------------------------------------------
+# Each key is a CLI-addressable engine variant.  Speculative-decoding variants
+# share the same port as their baseline (only one runs at a time on one GPU).
+_ENGINE_VARIANTS: dict[str, dict] = {
+    "vllm": {"label": "vLLM", "port": 8000, "base": "vllm", "spec_method": None},
+    "vllm-eagle3": {"label": "vLLM+Eagle3", "port": 8000, "base": "vllm", "spec_method": "eagle3"},
+    "vllm-ngram": {"label": "vLLM+Ngram", "port": 8000, "base": "vllm", "spec_method": "ngram"},
+    "sglang": {"label": "SGLang", "port": 8001, "base": "sglang", "spec_method": None},
+    "sglang-eagle3": {
+        "label": "SGLang+Eagle3",
+        "port": 8001,
+        "base": "sglang",
+        "spec_method": "eagle3",
+    },
+    "sglang-ngram": {
+        "label": "SGLang+Ngram",
+        "port": 8001,
+        "base": "sglang",
+        "spec_method": "ngram",
+    },
+}
+_BASELINE_ENGINES = ["vllm", "sglang"]
 
 
 def _parse_csv(value: str) -> list[str]:
@@ -121,12 +147,18 @@ def _parse_engines(value: str, *, allow_group_aliases: bool = False) -> list[str
     normalized: list[str] = []
     for item in items:
         if allow_group_aliases and item in {"all", "both"}:
-            normalized.extend(_ENGINE_ORDER)
-        elif item in _ENGINE_ORDER:
+            normalized.extend(_BASELINE_ENGINES)
+        elif allow_group_aliases and item == "all-spec":
+            normalized.extend(_ENGINE_VARIANTS.keys())
+        elif item in _ENGINE_VARIANTS:
             normalized.append(item)
         else:
-            valid = ", ".join([*_ENGINE_ORDER, "both"] if allow_group_aliases else _ENGINE_ORDER)
-            raise typer.BadParameter(f"Unknown engine '{item}'. Valid options: {valid}.")
+            valid_opts = list(_ENGINE_VARIANTS.keys())
+            if allow_group_aliases:
+                valid_opts.extend(["both", "all-spec"])
+            raise typer.BadParameter(
+                f"Unknown engine '{item}'. Valid options: {', '.join(valid_opts)}."
+            )
 
     deduped: list[str] = []
     for engine in normalized:
@@ -139,14 +171,33 @@ def _make_client(engine: str, model: str, host_override: str | None = None):
     from engines.sglang_client import SGLangClient
     from engines.vllm_client import VLLMClient
 
-    host = host_override or "localhost"
-    if engine == "vllm":
-        return VLLMClient(host=host, port=8000, model=model)
-    if engine == "sglang":
-        return SGLangClient(host=host, port=8001, model=model)
+    info = _ENGINE_VARIANTS.get(engine)
+    if info is None:
+        console.print(f"[red]Unknown engine variant: {engine}[/red]")
+        raise typer.Exit(1)
 
-    console.print(f"[red]Unknown engine: {engine}[/red]")
-    raise typer.Exit(1)
+    host = host_override or "localhost"
+    port = info["port"]
+    base = info["base"]
+    if base == "vllm":
+        return VLLMClient(host=host, port=port, model=model)
+    return SGLangClient(host=host, port=port, model=model)
+
+
+def _variant_metadata(engine_name: str) -> dict[str, str | None]:
+    """Return run_metadata fields for an engine variant."""
+    info = _ENGINE_VARIANTS[engine_name]
+    return {
+        "engine": info["base"],
+        "engine_variant": engine_name,
+        "spec_method": info["spec_method"],
+    }
+
+
+def _resolve_host(engine_name: str, vllm_host: str, sglang_host: str) -> str:
+    """Pick the right host based on the variant's base engine."""
+    base = _ENGINE_VARIANTS[engine_name]["base"]
+    return vllm_host if base == "vllm" else sglang_host
 
 
 def _get_scenario(scenario_name: str):
@@ -195,7 +246,7 @@ def run(
 
         try:
             for engine_name in engine_list:
-                host = vllm_host if engine_name == "vllm" else sglang_host
+                host = _resolve_host(engine_name, vllm_host, sglang_host)
                 client = _make_client(engine_name, model, host)
                 active_client = client
 
@@ -236,7 +287,7 @@ def run(
                         _cb,
                         run_metadata={
                             "model": model,
-                            "engine": engine_name,
+                            **_variant_metadata(engine_name),
                             "prompt_pack": bench_scenario.prompt_pack,
                         },
                     )
@@ -259,16 +310,25 @@ def run(
 @app.command()
 def compare(
     scenario: str = typer.Option(..., "--scenario", "-s"),
+    engines: str = typer.Option(
+        "vllm,sglang",
+        "--engines",
+        "-e",
+        help="Two comma-separated engine variants to compare (e.g. vllm,vllm-eagle3)",
+    ),
     model: str = typer.Option(DEFAULT_MODEL, "--model", "-m"),
     prompt_pack: str | None = typer.Option(None, "--prompt-pack"),
     vllm_host: str = typer.Option("localhost", "--vllm-host"),
     sglang_host: str = typer.Option("localhost", "--sglang-host"),
     output_dir: Path | None = typer.Option(None, "--output-dir"),
 ) -> None:
-    """Run the same scenario on both engines and print a comparison table."""
+    """Run the same scenario on two engine variants and print a comparison table."""
     from benchmarks.runner import run_comparison
-    from engines.sglang_client import SGLangClient
-    from engines.vllm_client import VLLMClient
+
+    engine_list = _parse_engines(engines)
+    if len(engine_list) != 2:
+        console.print("[red]Error: compare requires exactly 2 engines.[/red]")
+        raise typer.Exit(1)
 
     results_dir = output_dir or RESULTS_DIR
     results_dir.mkdir(exist_ok=True)
@@ -276,25 +336,36 @@ def compare(
     if prompt_pack:
         bench_scenario.prompt_pack = prompt_pack
 
-    vllm_client = VLLMClient(host=vllm_host, port=8000, model=model)
-    sglang_client = SGLangClient(host=sglang_host, port=8001, model=model)
+    engine_a, engine_b = engine_list
+    host_a = _resolve_host(engine_a, vllm_host, sglang_host)
+    host_b = _resolve_host(engine_b, vllm_host, sglang_host)
+    client_a = _make_client(engine_a, model, host_a)
+    client_b = _make_client(engine_b, model, host_b)
+    label_a = _ENGINE_VARIANTS[engine_a]["label"]
+    label_b = _ENGINE_VARIANTS[engine_b]["label"]
 
     console.rule(f"[bold blue]Comparison: {scenario}")
+    console.print(f"  Engines     : [cyan]{label_a} vs {label_b}[/cyan]")
     console.print(f"  Model       : [cyan]{model}[/cyan]")
     console.print(f"  Prompt pack : [cyan]{bench_scenario.prompt_pack}[/cyan]")
 
     async def _run() -> None:
         comparison = await run_comparison(
             scenario=bench_scenario,
-            vllm_client=vllm_client,
-            sglang_client=sglang_client,
+            vllm_client=client_a,
+            sglang_client=client_b,
             results_dir=results_dir,
-            run_metadata={"model": model, "prompt_pack": bench_scenario.prompt_pack},
+            run_metadata={
+                "model": model,
+                "prompt_pack": bench_scenario.prompt_pack,
+                "engine_a": engine_a,
+                "engine_b": engine_b,
+            },
         )
-        await vllm_client.aclose()
-        await sglang_client.aclose()
+        await client_a.aclose()
+        await client_b.aclose()
 
-        _print_comparison_table(comparison)
+        _print_comparison_table(comparison, label_a=label_a, label_b=label_b)
         path = comparison.save(results_dir)
         console.print(f"\n[green]Comparison saved → {path}[/green]")
 
@@ -340,21 +411,76 @@ def matrix(
     console.print(f"  Iterations     : [cyan]{iterations}[/cyan]")
     console.print(f"  Cooldown (sec) : [cyan]{cooldown_seconds}[/cyan]")
 
+    def _gpu_vram_info() -> str:
+        """Return a short GPU VRAM usage string, or empty if nvidia-smi is unavailable."""
+        import shutil
+        import subprocess
+
+        if not shutil.which("nvidia-smi"):
+            return ""
+        try:
+            out = subprocess.check_output(
+                [
+                    "nvidia-smi",
+                    "--query-gpu=memory.used,memory.total",
+                    "--format=csv,noheader,nounits",
+                ],
+                text=True,
+                timeout=5,
+            ).strip()
+            used, total = (int(x.strip()) for x in out.split(","))
+            pct = used / total * 100 if total else 0
+            return f"  GPU VRAM  : [magenta]{used} MiB / {total} MiB ({pct:.0f}%)[/magenta]"
+        except Exception:
+            return ""
+
+    def _fmt_duration(seconds: float) -> str:
+        """Format seconds into a human-readable string like '1h 23m 45s'."""
+        h, rem = divmod(int(seconds), 3600)
+        m, s = divmod(rem, 60)
+        if h > 0:
+            return f"{h}h {m:02d}m {s:02d}s"
+        if m > 0:
+            return f"{m}m {s:02d}s"
+        return f"{s}s"
+
     async def _run() -> None:
         runner = BenchmarkRunner(results_dir=results_dir)
         started_at = time.time()
         tasks_log: list[dict] = []
+        step_durations: list[float] = []
+        total_steps = len(scenario_list) * iterations * len(engine_list)
+        current_step = 0
 
         for bench_scenario in scenario_list:
             for iteration in range(1, iterations + 1):
                 for engine_name in engine_list:
-                    host = vllm_host if engine_name == "vllm" else sglang_host
+                    current_step += 1
+                    console.rule(f"[bold yellow]Step {current_step}/{total_steps}[/bold yellow]")
+                    # ETA based on average step duration so far
+                    eta_str = ""
+                    if step_durations:
+                        avg = sum(step_durations) / len(step_durations)
+                        eta_secs = avg * (total_steps - current_step + 1)
+                        eta_str = f"  ETA       : [yellow]~{_fmt_duration(eta_secs)}[/yellow]"
+                    vram_str = _gpu_vram_info()
+                    console.print(
+                        f"  Scenario  : [cyan]{bench_scenario.name}[/cyan]\n"
+                        f"  Engine    : [cyan]{engine_name}[/cyan]\n"
+                        f"  Iteration : [cyan]{iteration}/{iterations}[/cyan]\n"
+                        f"  Model     : [cyan]{model}[/cyan]"
+                    )
+                    if vram_str:
+                        console.print(vram_str)
+                    if eta_str:
+                        console.print(eta_str)
+                    host = _resolve_host(engine_name, vllm_host, sglang_host)
                     client = _make_client(engine_name, model, host)
                     healthy = await client.health_check()
                     task_info: dict = {
                         "model": model,
                         "scenario_name": bench_scenario.name,
-                        "engine": engine_name,
+                        **_variant_metadata(engine_name),
                         "iteration": iteration,
                         "healthy_before_run": healthy,
                         "started_at": time.time(),
@@ -363,17 +489,45 @@ def matrix(
                         task_info["status"] = "skipped_unhealthy"
                         tasks_log.append(task_info)
                         await client.aclose()
+                        elapsed = time.time() - started_at
+                        console.print(
+                            f"  [red]✗ SKIPPED[/red] (engine unhealthy)"
+                            f"  — elapsed {_fmt_duration(elapsed)}"
+                        )
                         continue
 
-                    results = await runner.run_scenario(
-                        bench_scenario,
-                        client,
-                        run_metadata={
-                            "model": model,
-                            "iteration": iteration,
-                            "matrix_execution": True,
-                        },
-                    )
+                    total_reqs = getattr(bench_scenario, "num_requests", None)
+                    if total_reqs is None:
+                        total_reqs = getattr(bench_scenario, "requests_per_level", 100) * len(
+                            getattr(bench_scenario, "concurrency_levels", [1])
+                        )
+
+                    with Progress(
+                        SpinnerColumn(),
+                        TextColumn(
+                            f"[bold]{engine_name}[/bold] {bench_scenario.name} {{task.description}}"
+                        ),
+                        BarColumn(),
+                        TextColumn("{task.completed}/{task.total}"),
+                        TimeElapsedColumn(),
+                        console=console,
+                    ) as prog:
+                        prog_task = prog.add_task("", total=total_reqs)
+
+                        def _progress_cb(done: int, total: int, result: Any) -> None:
+                            prog.update(prog_task, completed=done)
+
+                        results = await runner.run_scenario(
+                            bench_scenario,
+                            client,
+                            progress_cb=_progress_cb,
+                            run_metadata={
+                                "model": model,
+                                **_variant_metadata(engine_name),
+                                "iteration": iteration,
+                                "matrix_execution": True,
+                            },
+                        )
                     result_path = results.save(results_dir)
                     task_info.update(
                         {
@@ -384,17 +538,62 @@ def matrix(
                     )
                     tasks_log.append(task_info)
                     await client.aclose()
+                    elapsed = time.time() - started_at
+                    step_duration = task_info["finished_at"] - task_info["started_at"]
+                    step_durations.append(step_duration)
+                    completed = sum(1 for t in tasks_log if t["status"] == "completed")
+                    skipped = sum(1 for t in tasks_log if t.get("status") == "skipped_unhealthy")
+                    console.print(
+                        f"  [green]✓ DONE[/green] in {_fmt_duration(step_duration)}"
+                        f"  — saved to {result_path.name}\n"
+                        f"  Progress: {completed} completed, {skipped} skipped,"
+                        f" {total_steps - current_step} remaining"
+                        f"  — total elapsed {_fmt_duration(elapsed)}"
+                    )
                     if cooldown_seconds > 0:
                         await asyncio.sleep(cooldown_seconds)
+
+        # ── End-of-matrix summary table ──
+        total_elapsed = time.time() - started_at
+        console.rule("[bold green]Matrix complete")
+        console.print(f"  Total time: [bold]{_fmt_duration(total_elapsed)}[/bold]\n")
+
+        summary_table = Table(title="Matrix Results Summary")
+        summary_table.add_column("Scenario", style="cyan")
+        summary_table.add_column("Engine", style="cyan")
+        summary_table.add_column("Iter", justify="center")
+        summary_table.add_column("Status", justify="center")
+        summary_table.add_column("Duration", justify="right")
+        summary_table.add_column("Output File", style="dim")
+        for t in tasks_log:
+            status = t.get("status", "unknown")
+            style = "green" if status == "completed" else "red"
+            dur = ""
+            if "finished_at" in t and "started_at" in t:
+                dur = _fmt_duration(t["finished_at"] - t["started_at"])
+            out_file = Path(t.get("result_path", "")).name if t.get("result_path") else "—"
+            summary_table.add_row(
+                t["scenario_name"],
+                t.get("engine", t.get("engine_label", "?")),
+                str(t.get("iteration", "")),
+                f"[{style}]{status}[/{style}]",
+                dur,
+                out_file,
+            )
+        console.print(summary_table)
 
         manifest = {
             "started_at": started_at,
             "finished_at": time.time(),
+            "total_elapsed_seconds": total_elapsed,
             "model": model,
             "tasks": tasks_log,
             "cooldown_seconds": cooldown_seconds,
         }
-        manifest_path = results_dir / f"matrix_manifest_{int(started_at)}.json"
+        model_slug = model.split("/")[-1].lower().replace(".", "-")
+        model_dir = results_dir / model_slug
+        model_dir.mkdir(parents=True, exist_ok=True)
+        manifest_path = model_dir / f"matrix_manifest_{int(started_at)}.json"
         manifest_path.write_text(json.dumps(manifest, indent=2))
         console.print(f"[green]✓[/green] Matrix manifest saved to {manifest_path}")
 
@@ -513,13 +712,13 @@ def health(
 ) -> None:
     """Check health of one or more inference engines."""
     engine_list = _parse_engines(engines, allow_group_aliases=True)
-    host_map = {"vllm": vllm_host, "sglang": sglang_host}
 
     async def _check() -> None:
         statuses: dict[str, bool] = {}
 
         for engine_name in engine_list:
-            client = _make_client(engine_name, model, host_map[engine_name])
+            host = _resolve_host(engine_name, vllm_host, sglang_host)
+            client = _make_client(engine_name, model, host)
             try:
                 statuses[engine_name] = await client.health_check()
             finally:
@@ -527,11 +726,14 @@ def health(
 
         table = Table(title="Engine Health")
         table.add_column("Engine")
+        table.add_column("Variant")
         table.add_column("Status")
         table.add_column("URL")
-        for engine_name in _ENGINE_ORDER:
-            host = host_map[engine_name]
-            url = f"http://{host}:{_ENGINE_PORTS[engine_name]}"
+        for engine_name in engine_list:
+            info = _ENGINE_VARIANTS[engine_name]
+            host = _resolve_host(engine_name, vllm_host, sglang_host)
+            url = f"http://{host}:{info['port']}"
+            spec = info["spec_method"] or "baseline"
             if engine_name in statuses:
                 status = (
                     "[green]✓ healthy[/green]"
@@ -540,7 +742,7 @@ def health(
                 )
             else:
                 status = "[dim]- skipped[/dim]"
-            table.add_row(_ENGINE_LABELS[engine_name], status, url)
+            table.add_row(info["label"], spec, status, url)
         console.print(table)
 
     asyncio.run(_check())
@@ -566,15 +768,15 @@ def _print_summary_table(engine_name: str, results) -> None:
     console.print(table)
 
 
-def _print_comparison_table(comparison) -> None:
+def _print_comparison_table(comparison, label_a: str = "vLLM", label_b: str = "SGLang") -> None:
     vr = comparison.vllm_results.metrics
     sr = comparison.sglang_results.metrics
 
     table = Table(title=f"Comparison — {comparison.scenario_name}", show_lines=True)
     table.add_column("Metric", style="cyan")
-    table.add_column("vLLM", justify="right")
-    table.add_column("SGLang", justify="right")
-    table.add_column("Δ (vllm−sglang)", justify="right")
+    table.add_column(label_a, justify="right")
+    table.add_column(label_b, justify="right")
+    table.add_column(f"Δ ({label_a}−{label_b})", justify="right")
 
     def _row(label: str, va: float, vb: float, unit: str = "", lower_better: bool = True) -> None:
         diff = va - vb

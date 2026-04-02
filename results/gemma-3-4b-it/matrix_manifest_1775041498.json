@@ -1,0 +1,74 @@
+{
+  "started_at": 1775041498.6223865,
+  "finished_at": 1775042997.3578007,
+  "total_elapsed_seconds": 1498.7275307178497,
+  "model": "google/gemma-3-4b-it",
+  "tasks": [
+    {
+      "model": "google/gemma-3-4b-it",
+      "scenario_name": "single_request_latency",
+      "engine": "sglang",
+      "engine_variant": "sglang",
+      "spec_method": null,
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1775041499.6747515,
+      "status": "completed",
+      "finished_at": 1775041625.3161607,
+      "result_path": "results/gemma-3-4b-it/single_request_latency_sglang_1775041499.json"
+    },
+    {
+      "model": "google/gemma-3-4b-it",
+      "scenario_name": "throughput_ramp",
+      "engine": "sglang",
+      "engine_variant": "sglang",
+      "spec_method": null,
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1775041636.3588598,
+      "status": "completed",
+      "finished_at": 1775042837.9864748,
+      "result_path": "results/gemma-3-4b-it/throughput_ramp_sglang_1775041636.json"
+    },
+    {
+      "model": "google/gemma-3-4b-it",
+      "scenario_name": "long_context_stress",
+      "engine": "sglang",
+      "engine_variant": "sglang",
+      "spec_method": null,
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1775042849.0198362,
+      "status": "completed",
+      "finished_at": 1775042878.201938,
+      "result_path": "results/gemma-3-4b-it/long_context_stress_sglang_1775042849.json"
+    },
+    {
+      "model": "google/gemma-3-4b-it",
+      "scenario_name": "prefix_sharing_benefit",
+      "engine": "sglang",
+      "engine_variant": "sglang",
+      "spec_method": null,
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1775042889.2427595,
+      "status": "completed",
+      "finished_at": 1775042929.0604644,
+      "result_path": "results/gemma-3-4b-it/prefix_sharing_benefit_sglang_1775042889.json"
+    },
+    {
+      "model": "google/gemma-3-4b-it",
+      "scenario_name": "structured_generation_speed",
+      "engine": "sglang",
+      "engine_variant": "sglang",
+      "spec_method": null,
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1775042940.0955548,
+      "status": "completed",
+      "finished_at": 1775042987.3489368,
+      "result_path": "results/gemma-3-4b-it/structured_generation_speed_sglang_1775042940.json"
+    }
+  ],
+  "cooldown_seconds": 10
+}

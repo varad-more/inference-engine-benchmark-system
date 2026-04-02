@@ -1,0 +1,35 @@
+{
+  "started_at": 1775015806.5314262,
+  "finished_at": 1775016137.4247854,
+  "total_elapsed_seconds": 330.8902053833008,
+  "model": "Qwen/Qwen3-8B",
+  "tasks": [
+    {
+      "model": "Qwen/Qwen3-8B",
+      "scenario_name": "single_request_latency",
+      "engine": "sglang",
+      "engine_variant": "sglang-ngram",
+      "spec_method": "ngram",
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1775015807.5832336,
+      "status": "completed",
+      "finished_at": 1775015845.3211005,
+      "result_path": "results/qwen3-8b/single_request_latency_sglang-ngram_1775015807.json"
+    },
+    {
+      "model": "Qwen/Qwen3-8B",
+      "scenario_name": "throughput_ramp",
+      "engine": "sglang",
+      "engine_variant": "sglang-ngram",
+      "spec_method": "ngram",
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1775015856.3651698,
+      "status": "completed",
+      "finished_at": 1775016127.4180248,
+      "result_path": "results/qwen3-8b/throughput_ramp_sglang-ngram_1775015856.json"
+    }
+  ],
+  "cooldown_seconds": 10
+}

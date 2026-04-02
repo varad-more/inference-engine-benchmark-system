@@ -1,0 +1,35 @@
+{
+  "started_at": 1775021146.1035817,
+  "finished_at": 1775021439.3080387,
+  "total_elapsed_seconds": 293.20135498046875,
+  "model": "meta-llama/Llama-3.1-8B-Instruct",
+  "tasks": [
+    {
+      "model": "meta-llama/Llama-3.1-8B-Instruct",
+      "scenario_name": "single_request_latency",
+      "engine": "sglang",
+      "engine_variant": "sglang-ngram",
+      "spec_method": "ngram",
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1775021147.1568844,
+      "status": "completed",
+      "finished_at": 1775021186.075023,
+      "result_path": "results/llama-3.1-8b-instruct/single_request_latency_sglang-ngram_1775021147.json"
+    },
+    {
+      "model": "meta-llama/Llama-3.1-8B-Instruct",
+      "scenario_name": "throughput_ramp",
+      "engine": "sglang",
+      "engine_variant": "sglang-ngram",
+      "spec_method": "ngram",
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1775021197.119619,
+      "status": "completed",
+      "finished_at": 1775021429.2936459,
+      "result_path": "results/llama-3.1-8b-instruct/throughput_ramp_sglang-ngram_1775021197.json"
+    }
+  ],
+  "cooldown_seconds": 10
+}
