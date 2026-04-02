@@ -8,6 +8,7 @@ import logging
 import os
 import sys
 from pathlib import Path
+from typing import Any
 
 import structlog
 import typer
@@ -114,12 +115,22 @@ RESULTS_DIR.mkdir(exist_ok=True)
 # Each key is a CLI-addressable engine variant.  Speculative-decoding variants
 # share the same port as their baseline (only one runs at a time on one GPU).
 _ENGINE_VARIANTS: dict[str, dict] = {
-    "vllm":          {"label": "vLLM",          "port": 8000, "base": "vllm",  "spec_method": None},
-    "vllm-eagle3":   {"label": "vLLM+Eagle3",   "port": 8000, "base": "vllm",  "spec_method": "eagle3"},
-    "vllm-ngram":    {"label": "vLLM+Ngram",    "port": 8000, "base": "vllm",  "spec_method": "ngram"},
-    "sglang":        {"label": "SGLang",         "port": 8001, "base": "sglang","spec_method": None},
-    "sglang-eagle3": {"label": "SGLang+Eagle3",  "port": 8001, "base": "sglang","spec_method": "eagle3"},
-    "sglang-ngram":  {"label": "SGLang+Ngram",   "port": 8001, "base": "sglang","spec_method": "ngram"},
+    "vllm": {"label": "vLLM", "port": 8000, "base": "vllm", "spec_method": None},
+    "vllm-eagle3": {"label": "vLLM+Eagle3", "port": 8000, "base": "vllm", "spec_method": "eagle3"},
+    "vllm-ngram": {"label": "vLLM+Ngram", "port": 8000, "base": "vllm", "spec_method": "ngram"},
+    "sglang": {"label": "SGLang", "port": 8001, "base": "sglang", "spec_method": None},
+    "sglang-eagle3": {
+        "label": "SGLang+Eagle3",
+        "port": 8001,
+        "base": "sglang",
+        "spec_method": "eagle3",
+    },
+    "sglang-ngram": {
+        "label": "SGLang+Ngram",
+        "port": 8001,
+        "base": "sglang",
+        "spec_method": "ngram",
+    },
 }
 _BASELINE_ENGINES = ["vllm", "sglang"]
 
@@ -409,7 +420,11 @@ def matrix(
             return ""
         try:
             out = subprocess.check_output(
-                ["nvidia-smi", "--query-gpu=memory.used,memory.total", "--format=csv,noheader,nounits"],
+                [
+                    "nvidia-smi",
+                    "--query-gpu=memory.used,memory.total",
+                    "--format=csv,noheader,nounits",
+                ],
                 text=True,
                 timeout=5,
             ).strip()
@@ -441,9 +456,7 @@ def matrix(
             for iteration in range(1, iterations + 1):
                 for engine_name in engine_list:
                     current_step += 1
-                    console.rule(
-                        f"[bold yellow]Step {current_step}/{total_steps}[/bold yellow]"
-                    )
+                    console.rule(f"[bold yellow]Step {current_step}/{total_steps}[/bold yellow]")
                     # ETA based on average step duration so far
                     eta_str = ""
                     if step_durations:
@@ -492,8 +505,7 @@ def matrix(
                     with Progress(
                         SpinnerColumn(),
                         TextColumn(
-                            f"[bold]{engine_name}[/bold] {bench_scenario.name}"
-                            " {task.description}"
+                            f"[bold]{engine_name}[/bold] {bench_scenario.name} {{task.description}}"
                         ),
                         BarColumn(),
                         TextColumn("{task.completed}/{task.total}"),
@@ -502,9 +514,7 @@ def matrix(
                     ) as prog:
                         prog_task = prog.add_task("", total=total_reqs)
 
-                        def _progress_cb(
-                            done: int, total: int, result: Any
-                        ) -> None:
+                        def _progress_cb(done: int, total: int, result: Any) -> None:
                             prog.update(prog_task, completed=done)
 
                         results = await runner.run_scenario(
@@ -532,9 +542,7 @@ def matrix(
                     step_duration = task_info["finished_at"] - task_info["started_at"]
                     step_durations.append(step_duration)
                     completed = sum(1 for t in tasks_log if t["status"] == "completed")
-                    skipped = sum(
-                        1 for t in tasks_log if t.get("status") == "skipped_unhealthy"
-                    )
+                    skipped = sum(1 for t in tasks_log if t.get("status") == "skipped_unhealthy")
                     console.print(
                         f"  [green]✓ DONE[/green] in {_fmt_duration(step_duration)}"
                         f"  — saved to {result_path.name}\n"
