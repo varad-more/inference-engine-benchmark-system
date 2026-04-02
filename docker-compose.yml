@@ -117,7 +117,7 @@ services:
   # Requires: EAGLE3_VLLM_DRAFT env var pointing to a compatible Eagle3 draft model.
   # Default draft: RedHatAI/Llama-3.1-8B-Instruct-speculator.eagle3 (Llama 3.1 8B only)
   # NOTE: No Eagle3 draft exists yet for Qwen3-8B — only run with Llama 3.1 8B.
-  # gpu-memory-utilization reduced to 0.75 to leave room for both model weights on A10G.
+  # gpu-memory-utilization set to 0.90 — main+draft models use ~16.8 GiB on A10G 24GB.
   # start_period extended to 240s — two models load on startup.
   # ---------------------------------------------------------------------------
   vllm-eagle3:
@@ -143,7 +143,7 @@ services:
       - "--max-model-len"
       - "${MAX_MODEL_LEN:-4096}"
       - "--gpu-memory-utilization"
-      - "0.75"
+      - "0.90"
       - "--served-model-name"
       - "${MODEL:-meta-llama/Llama-3.1-8B-Instruct}"
       - "--speculative-config"

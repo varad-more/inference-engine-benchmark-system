@@ -1,0 +1,74 @@
+{
+  "started_at": 1775072790.848607,
+  "finished_at": 1775074991.1363175,
+  "total_elapsed_seconds": 2200.2827582359314,
+  "model": "deepseek-ai/DeepSeek-R1-Distill-Llama-8B",
+  "tasks": [
+    {
+      "model": "deepseek-ai/DeepSeek-R1-Distill-Llama-8B",
+      "scenario_name": "single_request_latency",
+      "engine": "vllm",
+      "engine_variant": "vllm",
+      "spec_method": null,
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1775072790.9006112,
+      "status": "completed",
+      "finished_at": 1775073003.3042083,
+      "result_path": "results/deepseek-r1-distill-llama-8b/single_request_latency_vllm_1775072790.json"
+    },
+    {
+      "model": "deepseek-ai/DeepSeek-R1-Distill-Llama-8B",
+      "scenario_name": "throughput_ramp",
+      "engine": "vllm",
+      "engine_variant": "vllm",
+      "spec_method": null,
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1775073013.340179,
+      "status": "completed",
+      "finished_at": 1775074774.5360653,
+      "result_path": "results/deepseek-r1-distill-llama-8b/throughput_ramp_vllm_1775073013.json"
+    },
+    {
+      "model": "deepseek-ai/DeepSeek-R1-Distill-Llama-8B",
+      "scenario_name": "long_context_stress",
+      "engine": "vllm",
+      "engine_variant": "vllm",
+      "spec_method": null,
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1775074784.6497567,
+      "status": "completed",
+      "finished_at": 1775074829.538292,
+      "result_path": "results/deepseek-r1-distill-llama-8b/long_context_stress_vllm_1775074784.json"
+    },
+    {
+      "model": "deepseek-ai/DeepSeek-R1-Distill-Llama-8B",
+      "scenario_name": "prefix_sharing_benefit",
+      "engine": "vllm",
+      "engine_variant": "vllm",
+      "spec_method": null,
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1775074839.575369,
+      "status": "completed",
+      "finished_at": 1775074898.9654932,
+      "result_path": "results/deepseek-r1-distill-llama-8b/prefix_sharing_benefit_vllm_1775074839.json"
+    },
+    {
+      "model": "deepseek-ai/DeepSeek-R1-Distill-Llama-8B",
+      "scenario_name": "structured_generation_speed",
+      "engine": "vllm",
+      "engine_variant": "vllm",
+      "spec_method": null,
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1775074909.0077484,
+      "status": "completed",
+      "finished_at": 1775074981.127999,
+      "result_path": "results/deepseek-r1-distill-llama-8b/structured_generation_speed_vllm_1775074909.json"
+    }
+  ],
+  "cooldown_seconds": 10
+}
