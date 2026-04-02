@@ -5,15 +5,33 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-import pytest
-
 from benchmarks.metrics import LatencyStats, ScenarioMetrics, ThroughputStats
 from benchmarks.runner import ScenarioResults
 
 
 def _make_results(engine_name: str = "vllm", run_metadata: dict | None = None) -> ScenarioResults:
-    lat = LatencyStats(mean=10.0, median=10.0, p50=10.0, p90=14.0, p95=15.0, p99=20.0, stdev=1.0, min=8.0, max=25.0, count=1)
-    tput = ThroughputStats(total_requests=1, successful_requests=1, failed_requests=0, total_tokens_generated=100, wall_time_sec=1.0, requests_per_sec=1.0, tokens_per_sec=100.0, mean_tokens_per_request=100.0)
+    lat = LatencyStats(
+        mean=10.0,
+        median=10.0,
+        p50=10.0,
+        p90=14.0,
+        p95=15.0,
+        p99=20.0,
+        stdev=1.0,
+        min=8.0,
+        max=25.0,
+        count=1,
+    )
+    tput = ThroughputStats(
+        total_requests=1,
+        successful_requests=1,
+        failed_requests=0,
+        total_tokens_generated=100,
+        wall_time_sec=1.0,
+        requests_per_sec=1.0,
+        tokens_per_sec=100.0,
+        mean_tokens_per_request=100.0,
+    )
     metrics = ScenarioMetrics(
         scenario_name="single_request_latency",
         engine_name=engine_name,

@@ -19,6 +19,7 @@ def load_results(results_dir: Path = RESULTS_DIR) -> list[dict[str, Any]]:
     Each returned dict has an extra ``_filename`` key with the source filename
     and is guaranteed to contain ``scenario_name``, ``engine_name``, and ``metrics``.
     """
+
     def safe_mtime(p: Path) -> float:
         try:
             return p.stat().st_mtime
