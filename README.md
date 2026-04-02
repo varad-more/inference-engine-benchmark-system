@@ -312,6 +312,10 @@ Full runbook and draft model reference: [`docs/SPECULATIVE_DECODING.md`](docs/SP
 ![Throughput requests per second](reports/figures/throughput_requests_per_sec.svg)
 
 #### Throughput vs Latency tradeoff
+
+> **Interactive version** (hover for exact values, zoom, toggle engines): [`reports/figures/throughput_tradeoff_interactive.html`](reports/figures/throughput_tradeoff_interactive.html)
+> Bubble size = model parameter count. Top-left is ideal: high throughput, low latency.
+
 ![Throughput tradeoff map](reports/figures/throughput_tradeoff.svg)
 
 #### P95 latency under load
@@ -325,22 +329,22 @@ TTFT and per-request decode speed at concurrency 1. **Lower TTFT** is better; **
 
 | Model | vLLM TTFT | SGLang TTFT | vLLM tok/s | SGLang tok/s |
 |---|---|---|---|---|
-| gemma-2-2b-it | **20 ms** | 30 ms | 77.3 | 77.3 |
-| smollm3-3b | **24 ms** | 57 ms | **68.0** | 62.5 |
-| llama-3.2-3b-instruct | **23 ms** | 32 ms | 66.4 | **67.3** |
-| phi-3-mini-4k-instruct | **25 ms** | 43 ms | **57.3** | 55.8 |
-| gemma-3-4b-it | 87 ms | **78 ms** | 24.2 | **45.1** |
-| phi-4-mini-instruct | **33 ms** | 40 ms | **55.9** | 52.6 |
-| deepseek-r1-distill-qwen-7b | **40 ms** | 66 ms | 30.4 | **30.6** |
-| qwen2.5-7b-instruct | **41 ms** | 66 ms | 30.3 | **30.7** |
-| mistral-7b-instruct-v0.3 | **41 ms** | 62 ms | **31.7** | 31.6 |
-| llama-3.1-8b-instruct | **43 ms** | 67 ms | 30.1 | 30.1 |
-| qwen3-8b | **44 ms** | 72 ms | 29.2 | 29.2 |
+| gemma-2-2b-it | **20 ms** | 30 ms | 77.6 | **78.2** |
+| smollm3-3b | **24 ms** | 57 ms | **69.2** | 63.4 |
+| llama-3.2-3b-instruct | **23 ms** | 32 ms | 66.3 | **67.7** |
+| phi-3-mini-4k-instruct | **25 ms** | 43 ms | **57.8** | 55.7 |
+| gemma-3-4b-it | 87 ms | **78 ms** | 23.8 | **45.0** |
+| phi-4-mini-instruct | **33 ms** | 40 ms | **56.8** | 52.7 |
+| deepseek-r1-distill-qwen-7b | **40 ms** | 66 ms | 30.5 | **30.9** |
+| qwen2.5-7b-instruct | **41 ms** | 66 ms | 30.6 | **30.9** |
+| mistral-7b-instruct-v0.3 | **41 ms** | 62 ms | 31.8 | 31.8 |
+| llama-3.1-8b-instruct | **43 ms** | 69 ms | 30.3 | 30.3 |
+| qwen3-8b | **44 ms** | 72 ms | 29.2 | **29.4** |
 | granite-3.3-8b-instruct | **46 ms** | 76 ms | **27.7** | 27.6 |
-| deepseek-r1-distill-llama-8b | **42 ms** | 69 ms | **30.2** | 30.1 |
+| deepseek-r1-distill-llama-8b | **42 ms** | 69 ms | 30.3 | 30.3 |
 | gemma-2-9b-it | **74 ms** | 83 ms | 24.0 | **24.1** |
 
-**vLLM wins TTFT on 13/14 models.** The exception is Gemma 3 4B, where vLLM requires `--enforce-eager` (disabling CUDA graphs), giving SGLang a 9 ms edge.
+**vLLM wins TTFT on 13/14 models.** The exception is Gemma 3 4B, where vLLM requires `--enforce-eager` (disabling CUDA graphs due to its sliding window + global attention interleaving), giving SGLang a 9 ms edge. At the decode speed level (tok/s), differences are negligible at concurrency 1 — engines are GPU-bound equally.
 
 ---
 
@@ -367,55 +371,61 @@ Peak tokens/second during throughput ramp (concurrency 1 → 32). **Higher is be
 
 **vLLM wins on ≤4B models** (3–12%). At 7–9B scale, engines converge to the same GPU-bottlenecked ceiling.
 
+> **Anomaly — Gemma 3 4B vLLM (84 tok/s vs SGLang 149):** vLLM must run with `--enforce-eager`, disabling CUDA graph capture for Gemma 3's interleaved sliding-window attention. This prevents kernel fusion at high concurrency, causing 2,137 s total wall time vs SGLang's 1,200 s for the same 179K tokens. Not a scheduler issue — it's a CUDA graph incompatibility in vLLM 0.6.x with this architecture.
+>
+> **Anomaly — SmolLM3 3B SGLang (205 vs vLLM 230):** SGLang is slower for SmolLM3 3B despite generally winning at large-model scale. SmolLM3 uses an updated HuggingFace architecture that vLLM's kernel selection handles more efficiently at the time of benchmarking.
+>
+> **Anomaly — Gemma 2 9B SGLang p95 (46,027 ms vs vLLM 14,399 ms):** The p95 tail latency under throughput ramp is ~3× worse for SGLang on Gemma 2 9B. Gemma 2 uses alternating local/global attention layers; SGLang's continuous batch scheduler appears to stall under high queue depth for this attention pattern, causing severe tail-latency spikes. The median and throughput numbers are comparable — this is a scheduling outlier under extreme concurrency, not a general regression.
+
 ---
 
 ### 3. Long Context Stress (8K Tokens)
 
-Performance with 8,192-token input prompts. Tests KV cache handling under memory pressure.
+Performance with 8,192-token input prompts (20 requests, ~4 concurrent). Tests KV cache handling under memory pressure. **tok/s = total output tokens generated per second across all concurrent requests.**
 
 | Model | vLLM TTFT | SGLang TTFT | vLLM tok/s | SGLang tok/s |
 |---|---|---|---|---|
-| gemma-2-2b-it | **34 ms** | 40 ms | **76.5** | 73.8 |
-| smollm3-3b | **42 ms** | 71 ms | **64.5** | 57.8 |
-| llama-3.2-3b-instruct | **40 ms** | 43 ms | 62.9 | **63.5** |
-| phi-3-mini-4k-instruct | 53 ms | **48 ms** | **53.5** | 52.7 |
-| gemma-3-4b-it | 127 ms | **75 ms** | 23.7 | **44.0** |
-| phi-4-mini-instruct | 47 ms | **38 ms** | **52.6** | 50.5 |
-| deepseek-r1-distill-qwen-7b | 87 ms | **58 ms** | 30.2 | **30.4** |
-| qwen2.5-7b-instruct | 91 ms | **59 ms** | 30.1 | **30.4** |
-| mistral-7b-instruct-v0.3 | 94 ms | **93 ms** | **29.8** | 29.7 |
-| llama-3.1-8b-instruct | 90 ms | **63 ms** | 28.6 | **28.7** |
-| qwen3-8b | 102 ms | **70 ms** | 27.5 | **27.7** |
-| granite-3.3-8b-instruct | **110 ms** | 113 ms | **25.9** | 25.7 |
-| deepseek-r1-distill-llama-8b | 92 ms | **63 ms** | 28.5 | **28.8** |
-| gemma-2-9b-it | 125 ms | 125 ms | 20.9 | **22.2** |
+| gemma-2-2b-it | **34 ms** | 40 ms | **311.5** | 290.6 |
+| smollm3-3b | **42 ms** | 71 ms | **265.0** | 234.6 |
+| llama-3.2-3b-instruct | **40 ms** | 43 ms | **254.5** | 253.6 |
+| phi-3-mini-4k-instruct | 53 ms | **48 ms** | **231.3** | 211.6 |
+| gemma-3-4b-it | 127 ms | **75 ms** | 98.0 | **180.2** |
+| phi-4-mini-instruct | 47 ms | **38 ms** | 212.0 | **211.8** |
+| deepseek-r1-distill-qwen-7b | 87 ms | **58 ms** | 121.2 | **125.9** |
+| qwen2.5-7b-instruct | 91 ms | **59 ms** | 118.4 | **126.0** |
+| mistral-7b-instruct-v0.3 | 94 ms | **93 ms** | **117.4** | 112.8 |
+| llama-3.1-8b-instruct | 90 ms | **63 ms** | 115.7 | 115.6 |
+| qwen3-8b | 102 ms | **70 ms** | 110.7 | **115.5** |
+| granite-3.3-8b-instruct | **110 ms** | 113 ms | **100.7** | 99.1 |
+| deepseek-r1-distill-llama-8b | 92 ms | **63 ms** | **115.8** | 115.3 |
+| gemma-2-9b-it | 125 ms | 125 ms | 80.8 | **82.5** |
 
-**SGLang wins long-context TTFT on 8/14 models**, particularly at 7–9B scale. This contrasts with single-request latency where vLLM dominates.
+**SGLang wins long-context TTFT on 8/14 models**, particularly at 7–9B scale. This contrasts with single-request latency where vLLM dominates. On decode throughput, vLLM leads for ≤3B models while SGLang edges ahead at 7–9B — consistent with the throughput ramp pattern. Gemma 3 4B is again the outlier: SGLang delivers 180 tok/s vs vLLM's 98 due to the same `--enforce-eager` constraint.
 
 ---
 
 ### 4. Prefix Sharing (60% Overlap)
 
-KV cache reuse across 100 requests with shared prefixes.
+KV cache reuse across 100 requests with 60% shared prefix. **tok/s = total output tokens per second across all concurrent requests.**
 
 | Model | vLLM TTFT | SGLang TTFT | vLLM tok/s | SGLang tok/s |
 |---|---|---|---|---|
-| gemma-2-2b-it | 44 ms | **40 ms** | **74.8** | 67.8 |
-| smollm3-3b | **42 ms** | 72 ms | **63.2** | 51.7 |
-| llama-3.2-3b-instruct | 50 ms | **41 ms** | 61.3 | **62.8** |
-| phi-3-mini-4k-instruct | 59 ms | **57 ms** | 51.5 | 51.5 |
-| gemma-3-4b-it | 121 ms | **103 ms** | 23.1 | **42.0** |
-| phi-4-mini-instruct | **51 ms** | 56 ms | **51.2** | 47.4 |
-| deepseek-r1-distill-qwen-7b | 87 ms | **78 ms** | 29.8 | **29.9** |
-| qwen2.5-7b-instruct | **90 ms** | 92 ms | **29.6** | 29.1 |
-| mistral-7b-instruct-v0.3 | 93 ms | 93 ms | **28.9** | 27.9 |
-| llama-3.1-8b-instruct | 93 ms | **65 ms** | 28.1 | **28.4** |
-| qwen3-8b | 95 ms | **59 ms** | 27.1 | **27.5** |
-| granite-3.3-8b-instruct | 110 ms | **66 ms** | 25.4 | **25.8** |
-| deepseek-r1-distill-llama-8b | 94 ms | **55 ms** | 28.1 | **28.5** |
-| gemma-2-9b-it | 128 ms | **125 ms** | **21.3** | 20.0 |
+| gemma-2-2b-it | 44 ms | **40 ms** | **567.2** | 557.9 |
+| smollm3-3b | **42 ms** | 72 ms | **522.0** | 398.6 |
+| llama-3.2-3b-instruct | 50 ms | **41 ms** | 489.1 | **489.3** |
+| phi-3-mini-4k-instruct | 59 ms | **57 ms** | **397.6** | 396.6 |
+| gemma-3-4b-it | 121 ms | **103 ms** | 178.6 | **326.9** |
+| phi-4-mini-instruct | **51 ms** | 56 ms | **403.9** | 375.6 |
+| deepseek-r1-distill-qwen-7b | 87 ms | **78 ms** | **235.7** | 235.1 |
+| qwen2.5-7b-instruct | **90 ms** | 92 ms | 228.9 | **233.0** |
+| mistral-7b-instruct-v0.3 | 93 ms | 93 ms | **228.2** | 220.6 |
+| llama-3.1-8b-instruct | 93 ms | **65 ms** | **219.4** | 217.8 |
+| qwen3-8b | 95 ms | **59 ms** | **212.2** | 210.4 |
+| granite-3.3-8b-instruct | 110 ms | **66 ms** | **199.0** | 198.1 |
+| deepseek-r1-distill-llama-8b | 94 ms | **55 ms** | 219.5 | **225.8** |
+| gemma-2-9b-it | 128 ms | **125 ms** | **167.2** | 157.4 |
 
-**SGLang wins prefix-sharing TTFT on 10/14 models.** Its radix-tree KV cache provides superior prefix reuse, shaving 20–40 ms at 7–9B scale.
+**SGLang wins prefix-sharing TTFT on 10/14 models.** Its radix-tree KV cache provides superior prefix reuse, shaving 20–40 ms at 7–9B scale. Decode throughput favours vLLM for most models once prefix overhead is amortised; Gemma 3 4B is again the exception (SGLang +83%) for the same `--enforce-eager` reason.
 
 ---
 
@@ -450,11 +460,11 @@ JSON-constrained generation throughput across 200 requests. **Higher tok/s is be
 
 | Variant | Engine | TTFT (med) | Single tok/s | Peak Throughput |
 |---|---|---|---|---|
-| Baseline | vLLM | 43 ms | 30.1 | 102 tok/s |
-| Baseline | SGLang | 67 ms | 30.1 | 102 tok/s |
-| Ngram | vLLM | 42 ms | 28.0 | 95 tok/s |
-| Ngram | SGLang | 39 ms | 25.7 | 73 tok/s |
-| Eagle3 | vLLM | 48 ms | 24.8 | 82 tok/s |
+| Baseline | vLLM | 43 ms | 30.3 | 102 tok/s |
+| Baseline | SGLang | 67 ms | 30.3 | 102 tok/s |
+| Ngram | vLLM | 42 ms | 27.8 | 96 tok/s |
+| Ngram | SGLang | 39 ms | 26.0 | 73 tok/s |
+| Eagle3 | vLLM | 48 ms | 24.6 | 82 tok/s |
 | Eagle3 | SGLang | — | — | — |
 
 > **Eagle3 draft model (vLLM):** `RedHatAI/Llama-3.1-8B-Instruct-speculator.eagle3`
@@ -465,11 +475,15 @@ JSON-constrained generation throughput across 200 requests. **Higher tok/s is be
 | Variant | Engine | TTFT (med) | Single tok/s | Peak Throughput |
 |---|---|---|---|---|
 | Baseline | vLLM | 44 ms | 29.2 | 98 tok/s |
-| Baseline | SGLang | 72 ms | 29.2 | 99 tok/s |
-| Ngram | vLLM | 44 ms | 26.9 | 91 tok/s |
-| Ngram | SGLang | 40 ms | 24.9 | 64 tok/s |
+| Baseline | SGLang | 72 ms | 29.4 | 99 tok/s |
+| Ngram | vLLM | 44 ms | 26.8 | 91 tok/s |
+| Ngram | SGLang | 40 ms | 25.6 | 64 tok/s |
 
 > Eagle3 not tested — `RedHatAI/Qwen3-8B-speculator.eagle3` not yet published.
+
+![Speculative decoding comparison](reports/figures/speculative_decoding.svg)
+
+> **Interactive version** (hover, zoom, toggle variants): [`reports/figures/speculative_decoding_interactive.html`](reports/figures/speculative_decoding_interactive.html)
 
 ---
 

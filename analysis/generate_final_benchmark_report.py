@@ -257,6 +257,11 @@ def load_latest_rows() -> list[dict]:
         if model_id not in TARGET_MODEL_MAP:
             continue
 
+        # Skip spec-dec variants — only baseline runs belong in the comparison charts
+        spec_method = data.get("run_metadata", {}).get("spec_method")
+        if spec_method:
+            continue
+
         engine = ENGINE_LABELS.get(data.get("engine_name"), data.get("engine_name", "unknown"))
         scenario = data.get("scenario_name")
         timestamp = float(data.get("timestamp", path.stat().st_mtime))
