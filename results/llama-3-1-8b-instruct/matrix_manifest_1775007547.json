@@ -1,0 +1,31 @@
+{
+  "started_at": 1775007547.6168892,
+  "finished_at": 1775007553.7710788,
+  "total_elapsed_seconds": 6.150346279144287,
+  "model": "meta-llama/Llama-3.1-8B-Instruct",
+  "tasks": [
+    {
+      "model": "meta-llama/Llama-3.1-8B-Instruct",
+      "scenario_name": "single_request_latency",
+      "engine": "sglang",
+      "engine_variant": "sglang",
+      "spec_method": null,
+      "iteration": 1,
+      "healthy_before_run": false,
+      "started_at": 1775007550.707865,
+      "status": "skipped_unhealthy"
+    },
+    {
+      "model": "meta-llama/Llama-3.1-8B-Instruct",
+      "scenario_name": "throughput_ramp",
+      "engine": "sglang",
+      "engine_variant": "sglang",
+      "spec_method": null,
+      "iteration": 1,
+      "healthy_before_run": false,
+      "started_at": 1775007553.7667089,
+      "status": "skipped_unhealthy"
+    }
+  ],
+  "cooldown_seconds": 10
+}

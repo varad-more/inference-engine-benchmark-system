@@ -1,0 +1,64 @@
+{
+  "started_at": 1774999333.8304677,
+  "finished_at": 1774999349.3211746,
+  "total_elapsed_seconds": 15.484790563583374,
+  "model": "ibm-granite/granite-3.3-8b-instruct",
+  "tasks": [
+    {
+      "model": "ibm-granite/granite-3.3-8b-instruct",
+      "scenario_name": "single_request_latency",
+      "engine": "vllm",
+      "engine_variant": "vllm",
+      "spec_method": null,
+      "iteration": 1,
+      "healthy_before_run": false,
+      "started_at": 1774999337.0576878,
+      "status": "skipped_unhealthy"
+    },
+    {
+      "model": "ibm-granite/granite-3.3-8b-instruct",
+      "scenario_name": "throughput_ramp",
+      "engine": "vllm",
+      "engine_variant": "vllm",
+      "spec_method": null,
+      "iteration": 1,
+      "healthy_before_run": false,
+      "started_at": 1774999340.1432853,
+      "status": "skipped_unhealthy"
+    },
+    {
+      "model": "ibm-granite/granite-3.3-8b-instruct",
+      "scenario_name": "long_context_stress",
+      "engine": "vllm",
+      "engine_variant": "vllm",
+      "spec_method": null,
+      "iteration": 1,
+      "healthy_before_run": false,
+      "started_at": 1774999343.200425,
+      "status": "skipped_unhealthy"
+    },
+    {
+      "model": "ibm-granite/granite-3.3-8b-instruct",
+      "scenario_name": "prefix_sharing_benefit",
+      "engine": "vllm",
+      "engine_variant": "vllm",
+      "spec_method": null,
+      "iteration": 1,
+      "healthy_before_run": false,
+      "started_at": 1774999346.257012,
+      "status": "skipped_unhealthy"
+    },
+    {
+      "model": "ibm-granite/granite-3.3-8b-instruct",
+      "scenario_name": "structured_generation_speed",
+      "engine": "vllm",
+      "engine_variant": "vllm",
+      "spec_method": null,
+      "iteration": 1,
+      "healthy_before_run": false,
+      "started_at": 1774999349.3147402,
+      "status": "skipped_unhealthy"
+    }
+  ],
+  "cooldown_seconds": 10
+}

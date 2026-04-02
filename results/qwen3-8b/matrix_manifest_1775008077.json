@@ -1,0 +1,31 @@
+{
+  "started_at": 1775008077.684699,
+  "finished_at": 1775008083.891251,
+  "total_elapsed_seconds": 6.202821731567383,
+  "model": "Qwen/Qwen3-8B",
+  "tasks": [
+    {
+      "model": "Qwen/Qwen3-8B",
+      "scenario_name": "single_request_latency",
+      "engine": "vllm",
+      "engine_variant": "vllm-ngram",
+      "spec_method": "ngram",
+      "iteration": 1,
+      "healthy_before_run": false,
+      "started_at": 1775008080.764741,
+      "status": "skipped_unhealthy"
+    },
+    {
+      "model": "Qwen/Qwen3-8B",
+      "scenario_name": "throughput_ramp",
+      "engine": "vllm",
+      "engine_variant": "vllm-ngram",
+      "spec_method": "ngram",
+      "iteration": 1,
+      "healthy_before_run": false,
+      "started_at": 1775008083.886958,
+      "status": "skipped_unhealthy"
+    }
+  ],
+  "cooldown_seconds": 10
+}

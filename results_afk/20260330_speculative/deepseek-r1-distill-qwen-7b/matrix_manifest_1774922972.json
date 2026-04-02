@@ -1,0 +1,73 @@
+{
+  "started_at": 1774922972.8669457,
+  "finished_at": 1774925642.1345916,
+  "model": "deepseek-ai/DeepSeek-R1-Distill-Qwen-7B",
+  "tasks": [
+    {
+      "model": "deepseek-ai/DeepSeek-R1-Distill-Qwen-7B",
+      "scenario_name": "single_request_latency",
+      "engine": "sglang",
+      "engine_variant": "sglang",
+      "spec_method": null,
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1774922973.9167562,
+      "status": "completed",
+      "finished_at": 1774923182.8519087,
+      "result_path": "/home/ubuntu/repos/inference-engine-benchmark-system-speculative/results_afk/20260330_speculative/deepseek-r1-distill-qwen-7b/single_request_latency_sglang_1774922973.json"
+    },
+    {
+      "model": "deepseek-ai/DeepSeek-R1-Distill-Qwen-7B",
+      "scenario_name": "throughput_ramp",
+      "engine": "sglang",
+      "engine_variant": "sglang",
+      "spec_method": null,
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1774923303.9269812,
+      "status": "completed",
+      "finished_at": 1774924993.5086029,
+      "result_path": "/home/ubuntu/repos/inference-engine-benchmark-system-speculative/results_afk/20260330_speculative/deepseek-r1-distill-qwen-7b/throughput_ramp_sglang_1774923303.json"
+    },
+    {
+      "model": "deepseek-ai/DeepSeek-R1-Distill-Qwen-7B",
+      "scenario_name": "long_context_stress",
+      "engine": "sglang",
+      "engine_variant": "sglang",
+      "spec_method": null,
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1774925114.616575,
+      "status": "completed",
+      "finished_at": 1774925156.8080952,
+      "result_path": "/home/ubuntu/repos/inference-engine-benchmark-system-speculative/results_afk/20260330_speculative/deepseek-r1-distill-qwen-7b/long_context_stress_sglang_1774925114.json"
+    },
+    {
+      "model": "deepseek-ai/DeepSeek-R1-Distill-Qwen-7B",
+      "scenario_name": "prefix_sharing_benefit",
+      "engine": "sglang",
+      "engine_variant": "sglang",
+      "spec_method": null,
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1774925277.935617,
+      "status": "completed",
+      "finished_at": 1774925334.2018108,
+      "result_path": "/home/ubuntu/repos/inference-engine-benchmark-system-speculative/results_afk/20260330_speculative/deepseek-r1-distill-qwen-7b/prefix_sharing_benefit_sglang_1774925277.json"
+    },
+    {
+      "model": "deepseek-ai/DeepSeek-R1-Distill-Qwen-7B",
+      "scenario_name": "structured_generation_speed",
+      "engine": "sglang",
+      "engine_variant": "sglang",
+      "spec_method": null,
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1774925455.232275,
+      "status": "completed",
+      "finished_at": 1774925522.034459,
+      "result_path": "/home/ubuntu/repos/inference-engine-benchmark-system-speculative/results_afk/20260330_speculative/deepseek-r1-distill-qwen-7b/structured_generation_speed_sglang_1774925455.json"
+    }
+  ],
+  "cooldown_seconds": 120
+}
