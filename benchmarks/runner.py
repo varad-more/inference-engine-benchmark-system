@@ -160,6 +160,7 @@ class BenchmarkRunner:
         run_metadata: dict[str, Any] | None = None,
     ) -> ScenarioResults:
         """Dispatch to the appropriate scenario handler."""
+        print()  # visual separator between scenarios
         self._log.info(
             "starting scenario",
             scenario=scenario.name,

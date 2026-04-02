@@ -124,9 +124,9 @@ run_vllm_eagle3() {
         --model "$model" \
         --host 0.0.0.0 \
         --port 8000 \
-        --enable-prefix-caching \
-        --max-model-len 4096 \
-        --gpu-memory-utilization 0.75 \
+        --max-model-len 2048 \
+        --gpu-memory-utilization 0.95 \
+        --enforce-eager \
         --served-model-name "$model" \
         --speculative-config "{\"method\":\"eagle3\",\"model\":\"${draft_model}\",\"num_speculative_tokens\":3}"
 
@@ -182,13 +182,14 @@ run_sglang_eagle3() {
         -v "$(pwd)/model-cache:/root/.cache/huggingface" \
         -e "HUGGING_FACE_HUB_TOKEN=${HF_TOKEN}" \
         -e "CUDA_VISIBLE_DEVICES=0" \
+        -e "SGLANG_ALLOW_OVERWRITE_LONGER_CONTEXT_LEN=1" \
         "$SGLANG_IMAGE" \
         python -m sglang.launch_server \
         --model-path "$model" \
         --host 0.0.0.0 \
         --port 8001 \
         --mem-fraction-static 0.65 \
-        --context-length 4096 \
+        --context-length 2048 \
         --speculative-algorithm EAGLE3 \
         --speculative-draft-model-path "$draft_model" \
         --speculative-num-steps 3 \

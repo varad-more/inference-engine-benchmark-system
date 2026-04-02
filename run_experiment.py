@@ -582,7 +582,7 @@ def matrix(
             "tasks": tasks_log,
             "cooldown_seconds": cooldown_seconds,
         }
-        model_slug = model.split("/")[-1].lower()
+        model_slug = model.split("/")[-1].lower().replace(".", "-")
         model_dir = results_dir / model_slug
         model_dir.mkdir(parents=True, exist_ok=True)
         manifest_path = model_dir / f"matrix_manifest_{int(started_at)}.json"
