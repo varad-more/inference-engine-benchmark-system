@@ -103,13 +103,21 @@ inference-engine-benchmark-system/
 │   └── schemas/                # JSON schemas referenced by structured prompts
 │
 ├── tests/                      # pytest suite (httpx mocking via respx, no live engines needed)
-├── results/                    # Raw JSON results (one file per scenario × engine × run)
+├── results/                    # Raw JSON results — baseline (14 models × 5 scenarios × 2 engines)
+├── results_variance/           # Phase 1 — variance subset (5 iterations per scenario/engine/model)
+├── results_concurrency64/      # Phase 2 — concurrency-64 extended ramp (7–9B models)
+├── results_decode_sweep/       # Phase 3 — decode-length sweep (output tokens: 64/256/1024/4096)
 ├── reports/                    # Generated reports and SVG figures
 │   └── figures/                # SVG charts (TTFT, throughput, tradeoff)
 ├── docs/                       # Detailed guides (getting started, spec-dec runbook, roadmap)
 ├── scripts/
-│   ├── run_all_benchmarks.sh   # Full suite runner (14 models + spec-dec)
-│   └── run_phase_a_pending.sh  # Eagle3 spec-dec runs
+│   ├── run_all_benchmarks.sh      # Full suite runner (14 models + spec-dec)
+│   ├── run_new_benchmarks.sh      # Phase 1/2/3 extended benchmarks (variance, concurrency-64, decode sweep)
+│   ├── run_variance_subset.sh     # Phase 1 only — variance credibility backbone
+│   ├── run_concurrency_64.sh      # Phase 2 only — concurrency=64 extended ramp
+│   ├── run_decode_sweep.sh        # Phase 3 only — decode-length sweep
+│   ├── run_gemma4_benchmarks.sh   # Gemma 4 baseline + ngram spec-dec (requires HF token)
+│   └── run_phase_a_pending.sh     # Eagle3 spec-dec runs
 ├── deploy/
 │   ├── ec2_deploy.sh           # Self-contained bash AWS deployment
 │   └── terraform/              # Terraform module for team/repeatable workflows
@@ -215,6 +223,33 @@ python run_experiment.py list-prompt-packs
 | `long_context_stress` | 20 | 4 | 8K-token prompts, GPU memory pressure |
 | `prefix_sharing_benefit` | 100 | 8 | 60% shared prefix, KV cache reuse |
 | `structured_generation_speed` | 200 | 16 | JSON schema-constrained decode |
+
+### Extended Benchmark Phases
+
+Three additional benchmark phases run on top of the baseline suite:
+
+| Phase | Script | Scenarios | Iterations | Output Dir | Purpose |
+|---|---|---|---|---|---|
+| Phase 1 — Variance | `scripts/run_new_benchmarks.sh --phase1` | 5 baseline | 5× | `results_variance/` | Credibility backbone — measure run-to-run variance |
+| Phase 2 — Concurrency-64 | `scripts/run_new_benchmarks.sh --phase2` | `throughput_ramp_extended` | 3× | `results_concurrency64/` | Saturation & OOM ceiling at concurrency=64 on 7–9B models |
+| Phase 3 — Decode Sweep | `scripts/run_new_benchmarks.sh --phase3` | `decode_length_sweep_{64,256,1024,4096}` | 3× | `results_decode_sweep/` | Prefill-bound vs decode-bound across output lengths |
+
+**Phase 2** adds `concurrency=64` to find the saturation point and OOM ceiling on 7–9B models. **Phase 3** fixes the prompt at ~512 tokens and sweeps `max_output_tokens` ∈ {64, 256, 1024, 4096} to isolate how output length affects throughput.
+
+Run all phases in the background:
+```bash
+nohup bash scripts/run_new_benchmarks.sh 2>&1 | tee logs/new_benchmarks_$(date +%Y%m%dT%H%M%S).log &
+```
+
+Analyse results after completion:
+```bash
+python -m analysis.variance_analysis      --results-dir results_variance
+python -m analysis.tpot_analysis          --results-dir results_variance
+python -m analysis.decode_length_analysis --results-dir results_decode_sweep
+python -m analysis.goodput                --results-dir results_variance
+```
+
+---
 
 ### Prompt Packs
 
