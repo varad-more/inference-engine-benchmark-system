@@ -13,6 +13,10 @@ class ScenarioType(StrEnum):
     LONG_CONTEXT_STRESS = "long_context_stress"
     PREFIX_SHARING_BENEFIT = "prefix_sharing_benefit"
     STRUCTURED_GENERATION_SPEED = "structured_generation_speed"
+    # Phase 2: extended concurrency sweep (adds concurrency=64)
+    THROUGHPUT_RAMP_EXTENDED = "throughput_ramp_extended"
+    # Phase 3: decode-length sweep (reuses throughput_ramp handler; name distinguishes configs)
+    DECODE_LENGTH_SWEEP = "decode_length_sweep"
 
 
 @dataclass
@@ -240,6 +244,93 @@ class StructuredGenerationSpeed(BenchmarkScenario):
         return d
 
 
+@dataclass
+class ThroughputRampExtended(BenchmarkScenario):
+    """
+    Extended concurrency sweep adding concurrency=64 to validate saturation behaviour
+    and OOM ceiling on large models (Phase 2).
+
+    Concurrency levels: [1, 4, 8, 16, 32, 64]
+    150 requests/level gives enough samples for stable percentiles at the high end.
+    OOM at concurrency=64 is a real finding — logged by the run script, not treated as failure.
+    """
+
+    concurrency_levels: list[int] = field(default_factory=lambda: [1, 4, 8, 16, 32, 64])
+    requests_per_level: int = 150
+    prompt_tokens: int = 128
+    max_output_tokens: int = 256
+    temperature: float = 0.0
+    scenario_type: ScenarioType = field(default=ScenarioType.THROUGHPUT_RAMP_EXTENDED, init=False)
+
+    def __post_init__(self) -> None:
+        if not self.name:
+            self.name = "throughput_ramp_extended"
+        if not self.description:
+            self.description = (
+                f"Extended concurrency sweep {self.concurrency_levels}, "
+                f"{self.requests_per_level} requests/level. "
+                "Includes concurrency=64 to find OOM ceiling and saturation point."
+            )
+        if self.prompt_pack is None:
+            self.prompt_pack = "long_generation"
+
+    def to_dict(self) -> dict[str, Any]:
+        d = super().to_dict()
+        d.update(
+            {
+                "concurrency_levels": self.concurrency_levels,
+                "requests_per_level": self.requests_per_level,
+                "prompt_tokens": self.prompt_tokens,
+                "max_output_tokens": self.max_output_tokens,
+                "temperature": self.temperature,
+            }
+        )
+        return d
+
+
+@dataclass
+class DecodeLengthSweep(BenchmarkScenario):
+    """
+    Fixed-length prompt (~512 tokens), variable max_output_tokens.
+    Used to separate prefill-bound vs decode-bound behaviour (Phase 3).
+
+    Instantiate with different max_output_tokens values to form the sweep:
+      decode_length_sweep_64, _256, _1024, _4096
+    Uses THROUGHPUT_RAMP handler (scenario_type mapped in runner) at concurrency [4, 8, 16].
+    """
+
+    concurrency_levels: list[int] = field(default_factory=lambda: [4, 8, 16])
+    requests_per_level: int = 60
+    prompt_tokens: int = 512
+    max_output_tokens: int = 256  # overridden per instance
+    temperature: float = 0.0
+    scenario_type: ScenarioType = field(default=ScenarioType.DECODE_LENGTH_SWEEP, init=False)
+
+    def __post_init__(self) -> None:
+        if not self.name:
+            self.name = f"decode_length_sweep_{self.max_output_tokens}"
+        if not self.description:
+            self.description = (
+                f"Fixed ~{self.prompt_tokens}-token prompt, max_output_tokens={self.max_output_tokens}. "
+                f"Concurrency {self.concurrency_levels}, {self.requests_per_level} requests/level."
+            )
+        if self.prompt_pack is None:
+            self.prompt_pack = "long_generation"
+
+    def to_dict(self) -> dict[str, Any]:
+        d = super().to_dict()
+        d.update(
+            {
+                "concurrency_levels": self.concurrency_levels,
+                "requests_per_level": self.requests_per_level,
+                "prompt_tokens": self.prompt_tokens,
+                "max_output_tokens": self.max_output_tokens,
+                "temperature": self.temperature,
+            }
+        )
+        return d
+
+
 # ------------------------------------------------------------------
 # Prompt generators
 # ------------------------------------------------------------------
@@ -308,6 +399,21 @@ SCENARIOS: dict[str, BenchmarkScenario] = {
     "long_context_stress": LongContextStress(name="long_context_stress"),
     "prefix_sharing_benefit": PrefixSharingBenefit(name="prefix_sharing_benefit"),
     "structured_generation_speed": StructuredGenerationSpeed(name="structured_generation_speed"),
+    # Phase 2 — extended concurrency (adds concurrency=64)
+    "throughput_ramp_extended": ThroughputRampExtended(name="throughput_ramp_extended"),
+    # Phase 3 — decode-length sweep (4 configs, one per output-token budget)
+    "decode_length_sweep_64": DecodeLengthSweep(
+        name="decode_length_sweep_64", max_output_tokens=64
+    ),
+    "decode_length_sweep_256": DecodeLengthSweep(
+        name="decode_length_sweep_256", max_output_tokens=256
+    ),
+    "decode_length_sweep_1024": DecodeLengthSweep(
+        name="decode_length_sweep_1024", max_output_tokens=1024
+    ),
+    "decode_length_sweep_4096": DecodeLengthSweep(
+        name="decode_length_sweep_4096", max_output_tokens=4096
+    ),
 }
 
 

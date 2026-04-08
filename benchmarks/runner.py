@@ -31,12 +31,14 @@ from benchmarks.prompt_packs import (
 )
 from benchmarks.scenarios import (
     BenchmarkScenario,
+    DecodeLengthSweep,
     LongContextStress,
     PrefixSharingBenefit,
     ScenarioType,
     SingleRequestLatency,
     StructuredGenerationSpeed,
     ThroughputRamp,
+    ThroughputRampExtended,
     make_json_extraction_prompt,
     make_long_prompt,
     make_short_prompt,
@@ -173,6 +175,8 @@ class BenchmarkRunner:
         handler = {
             ScenarioType.SINGLE_REQUEST_LATENCY: self._run_single_latency,
             ScenarioType.THROUGHPUT_RAMP: self._run_throughput_ramp,
+            ScenarioType.THROUGHPUT_RAMP_EXTENDED: self._run_throughput_ramp,
+            ScenarioType.DECODE_LENGTH_SWEEP: self._run_throughput_ramp,
             ScenarioType.LONG_CONTEXT_STRESS: self._run_long_context,
             ScenarioType.PREFIX_SHARING_BENEFIT: self._run_prefix_sharing,
             ScenarioType.STRUCTURED_GENERATION_SPEED: self._run_structured_gen,
@@ -284,7 +288,7 @@ class BenchmarkRunner:
         client: BaseInferenceClient,
         progress_cb: ProgressCallback | None,
     ) -> tuple[list[RequestResult], list[dict[str, Any]], dict[str, Any]]:
-        assert isinstance(scenario, ThroughputRamp)
+        assert isinstance(scenario, (ThroughputRamp, ThroughputRampExtended, DecodeLengthSweep))
         total_requests = scenario.requests_per_level * len(scenario.concurrency_levels)
         prompt_records, workload_metadata = self._prompt_records_for_scenario(
             scenario_name=scenario.name,

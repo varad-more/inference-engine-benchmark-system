@@ -454,7 +454,86 @@ JSON-constrained generation throughput across 200 requests. **Higher tok/s is be
 
 ---
 
-### 6. Speculative Decoding
+### 6. TPOT & Goodput Analysis
+
+**TPOT** (Time Per Output Token) = inter-token decode latency after the first token: `(total_ms − ttft_ms) / max(output_tokens − 1, 1)`. Computed per request from existing result data; no re-runs required. Full per-scenario tables: [`reports/tpot_analysis.md`](reports/tpot_analysis.md).
+
+#### TPOT at concurrency 1 (single_request_latency, P50 ms)
+
+At serial load, TPOT reflects raw GPU decode speed — engines are near-identical for every model except Gemma 3 4B, where vLLM's `--enforce-eager` constraint doubles decode time.
+
+| Model | vLLM P50 | vLLM P99 | SGLang P50 | SGLang P99 |
+|---|---|---|---|---|
+| gemma-2-2b-it | 12.9 | 13.1 | 12.8 | 12.9 |
+| smollm3-3b | 14.6 | 14.7 | 15.7 | 15.7 |
+| llama-3.2-3b-instruct | 15.0 | 15.0 | 14.7 | 14.7 |
+| phi-3-mini-4k-instruct | 17.4 | 17.4 | 17.7 | 18.0 |
+| **gemma-3-4b-it** | **41.0** | **42.3** | **21.7** | **21.9** |
+| phi-4-mini-instruct | 17.8 | 18.0 | 18.8 | 19.3 |
+| deepseek-r1-distill-qwen-7b | 32.7 | 33.1 | 32.4 | 32.4 |
+| qwen2.5-7b-instruct | 32.7 | 33.3 | 32.3 | 32.8 |
+| mistral-7b-instruct-v0.3 | 31.5 | 31.8 | 31.4 | 31.7 |
+| llama-3.1-8b-instruct | 35.7 | 40.3 | 33.0 | 38.9 |
+| qwen3-8b | 35.6 | 37.2 | 37.0 | 40.9 |
+| granite-3.3-8b-instruct | 36.1 | 36.1 | 36.0 | 36.0 |
+| deepseek-r1-distill-llama-8b | 33.1 | 33.1 | 32.9 | 33.0 |
+| gemma-2-9b-it | 41.4 | 42.4 | 41.2 | 42.2 |
+
+**Takeaway:** At concurrency 1, both engines are GPU-bound equally. TPOT tracks model size. The sole outlier is Gemma 3 4B: SGLang achieves 21.7 ms vs vLLM's 41.0 ms — the same CUDA graph incompatibility that drives the throughput gap.
+
+#### TPOT tail latency under load (throughput_ramp, P99 ms)
+
+Under high concurrency, TPOT P99 reveals scheduling behaviour. vLLM holds tail latency significantly better on larger models.
+
+| Model | vLLM P99 | SGLang P99 | SGLang / vLLM |
+|---|---|---|---|
+| gemma-2-2b-it | 17.6 | 18.4 | 1.05× |
+| smollm3-3b | **21.2** | 41.9 | 2.0× worse |
+| llama-3.2-3b-instruct | **20.6** | 21.3 | 1.04× |
+| phi-3-mini-4k-instruct | 30.7 | **29.1** | 0.95× |
+| gemma-3-4b-it | **44.6** | 56.8 | 1.27× worse |
+| phi-4-mini-instruct | **28.9** | 32.7 | 1.13× worse |
+| qwen2.5-7b-instruct | **37.6** | 36.9 | 0.98× |
+| mistral-7b-instruct-v0.3 | **39.0** | 39.1 | 1.00× |
+| llama-3.1-8b-instruct | **92.7** | 220.8 | 2.4× worse |
+| **qwen3-8b** | **54.3** | **256.2** | **4.7× worse** |
+| granite-3.3-8b-instruct | **47.5** | 48.7 | 1.03× |
+| deepseek-r1-distill-llama-8b | **40.4** | 41.1 | 1.02× |
+| deepseek-r1-distill-qwen-7b | **35.8** | 36.8 | 1.03× |
+| gemma-2-9b-it | **72.1** | 80.1 | 1.11× worse |
+
+**Takeaway:** vLLM tail latency is substantially more stable at 7–9B scale under high concurrency. SGLang P99 TPOT spikes to 4.7× vLLM on Qwen3 8B and 2.4× on Llama 3.1 8B — the same scheduler stall behaviour that produces its P95 tail-latency anomaly on Gemma 2 9B. At ≤4B, the gap closes to <5% for most models.
+
+#### Goodput (TTFT ≤ 200 ms, TPOT ≤ 40 ms)
+
+Goodput = requests/sec satisfying both SLOs simultaneously, summed across all scenarios. Re-run with different thresholds: `python -m analysis.goodput --ttft-slo-ms <X> --tpot-slo-ms <Y>`.
+
+| Model | vLLM goodput | SGLang goodput | SLO pass % (vLLM / SGLang) |
+|---|---|---|---|
+| gemma-2-2b-it | **1.47 rps** | 1.32 rps | 99.9% / 97.0% |
+| smollm3-3b | **1.12 rps** | 0.90 rps | 98.8% / 88.9% |
+| llama-3.2-3b-instruct | 1.08 rps | **1.11 rps** | 98.2% / 99.9% |
+| phi-3-mini-4k-instruct | 0.90 rps | **0.92 rps** | 96.0% / 99.8% |
+| **gemma-3-4b-it** | 0.004 rps | **0.60 rps** | 1.0% / 81.4% |
+| phi-4-mini-instruct | 0.94 rps | **1.00 rps** | 98.8% / 98.9% |
+| deepseek-r1-distill-qwen-7b | **0.51 rps** | 0.47 rps | 97.1% / 91.3% |
+| qwen2.5-7b-instruct | 0.52 rps | **0.53 rps** | 97.1% / 98.6% |
+| mistral-7b-instruct-v0.3 | 0.51 rps | **0.53 rps** | 95.7% / 99.9% |
+| llama-3.1-8b-instruct | 0.28 rps | **0.42 rps** | 60.4% / 71.7% |
+| qwen3-8b | **0.34 rps** | 0.37 rps | 78.4% / 50.9% |
+| granite-3.3-8b-instruct | **0.25 rps** | 0.24 rps | 54.3% / 53.8% |
+| deepseek-r1-distill-llama-8b | **0.47 rps** | 0.47 rps | 94.0% / 93.1% |
+| gemma-2-9b-it | 0 rps | 0 rps | 0% / 0% — TPOT ~44 ms exceeds SLO |
+
+**Takeaways:**
+- **Gemma 2 2B / SmolLM3** — vLLM leads by 10–12% in goodput (CUDA graphs, lower TPOT variance).
+- **Gemma 3 4B** — SGLang delivers 150× the goodput of vLLM (0.60 vs 0.004 rps) because vLLM almost never meets the TPOT SLO without CUDA graphs.
+- **Llama 3.1 8B** — SGLang wins goodput (0.42 vs 0.28 rps) despite vLLM's lower serial TTFT, because SGLang's better TTFT under concurrent load keeps more requests inside the 200 ms window.
+- **Gemma 2 9B** — neither engine meets a 40 ms TPOT SLO (native TPOT ~44 ms); tighten to ≤50 ms to get meaningful results.
+
+---
+
+### 7. Speculative Decoding
 
 #### Llama 3.1 8B
 
