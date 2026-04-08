@@ -243,7 +243,7 @@ if [ "$RUN_PHASE1" = "true" ]; then
     log "PHASE 1 — VARIANCE SUBSET"
     echo "  Output dir : results_variance/"
     echo "  Iterations : 5"
-    echo "  Cooldown   : 300s"
+    echo "  Cooldown   : 30s between scenarios (Docker startup has separate health-check wait)"
     echo "  Models     : gemma-2-2b-it, Phi-4-mini, Llama-3.1-8B, gemma-3-4b-it"
     echo "  Scenarios  : 5 baseline scenarios"
 
@@ -259,12 +259,12 @@ if [ "$RUN_PHASE1" = "true" ]; then
         if [ "$model" = "google/gemma-3-4b-it" ]; then
             # Gemma 3 4B: vLLM requires --enforce-eager (hybrid sliding-window attention
             # is incompatible with CUDA graph capture) and a reduced max-model-len.
-            run_vllm_model "$model" "$VARIANCE_SCENARIOS" 5 300 "results_variance" \
+            run_vllm_model "$model" "$VARIANCE_SCENARIOS" 5 30 "results_variance" \
                 --max-model-len 4096 --enforce-eager --disable-frontend-multiprocessing
         else
-            run_vllm_model "$model" "$VARIANCE_SCENARIOS" 5 300 "results_variance"
+            run_vllm_model "$model" "$VARIANCE_SCENARIOS" 5 30 "results_variance"
         fi
-        run_sglang_model "$model" "$VARIANCE_SCENARIOS" 5 300 "results_variance"
+        run_sglang_model "$model" "$VARIANCE_SCENARIOS" 5 30 "results_variance"
         ((COMPLETED++))
     done
 
@@ -279,7 +279,7 @@ if [ "$RUN_PHASE2" = "true" ]; then
     log "PHASE 2 — CONCURRENCY-64 EXTENDED RAMP"
     echo "  Output dir : results_concurrency64/"
     echo "  Iterations : 3"
-    echo "  Cooldown   : 300s"
+    echo "  Cooldown   : 30s between scenarios (Docker startup has separate health-check wait)"
     echo "  Models     : Llama-3.1-8B, Qwen3-8B, Mistral-7B, gemma-2-9b-it"
     echo "  Scenario   : throughput_ramp_extended"
 
@@ -292,8 +292,8 @@ if [ "$RUN_PHASE2" = "true" ]; then
     )
 
     for model in "${CONC64_MODELS[@]}"; do
-        run_vllm_model   "$model" "$CONC64_SCENARIO" 3 300 "results_concurrency64"
-        run_sglang_model "$model" "$CONC64_SCENARIO" 3 300 "results_concurrency64"
+        run_vllm_model   "$model" "$CONC64_SCENARIO" 3 30 "results_concurrency64"
+        run_sglang_model "$model" "$CONC64_SCENARIO" 3 30 "results_concurrency64"
         ((COMPLETED++))
     done
 
@@ -308,7 +308,7 @@ if [ "$RUN_PHASE3" = "true" ]; then
     log "PHASE 3 — DECODE-LENGTH SWEEP"
     echo "  Output dir : results_decode_sweep/"
     echo "  Iterations : 3"
-    echo "  Cooldown   : 300s"
+    echo "  Cooldown   : 30s between scenarios (Docker startup has separate health-check wait)"
     echo "  Models     : gemma-2-2b-it, Phi-4-mini, Llama-3.1-8B, gemma-3-4b-it"
     echo "  Scenarios  : decode_length_sweep_{64,256,1024,4096}"
 
@@ -322,12 +322,12 @@ if [ "$RUN_PHASE3" = "true" ]; then
 
     for model in "${DECODE_MODELS[@]}"; do
         if [ "$model" = "google/gemma-3-4b-it" ]; then
-            run_vllm_model "$model" "$DECODE_SCENARIOS" 3 300 "results_decode_sweep" \
+            run_vllm_model "$model" "$DECODE_SCENARIOS" 3 30 "results_decode_sweep" \
                 --max-model-len 4096 --enforce-eager --disable-frontend-multiprocessing
         else
-            run_vllm_model "$model" "$DECODE_SCENARIOS" 3 300 "results_decode_sweep"
+            run_vllm_model "$model" "$DECODE_SCENARIOS" 3 30 "results_decode_sweep"
         fi
-        run_sglang_model "$model" "$DECODE_SCENARIOS" 3 300 "results_decode_sweep"
+        run_sglang_model "$model" "$DECODE_SCENARIOS" 3 30 "results_decode_sweep"
         ((COMPLETED++))
     done
 
