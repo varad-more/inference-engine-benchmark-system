@@ -70,7 +70,125 @@ def aggregate_results(results_dir: Path, model: str | None = None) -> dict[str, 
         "available_models": available_models,
         "selected_model": selected_model,
         "selection_mode": selection_mode,
+        "_raw_records": records,  # kept for saturation analysis; not serialised to JSON
     }
+
+
+def _compute_saturation(records: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """
+    For throughput_ramp and throughput_ramp_extended result files, partition requests
+    by concurrency level (using scenario_config) and compute per-level throughput.
+
+    Throughput per level ≈ (total output tokens × concurrency) / sum(total_ms / 1000)
+    This is an approximation for a semaphore-bounded concurrent workload.
+
+    Returns list of rows: {model, engine, scenario, concurrency, tokens_per_sec, requests}
+    """
+    rows: list[dict[str, Any]] = []
+    ramp_scenarios = {"throughput_ramp", "throughput_ramp_extended"}
+
+    for rec in records:
+        if rec.get("scenario_name") not in ramp_scenarios:
+            continue
+        cfg = rec.get("scenario_config", {})
+        concurrency_levels = cfg.get("concurrency_levels", [])
+        rpl = cfg.get("requests_per_level", 100)
+        if not concurrency_levels or not rpl:
+            continue
+
+        model_raw = rec.get("run_metadata", {}).get("model", "")
+        from analysis import get_engine_variant
+        engine = get_engine_variant(rec)
+        model = model_raw.split("/")[-1] if model_raw else "unknown"
+        scenario = rec.get("scenario_name", "unknown")
+
+        sorted_requests = sorted(rec.get("requests", []), key=lambda r: r["request_id"])
+
+        for i, concurrency in enumerate(concurrency_levels):
+            level_reqs = sorted_requests[i * rpl : (i + 1) * rpl]
+            successful = [r for r in level_reqs if r.get("success")]
+            if not successful:
+                continue
+            total_tokens = sum(r.get("output_tokens", 0) for r in successful)
+            total_ms = sum(r.get("total_ms", 0.0) for r in successful)
+            if total_ms <= 0:
+                continue
+            # Approximation: concurrent throughput = (tokens × concurrency) / total_latency
+            approx_tps = total_tokens * concurrency / (total_ms / 1000.0)
+            rows.append(
+                {
+                    "model": model,
+                    "engine": engine,
+                    "scenario": scenario,
+                    "concurrency": concurrency,
+                    "tokens_per_sec": approx_tps,
+                    "n_requests": len(successful),
+                }
+            )
+    return rows
+
+
+def _render_saturation(saturation_rows: list[dict[str, Any]]) -> list[str]:
+    """Render a 'Saturation Analysis' section from per-level throughput rows."""
+    if not saturation_rows:
+        return []
+
+    from collections import defaultdict
+
+    lines: list[str] = [
+        "## Saturation Analysis",
+        "",
+        "Per-level throughput from `throughput_ramp` and `throughput_ramp_extended` runs. "
+        "Throughput is approximated as `(output tokens × concurrency) / Σ(total_ms)`. "
+        "The **saturation point** is the lowest concurrency level at which throughput is within 5% of the run maximum.",
+        "",
+    ]
+
+    # Group by (model, engine, scenario)
+    grouped: dict[tuple[str, str, str], list[dict]] = defaultdict(list)
+    for row in saturation_rows:
+        grouped[(row["model"], row["engine"], row["scenario"])].append(row)
+
+    # Collect all concurrency levels seen
+    all_concurrencies: list[int] = sorted({r["concurrency"] for r in saturation_rows})
+    conc_header = " | ".join(f"C={c}" for c in all_concurrencies)
+    conc_sep = " | ".join("------" for _ in all_concurrencies)
+
+    lines.append(f"| Model | Engine | Scenario | {conc_header} | Saturation point |")
+    lines.append(f"|-------|--------|----------|{conc_sep}|-----------------|")
+
+    # Aggregate multiple runs by mean
+    for key in sorted(grouped.keys()):
+        model, engine, scenario = key
+        level_rows = grouped[key]
+
+        # Average across multiple runs at the same concurrency
+        from statistics import mean as _mean
+        by_conc: dict[int, list[float]] = defaultdict(list)
+        for r in level_rows:
+            by_conc[r["concurrency"]].append(r["tokens_per_sec"])
+        avg_tps = {c: _mean(vs) for c, vs in by_conc.items()}
+
+        max_tps = max(avg_tps.values()) if avg_tps else 1.0
+        sat_point = "—"
+        for c in all_concurrencies:
+            tps = avg_tps.get(c, 0.0)
+            if tps >= max_tps * 0.95:
+                sat_point = f"C={c}"
+                break
+
+        cells = []
+        for c in all_concurrencies:
+            tps = avg_tps.get(c)
+            if tps is None:
+                cells.append("—")
+            else:
+                cells.append(f"{tps:.0f}")
+        cells_str = " | ".join(cells)
+        lines.append(f"| {model} | {engine} | {scenario} | {cells_str} | {sat_point} |")
+
+    lines.append("")
+    return lines
 
 
 def render_markdown(summary: dict[str, Any]) -> str:
@@ -104,6 +222,12 @@ def render_markdown(summary: dict[str, Any]) -> str:
     if not rows:
         lines.append("No result files found.")
         return "\n".join(lines)
+
+    # Saturation analysis (requires access to raw records stored in summary)
+    raw_records = summary.get("_raw_records", [])
+    if raw_records:
+        saturation_rows = _compute_saturation(raw_records)
+        lines.extend(_render_saturation(saturation_rows))
 
     for model in models:
         lines.extend(
