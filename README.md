@@ -4,7 +4,7 @@ A production-grade benchmark harness that rigorously compares **vLLM** and **SGL
 
 ## Summary
 
-I benchmarked **14 models** (2B to 9B parameters) on a single NVIDIA A10G 24 GB GPU, running **5 scenarios** across both engines — **140+ total runs, 100% success rate**. All 14 models have complete both-engine results. Speculative decoding: **Ngram ran successfully on Llama 3.1 8B and Qwen3 8B** (both engines); **Eagle3 ran on Llama 3.1 8B with vLLM only** (SGLang OOM on A10G; Qwen3 8B draft model not yet published).
+I benchmarked **14 models** (2B to 9B parameters) on a single NVIDIA A10G 24 GB GPU, running **5 scenarios** across both engines — **152 total result files, 100% success rate**. All 14 models have complete both-engine results. Speculative decoding: **Ngram ran successfully on Llama 3.1 8B and Qwen3 8B** (both engines); **Eagle3 ran on Llama 3.1 8B with vLLM only** (SGLang OOM on A10G; Qwen3 8B draft model not yet published). Extended phases (variance, concurrency-64, decode sweep) are in progress — see [Benchmark Execution Status](#benchmark-execution-status) below.
 
 | Metric | vLLM | SGLang |
 |---|---|---|
@@ -20,6 +20,39 @@ I benchmarked **14 models** (2B to 9B parameters) on a single NVIDIA A10G 24 GB 
 
 **Hardware:** AWS g5.2xlarge (NVIDIA A10G 24 GB), sequential execution, one engine at a time
 **Full reports:** [`reports/final_benchmark_report_2026-03-31.md`](reports/final_benchmark_report_2026-03-31.md)
+
+---
+
+## Benchmark Execution Status
+
+_Last updated: 2026-04-09_
+
+| Phase | Description | Status | Result Files |
+|---|---|---|---|
+| Baseline | 14 models × 5 scenarios × 2 engines | ✅ Complete | 152 / 152 |
+| Speculative decoding | Llama 3.1 8B (Ngram + Eagle3), Qwen3 8B (Ngram) | ✅ Complete | In `results/` |
+| Phase 1 — Variance | 4 models × 5 scenarios × 2 engines × 5 iterations | ✅ Complete | 201 / 200 |
+| Phase 2 — Concurrency-64 | 4 models × `throughput_ramp_extended` × 2 engines × 3 iterations | 🔶 Partial | 6 / 24 (Llama 3.1 8B only) |
+| Phase 3 — Decode sweep | 4 models × 4 lengths × 2 engines × 3 iterations | ⬜ Not started | 0 / 96 |
+
+### Pending
+
+- **Phase 2 resume:** Uncomment the model loop in `scripts/run_new_benchmarks.sh` Phase 2 block; run `--phase2` for Qwen3-8B, Mistral-7B-Instruct-v0.3, gemma-2-9b-it
+- **Phase 3:** Run `--phase3` (all 4 decode-length scenarios × 4 models × 2 engines)
+- **Variance analysis re-run:** Phase 1 data now complete — run `python -m analysis.variance_analysis --results-dir results_variance`
+- **Gemma 4 benchmarks:** Pending GPU availability after Phases 2/3 complete
+
+```bash
+# Resume Phase 2 (after uncommenting the model loop)
+nohup bash scripts/run_new_benchmarks.sh --phase2 2>&1 | tee logs/phase2_$(date +%Y%m%dT%H%M%S).log &
+
+# Run Phase 3
+nohup bash scripts/run_new_benchmarks.sh --phase3 2>&1 | tee logs/phase3_$(date +%Y%m%dT%H%M%S).log &
+
+# Re-run variance analysis (Phase 1 complete)
+conda run -n base python -m analysis.variance_analysis --results-dir results_variance
+conda run -n base python -m analysis.tpot_analysis --results-dir results_variance
+```
 
 ---
 
@@ -228,11 +261,11 @@ python run_experiment.py list-prompt-packs
 
 Three additional benchmark phases run on top of the baseline suite:
 
-| Phase | Script | Scenarios | Iterations | Output Dir | Purpose |
+| Phase | Script | Scenarios | Iterations | Output Dir | Status |
 |---|---|---|---|---|---|
-| Phase 1 — Variance | `scripts/run_new_benchmarks.sh --phase1` | 5 baseline | 5× | `results_variance/` | Credibility backbone — measure run-to-run variance |
-| Phase 2 — Concurrency-64 | `scripts/run_new_benchmarks.sh --phase2` | `throughput_ramp_extended` | 3× | `results_concurrency64/` | Saturation & OOM ceiling at concurrency=64 on 7–9B models |
-| Phase 3 — Decode Sweep | `scripts/run_new_benchmarks.sh --phase3` | `decode_length_sweep_{64,256,1024,4096}` | 3× | `results_decode_sweep/` | Prefill-bound vs decode-bound across output lengths |
+| Phase 1 — Variance | `scripts/run_new_benchmarks.sh --phase1` | 5 baseline | 5× | `results_variance/` | ✅ Complete (201 files) |
+| Phase 2 — Concurrency-64 | `scripts/run_new_benchmarks.sh --phase2` | `throughput_ramp_extended` | 3× | `results_concurrency64/` | 🔶 Partial — Llama 3.1 8B done, 3 models pending |
+| Phase 3 — Decode Sweep | `scripts/run_new_benchmarks.sh --phase3` | `decode_length_sweep_{64,256,1024,4096}` | 3× | `results_decode_sweep/` | ⬜ Not started |
 
 **Phase 2** adds `concurrency=64` to find the saturation point and OOM ceiling on 7–9B models. **Phase 3** fixes the prompt at ~512 tokens and sweeps `max_output_tokens` ∈ {64, 256, 1024, 4096} to isolate how output length affects throughput.
 
@@ -794,11 +827,18 @@ conda run -n base python analysis/generate_final_benchmark_report.py
 
 ## Future Work
 
+### Near-term (in progress)
+- [ ] **Phase 2 — Concurrency-64:** Complete remaining 3 models (Qwen3-8B, Mistral-7B, gemma-2-9b-it)
+- [ ] **Phase 3 — Decode sweep:** Run all 4 models × 4 output-length configs × 2 engines
+- [ ] **Variance analysis:** Re-run `variance_analysis`, `tpot_analysis`, `goodput` on Phase 1 results
+- [ ] **Decode length analysis:** Run `decode_length_analysis` after Phase 3 completes
+- [ ] **Gemma 4 benchmarks:** Run after Phases 2/3 (GPU free) — baseline + Ngram spec-dec
+
+### Longer-term
 - [ ] SGLang Eagle3 on ≥40 GB GPU (A100/H100)
-- [ ] Eagle3 for Qwen3-8B when draft model is published
+- [ ] Eagle3 for Qwen3-8B when `RedHatAI/Qwen3-8B-speculator.eagle3` is published
 - [ ] Quantized models (AWQ/GPTQ) — test if spec-dec becomes viable at lower precision
 - [ ] Multi-GPU tensor parallel benchmarks
-- [ ] Continuous batching stress tests at concurrency 64+
 - [ ] CI pipeline for automated regression testing
 
 ---
