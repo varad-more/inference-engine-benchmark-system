@@ -238,54 +238,61 @@ run_sglang_model() {
 # =============================================================================
 #  PHASE 1 — Variance Subset
 #  Credibility backbone: 5 iterations × 5 scenarios × 2 engines × 4 models
+#
+#  STATUS (as of 2026-04-09): COMPLETE — 201 result files in results_variance/
+#    google/gemma-2-2b-it          — COMPLETE (vLLM + SGLang, all scenarios × 5 iter)
+#    microsoft/Phi-4-mini-instruct — COMPLETE (vLLM + SGLang, all scenarios × 5 iter)
+#    meta-llama/Llama-3.1-8B-Instruct — COMPLETE (vLLM + SGLang, all scenarios × 5 iter)
+#    google/gemma-3-4b-it          — COMPLETE (vLLM + SGLang, all scenarios × 5 iter)
+#
+#  Runs are commented out. Re-enable only if re-running from scratch.
 # =============================================================================
 if [ "$RUN_PHASE1" = "true" ]; then
-    log "PHASE 1 — VARIANCE SUBSET"
-    echo "  Output dir : results_variance/"
-    echo "  Iterations : 5"
-    echo "  Cooldown   : 30s between scenarios (Docker startup has separate health-check wait)"
-    echo "  Models     : gemma-2-2b-it, Phi-4-mini, Llama-3.1-8B, gemma-3-4b-it"
-    echo "  Scenarios  : 5 baseline scenarios"
+    log "PHASE 1 — VARIANCE SUBSET (COMPLETE — SKIPPED)"
+    echo "  Status     : COMPLETE as of 2026-04-09 (201 files in results_variance/)"
+    echo "  Re-enable the run_vllm_model/run_sglang_model calls below to re-run."
 
-    VARIANCE_SCENARIOS="single_request_latency,throughput_ramp,long_context_stress,prefix_sharing_benefit,structured_generation_speed"
-    VARIANCE_MODELS=(
-        "google/gemma-2-2b-it"
-        "microsoft/Phi-4-mini-instruct"
-        "meta-llama/Llama-3.1-8B-Instruct"
-        "google/gemma-3-4b-it"
-    )
+    VARIANCE_SCENARIOS_ALL="single_request_latency,throughput_ramp,long_context_stress,prefix_sharing_benefit,structured_generation_speed"
 
-    for model in "${VARIANCE_MODELS[@]}"; do
-        if [ "$model" = "google/gemma-3-4b-it" ]; then
-            # Gemma 3 4B: vLLM requires --enforce-eager (hybrid sliding-window attention
-            # is incompatible with CUDA graph capture) and a reduced max-model-len.
-            run_vllm_model "$model" "$VARIANCE_SCENARIOS" 5 30 "results_variance" \
-                --max-model-len 4096 --enforce-eager --disable-frontend-multiprocessing
-        else
-            run_vllm_model "$model" "$VARIANCE_SCENARIOS" 5 30 "results_variance"
-        fi
-        run_sglang_model "$model" "$VARIANCE_SCENARIOS" 5 30 "results_variance"
-        ((COMPLETED++))
-    done
+    # COMPLETE — all 4 models × 5 scenarios × 2 engines × 5 iterations done.
+    # Uncomment below only to re-run from scratch.
+    # run_vllm_model "google/gemma-2-2b-it" "$VARIANCE_SCENARIOS_ALL" 5 30 "results_variance"
+    # run_sglang_model "google/gemma-2-2b-it" "$VARIANCE_SCENARIOS_ALL" 5 30 "results_variance"
+    # run_vllm_model "microsoft/Phi-4-mini-instruct" "$VARIANCE_SCENARIOS_ALL" 5 30 "results_variance"
+    # run_sglang_model "microsoft/Phi-4-mini-instruct" "$VARIANCE_SCENARIOS_ALL" 5 30 "results_variance"
+    # run_vllm_model "meta-llama/Llama-3.1-8B-Instruct" "$VARIANCE_SCENARIOS_ALL" 5 30 "results_variance"
+    # run_sglang_model "meta-llama/Llama-3.1-8B-Instruct" "$VARIANCE_SCENARIOS_ALL" 5 30 "results_variance"
+    # run_vllm_model "google/gemma-3-4b-it" "$VARIANCE_SCENARIOS_ALL" 5 30 "results_variance" \
+    #     --max-model-len 4096 --enforce-eager --disable-frontend-multiprocessing
+    # run_sglang_model "google/gemma-3-4b-it" "$VARIANCE_SCENARIOS_ALL" 5 30 "results_variance"
 
-    log "PHASE 1 COMPLETE"
+    log "PHASE 1 COMPLETE (already done — skipped)"
 fi
 
 # =============================================================================
 #  PHASE 2 — Concurrency-64 Extended Ramp
 #  Adds concurrency=64 to find saturation / OOM ceiling on 7-9B models
+#
+#  STATUS (as of 2026-04-09): PARTIAL — Llama 3.1 8B done (6 files), 3 models pending
+#    meta-llama/Llama-3.1-8B-Instruct — COMPLETE (3 vLLM + 3 SGLang in results_concurrency64/)
+#    Qwen/Qwen3-8B                    — PENDING
+#    mistralai/Mistral-7B-Instruct-v0.3 — PENDING
+#    google/gemma-2-9b-it             — PENDING
+#
+#  Run after Phase 3 completes:
+#    nohup bash scripts/run_new_benchmarks.sh --phase2 2>&1 | tee logs/phase2_resume_$(date +%Y%m%dT%H%M%S).log &
 # =============================================================================
 if [ "$RUN_PHASE2" = "true" ]; then
-    log "PHASE 2 — CONCURRENCY-64 EXTENDED RAMP"
+    log "PHASE 2 — CONCURRENCY-64 EXTENDED RAMP (RESUME)"
     echo "  Output dir : results_concurrency64/"
     echo "  Iterations : 3"
-    echo "  Cooldown   : 30s between scenarios (Docker startup has separate health-check wait)"
-    echo "  Models     : Llama-3.1-8B, Qwen3-8B, Mistral-7B, gemma-2-9b-it"
-    echo "  Scenario   : throughput_ramp_extended"
+    echo "  Cooldown   : 30s between scenarios"
+    echo "  Skipping   : Llama-3.1-8B (already complete)"
+    echo "  Running    : Qwen3-8B, Mistral-7B, gemma-2-9b-it"
 
     CONC64_SCENARIO="throughput_ramp_extended"
+    # Llama 3.1 8B is already complete — only run remaining 3 models
     CONC64_MODELS=(
-        "meta-llama/Llama-3.1-8B-Instruct"
         "Qwen/Qwen3-8B"
         "mistralai/Mistral-7B-Instruct-v0.3"
         "google/gemma-2-9b-it"
