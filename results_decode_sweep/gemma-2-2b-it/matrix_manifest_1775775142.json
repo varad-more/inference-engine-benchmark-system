@@ -1,0 +1,48 @@
+{
+  "started_at": 1775775142.092853,
+  "finished_at": 1775775810.725226,
+  "total_elapsed_seconds": 668.6285903453827,
+  "model": "google/gemma-2-2b-it",
+  "tasks": [
+    {
+      "model": "google/gemma-2-2b-it",
+      "scenario_name": "decode_length_sweep_4096",
+      "engine": "sglang",
+      "engine_variant": "sglang",
+      "spec_method": null,
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1775775143.180758,
+      "status": "completed",
+      "finished_at": 1775775348.8965833,
+      "result_path": "results_decode_sweep/gemma-2-2b-it/decode_length_sweep_4096_sglang_1775775143.json"
+    },
+    {
+      "model": "google/gemma-2-2b-it",
+      "scenario_name": "decode_length_sweep_4096",
+      "engine": "sglang",
+      "engine_variant": "sglang",
+      "spec_method": null,
+      "iteration": 2,
+      "healthy_before_run": true,
+      "started_at": 1775775364.9455023,
+      "status": "completed",
+      "finished_at": 1775775574.5365593,
+      "result_path": "results_decode_sweep/gemma-2-2b-it/decode_length_sweep_4096_sglang_1775775364.json"
+    },
+    {
+      "model": "google/gemma-2-2b-it",
+      "scenario_name": "decode_length_sweep_4096",
+      "engine": "sglang",
+      "engine_variant": "sglang",
+      "spec_method": null,
+      "iteration": 3,
+      "healthy_before_run": true,
+      "started_at": 1775775590.570265,
+      "status": "completed",
+      "finished_at": 1775775795.7175188,
+      "result_path": "results_decode_sweep/gemma-2-2b-it/decode_length_sweep_4096_sglang_1775775590.json"
+    }
+  ],
+  "cooldown_seconds": 15
+}

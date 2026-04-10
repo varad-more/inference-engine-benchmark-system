@@ -26,7 +26,7 @@ set +e
 
 PYTHON="conda run --no-capture-output -n base python"
 VLLM_IMAGE="vllm/vllm-openai:v0.18.0-cu130"
-SGLANG_IMAGE="lmsysorg/sglang:nightly-dev-cu13-20260321-94194537"
+SGLANG_IMAGE="lmsysorg/sglang:v0.5.10.post1-cu130"
 
 # vLLM binds to the external NIC to avoid colliding with selfhosted-chat-api
 VLLM_BIND_IP="172.31.73.137"
@@ -67,20 +67,51 @@ if [ -z "$HF_TOKEN" ] && [ -f .env ]; then
     HF_TOKEN=$(grep "^HUGGING_FACE_HUB_TOKEN=" .env | cut -d= -f2)
 fi
 
+# ── Ensure docker runs with sudo if needed ───────────────────────────────────
+DOCKER="docker"
+if ! docker info >/dev/null 2>&1; then
+    if sudo docker info >/dev/null 2>&1; then
+        DOCKER="sudo docker"
+    else
+        echo "ERROR: Docker is not accessible. Install Docker or add user to docker group." >&2
+        exit 1
+    fi
+fi
+
+# ── Pull Docker images if not present locally ────────────────────────────────
+pull_image_if_missing() {
+    local image="$1"
+    if $DOCKER image inspect "$image" >/dev/null 2>&1; then
+        echo "  [pull] $image — already present, skipping pull"
+    else
+        echo "  [pull] $image — not found locally, pulling..."
+        if ! $DOCKER pull "$image"; then
+            echo "ERROR: Failed to pull Docker image: $image" >&2
+            exit 1
+        fi
+        echo "  [pull] $image — done"
+    fi
+}
+
 # ── Preflight ────────────────────────────────────────────────────────────────
 log "PREFLIGHT"
 echo -n "  Python: "; $PYTHON --version 2>&1
-echo -n "  Docker: "; docker version --format '{{.Server.Version}}' 2>&1
+echo -n "  Docker: "; $DOCKER version --format '{{.Server.Version}}' 2>&1
 echo -n "  GPU:    "; nvidia-smi --query-gpu=name,memory.total --format=csv,noheader 2>&1
 echo    "  HF token: $([ -n "$HF_TOKEN" ] && echo 'found' || echo 'NOT FOUND — Gemma/Llama downloads will fail (cached Llama is OK)')"
 echo    "  vLLM bind: ${VLLM_BIND_IP}:8000"
 echo    "  SGLang:    localhost:8001"
 mkdir -p logs results_variance results_concurrency64 results_decode_sweep reports
-docker rm -f bench-vllm bench-sglang 2>/dev/null || true
+
+log "PULLING DOCKER IMAGES (if not cached)"
+pull_image_if_missing "$VLLM_IMAGE"
+pull_image_if_missing "$SGLANG_IMAGE"
+
+$DOCKER rm -f bench-vllm bench-sglang 2>/dev/null || true
 log "PREFLIGHT COMPLETE"
 
 # ── Utility: cleanup a container ─────────────────────────────────────────────
-cleanup() { docker rm -f "$1" 2>/dev/null; sleep 3; }
+cleanup() { $DOCKER rm -f "$1" 2>/dev/null; sleep 3; }
 
 # ── Utility: wait for vLLM to be healthy ────────────────────────────────────
 wait_vllm() {
@@ -143,7 +174,7 @@ run_vllm_model() {
         "${extra_docker_args[@]}"
     )
 
-    docker run -d \
+    $DOCKER run -d \
         --name bench-vllm \
         --gpus '"device=0"' \
         -p "${VLLM_BIND_IP}:8000:8000" \
@@ -160,7 +191,7 @@ run_vllm_model() {
 
     if ! wait_vllm 600; then
         error "vLLM failed to start for ${model}"
-        docker logs bench-vllm --tail 40 2>&1
+        $DOCKER logs bench-vllm --tail 40 2>&1
         cleanup bench-vllm; return 1
     fi
 
@@ -192,7 +223,7 @@ run_sglang_model() {
     log "SGLang — ${model}"
     cleanup bench-sglang
 
-    docker run -d \
+    $DOCKER run -d \
         --name bench-sglang \
         --gpus '"device=0"' \
         -p "8001:8001" \
@@ -216,7 +247,7 @@ run_sglang_model() {
 
     if ! wait_sglang 600; then
         error "SGLang failed to start for ${model}"
-        docker logs bench-sglang --tail 40 2>&1
+        $DOCKER logs bench-sglang --tail 40 2>&1
         cleanup bench-sglang; return 1
     fi
 
@@ -299,8 +330,8 @@ if [ "$RUN_PHASE2" = "true" ]; then
     )
 
     for model in "${CONC64_MODELS[@]}"; do
-        run_vllm_model   "$model" "$CONC64_SCENARIO" 3 30 "results_concurrency64"
-        run_sglang_model "$model" "$CONC64_SCENARIO" 3 30 "results_concurrency64"
+       # run_vllm_model   "$model" "$CONC64_SCENARIO" 3 30 "results_concurrency64"
+       #  run_sglang_model "$model" "$CONC64_SCENARIO" 3 30 "results_concurrency64"
         ((COMPLETED++))
     done
 
@@ -310,31 +341,42 @@ fi
 # =============================================================================
 #  PHASE 3 — Decode-Length Sweep
 #  Fixed ~512-token prompts, max_output_tokens ∈ {64, 256, 1024, 4096}
+#
+#  STATUS (as of 2026-04-09): PARTIAL — 11 files in results_decode_sweep/
+#    google/gemma-2-2b-it          — vLLM: PENDING (all scenarios)
+#                                    SGLang: PARTIAL (64/256/1024 done, 4096 needs 2 more iters)
+#    microsoft/Phi-4-mini-instruct — PENDING (vLLM + SGLang, all scenarios)
+#    meta-llama/Llama-3.1-8B-Instruct — PENDING (vLLM + SGLang, all scenarios)
+#    google/gemma-3-4b-it          — PENDING (vLLM + SGLang, all scenarios)
 # =============================================================================
 if [ "$RUN_PHASE3" = "true" ]; then
-    log "PHASE 3 — DECODE-LENGTH SWEEP"
+    log "PHASE 3 — DECODE-LENGTH SWEEP (RESUME)"
     echo "  Output dir : results_decode_sweep/"
     echo "  Iterations : 3"
-    echo "  Cooldown   : 30s between scenarios (Docker startup has separate health-check wait)"
-    echo "  Models     : gemma-2-2b-it, Phi-4-mini, Llama-3.1-8B, gemma-3-4b-it"
-    echo "  Scenarios  : decode_length_sweep_{64,256,1024,4096}"
+    echo "  Cooldown   : 15s between scenarios"
 
-    DECODE_SCENARIOS="decode_length_sweep_64,decode_length_sweep_256,decode_length_sweep_1024,decode_length_sweep_4096"
-    DECODE_MODELS=(
-        "google/gemma-2-2b-it"
+    DECODE_SCENARIOS_ALL="decode_length_sweep_64,decode_length_sweep_256,decode_length_sweep_1024,decode_length_sweep_4096"
+
+    # gemma-2-2b-it: vLLM fully pending; SGLang only needs 4096 (64/256/1024 already done)
+   # run_vllm_model "google/gemma-2-2b-it" "$DECODE_SCENARIOS_ALL" 3 15 "results_decode_sweep"
+   # run_sglang_model "google/gemma-2-2b-it" "decode_length_sweep_4096" 3 15 "results_decode_sweep"
+    ((COMPLETED++))
+
+    # Remaining models: fully pending (vLLM + SGLang, all scenarios)
+    DECODE_MODELS_PENDING=(
         "microsoft/Phi-4-mini-instruct"
         "meta-llama/Llama-3.1-8B-Instruct"
         "google/gemma-3-4b-it"
     )
 
-    for model in "${DECODE_MODELS[@]}"; do
+    for model in "${DECODE_MODELS_PENDING[@]}"; do
         if [ "$model" = "google/gemma-3-4b-it" ]; then
-            run_vllm_model "$model" "$DECODE_SCENARIOS" 3 30 "results_decode_sweep" \
+            run_vllm_model "$model" "$DECODE_SCENARIOS_ALL" 3 15 "results_decode_sweep" \
                 --max-model-len 4096 --enforce-eager --disable-frontend-multiprocessing
         else
-            run_vllm_model "$model" "$DECODE_SCENARIOS" 3 30 "results_decode_sweep"
+            run_vllm_model "$model" "$DECODE_SCENARIOS_ALL" 3 15 "results_decode_sweep"
         fi
-        run_sglang_model "$model" "$DECODE_SCENARIOS" 3 30 "results_decode_sweep"
+        run_sglang_model "$model" "$DECODE_SCENARIOS_ALL" 3 15 "results_decode_sweep"
         ((COMPLETED++))
     done
 
