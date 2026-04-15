@@ -8,8 +8,8 @@
 #
 # All models included — full HuggingFace access available.
 #
-# vLLM binds to 172.31.73.137:8000 (avoids conflict with selfhosted-chat-api
-# which occupies 127.0.0.1:8000). SGLang binds to 0.0.0.0:8001.
+# vLLM binds to the primary private IP (auto-detected) to avoid conflict with
+# selfhosted-chat-api on 127.0.0.1:8000. SGLang binds to the same IP on :8001.
 #
 # Usage:
 #   chmod +x scripts/run_new_benchmarks.sh
@@ -29,9 +29,9 @@ VLLM_IMAGE="vllm/vllm-openai:v0.18.0-cu130"
 SGLANG_IMAGE="lmsysorg/sglang:v0.5.10.post1-cu130"
 
 # vLLM binds to the external NIC to avoid colliding with selfhosted-chat-api
-VLLM_BIND_IP="172.31.73.137"
-VLLM_HOST="172.31.73.137"
-SGLANG_HOST="localhost"
+VLLM_BIND_IP="$(hostname -I | awk '{print $1}')"
+VLLM_HOST="$VLLM_BIND_IP"
+SGLANG_HOST="$VLLM_BIND_IP"
 
 ERRORS=()
 COMPLETED=0
@@ -100,7 +100,7 @@ echo -n "  Docker: "; $DOCKER version --format '{{.Server.Version}}' 2>&1
 echo -n "  GPU:    "; nvidia-smi --query-gpu=name,memory.total --format=csv,noheader 2>&1
 echo    "  HF token: $([ -n "$HF_TOKEN" ] && echo 'found' || echo 'NOT FOUND — Gemma/Llama downloads will fail (cached Llama is OK)')"
 echo    "  vLLM bind: ${VLLM_BIND_IP}:8000"
-echo    "  SGLang:    localhost:8001"
+echo    "  SGLang:    ${SGLANG_HOST}:8001"
 mkdir -p logs results_variance results_concurrency64 results_decode_sweep reports
 
 log "PULLING DOCKER IMAGES (if not cached)"
@@ -226,7 +226,7 @@ run_sglang_model() {
     $DOCKER run -d \
         --name bench-sglang \
         --gpus '"device=0"' \
-        -p "8001:8001" \
+        -p "${SGLANG_HOST}:8001:8001" \
         --shm-size 10g \
         -v "$(pwd)/model-cache:/root/.cache/huggingface" \
         -e "HUGGING_FACE_HUB_TOKEN=${HF_TOKEN}" \
@@ -330,8 +330,8 @@ if [ "$RUN_PHASE2" = "true" ]; then
     )
 
     for model in "${CONC64_MODELS[@]}"; do
-       # run_vllm_model   "$model" "$CONC64_SCENARIO" 3 30 "results_concurrency64"
-       #  run_sglang_model "$model" "$CONC64_SCENARIO" 3 30 "results_concurrency64"
+       # run_vllm_model   "$model" "$CONC64_SCENARIO" 1 10 "results_concurrency64"
+       #  run_sglang_model "$model" "$CONC64_SCENARIO" 1 10 "results_concurrency64"
         ((COMPLETED++))
     done
 
@@ -342,41 +342,46 @@ fi
 #  PHASE 3 — Decode-Length Sweep
 #  Fixed ~512-token prompts, max_output_tokens ∈ {64, 256, 1024, 4096}
 #
-#  STATUS (as of 2026-04-09): PARTIAL — 11 files in results_decode_sweep/
+#  STATUS (as of 2026-04-10): PARTIAL — 25 files in results_decode_sweep/
 #    google/gemma-2-2b-it          — vLLM: PENDING (all scenarios)
-#                                    SGLang: PARTIAL (64/256/1024 done, 4096 needs 2 more iters)
-#    microsoft/Phi-4-mini-instruct — PENDING (vLLM + SGLang, all scenarios)
+#                                    SGLang: COMPLETE (64×4, 256×3, 1024×3, 4096×4 files)
+#    microsoft/Phi-4-mini-instruct — vLLM: PENDING (all scenarios)
+#                                    SGLang: PARTIAL (64/256/1024 done ×3, 4096 needs 1 more iter)
 #    meta-llama/Llama-3.1-8B-Instruct — PENDING (vLLM + SGLang, all scenarios)
 #    google/gemma-3-4b-it          — PENDING (vLLM + SGLang, all scenarios)
 # =============================================================================
 if [ "$RUN_PHASE3" = "true" ]; then
     log "PHASE 3 — DECODE-LENGTH SWEEP (RESUME)"
     echo "  Output dir : results_decode_sweep/"
-    echo "  Iterations : 3"
     echo "  Cooldown   : 15s between scenarios"
 
     DECODE_SCENARIOS_ALL="decode_length_sweep_64,decode_length_sweep_256,decode_length_sweep_1024,decode_length_sweep_4096"
 
-    # gemma-2-2b-it: vLLM fully pending; SGLang only needs 4096 (64/256/1024 already done)
-   # run_vllm_model "google/gemma-2-2b-it" "$DECODE_SCENARIOS_ALL" 3 15 "results_decode_sweep"
-   # run_sglang_model "google/gemma-2-2b-it" "decode_length_sweep_4096" 3 15 "results_decode_sweep"
+    # gemma-2-2b-it: SGLang COMPLETE; vLLM fully pending (all 4 scenarios)
+    # run_vllm_model "google/gemma-2-2b-it" "$DECODE_SCENARIOS_ALL" 3 10 "results_decode_sweep"
+    # SGLang already complete — skip
+    # run_sglang_model "google/gemma-2-2b-it" "$DECODE_SCENARIOS_ALL" 3 15 "results_decode_sweep"
+    ((COMPLETED++))
+
+    # phi-4-mini: SGLang 4096 needs 1 more iteration (has 2, needs 3); vLLM fully pending
+    #run_sglang_model "microsoft/Phi-4-mini-instruct" "decode_length_sweep_4096" 1 10 "results_decode_sweep"
+    #run_vllm_model   "microsoft/Phi-4-mini-instruct" "$DECODE_SCENARIOS_ALL" 3 10 "results_decode_sweep"
     ((COMPLETED++))
 
     # Remaining models: fully pending (vLLM + SGLang, all scenarios)
     DECODE_MODELS_PENDING=(
-        "microsoft/Phi-4-mini-instruct"
         "meta-llama/Llama-3.1-8B-Instruct"
         "google/gemma-3-4b-it"
     )
 
     for model in "${DECODE_MODELS_PENDING[@]}"; do
         if [ "$model" = "google/gemma-3-4b-it" ]; then
-            run_vllm_model "$model" "$DECODE_SCENARIOS_ALL" 3 15 "results_decode_sweep" \
+            run_vllm_model "$model" "$DECODE_SCENARIOS_ALL" 3 10 "results_decode_sweep" \
                 --max-model-len 4096 --enforce-eager --disable-frontend-multiprocessing
         else
-            run_vllm_model "$model" "$DECODE_SCENARIOS_ALL" 3 15 "results_decode_sweep"
+            run_vllm_model "$model" "$DECODE_SCENARIOS_ALL" 3 10 "results_decode_sweep"
         fi
-        run_sglang_model "$model" "$DECODE_SCENARIOS_ALL" 3 15 "results_decode_sweep"
+        run_sglang_model "$model" "$DECODE_SCENARIOS_ALL" 3 10 "results_decode_sweep"
         ((COMPLETED++))
     done
 
