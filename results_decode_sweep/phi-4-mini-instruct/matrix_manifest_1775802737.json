@@ -1,0 +1,22 @@
+{
+  "started_at": 1775802737.740091,
+  "finished_at": 1775803093.8260763,
+  "total_elapsed_seconds": 356.08335280418396,
+  "model": "microsoft/Phi-4-mini-instruct",
+  "tasks": [
+    {
+      "model": "microsoft/Phi-4-mini-instruct",
+      "scenario_name": "decode_length_sweep_4096",
+      "engine": "sglang",
+      "engine_variant": "sglang",
+      "spec_method": null,
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1775802738.7915306,
+      "status": "completed",
+      "finished_at": 1775803083.8215702,
+      "result_path": "results_decode_sweep/phi-4-mini-instruct/decode_length_sweep_4096_sglang_1775802738.json"
+    }
+  ],
+  "cooldown_seconds": 10
+}

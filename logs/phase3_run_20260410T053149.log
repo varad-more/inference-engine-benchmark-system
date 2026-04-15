@@ -1,0 +1,80 @@
+
+========================================================================
+[2026-04-10 05:31:49] PREFLIGHT
+========================================================================
+  Python: Python 3.13.12
+  Docker: 29.4.0
+  GPU:    NVIDIA A10G, 23028 MiB
+  HF token: found
+  vLLM bind: 172.31.39.64:8000
+  SGLang:    localhost:8001
+
+========================================================================
+[2026-04-10 05:31:53] PULLING DOCKER IMAGES (if not cached)
+========================================================================
+  [pull] vllm/vllm-openai:v0.18.0-cu130 — already present, skipping pull
+  [pull] lmsysorg/sglang:v0.5.10.post1-cu130 — already present, skipping pull
+
+========================================================================
+[2026-04-10 05:31:53] PREFLIGHT COMPLETE
+========================================================================
+
+========================================================================
+[2026-04-10 05:31:53] PHASE 3 — DECODE-LENGTH SWEEP (RESUME)
+========================================================================
+  Output dir : results_decode_sweep/
+  Cooldown   : 15s between scenarios
+
+========================================================================
+[2026-04-10 05:31:53] vLLM — google/gemma-2-2b-it
+========================================================================
+397eacfeea51c127b3ce8c35fcf8f1406739a43b568d5880e850064d8202a69c
+  Waiting for vLLM health................................................................................................................................................................................................................................................ TIMEOUT
+[2026-04-10 05:51:58] ERROR: vLLM failed to start for google/gemma-2-2b-it
+(EngineCore pid=87) INFO 04-10 05:42:11 [kv_cache_utils.py:1321] Maximum concurrency for 8,192 tokens per request: 17.77x
+(EngineCore pid=87) Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):   0%|          | 0/51 [00:00<?, ?it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):   4%|▍         | 2/51 [00:00<00:02, 17.45it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):   8%|▊         | 4/51 [00:00<00:02, 17.69it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  12%|█▏        | 6/51 [00:00<00:02, 17.75it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  16%|█▌        | 8/51 [00:00<00:03, 11.74it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  20%|█▉        | 10/51 [00:00<00:03, 13.36it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  24%|██▎       | 12/51 [00:00<00:02, 14.97it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  27%|██▋       | 14/51 [00:00<00:02, 16.11it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  31%|███▏      | 16/51 [00:01<00:02, 17.17it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  37%|███▋      | 19/51 [00:01<00:01, 19.53it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  43%|████▎     | 22/51 [00:01<00:01, 21.04it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  49%|████▉     | 25/51 [00:01<00:01, 22.04it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  55%|█████▍    | 28/51 [00:01<00:00, 23.38it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  61%|██████    | 31/51 [00:01<00:00, 24.38it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  67%|██████▋   | 34/51 [00:01<00:00, 18.34it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  75%|███████▍  | 38/51 [00:01<00:00, 21.44it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  82%|████████▏ | 42/51 [00:02<00:00, 24.21it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  90%|█████████ | 46/51 [00:02<00:00, 26.44it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE):  98%|█████████▊| 50/51 [00:02<00:00, 27.97it/s]Capturing CUDA graphs (mixed prefill-decode, PIECEWISE): 100%|██████████| 51/51 [00:02<00:00, 21.09it/s]
+(EngineCore pid=87) Capturing CUDA graphs (decode, FULL):   0%|          | 0/35 [00:00<?, ?it/s]Capturing CUDA graphs (decode, FULL):   9%|▊         | 3/35 [00:00<00:01, 25.07it/s]Capturing CUDA graphs (decode, FULL):  17%|█▋        | 6/35 [00:00<00:01, 25.27it/s]Capturing CUDA graphs (decode, FULL):  26%|██▌       | 9/35 [00:00<00:01, 25.41it/s]Capturing CUDA graphs (decode, FULL):  34%|███▍      | 12/35 [00:00<00:01, 17.59it/s]Capturing CUDA graphs (decode, FULL):  43%|████▎     | 15/35 [00:00<00:00, 20.59it/s]Capturing CUDA graphs (decode, FULL):  54%|█████▍    | 19/35 [00:00<00:00, 24.01it/s]Capturing CUDA graphs (decode, FULL):  66%|██████▌   | 23/35 [00:00<00:00, 26.74it/s]Capturing CUDA graphs (decode, FULL):  77%|███████▋  | 27/35 [00:01<00:00, 29.25it/s]Capturing CUDA graphs (decode, FULL):  89%|████████▊ | 31/35 [00:01<00:00, 31.35it/s]Capturing CUDA graphs (decode, FULL): 100%|██████████| 35/35 [00:01<00:00, 32.39it/s]Capturing CUDA graphs (decode, FULL): 100%|██████████| 35/35 [00:01<00:00, 27.12it/s]
+(EngineCore pid=87) INFO 04-10 05:42:15 [gpu_model_runner.py:5746] Graph capturing finished in 4 secs, took 0.41 GiB
+(EngineCore pid=87) INFO 04-10 05:42:15 [gpu_worker.py:617] CUDA graph pool memory: 0.41 GiB (actual), 0.34 GiB (estimated), difference: 0.07 GiB (16.6%).
+(EngineCore pid=87) INFO 04-10 05:42:15 [core.py:281] init engine (profile, create kv cache, warmup model) took 31.27 seconds
+(EngineCore pid=87) INFO 04-10 05:42:17 [vllm.py:754] Asynchronous scheduling is enabled.
+(APIServer pid=1) INFO 04-10 05:42:17 [api_server.py:576] Supported tasks: ['generate']
+(APIServer pid=1) INFO 04-10 05:42:18 [hf.py:320] Detected the chat template content format to be 'string'. You can set `--chat-template-content-format` to override this.
+(APIServer pid=1) INFO 04-10 05:42:18 [api_server.py:580] Starting vLLM server on http://0.0.0.0:8000
+(APIServer pid=1) INFO 04-10 05:42:18 [launcher.py:37] Available routes are:
+(APIServer pid=1) INFO 04-10 05:42:18 [launcher.py:46] Route: /openapi.json, Methods: GET, HEAD
+(APIServer pid=1) INFO 04-10 05:42:18 [launcher.py:46] Route: /docs, Methods: GET, HEAD
+(APIServer pid=1) INFO 04-10 05:42:18 [launcher.py:46] Route: /docs/oauth2-redirect, Methods: GET, HEAD
+(APIServer pid=1) INFO 04-10 05:42:18 [launcher.py:46] Route: /redoc, Methods: GET, HEAD
+(APIServer pid=1) INFO 04-10 05:42:18 [launcher.py:46] Route: /tokenize, Methods: POST
+(APIServer pid=1) INFO 04-10 05:42:18 [launcher.py:46] Route: /detokenize, Methods: POST
+(APIServer pid=1) INFO 04-10 05:42:18 [launcher.py:46] Route: /load, Methods: GET
+(APIServer pid=1) INFO 04-10 05:42:18 [launcher.py:46] Route: /version, Methods: GET
+(APIServer pid=1) INFO 04-10 05:42:18 [launcher.py:46] Route: /health, Methods: GET
+(APIServer pid=1) INFO 04-10 05:42:18 [launcher.py:46] Route: /metrics, Methods: GET
+(APIServer pid=1) INFO 04-10 05:42:18 [launcher.py:46] Route: /v1/models, Methods: GET
+(APIServer pid=1) INFO 04-10 05:42:18 [launcher.py:46] Route: /ping, Methods: GET
+(APIServer pid=1) INFO 04-10 05:42:18 [launcher.py:46] Route: /ping, Methods: POST
+(APIServer pid=1) INFO 04-10 05:42:18 [launcher.py:46] Route: /invocations, Methods: POST
+(APIServer pid=1) INFO 04-10 05:42:18 [launcher.py:46] Route: /v1/chat/completions, Methods: POST
+(APIServer pid=1) INFO 04-10 05:42:18 [launcher.py:46] Route: /v1/responses, Methods: POST
+(APIServer pid=1) INFO 04-10 05:42:18 [launcher.py:46] Route: /v1/responses/{response_id}, Methods: GET
+(APIServer pid=1) INFO 04-10 05:42:18 [launcher.py:46] Route: /v1/responses/{response_id}/cancel, Methods: POST
+(APIServer pid=1) INFO 04-10 05:42:18 [launcher.py:46] Route: /v1/completions, Methods: POST
+(APIServer pid=1) INFO 04-10 05:42:18 [launcher.py:46] Route: /v1/messages, Methods: POST
+(APIServer pid=1) INFO 04-10 05:42:18 [launcher.py:46] Route: /v1/messages/count_tokens, Methods: POST
+(APIServer pid=1) INFO 04-10 05:42:18 [launcher.py:46] Route: /inference/v1/generate, Methods: POST
+(APIServer pid=1) INFO 04-10 05:42:18 [launcher.py:46] Route: /scale_elastic_ep, Methods: POST
+(APIServer pid=1) INFO 04-10 05:42:18 [launcher.py:46] Route: /is_scaling_elastic_ep, Methods: POST
+(APIServer pid=1) INFO 04-10 05:42:18 [launcher.py:46] Route: /v1/chat/completions/render, Methods: POST
+(APIServer pid=1) INFO 04-10 05:42:18 [launcher.py:46] Route: /v1/completions/render, Methods: POST
+(APIServer pid=1) INFO:     Started server process [1]
+(APIServer pid=1) INFO:     Waiting for application startup.
+(APIServer pid=1) INFO:     Application startup complete.
+bench-vllm
+
+========================================================================
+[2026-04-10 05:52:03] SGLang — microsoft/Phi-4-mini-instruct
+========================================================================
+b961181644982834d2087417d521410e3b128af5692800dcc83cb7832c4c5b26
+  Waiting for SGLang health....

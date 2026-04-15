@@ -1,0 +1,646 @@
+
+========================================================================
+[2026-04-10 05:54:53] PREFLIGHT
+========================================================================
+  Python: Python 3.13.12
+  Docker: 29.4.0
+  GPU:    NVIDIA A10G, 23028 MiB
+  HF token: found
+  vLLM bind: 172.31.39.64:8000
+  SGLang:    172.31.39.64:8001
+
+========================================================================
+[2026-04-10 05:54:57] PULLING DOCKER IMAGES (if not cached)
+========================================================================
+  [pull] vllm/vllm-openai:v0.18.0-cu130 — already present, skipping pull
+  [pull] lmsysorg/sglang:v0.5.10.post1-cu130 — already present, skipping pull
+
+========================================================================
+[2026-04-10 05:54:57] PREFLIGHT COMPLETE
+========================================================================
+
+========================================================================
+[2026-04-10 05:54:57] PHASE 3 — DECODE-LENGTH SWEEP (RESUME)
+========================================================================
+  Output dir : results_decode_sweep/
+  Cooldown   : 15s between scenarios
+
+========================================================================
+[2026-04-10 05:54:57] vLLM — google/gemma-2-2b-it
+========================================================================
+abf63fb9eb3905165d7eae2c76b9038d1be27e9d0408f2909cf15af868b5e745
+  Waiting for vLLM health................ ready (80s)
+────────────────────────────────────────────────────────────────────────────────────────── Matrix execution ──────────────────────────────────────────────────────────────────────────────────────────
+  Model          : google/gemma-2-2b-it
+  Scenarios      : decode_length_sweep_64, decode_length_sweep_256, decode_length_sweep_1024, decode_length_sweep_4096
+  Engines        : vllm
+  Iterations     : 3
+  Cooldown (sec) : 10
+───────────────────────────────────────────────────────────────────────────────────────────── Step 1/12 ──────────────────────────────────────────────────────────────────────────────────────────────
+  Scenario  : decode_length_sweep_64
+  Engine    : vllm
+  Iteration : 1/3
+  Model     : google/gemma-2-2b-it
+  GPU VRAM  : 20015 MiB / 23028 MiB (87%)
+[2m2026-04-10T05:56:24.351921Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mVLLMClient[0m [36mprompt_pack[0m=[35mlong_generation[0m [36mscenario[0m=[35mdecode_length_sweep_64[0m
+[2m2026-04-10T05:56:24.352890Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m4[0m
+[2m2026-04-10T05:56:38.181655Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m8[0m
+[2m2026-04-10T05:56:45.091044Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m16[0m
+
+  vllm decode_length_sweep_64  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 180/180 0:00:24
+[2m2026-04-10T05:56:48.718544Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_decode_sweep/gemma-2-2b-it/decode_length_sweep_64_vllm_1775800584.json[0m
+  ✓ DONE in 24s  — saved to decode_length_sweep_64_vllm_1775800584.json
+  Progress: 1 completed, 0 skipped, 11 remaining  — total elapsed 24s
+───────────────────────────────────────────────────────────────────────────────────────────── Step 2/12 ──────────────────────────────────────────────────────────────────────────────────────────────
+  Scenario  : decode_length_sweep_64
+  Engine    : vllm
+  Iteration : 2/3
+  Model     : google/gemma-2-2b-it
+  GPU VRAM  : 20015 MiB / 23028 MiB (87%)
+  ETA       : ~4m 28s
+[2m2026-04-10T05:56:58.761026Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mVLLMClient[0m [36mprompt_pack[0m=[35mlong_generation[0m [36mscenario[0m=[35mdecode_length_sweep_64[0m
+[2m2026-04-10T05:56:58.761360Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m4[0m
+[2m2026-04-10T05:57:11.511515Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m8[0m
+[2m2026-04-10T05:57:18.417142Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m16[0m
+
+  vllm decode_length_sweep_64  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 180/180 0:00:23
+[2m2026-04-10T05:57:22.053187Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_decode_sweep/gemma-2-2b-it/decode_length_sweep_64_vllm_1775800618.json[0m
+  ✓ DONE in 23s  — saved to decode_length_sweep_64_vllm_1775800618.json
+  Progress: 2 completed, 0 skipped, 10 remaining  — total elapsed 58s
+───────────────────────────────────────────────────────────────────────────────────────────── Step 3/12 ──────────────────────────────────────────────────────────────────────────────────────────────
+  Scenario  : decode_length_sweep_64
+  Engine    : vllm
+  Iteration : 3/3
+  Model     : google/gemma-2-2b-it
+  GPU VRAM  : 20015 MiB / 23028 MiB (87%)
+  ETA       : ~3m 58s
+[2m2026-04-10T05:57:32.094012Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mVLLMClient[0m [36mprompt_pack[0m=[35mlong_generation[0m [36mscenario[0m=[35mdecode_length_sweep_64[0m
+[2m2026-04-10T05:57:32.094360Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m4[0m
+[2m2026-04-10T05:57:44.885365Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m8[0m
+[2m2026-04-10T05:57:51.791335Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m16[0m
+
+  vllm decode_length_sweep_64  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 180/180 0:00:23
+[2m2026-04-10T05:57:55.405723Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_decode_sweep/gemma-2-2b-it/decode_length_sweep_64_vllm_1775800652.json[0m
+  ✓ DONE in 23s  — saved to decode_length_sweep_64_vllm_1775800652.json
+  Progress: 3 completed, 0 skipped, 9 remaining  — total elapsed 1m 31s
+───────────────────────────────────────────────────────────────────────────────────────────── Step 4/12 ──────────────────────────────────────────────────────────────────────────────────────────────
+  Scenario  : decode_length_sweep_256
+  Engine    : vllm
+  Iteration : 1/3
+  Model     : google/gemma-2-2b-it
+  GPU VRAM  : 20015 MiB / 23028 MiB (87%)
+  ETA       : ~3m 32s
+[2m2026-04-10T05:58:05.446292Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mVLLMClient[0m [36mprompt_pack[0m=[35mlong_generation[0m [36mscenario[0m=[35mdecode_length_sweep_256[0m
+[2m2026-04-10T05:58:05.446613Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m4[0m
+[2m2026-04-10T05:58:51.895068Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m8[0m
+[2m2026-04-10T05:59:16.476369Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m16[0m
+
+  vllm decode_length_sweep_256  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 180/180 0:01:25
+[2m2026-04-10T05:59:30.637220Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_decode_sweep/gemma-2-2b-it/decode_length_sweep_256_vllm_1775800685.json[0m
+  ✓ DONE in 1m 25s  — saved to decode_length_sweep_256_vllm_1775800685.json
+  Progress: 4 completed, 0 skipped, 8 remaining  — total elapsed 3m 06s
+───────────────────────────────────────────────────────────────────────────────────────────── Step 5/12 ──────────────────────────────────────────────────────────────────────────────────────────────
+  Scenario  : decode_length_sweep_256
+  Engine    : vllm
+  Iteration : 2/3
+  Model     : google/gemma-2-2b-it
+  GPU VRAM  : 20015 MiB / 23028 MiB (87%)
+  ETA       : ~5m 12s
+[2m2026-04-10T05:59:40.680031Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mVLLMClient[0m [36mprompt_pack[0m=[35mlong_generation[0m [36mscenario[0m=[35mdecode_length_sweep_256[0m
+[2m2026-04-10T05:59:40.680382Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m4[0m
+[2m2026-04-10T06:00:27.136153Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m8[0m
+[2m2026-04-10T06:00:51.682434Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m16[0m
+
+  vllm decode_length_sweep_256  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 180/180 0:01:23
+[2m2026-04-10T06:01:04.628477Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_decode_sweep/gemma-2-2b-it/decode_length_sweep_256_vllm_1775800780.json[0m
+  ✓ DONE in 1m 23s  — saved to decode_length_sweep_256_vllm_1775800780.json
+  Progress: 5 completed, 0 skipped, 7 remaining  — total elapsed 4m 40s
+───────────────────────────────────────────────────────────────────────────────────────────── Step 6/12 ──────────────────────────────────────────────────────────────────────────────────────────────
+  Scenario  : decode_length_sweep_256
+  Engine    : vllm
+  Iteration : 3/3
+  Model     : google/gemma-2-2b-it
+  GPU VRAM  : 20015 MiB / 23028 MiB (87%)
+  ETA       : ~5m 36s
+[2m2026-04-10T06:01:14.670756Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mVLLMClient[0m [36mprompt_pack[0m=[35mlong_generation[0m [36mscenario[0m=[35mdecode_length_sweep_256[0m
+[2m2026-04-10T06:01:14.671047Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m4[0m
+[2m2026-04-10T06:02:01.122629Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m8[0m
+[2m2026-04-10T06:02:25.828433Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m16[0m
+
+  vllm decode_length_sweep_256  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 180/180 0:01:25
+[2m2026-04-10T06:02:39.962679Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_decode_sweep/gemma-2-2b-it/decode_length_sweep_256_vllm_1775800874.json[0m
+  ✓ DONE in 1m 25s  — saved to decode_length_sweep_256_vllm_1775800874.json
+  Progress: 6 completed, 0 skipped, 6 remaining  — total elapsed 6m 16s
+───────────────────────────────────────────────────────────────────────────────────────────── Step 7/12 ──────────────────────────────────────────────────────────────────────────────────────────────
+  Scenario  : decode_length_sweep_1024
+  Engine    : vllm
+  Iteration : 1/3
+  Model     : google/gemma-2-2b-it
+  GPU VRAM  : 20015 MiB / 23028 MiB (87%)
+  ETA       : ~5m 25s
+[2m2026-04-10T06:02:49.996517Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mVLLMClient[0m [36mprompt_pack[0m=[35mlong_generation[0m [36mscenario[0m=[35mdecode_length_sweep_1024[0m
+[2m2026-04-10T06:02:49.996813Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m4[0m
+[2m2026-04-10T06:04:45.056025Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m8[0m
+[2m2026-04-10T06:05:47.169518Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m16[0m
+
+  vllm decode_length_sweep_1024  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 180/180 0:03:32
+[2m2026-04-10T06:06:22.423805Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_decode_sweep/gemma-2-2b-it/decode_length_sweep_1024_vllm_1775800969.json[0m
+  ✓ DONE in 3m 32s  — saved to decode_length_sweep_1024_vllm_1775800969.json
+  Progress: 7 completed, 0 skipped, 5 remaining  — total elapsed 9m 58s
+───────────────────────────────────────────────────────────────────────────────────────────── Step 8/12 ──────────────────────────────────────────────────────────────────────────────────────────────
+  Scenario  : decode_length_sweep_1024
+  Engine    : vllm
+  Iteration : 2/3
+  Model     : google/gemma-2-2b-it
+  GPU VRAM  : 20015 MiB / 23028 MiB (87%)
+  ETA       : ~6m 24s
+[2m2026-04-10T06:06:32.458073Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mVLLMClient[0m [36mprompt_pack[0m=[35mlong_generation[0m [36mscenario[0m=[35mdecode_length_sweep_1024[0m
+[2m2026-04-10T06:06:32.458396Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m4[0m
+[2m2026-04-10T06:08:29.268397Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m8[0m
+[2m2026-04-10T06:09:30.557444Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m16[0m
+
+  vllm decode_length_sweep_1024  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 180/180 0:03:29
+[2m2026-04-10T06:10:02.357201Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_decode_sweep/gemma-2-2b-it/decode_length_sweep_1024_vllm_1775801192.json[0m
+  ✓ DONE in 3m 29s  — saved to decode_length_sweep_1024_vllm_1775801192.json
+  Progress: 8 completed, 0 skipped, 4 remaining  — total elapsed 13m 38s
+───────────────────────────────────────────────────────────────────────────────────────────── Step 9/12 ──────────────────────────────────────────────────────────────────────────────────────────────
+  Scenario  : decode_length_sweep_1024
+  Engine    : vllm
+  Iteration : 3/3
+  Model     : google/gemma-2-2b-it
+  GPU VRAM  : 20015 MiB / 23028 MiB (87%)
+  ETA       : ~6m 13s
+[2m2026-04-10T06:10:12.397532Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mVLLMClient[0m [36mprompt_pack[0m=[35mlong_generation[0m [36mscenario[0m=[35mdecode_length_sweep_1024[0m
+[2m2026-04-10T06:10:12.397829Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m4[0m
+[2m2026-04-10T06:12:05.661049Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m8[0m
+[2m2026-04-10T06:13:06.204747Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m16[0m
+
+  vllm decode_length_sweep_1024  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 180/180 0:03:27
+[2m2026-04-10T06:13:40.068546Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_decode_sweep/gemma-2-2b-it/decode_length_sweep_1024_vllm_1775801412.json[0m
+  ✓ DONE in 3m 27s  — saved to decode_length_sweep_1024_vllm_1775801412.json
+  Progress: 9 completed, 0 skipped, 3 remaining  — total elapsed 17m 16s
+───────────────────────────────────────────────────────────────────────────────────────────── Step 10/12 ─────────────────────────────────────────────────────────────────────────────────────────────
+  Scenario  : decode_length_sweep_4096
+  Engine    : vllm
+  Iteration : 1/3
+  Model     : google/gemma-2-2b-it
+  GPU VRAM  : 20015 MiB / 23028 MiB (87%)
+  ETA       : ~5m 18s
+[2m2026-04-10T06:13:50.101203Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mVLLMClient[0m [36mprompt_pack[0m=[35mlong_generation[0m [36mscenario[0m=[35mdecode_length_sweep_4096[0m
+[2m2026-04-10T06:13:50.101575Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m4[0m
+[2m2026-04-10T06:15:46.294538Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m8[0m
+[2m2026-04-10T06:16:47.263969Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m16[0m
+
+  vllm decode_length_sweep_4096  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 180/180 0:03:31
+[2m2026-04-10T06:17:21.736471Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_decode_sweep/gemma-2-2b-it/decode_length_sweep_4096_vllm_1775801630.json[0m
+  ✓ DONE in 3m 31s  — saved to decode_length_sweep_4096_vllm_1775801630.json
+  Progress: 10 completed, 0 skipped, 2 remaining  — total elapsed 20m 57s
+───────────────────────────────────────────────────────────────────────────────────────────── Step 11/12 ─────────────────────────────────────────────────────────────────────────────────────────────
+  Scenario  : decode_length_sweep_4096
+  Engine    : vllm
+  Iteration : 2/3
+  Model     : google/gemma-2-2b-it
+  GPU VRAM  : 20015 MiB / 23028 MiB (87%)
+  ETA       : ~3m 53s
+[2m2026-04-10T06:17:31.772934Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mVLLMClient[0m [36mprompt_pack[0m=[35mlong_generation[0m [36mscenario[0m=[35mdecode_length_sweep_4096[0m
+[2m2026-04-10T06:17:31.773220Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m4[0m
+[2m2026-04-10T06:19:24.077557Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m8[0m
+[2m2026-04-10T06:20:27.451563Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m16[0m
+
+  vllm decode_length_sweep_4096  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 180/180 0:03:30
+[2m2026-04-10T06:21:02.642085Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_decode_sweep/gemma-2-2b-it/decode_length_sweep_4096_vllm_1775801851.json[0m
+  ✓ DONE in 3m 30s  — saved to decode_length_sweep_4096_vllm_1775801851.json
+  Progress: 11 completed, 0 skipped, 1 remaining  — total elapsed 24m 38s
+───────────────────────────────────────────────────────────────────────────────────────────── Step 12/12 ─────────────────────────────────────────────────────────────────────────────────────────────
+  Scenario  : decode_length_sweep_4096
+  Engine    : vllm
+  Iteration : 3/3
+  Model     : google/gemma-2-2b-it
+  GPU VRAM  : 20015 MiB / 23028 MiB (87%)
+  ETA       : ~2m 05s
+[2m2026-04-10T06:21:12.679880Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mVLLMClient[0m [36mprompt_pack[0m=[35mlong_generation[0m [36mscenario[0m=[35mdecode_length_sweep_4096[0m
+[2m2026-04-10T06:21:12.680179Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m4[0m
+[2m2026-04-10T06:23:06.351833Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m8[0m
+[2m2026-04-10T06:24:03.841580Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m16[0m
+
+  vllm decode_length_sweep_4096  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 180/180 0:03:23
+[2m2026-04-10T06:24:36.218068Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_decode_sweep/gemma-2-2b-it/decode_length_sweep_4096_vllm_1775802072.json[0m
+  ✓ DONE in 3m 23s  — saved to decode_length_sweep_4096_vllm_1775802072.json
+  Progress: 12 completed, 0 skipped, 0 remaining  — total elapsed 28m 12s
+────────────────────────────────────────────────────────────────────────────────────────── Matrix complete ───────────────────────────────────────────────────────────────────────────────────────────
+  Total time: 28m 22s
+
+                                              Matrix Results Summary                                               
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━┳━━━━━━┳━━━━━━━━━━━┳━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ Scenario                 ┃ Engine ┃ Iter ┃  Status   ┃ Duration ┃ Output File                                   ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━╇━━━━━━╇━━━━━━━━━━━╇━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
+│ decode_length_sweep_64   │ vllm   │  1   │ completed │      24s │ decode_length_sweep_64_vllm_1775800584.json   │
+│ decode_length_sweep_64   │ vllm   │  2   │ completed │      23s │ decode_length_sweep_64_vllm_1775800618.json   │
+│ decode_length_sweep_64   │ vllm   │  3   │ completed │      23s │ decode_length_sweep_64_vllm_1775800652.json   │
+│ decode_length_sweep_256  │ vllm   │  1   │ completed │   1m 25s │ decode_length_sweep_256_vllm_1775800685.json  │
+│ decode_length_sweep_256  │ vllm   │  2   │ completed │   1m 23s │ decode_length_sweep_256_vllm_1775800780.json  │
+│ decode_length_sweep_256  │ vllm   │  3   │ completed │   1m 25s │ decode_length_sweep_256_vllm_1775800874.json  │
+│ decode_length_sweep_1024 │ vllm   │  1   │ completed │   3m 32s │ decode_length_sweep_1024_vllm_1775800969.json │
+│ decode_length_sweep_1024 │ vllm   │  2   │ completed │   3m 29s │ decode_length_sweep_1024_vllm_1775801192.json │
+│ decode_length_sweep_1024 │ vllm   │  3   │ completed │   3m 27s │ decode_length_sweep_1024_vllm_1775801412.json │
+│ decode_length_sweep_4096 │ vllm   │  1   │ completed │   3m 31s │ decode_length_sweep_4096_vllm_1775801630.json │
+│ decode_length_sweep_4096 │ vllm   │  2   │ completed │   3m 30s │ decode_length_sweep_4096_vllm_1775801851.json │
+│ decode_length_sweep_4096 │ vllm   │  3   │ completed │   3m 23s │ decode_length_sweep_4096_vllm_1775802072.json │
+└──────────────────────────┴────────┴──────┴───────────┴──────────┴───────────────────────────────────────────────┘
+✓ Matrix manifest saved to results_decode_sweep/gemma-2-2b-it/matrix_manifest_1775800583.json
+bench-vllm
+
+========================================================================
+[2026-04-10 06:24:50] SGLang — microsoft/Phi-4-mini-instruct
+========================================================================
+c1b1283fbebdd0601b6c22c197355012b310315f8b45cfad713ae23fc2ec648f
+  Waiting for SGLang health........................................................................................ ready (440s)
+────────────────────────────────────────────────────────────────────────────────────────── Matrix execution ──────────────────────────────────────────────────────────────────────────────────────────
+  Model          : microsoft/Phi-4-mini-instruct
+  Scenarios      : decode_length_sweep_4096
+  Engines        : sglang
+  Iterations     : 1
+  Cooldown (sec) : 10
+────────────────────────────────────────────────────────────────────────────────────────────── Step 1/1 ──────────────────────────────────────────────────────────────────────────────────────────────
+  Scenario  : decode_length_sweep_4096
+  Engine    : sglang
+  Iteration : 1/1
+  Model     : microsoft/Phi-4-mini-instruct
+  GPU VRAM  : 20783 MiB / 23028 MiB (90%)
+[2m2026-04-10T06:32:18.792198Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mSGLangClient[0m [36mprompt_pack[0m=[35mlong_generation[0m [36mscenario[0m=[35mdecode_length_sweep_4096[0m
+[2m2026-04-10T06:32:18.792593Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m4[0m
+[2m2026-04-10T06:35:26.294968Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m8[0m
+[2m2026-04-10T06:37:03.710611Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m16[0m
+
+  sglang decode_length_sweep_4096  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 180/180 0:05:45
+[2m2026-04-10T06:38:03.821435Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_decode_sweep/phi-4-mini-instruct/decode_length_sweep_4096_sglang_1775802738.json[0m
+  ✓ DONE in 5m 45s  — saved to decode_length_sweep_4096_sglang_1775802738.json
+  Progress: 1 completed, 0 skipped, 0 remaining  — total elapsed 5m 46s
+────────────────────────────────────────────────────────────────────────────────────────── Matrix complete ───────────────────────────────────────────────────────────────────────────────────────────
+  Total time: 5m 56s
+
+                                               Matrix Results Summary                                                
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━┳━━━━━━┳━━━━━━━━━━━┳━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ Scenario                 ┃ Engine ┃ Iter ┃  Status   ┃ Duration ┃ Output File                                     ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━╇━━━━━━╇━━━━━━━━━━━╇━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
+│ decode_length_sweep_4096 │ sglang │  1   │ completed │   5m 45s │ decode_length_sweep_4096_sglang_1775802738.json │
+└──────────────────────────┴────────┴──────┴───────────┴──────────┴─────────────────────────────────────────────────┘
+✓ Matrix manifest saved to results_decode_sweep/phi-4-mini-instruct/matrix_manifest_1775802737.json
+bench-sglang
+
+========================================================================
+[2026-04-10 06:38:20] vLLM — microsoft/Phi-4-mini-instruct
+========================================================================
+33f57b7a0a2ad9a963dba2b6f8e6ae8d5d7f839a0f2729a1e9910c3d541daa81
+  Waiting for vLLM health............... ready (75s)
+────────────────────────────────────────────────────────────────────────────────────────── Matrix execution ──────────────────────────────────────────────────────────────────────────────────────────
+  Model          : microsoft/Phi-4-mini-instruct
+  Scenarios      : decode_length_sweep_64, decode_length_sweep_256, decode_length_sweep_1024, decode_length_sweep_4096
+  Engines        : vllm
+  Iterations     : 3
+  Cooldown (sec) : 10
+───────────────────────────────────────────────────────────────────────────────────────────── Step 1/12 ──────────────────────────────────────────────────────────────────────────────────────────────
+  Scenario  : decode_length_sweep_64
+  Engine    : vllm
+  Iteration : 1/3
+  Model     : microsoft/Phi-4-mini-instruct
+  GPU VRAM  : 19761 MiB / 23028 MiB (86%)
+[2m2026-04-10T06:39:40.506768Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mVLLMClient[0m [36mprompt_pack[0m=[35mlong_generation[0m [36mscenario[0m=[35mdecode_length_sweep_64[0m
+[2m2026-04-10T06:39:40.507135Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m4[0m
+[2m2026-04-10T06:39:58.916008Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m8[0m
+[2m2026-04-10T06:40:09.015348Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m16[0m
+
+  vllm decode_length_sweep_64  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 180/180 0:00:33
+[2m2026-04-10T06:40:14.303270Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_decode_sweep/phi-4-mini-instruct/decode_length_sweep_64_vllm_1775803180.json[0m
+  ✓ DONE in 33s  — saved to decode_length_sweep_64_vllm_1775803180.json
+  Progress: 1 completed, 0 skipped, 11 remaining  — total elapsed 33s
+───────────────────────────────────────────────────────────────────────────────────────────── Step 2/12 ──────────────────────────────────────────────────────────────────────────────────────────────
+  Scenario  : decode_length_sweep_64
+  Engine    : vllm
+  Iteration : 2/3
+  Model     : microsoft/Phi-4-mini-instruct
+  GPU VRAM  : 19763 MiB / 23028 MiB (86%)
+  ETA       : ~6m 11s
+[2m2026-04-10T06:40:24.346576Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mVLLMClient[0m [36mprompt_pack[0m=[35mlong_generation[0m [36mscenario[0m=[35mdecode_length_sweep_64[0m
+[2m2026-04-10T06:40:24.346871Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m4[0m
+[2m2026-04-10T06:40:42.712134Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m8[0m
+[2m2026-04-10T06:40:52.813597Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m16[0m
+
+  vllm decode_length_sweep_64  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 180/180 0:00:33
+[2m2026-04-10T06:40:58.087177Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_decode_sweep/phi-4-mini-instruct/decode_length_sweep_64_vllm_1775803224.json[0m
+  ✓ DONE in 33s  — saved to decode_length_sweep_64_vllm_1775803224.json
+  Progress: 2 completed, 0 skipped, 10 remaining  — total elapsed 1m 17s
+───────────────────────────────────────────────────────────────────────────────────────────── Step 3/12 ──────────────────────────────────────────────────────────────────────────────────────────────
+  Scenario  : decode_length_sweep_64
+  Engine    : vllm
+  Iteration : 3/3
+  Model     : microsoft/Phi-4-mini-instruct
+  GPU VRAM  : 19763 MiB / 23028 MiB (86%)
+  ETA       : ~5m 37s
+[2m2026-04-10T06:41:08.130270Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mVLLMClient[0m [36mprompt_pack[0m=[35mlong_generation[0m [36mscenario[0m=[35mdecode_length_sweep_64[0m
+[2m2026-04-10T06:41:08.130561Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m4[0m
+[2m2026-04-10T06:41:26.501420Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m8[0m
+[2m2026-04-10T06:41:36.608800Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m16[0m
+
+  vllm decode_length_sweep_64  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 180/180 0:00:33
+[2m2026-04-10T06:41:41.877138Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_decode_sweep/phi-4-mini-instruct/decode_length_sweep_64_vllm_1775803268.json[0m
+  ✓ DONE in 33s  — saved to decode_length_sweep_64_vllm_1775803268.json
+  Progress: 3 completed, 0 skipped, 9 remaining  — total elapsed 2m 01s
+───────────────────────────────────────────────────────────────────────────────────────────── Step 4/12 ──────────────────────────────────────────────────────────────────────────────────────────────
+  Scenario  : decode_length_sweep_256
+  Engine    : vllm
+  Iteration : 1/3
+  Model     : microsoft/Phi-4-mini-instruct
+  GPU VRAM  : 19763 MiB / 23028 MiB (86%)
+  ETA       : ~5m 03s
+[2m2026-04-10T06:41:51.920157Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mVLLMClient[0m [36mprompt_pack[0m=[35mlong_generation[0m [36mscenario[0m=[35mdecode_length_sweep_256[0m
+[2m2026-04-10T06:41:51.920473Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m4[0m
+[2m2026-04-10T06:43:04.804899Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m8[0m
+[2m2026-04-10T06:43:44.744450Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m16[0m
+
+  vllm decode_length_sweep_256  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 180/180 0:02:13
+[2m2026-04-10T06:44:05.728648Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_decode_sweep/phi-4-mini-instruct/decode_length_sweep_256_vllm_1775803311.json[0m
+  ✓ DONE in 2m 13s  — saved to decode_length_sweep_256_vllm_1775803311.json
+  Progress: 4 completed, 0 skipped, 8 remaining  — total elapsed 4m 25s
+───────────────────────────────────────────────────────────────────────────────────────────── Step 5/12 ──────────────────────────────────────────────────────────────────────────────────────────────
+  Scenario  : decode_length_sweep_256
+  Engine    : vllm
+  Iteration : 2/3
+  Model     : microsoft/Phi-4-mini-instruct
+  GPU VRAM  : 19763 MiB / 23028 MiB (86%)
+  ETA       : ~7m 50s
+[2m2026-04-10T06:44:15.771275Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mVLLMClient[0m [36mprompt_pack[0m=[35mlong_generation[0m [36mscenario[0m=[35mdecode_length_sweep_256[0m
+[2m2026-04-10T06:44:15.771561Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m4[0m
+[2m2026-04-10T06:45:28.653840Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m8[0m
+[2m2026-04-10T06:46:08.595376Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m16[0m
+
+  vllm decode_length_sweep_256  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 180/180 0:02:13
+[2m2026-04-10T06:46:29.584962Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_decode_sweep/phi-4-mini-instruct/decode_length_sweep_256_vllm_1775803455.json[0m
+  ✓ DONE in 2m 13s  — saved to decode_length_sweep_256_vllm_1775803455.json
+  Progress: 5 completed, 0 skipped, 7 remaining  — total elapsed 6m 49s
+───────────────────────────────────────────────────────────────────────────────────────────── Step 6/12 ──────────────────────────────────────────────────────────────────────────────────────────────
+  Scenario  : decode_length_sweep_256
+  Engine    : vllm
+  Iteration : 3/3
+  Model     : microsoft/Phi-4-mini-instruct
+  GPU VRAM  : 19763 MiB / 23028 MiB (86%)
+  ETA       : ~8m 36s
+[2m2026-04-10T06:46:39.627975Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mVLLMClient[0m [36mprompt_pack[0m=[35mlong_generation[0m [36mscenario[0m=[35mdecode_length_sweep_256[0m
+[2m2026-04-10T06:46:39.628299Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m4[0m
+[2m2026-04-10T06:47:52.507848Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m8[0m
+[2m2026-04-10T06:48:32.445313Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m16[0m
+
+  vllm decode_length_sweep_256  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 180/180 0:02:13
+[2m2026-04-10T06:48:53.443331Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_decode_sweep/phi-4-mini-instruct/decode_length_sweep_256_vllm_1775803599.json[0m
+  ✓ DONE in 2m 13s  — saved to decode_length_sweep_256_vllm_1775803599.json
+  Progress: 6 completed, 0 skipped, 6 remaining  — total elapsed 9m 12s
+───────────────────────────────────────────────────────────────────────────────────────────── Step 7/12 ──────────────────────────────────────────────────────────────────────────────────────────────
+  Scenario  : decode_length_sweep_1024
+  Engine    : vllm
+  Iteration : 1/3
+  Model     : microsoft/Phi-4-mini-instruct
+  GPU VRAM  : 19763 MiB / 23028 MiB (86%)
+  ETA       : ~8m 22s
+[2m2026-04-10T06:49:03.476737Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mVLLMClient[0m [36mprompt_pack[0m=[35mlong_generation[0m [36mscenario[0m=[35mdecode_length_sweep_1024[0m
+[2m2026-04-10T06:49:03.477092Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m4[0m
+[2m2026-04-10T06:52:28.056950Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m8[0m
+[2m2026-04-10T06:54:16.183810Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m16[0m
+
+  vllm decode_length_sweep_1024  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 180/180 0:06:08
+[2m2026-04-10T06:55:12.058172Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_decode_sweep/phi-4-mini-instruct/decode_length_sweep_1024_vllm_1775803743.json[0m
+  ✓ DONE in 6m 08s  — saved to decode_length_sweep_1024_vllm_1775803743.json
+  Progress: 7 completed, 0 skipped, 5 remaining  — total elapsed 15m 31s
+───────────────────────────────────────────────────────────────────────────────────────────── Step 8/12 ──────────────────────────────────────────────────────────────────────────────────────────────
+  Scenario  : decode_length_sweep_1024
+  Engine    : vllm
+  Iteration : 2/3
+  Model     : microsoft/Phi-4-mini-instruct
+  GPU VRAM  : 19763 MiB / 23028 MiB (86%)
+  ETA       : ~10m 22s
+[2m2026-04-10T06:55:22.091805Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mVLLMClient[0m [36mprompt_pack[0m=[35mlong_generation[0m [36mscenario[0m=[35mdecode_length_sweep_1024[0m
+[2m2026-04-10T06:55:22.092112Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m4[0m
+[2m2026-04-10T06:58:47.999435Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m8[0m
+[2m2026-04-10T07:00:37.788701Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m16[0m
+
+  vllm decode_length_sweep_1024  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 180/180 0:06:10
+[2m2026-04-10T07:01:32.927569Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_decode_sweep/phi-4-mini-instruct/decode_length_sweep_1024_vllm_1775804122.json[0m
+  ✓ DONE in 6m 10s  — saved to decode_length_sweep_1024_vllm_1775804122.json
+  Progress: 8 completed, 0 skipped, 4 remaining  — total elapsed 21m 52s
+───────────────────────────────────────────────────────────────────────────────────────────── Step 9/12 ──────────────────────────────────────────────────────────────────────────────────────────────
+  Scenario  : decode_length_sweep_1024
+  Engine    : vllm
+  Iteration : 3/3
+  Model     : microsoft/Phi-4-mini-instruct
+  GPU VRAM  : 19763 MiB / 23028 MiB (86%)
+  ETA       : ~10m 21s
+[2m2026-04-10T07:01:42.963199Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mVLLMClient[0m [36mprompt_pack[0m=[35mlong_generation[0m [36mscenario[0m=[35mdecode_length_sweep_1024[0m
+[2m2026-04-10T07:01:42.963528Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m4[0m
+[2m2026-04-10T07:05:00.571706Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m8[0m
+[2m2026-04-10T07:06:53.338133Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m16[0m
+
+  vllm decode_length_sweep_1024  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 180/180 0:06:08
+[2m2026-04-10T07:07:51.320407Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_decode_sweep/phi-4-mini-instruct/decode_length_sweep_1024_vllm_1775804502.json[0m
+  ✓ DONE in 6m 08s  — saved to decode_length_sweep_1024_vllm_1775804502.json
+  Progress: 9 completed, 0 skipped, 3 remaining  — total elapsed 28m 10s
+───────────────────────────────────────────────────────────────────────────────────────────── Step 10/12 ─────────────────────────────────────────────────────────────────────────────────────────────
+  Scenario  : decode_length_sweep_4096
+  Engine    : vllm
+  Iteration : 1/3
+  Model     : microsoft/Phi-4-mini-instruct
+  GPU VRAM  : 19763 MiB / 23028 MiB (86%)
+  ETA       : ~8m 56s
+[2m2026-04-10T07:08:01.360734Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mVLLMClient[0m [36mprompt_pack[0m=[35mlong_generation[0m [36mscenario[0m=[35mdecode_length_sweep_4096[0m
+[2m2026-04-10T07:08:01.361026Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m4[0m
+[2m2026-04-10T07:11:21.369828Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m8[0m
+[2m2026-04-10T07:13:10.354604Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m16[0m
+
+  vllm decode_length_sweep_4096  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 180/180 0:06:03
+[2m2026-04-10T07:14:04.807761Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_decode_sweep/phi-4-mini-instruct/decode_length_sweep_4096_vllm_1775804881.json[0m
+  ✓ DONE in 6m 03s  — saved to decode_length_sweep_4096_vllm_1775804881.json
+  Progress: 10 completed, 0 skipped, 2 remaining  — total elapsed 34m 24s
+───────────────────────────────────────────────────────────────────────────────────────────── Step 11/12 ─────────────────────────────────────────────────────────────────────────────────────────────
+  Scenario  : decode_length_sweep_4096
+  Engine    : vllm
+  Iteration : 2/3
+  Model     : microsoft/Phi-4-mini-instruct
+  GPU VRAM  : 19763 MiB / 23028 MiB (86%)
+  ETA       : ~6m 34s
+[2m2026-04-10T07:14:14.844262Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mVLLMClient[0m [36mprompt_pack[0m=[35mlong_generation[0m [36mscenario[0m=[35mdecode_length_sweep_4096[0m
+[2m2026-04-10T07:14:14.844547Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m4[0m
+[2m2026-04-10T07:17:37.221146Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m8[0m
+[2m2026-04-10T07:19:47.061228Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m16[0m
+
+  vllm decode_length_sweep_4096  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 180/180 0:07:44
+[2m2026-04-10T07:21:59.371322Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_decode_sweep/phi-4-mini-instruct/decode_length_sweep_4096_vllm_1775805254.json[0m
+  ✓ DONE in 7m 44s  — saved to decode_length_sweep_4096_vllm_1775805254.json
+  Progress: 11 completed, 0 skipped, 1 remaining  — total elapsed 42m 18s
+───────────────────────────────────────────────────────────────────────────────────────────── Step 12/12 ─────────────────────────────────────────────────────────────────────────────────────────────
+  Scenario  : decode_length_sweep_4096
+  Engine    : vllm
+  Iteration : 3/3
+  Model     : microsoft/Phi-4-mini-instruct
+  GPU VRAM  : 19763 MiB / 23028 MiB (86%)
+  ETA       : ~3m 41s
+[2m2026-04-10T07:22:09.405348Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mVLLMClient[0m [36mprompt_pack[0m=[35mlong_generation[0m [36mscenario[0m=[35mdecode_length_sweep_4096[0m
+[2m2026-04-10T07:22:09.405655Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m4[0m
+[2m2026-04-10T07:25:37.366533Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m8[0m
+[2m2026-04-10T07:27:26.471905Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m16[0m
+
+  vllm decode_length_sweep_4096  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 180/180 0:07:44
+[2m2026-04-10T07:29:54.003371Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_decode_sweep/phi-4-mini-instruct/decode_length_sweep_4096_vllm_1775805729.json[0m
+  ✓ DONE in 7m 44s  — saved to decode_length_sweep_4096_vllm_1775805729.json
+  Progress: 12 completed, 0 skipped, 0 remaining  — total elapsed 50m 13s
+────────────────────────────────────────────────────────────────────────────────────────── Matrix complete ───────────────────────────────────────────────────────────────────────────────────────────
+  Total time: 50m 23s
+
+                                              Matrix Results Summary                                               
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━┳━━━━━━┳━━━━━━━━━━━┳━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ Scenario                 ┃ Engine ┃ Iter ┃  Status   ┃ Duration ┃ Output File                                   ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━╇━━━━━━╇━━━━━━━━━━━╇━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
+│ decode_length_sweep_64   │ vllm   │  1   │ completed │      33s │ decode_length_sweep_64_vllm_1775803180.json   │
+│ decode_length_sweep_64   │ vllm   │  2   │ completed │      33s │ decode_length_sweep_64_vllm_1775803224.json   │
+│ decode_length_sweep_64   │ vllm   │  3   │ completed │      33s │ decode_length_sweep_64_vllm_1775803268.json   │
+│ decode_length_sweep_256  │ vllm   │  1   │ completed │   2m 13s │ decode_length_sweep_256_vllm_1775803311.json  │
+│ decode_length_sweep_256  │ vllm   │  2   │ completed │   2m 13s │ decode_length_sweep_256_vllm_1775803455.json  │
+│ decode_length_sweep_256  │ vllm   │  3   │ completed │   2m 13s │ decode_length_sweep_256_vllm_1775803599.json  │
+│ decode_length_sweep_1024 │ vllm   │  1   │ completed │   6m 08s │ decode_length_sweep_1024_vllm_1775803743.json │
+│ decode_length_sweep_1024 │ vllm   │  2   │ completed │   6m 10s │ decode_length_sweep_1024_vllm_1775804122.json │
+│ decode_length_sweep_1024 │ vllm   │  3   │ completed │   6m 08s │ decode_length_sweep_1024_vllm_1775804502.json │
+│ decode_length_sweep_4096 │ vllm   │  1   │ completed │   6m 03s │ decode_length_sweep_4096_vllm_1775804881.json │
+│ decode_length_sweep_4096 │ vllm   │  2   │ completed │   7m 44s │ decode_length_sweep_4096_vllm_1775805254.json │
+│ decode_length_sweep_4096 │ vllm   │  3   │ completed │   7m 44s │ decode_length_sweep_4096_vllm_1775805729.json │
+└──────────────────────────┴────────┴──────┴───────────┴──────────┴───────────────────────────────────────────────┘
+✓ Matrix manifest saved to results_decode_sweep/phi-4-mini-instruct/matrix_manifest_1775803180.json
+bench-vllm
+
+========================================================================
+[2026-04-10 07:30:08] vLLM — meta-llama/Llama-3.1-8B-Instruct
+========================================================================
+8d80bd35e71396967e884b14ff357c6e2b957ba078b9a53a879aeefe2b7419be
+  Waiting for vLLM health........................................... ready (215s)
+────────────────────────────────────────────────────────────────────────────────────────── Matrix execution ──────────────────────────────────────────────────────────────────────────────────────────
+  Model          : meta-llama/Llama-3.1-8B-Instruct
+  Scenarios      : decode_length_sweep_64, decode_length_sweep_256, decode_length_sweep_1024, decode_length_sweep_4096
+  Engines        : vllm
+  Iterations     : 3
+  Cooldown (sec) : 10
+───────────────────────────────────────────────────────────────────────────────────────────── Step 1/12 ──────────────────────────────────────────────────────────────────────────────────────────────
+  Scenario  : decode_length_sweep_64
+  Engine    : vllm
+  Iteration : 1/3
+  Model     : meta-llama/Llama-3.1-8B-Instruct
+  GPU VRAM  : 19527 MiB / 23028 MiB (85%)
+[2m2026-04-10T07:33:49.419602Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mVLLMClient[0m [36mprompt_pack[0m=[35mlong_generation[0m [36mscenario[0m=[35mdecode_length_sweep_64[0m
+[2m2026-04-10T07:33:49.419943Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m4[0m
+[2m2026-04-10T07:34:23.853680Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m8[0m
+[2m2026-04-10T07:34:42.333982Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m16[0m
+
+  vllm decode_length_sweep_64  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 180/180 0:01:02
+[2m2026-04-10T07:34:51.996320Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_decode_sweep/llama-3-1-8b-instruct/decode_length_sweep_64_vllm_1775806429.json[0m
+  ✓ DONE in 1m 02s  — saved to decode_length_sweep_64_vllm_1775806429.json
+  Progress: 1 completed, 0 skipped, 11 remaining  — total elapsed 1m 02s
+───────────────────────────────────────────────────────────────────────────────────────────── Step 2/12 ──────────────────────────────────────────────────────────────────────────────────────────────
+  Scenario  : decode_length_sweep_64
+  Engine    : vllm
+  Iteration : 2/3
+  Model     : meta-llama/Llama-3.1-8B-Instruct
+  GPU VRAM  : 19531 MiB / 23028 MiB (85%)
+  ETA       : ~11m 28s
+[2m2026-04-10T07:35:02.039487Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mVLLMClient[0m [36mprompt_pack[0m=[35mlong_generation[0m [36mscenario[0m=[35mdecode_length_sweep_64[0m
+[2m2026-04-10T07:35:02.039808Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m4[0m
+[2m2026-04-10T07:35:36.370036Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m8[0m
+[2m2026-04-10T07:35:54.833887Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m16[0m
+
+  vllm decode_length_sweep_64  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 180/180 0:01:02
+[2m2026-04-10T07:36:04.463348Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_decode_sweep/llama-3-1-8b-instruct/decode_length_sweep_64_vllm_1775806502.json[0m
+  ✓ DONE in 1m 02s  — saved to decode_length_sweep_64_vllm_1775806502.json
+  Progress: 2 completed, 0 skipped, 10 remaining  — total elapsed 2m 15s
+───────────────────────────────────────────────────────────────────────────────────────────── Step 3/12 ──────────────────────────────────────────────────────────────────────────────────────────────
+  Scenario  : decode_length_sweep_64
+  Engine    : vllm
+  Iteration : 3/3
+  Model     : meta-llama/Llama-3.1-8B-Instruct
+  GPU VRAM  : 19531 MiB / 23028 MiB (85%)
+  ETA       : ~10m 25s
+[2m2026-04-10T07:36:14.497442Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mVLLMClient[0m [36mprompt_pack[0m=[35mlong_generation[0m [36mscenario[0m=[35mdecode_length_sweep_64[0m
+[2m2026-04-10T07:36:14.497766Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m4[0m
+[2m2026-04-10T07:36:48.835018Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m8[0m
+[2m2026-04-10T07:37:07.299668Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m16[0m
+
+  vllm decode_length_sweep_64  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 180/180 0:01:02
+[2m2026-04-10T07:37:16.923880Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_decode_sweep/llama-3-1-8b-instruct/decode_length_sweep_64_vllm_1775806574.json[0m
+  ✓ DONE in 1m 02s  — saved to decode_length_sweep_64_vllm_1775806574.json
+  Progress: 3 completed, 0 skipped, 9 remaining  — total elapsed 3m 27s
+───────────────────────────────────────────────────────────────────────────────────────────── Step 4/12 ──────────────────────────────────────────────────────────────────────────────────────────────
+  Scenario  : decode_length_sweep_256
+  Engine    : vllm
+  Iteration : 1/3
+  Model     : meta-llama/Llama-3.1-8B-Instruct
+  GPU VRAM  : 19531 MiB / 23028 MiB (85%)
+  ETA       : ~9m 22s
+[2m2026-04-10T07:37:26.958252Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mVLLMClient[0m [36mprompt_pack[0m=[35mlong_generation[0m [36mscenario[0m=[35mdecode_length_sweep_256[0m
+[2m2026-04-10T07:37:26.958551Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m4[0m
+[2m2026-04-10T07:39:41.533580Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m8[0m
+[2m2026-04-10T07:40:54.146213Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m16[0m
+
+  vllm decode_length_sweep_256  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 180/180 0:04:05
+[2m2026-04-10T07:41:32.097374Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_decode_sweep/llama-3-1-8b-instruct/decode_length_sweep_256_vllm_1775806646.json[0m
+  ✓ DONE in 4m 05s  — saved to decode_length_sweep_256_vllm_1775806646.json
+  Progress: 4 completed, 0 skipped, 8 remaining  — total elapsed 7m 42s
+───────────────────────────────────────────────────────────────────────────────────────────── Step 5/12 ──────────────────────────────────────────────────────────────────────────────────────────────
+  Scenario  : decode_length_sweep_256
+  Engine    : vllm
+  Iteration : 2/3
+  Model     : meta-llama/Llama-3.1-8B-Instruct
+  GPU VRAM  : 19531 MiB / 23028 MiB (85%)
+  ETA       : ~14m 25s
+[2m2026-04-10T07:41:42.140182Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mVLLMClient[0m [36mprompt_pack[0m=[35mlong_generation[0m [36mscenario[0m=[35mdecode_length_sweep_256[0m
+[2m2026-04-10T07:41:42.140498Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m4[0m
+[2m2026-04-10T07:43:56.766692Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m8[0m
+[2m2026-04-10T07:45:09.367607Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m16[0m
+
+  vllm decode_length_sweep_256  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 180/180 0:04:05
+[2m2026-04-10T07:45:47.292225Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_decode_sweep/llama-3-1-8b-instruct/decode_length_sweep_256_vllm_1775806902.json[0m
+  ✓ DONE in 4m 05s  — saved to decode_length_sweep_256_vllm_1775806902.json
+  Progress: 5 completed, 0 skipped, 7 remaining  — total elapsed 11m 57s
+───────────────────────────────────────────────────────────────────────────────────────────── Step 6/12 ──────────────────────────────────────────────────────────────────────────────────────────────
+  Scenario  : decode_length_sweep_256
+  Engine    : vllm
+  Iteration : 3/3
+  Model     : meta-llama/Llama-3.1-8B-Instruct
+  GPU VRAM  : 19531 MiB / 23028 MiB (85%)
+  ETA       : ~15m 48s
+[2m2026-04-10T07:45:57.327324Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mVLLMClient[0m [36mprompt_pack[0m=[35mlong_generation[0m [36mscenario[0m=[35mdecode_length_sweep_256[0m
+[2m2026-04-10T07:45:57.327623Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m4[0m
+[2m2026-04-10T07:48:11.898517Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m8[0m
+[2m2026-04-10T07:49:24.513513Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m16[0m
+
+  vllm decode_length_sweep_256  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 180/180 0:04:05
+[2m2026-04-10T07:50:02.467568Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_decode_sweep/llama-3-1-8b-instruct/decode_length_sweep_256_vllm_1775807157.json[0m
+  ✓ DONE in 4m 05s  — saved to decode_length_sweep_256_vllm_1775807157.json
+  Progress: 6 completed, 0 skipped, 6 remaining  — total elapsed 16m 13s
+───────────────────────────────────────────────────────────────────────────────────────────── Step 7/12 ──────────────────────────────────────────────────────────────────────────────────────────────
+  Scenario  : decode_length_sweep_1024
+  Engine    : vllm
+  Iteration : 1/3
+  Model     : meta-llama/Llama-3.1-8B-Instruct
+  GPU VRAM  : 19531 MiB / 23028 MiB (85%)
+  ETA       : ~15m 22s
+[2m2026-04-10T07:50:12.507540Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mVLLMClient[0m [36mprompt_pack[0m=[35mlong_generation[0m [36mscenario[0m=[35mdecode_length_sweep_1024[0m
+[2m2026-04-10T07:50:12.507880Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m4[0m
+[2m2026-04-10T07:59:15.293674Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m8[0m
+[2m2026-04-10T08:04:10.627757Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m16[0m
+
+  vllm decode_length_sweep_1024  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 180/180 0:16:35
+[2m2026-04-10T08:06:47.941260Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_decode_sweep/llama-3-1-8b-instruct/decode_length_sweep_1024_vllm_1775807412.json[0m
+  ✓ DONE in 16m 35s  — saved to decode_length_sweep_1024_vllm_1775807412.json
+  Progress: 7 completed, 0 skipped, 5 remaining  — total elapsed 32m 58s
+───────────────────────────────────────────────────────────────────────────────────────────── Step 8/12 ──────────────────────────────────────────────────────────────────────────────────────────────
+  Scenario  : decode_length_sweep_1024
+  Engine    : vllm
+  Iteration : 2/3
+  Model     : meta-llama/Llama-3.1-8B-Instruct
+  GPU VRAM  : 19531 MiB / 23028 MiB (85%)
+  ETA       : ~22m 50s
+[2m2026-04-10T08:06:57.980535Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mVLLMClient[0m [36mprompt_pack[0m=[35mlong_generation[0m [36mscenario[0m=[35mdecode_length_sweep_1024[0m
+[2m2026-04-10T08:06:57.980857Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m4[0m
