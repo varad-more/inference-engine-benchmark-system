@@ -1,0 +1,22 @@
+{
+  "started_at": 1776406187.4891784,
+  "finished_at": 1776407602.3161595,
+  "total_elapsed_seconds": 1414.8242189884186,
+  "model": "google/gemma-3-4b-it",
+  "tasks": [
+    {
+      "model": "google/gemma-3-4b-it",
+      "scenario_name": "decode_length_sweep_4096",
+      "engine": "vllm",
+      "engine_variant": "vllm",
+      "spec_method": null,
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1776406187.5781286,
+      "status": "completed",
+      "finished_at": 1776407592.309298,
+      "result_path": "results_decode_sweep/gemma-3-4b-it/decode_length_sweep_4096_vllm_1776406187.json"
+    }
+  ],
+  "cooldown_seconds": 10
+}

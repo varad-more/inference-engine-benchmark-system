@@ -1,0 +1,282 @@
+
+========================================================================
+[2026-04-17 01:12:34] PREFLIGHT
+========================================================================
+  Python: Python 3.13.12
+  Docker: 29.4.0
+  GPU:    NVIDIA A10G, 23028 MiB
+  HF token: found
+  vLLM bind: 172.31.12.166:8000
+  SGLang:    172.31.12.166:8001
+
+========================================================================
+[2026-04-17 01:12:37] PULLING DOCKER IMAGES (if not cached)
+========================================================================
+  [pull] vllm/vllm-openai:v0.18.0-cu130 — already present, skipping pull
+  [pull] lmsysorg/sglang:v0.5.10.post1-cu130 — already present, skipping pull
+
+========================================================================
+[2026-04-17 01:12:37] PREFLIGHT COMPLETE
+========================================================================
+
+========================================================================
+[2026-04-17 01:12:37] PHASE 3 REDO — TARGETED RERUNS
+========================================================================
+  Cells      : 2 (gemma-3-4b-it 4096 vLLM; llama-3-1-8b 4096 vLLM)
+  Output dir : results_decode_sweep/
+
+========================================================================
+[2026-04-17 01:12:37] vLLM — google/gemma-3-4b-it
+========================================================================
+cf2e6cc17803731f8fa95676ce05fbb2d766e0b84347d2766840e62eba6f4aa8
+  Waiting for vLLM health....... CONTAINER EXITED
+  Container logs (last 20 lines):
+    Error response from daemon: No such container: bench-vllm
+[2026-04-17 01:13:16] ERROR: vLLM failed to start for google/gemma-3-4b-it
+Error response from daemon: No such container: bench-vllm
+
+========================================================================
+[2026-04-17 01:13:19] vLLM — meta-llama/Llama-3.1-8B-Instruct
+========================================================================
+bench-vllm
+804037226e58f21da1f08f2ff2742c09e96165359e3ccf61d379f713a0502d21
+  Waiting for vLLM health..................................... ready (185s)
+──────────────────────────────────────────────────────────────────────────────────────────────────────── Matrix execution ─────────────────────────────────────────────────────────────────────────────────────────────────────────
+  Model          : meta-llama/Llama-3.1-8B-Instruct
+  Scenarios      : decode_length_sweep_4096
+  Engines        : vllm
+  Iterations     : 1
+  Cooldown (sec) : 10
+──────────────────────────────────────────────────────────────────────────────────────────────────────────── Step 1/1 ─────────────────────────────────────────────────────────────────────────────────────────────────────────────
+  Scenario  : decode_length_sweep_4096
+  Engine    : vllm
+  Iteration : 1/1
+  Model     : meta-llama/Llama-3.1-8B-Instruct
+  GPU VRAM  : 19527 MiB / 23028 MiB (85%)
+[2m2026-04-17T01:16:30.957128Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mVLLMClient[0m [36mprompt_pack[0m=[35mlong_generation[0m [36mscenario[0m=[35mdecode_length_sweep_4096[0m
+[2m2026-04-17T01:16:30.957601Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m4[0m
+[2m2026-04-17T01:16:41.724487Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'peer closed connection without sending complete message body (incomplete chunked read)'[0m [36midx[0m=[35m49[0m
+[2m2026-04-17T01:16:41.725289Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'peer closed connection without sending complete message body (incomplete chunked read)'[0m [36midx[0m=[35m43[0m
+[2m2026-04-17T01:16:41.725507Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'peer closed connection without sending complete message body (incomplete chunked read)'[0m [36midx[0m=[35m11[0m
+[2m2026-04-17T01:16:41.725711Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'peer closed connection without sending complete message body (incomplete chunked read)'[0m [36midx[0m=[35m30[0m
+[2m2026-04-17T01:16:41.727453Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m5[0m
+[2m2026-04-17T01:16:41.727970Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m24[0m
+[2m2026-04-17T01:16:41.728177Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m56[0m
+[2m2026-04-17T01:16:41.728338Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m36[0m
+[2m2026-04-17T01:16:41.729741Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m18[0m
+[2m2026-04-17T01:16:41.730192Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m50[0m
+[2m2026-04-17T01:16:41.730358Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m31[0m
+[2m2026-04-17T01:16:41.730516Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m12[0m
+[2m2026-04-17T01:16:41.731895Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m44[0m
+[2m2026-04-17T01:16:41.732342Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m6[0m
+[2m2026-04-17T01:16:41.732504Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m25[0m
+[2m2026-04-17T01:16:41.732650Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m57[0m
+[2m2026-04-17T01:16:41.734202Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m37[0m
+[2m2026-04-17T01:16:41.734600Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m19[0m
+[2m2026-04-17T01:16:41.734756Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m51[0m
+[2m2026-04-17T01:16:41.734900Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m32[0m
+[2m2026-04-17T01:16:41.736282Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m13[0m
+[2m2026-04-17T01:16:41.736677Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m45[0m
+[2m2026-04-17T01:16:41.736833Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m7[0m
+[2m2026-04-17T01:16:41.736976Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m26[0m
+[2m2026-04-17T01:16:41.738349Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m58[0m
+[2m2026-04-17T01:16:41.738748Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m38[0m
+[2m2026-04-17T01:16:41.738904Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m1[0m
+[2m2026-04-17T01:16:41.739048Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m20[0m
+[2m2026-04-17T01:16:41.740430Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m52[0m
+[2m2026-04-17T01:16:41.740829Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m41[0m
+[2m2026-04-17T01:16:41.740985Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m14[0m
+[2m2026-04-17T01:16:41.741160Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m46[0m
+[2m2026-04-17T01:16:41.742485Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m0[0m
+[2m2026-04-17T01:16:41.742875Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m8[0m
+[2m2026-04-17T01:16:41.743028Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m27[0m
+[2m2026-04-17T01:16:41.743195Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m59[0m
+[2m2026-04-17T01:16:41.744537Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m39[0m
+[2m2026-04-17T01:16:41.744925Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m2[0m
+[2m2026-04-17T01:16:41.745078Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m21[0m
+[2m2026-04-17T01:16:41.745259Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m53[0m
+[2m2026-04-17T01:16:41.746576Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m33[0m
+[2m2026-04-17T01:16:41.746963Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m15[0m
+[2m2026-04-17T01:16:41.747147Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m47[0m
+[2m2026-04-17T01:16:41.747293Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m9[0m
+[2m2026-04-17T01:16:41.748621Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m28[0m
+[2m2026-04-17T01:16:41.749004Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m40[0m
+[2m2026-04-17T01:16:41.749188Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m3[0m
+[2m2026-04-17T01:16:41.749329Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m22[0m
+[2m2026-04-17T01:16:41.750651Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m54[0m
+[2m2026-04-17T01:16:41.751033Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m34[0m
+[2m2026-04-17T01:16:41.751215Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m16[0m
+[2m2026-04-17T01:16:41.751357Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m48[0m
+[2m2026-04-17T01:16:41.752680Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m10[0m
+[2m2026-04-17T01:16:41.753066Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m29[0m
+[2m2026-04-17T01:16:41.753253Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m42[0m
+[2m2026-04-17T01:16:41.753396Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m4[0m
+[2m2026-04-17T01:16:41.754719Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m23[0m
+[2m2026-04-17T01:16:41.754918Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m55[0m
+[2m2026-04-17T01:16:41.755060Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m35[0m
+[2m2026-04-17T01:16:41.755231Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m17[0m
+[2m2026-04-17T01:16:41.755420Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m8[0m
+[2m2026-04-17T01:16:41.759063Z[0m [[33m[1mwarning  [0m] [1mfailed to fetch vllm /metrics [0m [[0m[1m[34mVLLMClient[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m
+[2m2026-04-17T01:16:41.759279Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m18[0m
+[2m2026-04-17T01:16:41.759432Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m31[0m
+[2m2026-04-17T01:16:41.759575Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m36[0m
+[2m2026-04-17T01:16:41.759713Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m12[0m
+[2m2026-04-17T01:16:41.759845Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m44[0m
+[2m2026-04-17T01:16:41.759975Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m53[0m
+[2m2026-04-17T01:16:41.760150Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m24[0m
+[2m2026-04-17T01:16:41.760287Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m6[0m
+[2m2026-04-17T01:16:41.762958Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m37[0m
+[2m2026-04-17T01:16:41.763155Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m19[0m
+[2m2026-04-17T01:16:41.763305Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m59[0m
+[2m2026-04-17T01:16:41.763445Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m0[0m
+[2m2026-04-17T01:16:41.763579Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m32[0m
+[2m2026-04-17T01:16:41.763714Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m13[0m
+[2m2026-04-17T01:16:41.763850Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m45[0m
+[2m2026-04-17T01:16:41.763978Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m54[0m
+[2m2026-04-17T01:16:41.766658Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m25[0m
+[2m2026-04-17T01:16:41.766824Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m7[0m
+[2m2026-04-17T01:16:41.766965Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m38[0m
+[2m2026-04-17T01:16:41.767128Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m20[0m
+[2m2026-04-17T01:16:41.767270Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m1[0m
+[2m2026-04-17T01:16:41.767403Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m41[0m
+[2m2026-04-17T01:16:41.767534Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m14[0m
+[2m2026-04-17T01:16:41.767663Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m46[0m
+[2m2026-04-17T01:16:41.770345Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m55[0m
+[2m2026-04-17T01:16:41.770508Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m26[0m
+[2m2026-04-17T01:16:41.770649Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m8[0m
+[2m2026-04-17T01:16:41.770787Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m39[0m
+[2m2026-04-17T01:16:41.770920Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m49[0m
+[2m2026-04-17T01:16:41.771049Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m29[0m
+[2m2026-04-17T01:16:41.771211Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m2[0m
+[2m2026-04-17T01:16:41.771343Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m33[0m
+[2m2026-04-17T01:16:41.774015Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m15[0m
+[2m2026-04-17T01:16:41.774204Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m47[0m
+[2m2026-04-17T01:16:41.774345Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m48[0m
+[2m2026-04-17T01:16:41.774479Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m56[0m
+[2m2026-04-17T01:16:41.774610Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m27[0m
+[2m2026-04-17T01:16:41.774741Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m9[0m
+[2m2026-04-17T01:16:41.774877Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m40[0m
+[2m2026-04-17T01:16:41.775006Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m50[0m
+[2m2026-04-17T01:16:41.777704Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m21[0m
+[2m2026-04-17T01:16:41.777868Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m3[0m
+[2m2026-04-17T01:16:41.778011Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m34[0m
+[2m2026-04-17T01:16:41.778182Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m16[0m
+[2m2026-04-17T01:16:41.778343Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m57[0m
+[2m2026-04-17T01:16:41.778498Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m28[0m
+[2m2026-04-17T01:16:41.778653Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m10[0m
+[2m2026-04-17T01:16:41.778806Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m42[0m
+[2m2026-04-17T01:16:41.781624Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m51[0m
+[2m2026-04-17T01:16:41.781811Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m22[0m
+[2m2026-04-17T01:16:41.781971Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m4[0m
+[2m2026-04-17T01:16:41.782156Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m35[0m
+[2m2026-04-17T01:16:41.782312Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m17[0m
+[2m2026-04-17T01:16:41.782463Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m58[0m
+[2m2026-04-17T01:16:41.782613Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m30[0m
+[2m2026-04-17T01:16:41.782761Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m11[0m
+[2m2026-04-17T01:16:41.784339Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m43[0m
+[2m2026-04-17T01:16:41.784509Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m52[0m
+[2m2026-04-17T01:16:41.784665Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m23[0m
+[2m2026-04-17T01:16:41.784818Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m5[0m
+[2m2026-04-17T01:16:41.785033Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m16[0m
+[2m2026-04-17T01:16:41.791160Z[0m [[33m[1mwarning  [0m] [1mfailed to fetch vllm /metrics [0m [[0m[1m[34mVLLMClient[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m
+[2m2026-04-17T01:16:41.791380Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m41[0m
+[2m2026-04-17T01:16:41.791550Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m14[0m
+[2m2026-04-17T01:16:41.791709Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m46[0m
+[2m2026-04-17T01:16:41.791866Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m51[0m
+[2m2026-04-17T01:16:41.792021Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m4[0m
+[2m2026-04-17T01:16:41.792220Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m27[0m
+[2m2026-04-17T01:16:41.792381Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m59[0m
+[2m2026-04-17T01:16:41.792535Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m38[0m
+[2m2026-04-17T01:16:41.792687Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m21[0m
+[2m2026-04-17T01:16:41.792841Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m52[0m
+[2m2026-04-17T01:16:41.792992Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m10[0m
+[2m2026-04-17T01:16:41.793163Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m33[0m
+[2m2026-04-17T01:16:41.793316Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m15[0m
+[2m2026-04-17T01:16:41.793467Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m47[0m
+[2m2026-04-17T01:16:41.793618Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m5[0m
+[2m2026-04-17T01:16:41.793769Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m28[0m
+[2m2026-04-17T01:16:41.799251Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m39[0m
+[2m2026-04-17T01:16:41.799467Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m11[0m
+[2m2026-04-17T01:16:41.799631Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m22[0m
+[2m2026-04-17T01:16:41.799791Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m53[0m
+[2m2026-04-17T01:16:41.799948Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m34[0m
+[2m2026-04-17T01:16:41.800144Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m16[0m
+[2m2026-04-17T01:16:41.800306Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m56[0m
+[2m2026-04-17T01:16:41.800468Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m6[0m
+[2m2026-04-17T01:16:41.800629Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m29[0m
+[2m2026-04-17T01:16:41.800786Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m40[0m
+[2m2026-04-17T01:16:41.800938Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m0[0m
+[2m2026-04-17T01:16:41.801089Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m23[0m
+[2m2026-04-17T01:16:41.801267Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m54[0m
+[2m2026-04-17T01:16:41.801417Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m12[0m
+[2m2026-04-17T01:16:41.801565Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m44[0m
+[2m2026-04-17T01:16:41.801718Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m17[0m
+[2m2026-04-17T01:16:41.807167Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m48[0m
+[2m2026-04-17T01:16:41.807378Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m7[0m
+[2m2026-04-17T01:16:41.807543Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m30[0m
+[2m2026-04-17T01:16:41.807701Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m13[0m
+[2m2026-04-17T01:16:41.807865Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m42[0m
+[2m2026-04-17T01:16:41.808021Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m1[0m
+[2m2026-04-17T01:16:41.808215Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m24[0m
+[2m2026-04-17T01:16:41.808375Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m55[0m
+[2m2026-04-17T01:16:41.808533Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m35[0m
+[2m2026-04-17T01:16:41.808688Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m18[0m
+[2m2026-04-17T01:16:41.808843Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m49[0m
+[2m2026-04-17T01:16:41.808997Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m8[0m
+[2m2026-04-17T01:16:41.809170Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m31[0m
+[2m2026-04-17T01:16:41.809322Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m43[0m
+[2m2026-04-17T01:16:41.809471Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m2[0m
+[2m2026-04-17T01:16:41.809620Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m25[0m
+[2m2026-04-17T01:16:41.813581Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m57[0m
+[2m2026-04-17T01:16:41.813774Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m36[0m
+[2m2026-04-17T01:16:41.813933Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m19[0m
+[2m2026-04-17T01:16:41.814087Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m50[0m
+[2m2026-04-17T01:16:41.814276Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m9[0m
+[2m2026-04-17T01:16:41.814431Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m32[0m
+[2m2026-04-17T01:16:41.814583Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m45[0m
+[2m2026-04-17T01:16:41.814732Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m3[0m
+[2m2026-04-17T01:16:41.814885Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m26[0m
+[2m2026-04-17T01:16:41.815034Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m58[0m
+[2m2026-04-17T01:16:41.815202Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m37[0m
+[2m2026-04-17T01:16:41.815350Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m'All connection attempts failed'[0m [36midx[0m=[35m20[0m
+
+  vllm decode_length_sweep_4096  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 180/180 0:00:10
+[2m2026-04-17T01:16:41.818067Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_decode_sweep/llama-3-1-8b-instruct/decode_length_sweep_4096_vllm_1776388590.json[0m
+  ✓ DONE in 10s  — saved to decode_length_sweep_4096_vllm_1776388590.json
+  Progress: 1 completed, 0 skipped, 0 remaining  — total elapsed 10s
+───────────────────────────────────────────────────────────────────────────────────────────────────────── Matrix complete ─────────────────────────────────────────────────────────────────────────────────────────────────────────
+  Total time: 20s
+
+                                              Matrix Results Summary                                               
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━┳━━━━━━┳━━━━━━━━━━━┳━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ Scenario                 ┃ Engine ┃ Iter ┃  Status   ┃ Duration ┃ Output File                                   ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━╇━━━━━━╇━━━━━━━━━━━╇━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
+│ decode_length_sweep_4096 │ vllm   │  1   │ completed │      10s │ decode_length_sweep_4096_vllm_1776388590.json │
+└──────────────────────────┴────────┴──────┴───────────┴──────────┴───────────────────────────────────────────────┘
+✓ Matrix manifest saved to results_decode_sweep/llama-3-1-8b-instruct/matrix_manifest_1776388590.json
+bench-vllm
+
+========================================================================
+[2026-04-17 01:16:56] PHASE 3 REDO COMPLETE
+========================================================================
+
+========================================================================
+[2026-04-17 01:16:56] ALL PHASES COMPLETE
+========================================================================
+
+Results:
+  results_variance/              131 result files
+  results_concurrency64/           0 result files
+  results_decode_sweep/           72 result files
+
+STATUS: 1 ERROR(S):
+  1. vLLM failed to start for google/gemma-3-4b-it
+
+Next steps:
+  After Phase 3 completes, resume Phase 2:
+    nohup bash scripts/run_new_benchmarks.sh --phase2 2>&1 | tee logs/phase2_resume_$(date +%Y%m%dT%H%M%S).log &
+
+  Then run analysis:
+    python -m analysis.variance_analysis --results-dir results_variance
+    python -m analysis.tpot_analysis --results-dir results_variance
+    python -m analysis.decode_length_analysis --results-dir results_decode_sweep

@@ -25,22 +25,88 @@ I benchmarked **14 models** (2B to 9B parameters) on a single NVIDIA A10G 24 GB 
 
 ## Benchmark Execution Status
 
-_Last updated: 2026-04-09_
+_Last updated: 2026-04-17_
 
 | Phase | Description | Status | Result Files |
 |---|---|---|---|
 | Baseline | 14 models × 5 scenarios × 2 engines | ✅ Complete | 152 / 152 |
 | Speculative decoding | Llama 3.1 8B (Ngram + Eagle3), Qwen3 8B (Ngram) | ✅ Complete | In `results/` |
 | Phase 1 — Variance | 4 models × 5 scenarios × 2 engines × 5 iterations | ✅ Complete | 201 / 200 |
-| Phase 2 — Concurrency-64 | 4 models × `throughput_ramp_extended` × 2 engines × 3 iterations | 🔶 Partial | 6 / 24 (Llama 3.1 8B only) |
-| Phase 3 — Decode sweep | 4 models × 4 lengths × 2 engines × 3 iterations | ⬜ Not started | 0 / 96 |
+| Phase 2 — Concurrency-64 | 4 models × `throughput_ramp_extended` × 2 engines × 1 iteration (cost-conscious) | 🔶 Partial | 3 / 8 (Qwen3-8B both engines, Mistral-7B vLLM) |
+| Phase 3 — Decode sweep | 4 models × 4 lengths × 2 engines × (1–3 iter) | ✅ Complete | 72 / 72 |
 
-### Pending
+### Phase 3 — Decode-Length Sweep Results
 
-- **Phase 2 resume:** Uncomment the model loop in `scripts/run_new_benchmarks.sh` Phase 2 block; run `--phase2` for Qwen3-8B, Mistral-7B-Instruct-v0.3, gemma-2-9b-it
-- **Phase 3:** Run `--phase3` (all 4 decode-length scenarios × 4 models × 2 engines)
+Prompt ≈ 512 tokens, `max_output_tokens ∈ {64, 256, 1024, 4096}`, concurrency 8, 180 requests/run. Mean across iterations. Full table: [`reports/decode_length_sweep_summary.md`](reports/decode_length_sweep_summary.md).
+
+| Model | Decode | Engine | n | Tokens/s | TTFT p50 (ms) | TTFT p99 (ms) | Latency p99 (ms) | Err |
+|---|---:|---|---:|---:|---:|---:|---:|---:|
+| gemma-2-2b-it        |   64 | sglang | 3 | 519.1 |  39.4 |   67.9 |     918 | 0.009 |
+| gemma-2-2b-it        |   64 | vllm   | 3 | 523.0 |  42.1 |  188.7 |    1108 | 0.000 |
+| gemma-2-2b-it        |  256 | sglang | 3 | 484.3 |  41.9 |   70.5 |    3577 | 0.004 |
+| gemma-2-2b-it        |  256 | vllm   | 3 | 493.8 |  36.5 |   60.4 |    3587 | 0.000 |
+| gemma-2-2b-it        | 1024 | sglang | 3 | 469.7 |  37.9 |   56.3 |   12742 | 0.000 |
+| gemma-2-2b-it        | 1024 | vllm   | 3 | 458.0 |  37.3 |   57.4 |   12864 | 0.000 |
+| gemma-2-2b-it        | 4096 | sglang | 3 | 467.0 |  37.9 |   56.7 |   11044 | 0.000 |
+| gemma-2-2b-it        | 4096 | vllm   | 3 | 459.2 |  37.5 |   53.7 |   12779 | 0.000 |
+| phi-4-mini-instruct  |   64 | sglang | 3 | 340.1 |  49.2 |  105.2 |    1378 | 0.000 |
+| phi-4-mini-instruct  |   64 | vllm   | 3 | 354.4 |  55.1 |   82.7 |    1321 | 0.000 |
+| phi-4-mini-instruct  |  256 | sglang | 3 | 333.4 |  46.8 |   76.2 |    5350 | 0.000 |
+| phi-4-mini-instruct  |  256 | vllm   | 3 | 346.2 |  56.0 |   70.5 |    5269 | 0.000 |
+| phi-4-mini-instruct  | 1024 | sglang | 3 | 322.6 |  47.6 |   73.9 |   22881 | 0.000 |
+| phi-4-mini-instruct  | 1024 | vllm   | 3 | 304.7 |  56.4 |   80.5 |   23149 | 0.000 |
+| phi-4-mini-instruct  | 4096 | sglang | 3 | 293.5 |  48.3 |   99.9 |   87423 | 0.000 |
+| phi-4-mini-instruct  | 4096 | vllm   | 3 | 287.2 |  56.8 |   74.5 |   79221 | 0.000 |
+| gemma-3-4b-it        |   64 | sglang | 1 | 279.8 | 134.2 |  160.5 |    1596 | 0.006 |
+| gemma-3-4b-it        |   64 | vllm   | 1 | 139.0 | 128.9 | 5297.3 |    7960 | 0.000 |
+| gemma-3-4b-it        |  256 | sglang | 1 | 288.6 | 126.4 |  158.3 |    6091 | 0.006 |
+| gemma-3-4b-it        |  256 | vllm   | 1 | 154.3 | 127.1 |  151.7 |   11556 | 0.000 |
+| gemma-3-4b-it        | 1024 | sglang | 1 | 273.4 | 101.2 |  156.3 |   26063 | 0.000 |
+| gemma-3-4b-it        | 1024 | vllm   | 1 | 150.5 | 122.5 |  149.1 |   45805 | 0.000 |
+| gemma-3-4b-it        | 4096 | sglang | 1 | 272.7 | 100.7 |   154.7 |   36101 | 0.000 |
+| gemma-3-4b-it        | 4096 | vllm   | 1 | 145.0 | 124.9 |  5344.9 |   71559 | 0.000 |
+| llama-3-1-8b-instruct |   64 | sglang | 2 | 192.0 |  69.0 |   103.2 |    2390 | 0.000 |
+| llama-3-1-8b-instruct |   64 | vllm   | 2 | 189.3 |  95.7 |   126.5 |    2418 | 0.000 |
+| llama-3-1-8b-instruct |  256 | sglang | 2 | 190.3 |  69.5 |   116.6 |    9450 | 0.000 |
+| llama-3-1-8b-instruct |  256 | vllm   | 2 | 189.4 |  93.2 |   127.1 |    9490 | 0.000 |
+| llama-3-1-8b-instruct | 1024 | sglang | 2 | 186.8 |  69.0 |    95.3 |   39147 | 0.000 |
+| llama-3-1-8b-instruct | 1024 | vllm   | 2 | 185.0 |  96.1 |   127.4 |   39366 | 0.000 |
+| llama-3-1-8b-instruct | 4096 | sglang | 2 | 158.9 | 106.4 | 95647.9 |  299046 | 0.025 |
+| llama-3-1-8b-instruct | 4096 | vllm   | 2 | 158.7 | 115.9 | 42609.6 |  284531 | 0.000 |
+
+**Observations:**
+- SGLang has consistently lower TTFT (p50) than vLLM; vLLM edges ahead on small-model decode throughput at short outputs.
+- Gemma 3 4B: SGLang ≈ **1.8×** vLLM tokens/s at every decode length — matches the Phase 0 Gemma 3 finding.
+- Llama 8B at 4096 tokens: p99 latency blows out to **~5 min** and tail TTFT spikes to **~95 s (sglang)** / **~48 s (vllm)** — the A10G is queue-saturated at concurrency 8 for this size.
+
+### Phase 2 — Concurrency-64 Results (current)
+
+Single-iteration runs at concurrency levels {1, 4, 8, 16, 32, 64}, 150 req/level (900 total). Prompt 128 tok, output 256 tok. Full table: [`reports/concurrency64_summary.md`](reports/concurrency64_summary.md).
+
+| Model | Engine | Succ | Tokens/s | TTFT p50 (ms) | TTFT p99 (ms) | Latency p99 (ms) | Err |
+|---|---|---:|---:|---:|---:|---:|---:|
+| Qwen3-8B                          | vllm   | 900/900 | 113.7 | 103.2 | 232.2 | 11683 | 0.000 |
+| Qwen3-8B                          | sglang | 900/900 | 113.9 |  73.5 | 403.0 | 11663 | 0.000 |
+| Mistral-7B-Instruct-v0.3          | vllm   | 900/900 | 123.5 |  93.0 | 283.9 | 10136 | 0.000 |
+| Mistral-7B-Instruct-v0.3          | sglang | — | pending | | | | |
+| google/gemma-2-9b-it              | vllm   | — | pending | | | | |
+| google/gemma-2-9b-it              | sglang | — | pending | | | | |
+| meta-llama/Llama-3.1-8B-Instruct  | vllm   | — | pending | | | | |
+| meta-llama/Llama-3.1-8B-Instruct  | sglang | — | pending | | | | |
+
+**Observations (from completed runs):**
+- All completed cells hit 0% error rate at concurrency=64 — no OOMs on A10G 24GB for 7–8B-class models at 128/256 prompt/output.
+- Qwen3-8B aggregate throughput is engine-agnostic (~114 tok/s either way); SGLang has lower median TTFT (73.5 ms vs 103.2 ms), vLLM has tighter tail TTFT (p99 232 ms vs 403 ms).
+- Mistral-7B (vLLM) leads absolute throughput at 123.5 tok/s — expected since it's smaller than Qwen3-8B.
+
+### Other pending
+
+- **Phase 2 resume:** 5 cells remaining (Llama 3.1 8B both engines, Mistral-7B sglang, gemma-2-9b-it both engines). Re-running `--phase2` is idempotent — the script auto-skips any cell with an existing result file.
+  ```bash
+  nohup bash scripts/run_new_benchmarks.sh --phase2 2>&1 | tee logs/phase2_resume_$(date +%Y%m%dT%H%M%S).log &
+  ```
 - **Variance analysis re-run:** Phase 1 data now complete — run `python -m analysis.variance_analysis --results-dir results_variance`
-- **Gemma 4 benchmarks:** Pending GPU availability after Phases 2/3 complete
+- **Gemma 4 benchmarks:** Pending GPU availability after Phase 2 wraps
 
 ```bash
 # Resume Phase 2 (after uncommenting the model loop)
