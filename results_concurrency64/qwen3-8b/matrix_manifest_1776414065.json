@@ -1,0 +1,22 @@
+{
+  "started_at": 1776414065.9157135,
+  "finished_at": 1776416103.6363878,
+  "total_elapsed_seconds": 2037.7181408405304,
+  "model": "Qwen/Qwen3-8B",
+  "tasks": [
+    {
+      "model": "Qwen/Qwen3-8B",
+      "scenario_name": "throughput_ramp_extended",
+      "engine": "vllm",
+      "engine_variant": "vllm",
+      "spec_method": null,
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1776414065.9967875,
+      "status": "completed",
+      "finished_at": 1776416093.6225476,
+      "result_path": "results_concurrency64/qwen3-8b/throughput_ramp_extended_vllm_1776414065.json"
+    }
+  ],
+  "cooldown_seconds": 10
+}

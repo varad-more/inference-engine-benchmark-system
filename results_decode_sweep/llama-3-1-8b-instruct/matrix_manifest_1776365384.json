@@ -1,0 +1,61 @@
+{
+  "started_at": 1776365384.3578258,
+  "finished_at": 1776371187.795896,
+  "total_elapsed_seconds": 5803.433579206467,
+  "model": "meta-llama/Llama-3.1-8B-Instruct",
+  "tasks": [
+    {
+      "model": "meta-llama/Llama-3.1-8B-Instruct",
+      "scenario_name": "decode_length_sweep_64",
+      "engine": "sglang",
+      "engine_variant": "sglang",
+      "spec_method": null,
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1776365385.412491,
+      "status": "completed",
+      "finished_at": 1776365446.848005,
+      "result_path": "results_decode_sweep/llama-3-1-8b-instruct/decode_length_sweep_64_sglang_1776365385.json"
+    },
+    {
+      "model": "meta-llama/Llama-3.1-8B-Instruct",
+      "scenario_name": "decode_length_sweep_256",
+      "engine": "sglang",
+      "engine_variant": "sglang",
+      "spec_method": null,
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1776365457.887357,
+      "status": "completed",
+      "finished_at": 1776365701.21944,
+      "result_path": "results_decode_sweep/llama-3-1-8b-instruct/decode_length_sweep_256_sglang_1776365457.json"
+    },
+    {
+      "model": "meta-llama/Llama-3.1-8B-Instruct",
+      "scenario_name": "decode_length_sweep_1024",
+      "engine": "sglang",
+      "engine_variant": "sglang",
+      "spec_method": null,
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1776365712.257853,
+      "status": "completed",
+      "finished_at": 1776366700.9375196,
+      "result_path": "results_decode_sweep/llama-3-1-8b-instruct/decode_length_sweep_1024_sglang_1776365712.json"
+    },
+    {
+      "model": "meta-llama/Llama-3.1-8B-Instruct",
+      "scenario_name": "decode_length_sweep_4096",
+      "engine": "sglang",
+      "engine_variant": "sglang",
+      "spec_method": null,
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1776366711.9829118,
+      "status": "completed",
+      "finished_at": 1776371177.7829046,
+      "result_path": "results_decode_sweep/llama-3-1-8b-instruct/decode_length_sweep_4096_sglang_1776366711.json"
+    }
+  ],
+  "cooldown_seconds": 10
+}

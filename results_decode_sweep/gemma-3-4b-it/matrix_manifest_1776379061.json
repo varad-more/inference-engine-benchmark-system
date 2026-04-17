@@ -1,0 +1,61 @@
+{
+  "started_at": 1776379061.0977871,
+  "finished_at": 1776380588.3255107,
+  "total_elapsed_seconds": 1527.2235023975372,
+  "model": "google/gemma-3-4b-it",
+  "tasks": [
+    {
+      "model": "google/gemma-3-4b-it",
+      "scenario_name": "decode_length_sweep_64",
+      "engine": "vllm",
+      "engine_variant": "vllm",
+      "spec_method": null,
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1776379061.1487396,
+      "status": "completed",
+      "finished_at": 1776379144.7626588,
+      "result_path": "results_decode_sweep/gemma-3-4b-it/decode_length_sweep_64_vllm_1776379061.json"
+    },
+    {
+      "model": "google/gemma-3-4b-it",
+      "scenario_name": "decode_length_sweep_256",
+      "engine": "vllm",
+      "engine_variant": "vllm",
+      "spec_method": null,
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1776379154.8038924,
+      "status": "completed",
+      "finished_at": 1776379453.9237309,
+      "result_path": "results_decode_sweep/gemma-3-4b-it/decode_length_sweep_256_vllm_1776379154.json"
+    },
+    {
+      "model": "google/gemma-3-4b-it",
+      "scenario_name": "decode_length_sweep_1024",
+      "engine": "vllm",
+      "engine_variant": "vllm",
+      "spec_method": null,
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1776379463.963667,
+      "status": "completed",
+      "finished_at": 1776380567.765882,
+      "result_path": "results_decode_sweep/gemma-3-4b-it/decode_length_sweep_1024_vllm_1776379463.json"
+    },
+    {
+      "model": "google/gemma-3-4b-it",
+      "scenario_name": "decode_length_sweep_4096",
+      "engine": "vllm",
+      "engine_variant": "vllm",
+      "spec_method": null,
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1776380577.8046854,
+      "status": "completed",
+      "finished_at": 1776380578.31124,
+      "result_path": "results_decode_sweep/gemma-3-4b-it/decode_length_sweep_4096_vllm_1776380577.json"
+    }
+  ],
+  "cooldown_seconds": 10
+}

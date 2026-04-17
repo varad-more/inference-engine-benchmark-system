@@ -1,0 +1,128 @@
+
+========================================================================
+[2026-04-17 06:06:16] PREFLIGHT
+========================================================================
+  Python: Python 3.13.12
+  Docker: 29.4.0
+  GPU:    NVIDIA A10G, 23028 MiB
+  HF token: found
+  vLLM bind: 172.31.12.166:8000
+  SGLang:    172.31.12.166:8001
+
+========================================================================
+[2026-04-17 06:06:19] PULLING DOCKER IMAGES (if not cached)
+========================================================================
+  [pull] vllm/vllm-openai:v0.18.0-cu130 — already present, skipping pull
+  [pull] lmsysorg/sglang:v0.5.10.post1-cu130 — already present, skipping pull
+
+========================================================================
+[2026-04-17 06:06:19] PREFLIGHT COMPLETE
+========================================================================
+
+========================================================================
+[2026-04-17 06:06:19] PHASE 3 REDO — TARGETED RERUNS
+========================================================================
+  Cells      : 2 (gemma-3-4b-it 4096 vLLM; llama-3-1-8b 4096 vLLM)
+  Output dir : results_decode_sweep/
+
+========================================================================
+[2026-04-17 06:06:24] vLLM — google/gemma-3-4b-it
+========================================================================
+b6c66bebb3be0bfef9cf553f117e3396ec45840271483daaf03551b9a90e3808
+  Waiting for vLLM health....................................... ready (195s)
+─────────────────────────────── Matrix execution ───────────────────────────────
+  Model          : google/gemma-3-4b-it
+  Scenarios      : decode_length_sweep_4096
+  Engines        : vllm
+  Iterations     : 1
+  Cooldown (sec) : 10
+─────────────────────────────────── Step 1/1 ───────────────────────────────────
+  Scenario  : decode_length_sweep_4096
+  Engine    : vllm
+  Iteration : 1/1
+  Model     : google/gemma-3-4b-it
+  GPU VRAM  : 19904 MiB / 23028 MiB (86%)
+[2m2026-04-17T06:09:47.578784Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mVLLMClient[0m [36mprompt_pack[0m=[35mlong_generation[0m [36mscenario[0m=[35mdecode_length_sweep_4096[0m
+[2m2026-04-17T06:09:47.579646Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m4[0m
+[2m2026-04-17T06:23:03.475256Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m8[0m
+[2m2026-04-17T06:29:22.701753Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m16[0m
+
+  vllm decode_length_sweep_4096  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 180/180 0:23:24
+[2m2026-04-17T06:33:12.309174Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_decode_sweep/gemma-3-4b-it/decode_length_sweep_4096_vllm_1776406187.json[0m
+  ✓ DONE in 23m 24s  — saved to decode_length_sweep_4096_vllm_1776406187.json
+  Progress: 1 completed, 0 skipped, 0 remaining  — total elapsed 23m 24s
+─────────────────────────────── Matrix complete ────────────────────────────────
+  Total time: 23m 34s
+
+                             Matrix Results Summary                             
+┏━━━━━━━━━━━━━━━━━━━┳━━━━━━━━┳━━━━━━┳━━━━━━━━━━━┳━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━┓
+┃ Scenario          ┃ Engine ┃ Iter ┃  Status   ┃ Duration ┃ Output File       ┃
+┡━━━━━━━━━━━━━━━━━━━╇━━━━━━━━╇━━━━━━╇━━━━━━━━━━━╇━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━┩
+│ decode_length_sw… │ vllm   │  1   │ completed │  23m 24s │ decode_length_sw… │
+└───────────────────┴────────┴──────┴───────────┴──────────┴───────────────────┘
+✓ Matrix manifest saved to 
+results_decode_sweep/gemma-3-4b-it/matrix_manifest_1776406187.json
+bench-vllm
+
+========================================================================
+[2026-04-17 06:33:27] vLLM — meta-llama/Llama-3.1-8B-Instruct
+========================================================================
+dc9e44bf427e583035c02ba01bef7779ded30beca38b1f7ffc742214ac71ca15
+  Waiting for vLLM health........................................ ready (200s)
+─────────────────────────────── Matrix execution ───────────────────────────────
+  Model          : meta-llama/Llama-3.1-8B-Instruct
+  Scenarios      : decode_length_sweep_4096
+  Engines        : vllm
+  Iterations     : 1
+  Cooldown (sec) : 10
+─────────────────────────────────── Step 1/1 ───────────────────────────────────
+  Scenario  : decode_length_sweep_4096
+  Engine    : vllm
+  Iteration : 1/1
+  Model     : meta-llama/Llama-3.1-8B-Instruct
+  GPU VRAM  : 19527 MiB / 23028 MiB (85%)
+[2m2026-04-17T06:36:54.885721Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mVLLMClient[0m [36mprompt_pack[0m=[35mlong_generation[0m [36mscenario[0m=[35mdecode_length_sweep_4096[0m
+[2m2026-04-17T06:36:54.886081Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m4[0m
+[2m2026-04-17T07:13:09.867574Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m8[0m
+[2m2026-04-17T07:34:26.311818Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m16[0m
+
+  vllm decode_length_sweep_4096  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 180/180 1:14:07
+[2m2026-04-17T07:51:02.881040Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_decode_sweep/llama-3-1-8b-instruct/decode_length_sweep_4096_vllm_1776407814.json[0m
+  ✓ DONE in 1h 14m 07s  — saved to decode_length_sweep_4096_vllm_1776407814.json
+  Progress: 1 completed, 0 skipped, 0 remaining  — total elapsed 1h 14m 08s
+─────────────────────────────── Matrix complete ────────────────────────────────
+  Total time: 1h 14m 18s
+
+                             Matrix Results Summary                             
+┏━━━━━━━━━━━━━━━━━━┳━━━━━━━━┳━━━━━━┳━━━━━━━━━━━┳━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━┓
+┃ Scenario         ┃ Engine ┃ Iter ┃  Status   ┃   Duration ┃ Output File      ┃
+┡━━━━━━━━━━━━━━━━━━╇━━━━━━━━╇━━━━━━╇━━━━━━━━━━━╇━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━┩
+│ decode_length_s… │ vllm   │  1   │ completed │ 1h 14m 07s │ decode_length_s… │
+└──────────────────┴────────┴──────┴───────────┴────────────┴──────────────────┘
+✓ Matrix manifest saved to 
+results_decode_sweep/llama-3-1-8b-instruct/matrix_manifest_1776407814.json
+bench-vllm
+
+========================================================================
+[2026-04-17 07:51:19] PHASE 3 REDO COMPLETE
+========================================================================
+
+========================================================================
+[2026-04-17 07:51:19] ALL PHASES COMPLETE
+========================================================================
+
+Results:
+  results_variance/              131 result files
+  results_concurrency64/           0 result files
+  results_decode_sweep/           72 result files
+
+STATUS: ALL PASSED — no errors
+
+Next steps:
+  After Phase 3 completes, resume Phase 2:
+    nohup bash scripts/run_new_benchmarks.sh --phase2 2>&1 | tee logs/phase2_resume_$(date +%Y%m%dT%H%M%S).log &
+
+  Then run analysis:
+    python -m analysis.variance_analysis --results-dir results_variance
+    python -m analysis.tpot_analysis --results-dir results_variance
+    python -m analysis.decode_length_analysis --results-dir results_decode_sweep
