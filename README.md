@@ -20,6 +20,7 @@ I benchmarked **14 models** (2B to 9B parameters) on a single NVIDIA A10G 24 GB 
 
 **Hardware:** AWS g5.2xlarge (NVIDIA A10G 24 GB), sequential execution, one engine at a time
 **Full reports:** [`reports/final_benchmark_report_2026-03-31.md`](reports/final_benchmark_report_2026-03-31.md)
+**Benchmark status:** Complete — 152 result files committed under `results/` (140 baseline + 12 speculative-decoding). No runs pending; `scripts/run_all_benchmarks.sh` and `scripts/run_phase_a_pending.sh` reproduce the full matrix.
 
 ---
 
