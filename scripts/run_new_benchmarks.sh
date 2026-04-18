@@ -323,11 +323,11 @@ fi
 #  PHASE 2 — Concurrency-64 Extended Ramp
 #  Adds concurrency=64 to find saturation / OOM ceiling on 7-9B models
 #
-#  STATUS (as of 2026-04-17): PARTIAL — 3 result files in results_concurrency64/
-#    Qwen/Qwen3-8B                    — vLLM ✓  SGLang ✓
-#    mistralai/Mistral-7B-Instruct-v0.3 — vLLM ✓  SGLang ✗ MISSING
-#    google/gemma-2-9b-it             — vLLM ✗  SGLang ✗ MISSING
-#    meta-llama/Llama-3.1-8B-Instruct — vLLM ✗  SGLang ✗ (no files in this dir)
+#  STATUS (as of 2026-04-18): COMPLETE — all 8 cells done, 0% error rate
+#    Qwen/Qwen3-8B                     — vLLM ✓  SGLang ✓
+#    mistralai/Mistral-7B-Instruct-v0.3 — vLLM ✓  SGLang ✓
+#    meta-llama/Llama-3.1-8B-Instruct  — vLLM ✓  SGLang ✓
+#    google/gemma-2-9b-it              — vLLM ✓  SGLang ✓  (vLLM needs --max-model-len 2048)
 #
 #  Cost-conscious plan: single iteration per (model × engine), and SKIP cells
 #  whose result file already exists. Safe to re-run idempotently — won't re-do
@@ -380,11 +380,22 @@ if [ "$RUN_PHASE2" = "true" ]; then
             error "phase2: no slug mapping for ${model}"; continue
         fi
 
+        # Per-model vLLM overrides. gemma-2-9b-it on A10G 24GB cannot hold an
+        # 8192-token KV cache at 9B params — need a smaller window. 384 tok is
+        # enough for this scenario (128 prompt + 256 output); use 2048 for
+        # headroom. --enforce-eager avoids CUDA graph issues on gemma-2.
+        vllm_extra=()
+        case "$model" in
+            "google/gemma-2-9b-it")
+                vllm_extra=(--max-model-len 2048 --enforce-eager --gpu-memory-utilization 0.90)
+                ;;
+        esac
+
         # vLLM
         if phase2_has_result "$slug" "vllm"; then
             echo "  [SKIP] vllm ${model} — result file already exists"
         else
-            run_vllm_model "$model" "$CONC64_SCENARIO" "$CONC64_ITERATIONS" "$CONC64_COOLDOWN" "results_concurrency64"
+            run_vllm_model "$model" "$CONC64_SCENARIO" "$CONC64_ITERATIONS" "$CONC64_COOLDOWN" "results_concurrency64" "${vllm_extra[@]}"
         fi
 
         # SGLang
@@ -417,9 +428,8 @@ fi
 #    meta-llama/Llama-3.1-8B-Instruct — COMPLETE (16 files: vLLM ×2, SGLang ×2 per scenario)
 # =============================================================================
 if [ "$RUN_PHASE3" = "true" ] && [ "$RUN_PHASE3_REDO" = "false" ]; then
-    log "PHASE 3 — DECODE-LENGTH SWEEP (NEAR-COMPLETE — SKIPPED)"
-    echo "  Status     : 70 result files as of 2026-04-17 (post-cleanup)"
-    echo "  Redo       : 2 cells pending — run with --phase3-redo"
+    log "PHASE 3 — DECODE-LENGTH SWEEP (COMPLETE — SKIPPED)"
+    echo "  Status     : 72 result files as of 2026-04-18 (all cells valid)"
     echo "  Coverage   : gemma-2-2b/phi-4-mini ×3 iters; llama-8B ×2; gemma-3-4b ×1"
 
     DECODE_SCENARIOS_ALL="decode_length_sweep_64,decode_length_sweep_256,decode_length_sweep_1024,decode_length_sweep_4096"
@@ -438,34 +448,36 @@ fi
 
 # =============================================================================
 #  PHASE 3 REDO — Targeted reruns for the 2 missing/partial cells
-#    1. gemma-3-4b-it / decode_length_sweep_4096 / vLLM  (prior run: 180/180 failed)
-#    2. llama-3-1-8b-instruct / decode_length_sweep_4096 / vLLM  (only 1 iter → add 1)
+#    1. gemma-3-4b-it / decode_length_sweep_4096 / vLLM  — DONE 2026-04-17
+#    2. llama-3-1-8b-instruct / decode_length_sweep_4096 / vLLM  — DONE 2026-04-17
 #
-#  Usage:
-#    nohup bash scripts/run_new_benchmarks.sh --phase3-redo 2>&1 \
-#      | tee logs/phase3_redo_$(date +%Y%m%dT%H%M%S).log &
+#  STATUS: both cells now have valid result files. Block is idempotent — it
+#  skips cells that already have a 4096_vllm_*.json; re-running is safe but
+#  will be a no-op unless those files are removed.
 # =============================================================================
 if [ "$RUN_PHASE3_REDO" = "true" ]; then
-    log "PHASE 3 REDO — TARGETED RERUNS"
-    echo "  Cells      : 2 (gemma-3-4b-it 4096 vLLM; llama-3-1-8b 4096 vLLM)"
+    log "PHASE 3 REDO — TARGETED RERUNS (idempotent)"
     echo "  Output dir : results_decode_sweep/"
 
-    # Extra cleanup: prior redo attempts left stale containers that caused
-    # 'peer closed connection' errors on the first run after boot.
     $DOCKER rm -f bench-vllm bench-sglang 2>/dev/null || true
     sleep 5
 
     REDO_SCENARIO="decode_length_sweep_4096"
 
-    # (1) gemma-3-4b-it — prompt ~512 tok + output 4096 = 4608, so --max-model-len
-    #     must be >= 4608. Prior attempts with 4096 returned 400 Bad Request on
-    #     every request. Use 5632 (512 + 4096 + 1024 headroom) to match the full
-    #     512-token prompt_pack window.
-    run_vllm_model "google/gemma-3-4b-it" "$REDO_SCENARIO" 1 10 "results_decode_sweep" \
-        --max-model-len 5632 --enforce-eager --disable-frontend-multiprocessing
+    # (1) gemma-3-4b-it — needs --max-model-len >= 4608 (prompt ~512 + output 4096).
+    if compgen -G "results_decode_sweep/gemma-3-4b-it/decode_length_sweep_4096_vllm_*.json" >/dev/null; then
+        echo "  [SKIP] vllm gemma-3-4b-it 4096 — result file already exists"
+    else
+        run_vllm_model "google/gemma-3-4b-it" "$REDO_SCENARIO" 1 10 "results_decode_sweep" \
+            --max-model-len 5632 --enforce-eager --disable-frontend-multiprocessing
+    fi
 
-    # (2) llama-3-1-8b-instruct — default --max-model-len 8192 is sufficient; no flags.
-    run_vllm_model "meta-llama/Llama-3.1-8B-Instruct" "$REDO_SCENARIO" 1 10 "results_decode_sweep"
+    # (2) llama-3-1-8b-instruct — default --max-model-len 8192 is sufficient.
+    if compgen -G "results_decode_sweep/llama-3-1-8b-instruct/decode_length_sweep_4096_vllm_*.json" >/dev/null; then
+        echo "  [SKIP] vllm llama-3-1-8b 4096 — result file already exists"
+    else
+        run_vllm_model "meta-llama/Llama-3.1-8B-Instruct" "$REDO_SCENARIO" 1 10 "results_decode_sweep"
+    fi
 
     ((COMPLETED+=2))
     log "PHASE 3 REDO COMPLETE"
@@ -495,7 +507,7 @@ fi
 
 echo ""
 echo "Next steps:"
-echo "  After Phase 3 completes, resume Phase 2:"
+echo "  Resume Phase 2 (missing-only, idempotent, 1 iter/cell):"
 echo "    nohup bash scripts/run_new_benchmarks.sh --phase2 2>&1 | tee logs/phase2_resume_\$(date +%Y%m%dT%H%M%S).log &"
 echo ""
 echo "  Then run analysis:"

@@ -25,14 +25,14 @@ I benchmarked **14 models** (2B to 9B parameters) on a single NVIDIA A10G 24 GB 
 
 ## Benchmark Execution Status
 
-_Last updated: 2026-04-17_
+_Last updated: 2026-04-18_
 
 | Phase | Description | Status | Result Files |
 |---|---|---|---|
 | Baseline | 14 models × 5 scenarios × 2 engines | ✅ Complete | 152 / 152 |
 | Speculative decoding | Llama 3.1 8B (Ngram + Eagle3), Qwen3 8B (Ngram) | ✅ Complete | In `results/` |
 | Phase 1 — Variance | 4 models × 5 scenarios × 2 engines × 5 iterations | ✅ Complete | 201 / 200 |
-| Phase 2 — Concurrency-64 | 4 models × `throughput_ramp_extended` × 2 engines × 1 iteration (cost-conscious) | 🔶 Partial | 3 / 8 (Qwen3-8B both engines, Mistral-7B vLLM) |
+| Phase 2 — Concurrency-64 | 4 models × `throughput_ramp_extended` × 2 engines × 1 iteration | ✅ Complete | 8 / 8 (0% error rate) |
 | Phase 3 — Decode sweep | 4 models × 4 lengths × 2 engines × (1–3 iter) | ✅ Complete | 72 / 72 |
 
 ### Phase 3 — Decode-Length Sweep Results
@@ -79,45 +79,41 @@ Prompt ≈ 512 tokens, `max_output_tokens ∈ {64, 256, 1024, 4096}`, concurrenc
 - Gemma 3 4B: SGLang ≈ **1.8×** vLLM tokens/s at every decode length — matches the Phase 0 Gemma 3 finding.
 - Llama 8B at 4096 tokens: p99 latency blows out to **~5 min** and tail TTFT spikes to **~95 s (sglang)** / **~48 s (vllm)** — the A10G is queue-saturated at concurrency 8 for this size.
 
-### Phase 2 — Concurrency-64 Results (current)
+### Phase 2 — Concurrency-64 Results
 
-Single-iteration runs at concurrency levels {1, 4, 8, 16, 32, 64}, 150 req/level (900 total). Prompt 128 tok, output 256 tok. Full table: [`reports/concurrency64_summary.md`](reports/concurrency64_summary.md).
+Single-iteration runs at concurrency levels {1, 4, 8, 16, 32, 64}, 150 req/level (900 total). Prompt 128 tok, output 256 tok. Full table: [`reports/concurrency64_summary.md`](reports/concurrency64_summary.md). Charts: [`reports/figures/phase2_throughput.svg`](reports/figures/phase2_throughput.svg), [`reports/figures/phase2_ttft_p99.svg`](reports/figures/phase2_ttft_p99.svg).
 
-| Model | Engine | Succ | Tokens/s | TTFT p50 (ms) | TTFT p99 (ms) | Latency p99 (ms) | Err |
-|---|---|---:|---:|---:|---:|---:|---:|
-| Qwen3-8B                          | vllm   | 900/900 | 113.7 | 103.2 | 232.2 | 11683 | 0.000 |
-| Qwen3-8B                          | sglang | 900/900 | 113.9 |  73.5 | 403.0 | 11663 | 0.000 |
-| Mistral-7B-Instruct-v0.3          | vllm   | 900/900 | 123.5 |  93.0 | 283.9 | 10136 | 0.000 |
-| Mistral-7B-Instruct-v0.3          | sglang | — | pending | | | | |
-| google/gemma-2-9b-it              | vllm   | — | pending | | | | |
-| google/gemma-2-9b-it              | sglang | — | pending | | | | |
-| meta-llama/Llama-3.1-8B-Instruct  | vllm   | — | pending | | | | |
-| meta-llama/Llama-3.1-8B-Instruct  | sglang | — | pending | | | | |
+| Model | Engine | Succ | Tokens/s | TTFT p50 (ms) | TTFT p99 (ms) | Latency p50 (ms) | Latency p99 (ms) | Err |
+|---|---|---:|---:|---:|---:|---:|---:|---:|
+| Mistral-7B-Instruct-v0.3          | vllm   | 900/900 | **123.5** |  93.0 |  283.9 |  8686 | 10136 | 0.000 |
+| Mistral-7B-Instruct-v0.3          | sglang | 900/900 | **123.6** |  69.0 |  195.1 |  8607 | 10145 | 0.000 |
+| Llama-3.1-8B-Instruct             | vllm   | 900/900 | 117.8 |  97.2 |  235.0 |  9078 | 10516 | 0.000 |
+| Llama-3.1-8B-Instruct             | sglang | 900/900 | 118.0 |  71.0 |  188.2 |  8993 | 10574 | 0.000 |
+| Qwen3-8B                          | vllm   | 900/900 | 113.7 | 103.2 |  232.2 |  9430 | 11683 | 0.000 |
+| Qwen3-8B                          | sglang | 900/900 | 113.9 |  73.5 |  403.0 |  9355 | 11663 | 0.000 |
+| google/gemma-2-9b-it†             | vllm   | 900/900 |  92.2 | 130.9 |**1859.1**| 11723 | 23037 | 0.000 |
+| google/gemma-2-9b-it†             | sglang | 900/900 |  89.5 | 130.4 |**29426.6**| 11631 | 43557 | 0.000 |
 
-**Observations (from completed runs):**
-- All completed cells hit 0% error rate at concurrency=64 — no OOMs on A10G 24GB for 7–8B-class models at 128/256 prompt/output.
-- Qwen3-8B aggregate throughput is engine-agnostic (~114 tok/s either way); SGLang has lower median TTFT (73.5 ms vs 103.2 ms), vLLM has tighter tail TTFT (p99 232 ms vs 403 ms).
-- Mistral-7B (vLLM) leads absolute throughput at 123.5 tok/s — expected since it's smaller than Qwen3-8B.
+† gemma-2-9b-it vLLM required `--max-model-len 2048 --enforce-eager --gpu-memory-utilization 0.90` to fit the 9B param KV cache on A10G 24 GB; default `--max-model-len 8192` fails engine-core init (OOM). SGLang fits under default flags.
 
-### Other pending
+**Key findings:**
+- **Zero errors across all 8 cells at concurrency=64** — A10G 24 GB sustains 7–9B-class models end-to-end at 128/256 prompt/output.
+- **SGLang has consistently lower median TTFT** (p50 69–74 ms vs vLLM's 93–131 ms) across every 7–9B model — a ~25–30 ms edge from RadixAttention prefix lookup.
+- **vLLM has substantially tighter tail TTFT on gemma-2-9b-it**: p99 1859 ms vs SGLang 29427 ms — a **~16× gap**. SGLang's tail collapses on this specific model at high concurrency; vLLM is the safer choice for latency-SLO gemma-2-9b serving.
+- **Throughput is engine-agnostic on all 7–8B models** (within 0.2 tok/s). Both engines saturate A10G equivalently on decode once KV cache is warm.
+- **Gemma-2-9b-it throughput is ~24% lower than Mistral-7B** (92 vs 123 tok/s) — expected from the 9B/7B parameter ratio plus the smaller max-model-len for vLLM.
 
-- **Phase 2 resume:** 5 cells remaining (Llama 3.1 8B both engines, Mistral-7B sglang, gemma-2-9b-it both engines). Re-running `--phase2` is idempotent — the script auto-skips any cell with an existing result file.
-  ```bash
-  nohup bash scripts/run_new_benchmarks.sh --phase2 2>&1 | tee logs/phase2_resume_$(date +%Y%m%dT%H%M%S).log &
-  ```
-- **Variance analysis re-run:** Phase 1 data now complete — run `python -m analysis.variance_analysis --results-dir results_variance`
-- **Gemma 4 benchmarks:** Pending GPU availability after Phase 2 wraps
+### Follow-up work
+
+- **Variance analysis re-run:** Phase 1 data complete — `python -m analysis.variance_analysis --results-dir results_variance`
+- **Gemma 4 benchmarks:** not yet scheduled
+- **Re-running any phase is idempotent:** Phase 2 and Phase 3-redo blocks auto-skip cells whose result file already exists.
 
 ```bash
-# Resume Phase 2 (after uncommenting the model loop)
-nohup bash scripts/run_new_benchmarks.sh --phase2 2>&1 | tee logs/phase2_$(date +%Y%m%dT%H%M%S).log &
-
-# Run Phase 3
-nohup bash scripts/run_new_benchmarks.sh --phase3 2>&1 | tee logs/phase3_$(date +%Y%m%dT%H%M%S).log &
-
-# Re-run variance analysis (Phase 1 complete)
+# Re-run analysis over the full dataset
 conda run -n base python -m analysis.variance_analysis --results-dir results_variance
 conda run -n base python -m analysis.tpot_analysis --results-dir results_variance
+conda run -n base python -m analysis.decode_length_analysis --results-dir results_decode_sweep
 ```
 
 ---

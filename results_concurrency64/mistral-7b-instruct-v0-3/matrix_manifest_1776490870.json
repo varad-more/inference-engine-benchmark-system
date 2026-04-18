@@ -1,0 +1,22 @@
+{
+  "started_at": 1776490870.089441,
+  "finished_at": 1776492745.2615545,
+  "total_elapsed_seconds": 1875.1692361831665,
+  "model": "mistralai/Mistral-7B-Instruct-v0.3",
+  "tasks": [
+    {
+      "model": "mistralai/Mistral-7B-Instruct-v0.3",
+      "scenario_name": "throughput_ramp_extended",
+      "engine": "sglang",
+      "engine_variant": "sglang",
+      "spec_method": null,
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1776490871.1660867,
+      "status": "completed",
+      "finished_at": 1776492735.247688,
+      "result_path": "results_concurrency64/mistral-7b-instruct-v0-3/throughput_ramp_extended_sglang_1776490871.json"
+    }
+  ],
+  "cooldown_seconds": 10
+}

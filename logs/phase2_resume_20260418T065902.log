@@ -1,0 +1,171 @@
+nohup: ignoring input
+
+========================================================================
+[2026-04-18 06:59:02] PREFLIGHT
+========================================================================
+  Python: Python 3.13.12
+  Docker: 29.4.0
+  GPU:    NVIDIA A10G, 23028 MiB
+  HF token: found
+  vLLM bind: 172.31.12.166:8000
+  SGLang:    172.31.12.166:8001
+
+========================================================================
+[2026-04-18 06:59:04] PULLING DOCKER IMAGES (if not cached)
+========================================================================
+  [pull] vllm/vllm-openai:v0.18.0-cu130 — already present, skipping pull
+  [pull] lmsysorg/sglang:v0.5.10.post1-cu130 — already present, skipping pull
+
+========================================================================
+[2026-04-18 06:59:04] PREFLIGHT COMPLETE
+========================================================================
+
+========================================================================
+[2026-04-18 06:59:04] PHASE 2 — CONCURRENCY-64 EXTENDED RAMP (resume, missing-only, 1 iter)
+========================================================================
+  Output dir : results_concurrency64/
+  Iterations : 1   (single run per engine to conserve GPU cost)
+  Cooldown   : 10s between scenarios
+  Behavior   : skip any (model,engine) that already has a result file
+  [SKIP] vllm meta-llama/Llama-3.1-8B-Instruct — result file already exists
+  [SKIP] sglang meta-llama/Llama-3.1-8B-Instruct — result file already exists
+  [SKIP] vllm Qwen/Qwen3-8B — result file already exists
+  [SKIP] sglang Qwen/Qwen3-8B — result file already exists
+  [SKIP] vllm mistralai/Mistral-7B-Instruct-v0.3 — result file already exists
+  [SKIP] sglang mistralai/Mistral-7B-Instruct-v0.3 — result file already exists
+
+========================================================================
+[2026-04-18 06:59:04] vLLM — google/gemma-2-9b-it
+========================================================================
+f64b684e10322b49c278c5f12fa120199800f337327aebfed28f3c9ad8b43122
+  Waiting for vLLM health...................................... CONTAINER EXITED
+  Container logs (last 20 lines):
+    (APIServer pid=1)     return func(*args, **kwargs)
+    (APIServer pid=1)            ^^^^^^^^^^^^^^^^^^^^^
+    (APIServer pid=1)   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/core_client.py", line 128, in make_async_mp_client
+    (APIServer pid=1)     return AsyncMPClient(*client_args)
+    (APIServer pid=1)            ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    (APIServer pid=1)   File "/usr/local/lib/python3.12/dist-packages/vllm/tracing/otel.py", line 178, in sync_wrapper
+    (APIServer pid=1)     return func(*args, **kwargs)
+    (APIServer pid=1)            ^^^^^^^^^^^^^^^^^^^^^
+    (APIServer pid=1)   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/core_client.py", line 924, in __init__
+    (APIServer pid=1)     super().__init__(
+    (APIServer pid=1)   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/core_client.py", line 583, in __init__
+    (APIServer pid=1)     with launch_core_engines(
+    (APIServer pid=1)          ^^^^^^^^^^^^^^^^^^^^
+    (APIServer pid=1)   File "/usr/lib/python3.12/contextlib.py", line 144, in __exit__
+    (APIServer pid=1)     next(self.gen)
+    (APIServer pid=1)   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/utils.py", line 972, in launch_core_engines
+    (APIServer pid=1)     wait_for_engine_startup(
+    (APIServer pid=1)   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/utils.py", line 1031, in wait_for_engine_startup
+    (APIServer pid=1)     raise RuntimeError(
+    (APIServer pid=1) RuntimeError: Engine core initialization failed. See root cause above. Failed core proc(s): {}
+[2026-04-18 07:02:19] ERROR: vLLM failed to start for google/gemma-2-9b-it
+(APIServer pid=1)                ^^^^^^^^^^^^^^^^^^^^^^^^^^
+(APIServer pid=1)   File "/usr/lib/python3.12/contextlib.py", line 210, in __aenter__
+(APIServer pid=1)     return await anext(self.gen)
+(APIServer pid=1)            ^^^^^^^^^^^^^^^^^^^^^
+(APIServer pid=1)   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/openai/api_server.py", line 103, in build_async_engine_client
+(APIServer pid=1)     async with build_async_engine_client_from_engine_args(
+(APIServer pid=1)                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(APIServer pid=1)   File "/usr/lib/python3.12/contextlib.py", line 210, in __aenter__
+(APIServer pid=1)     return await anext(self.gen)
+(APIServer pid=1)            ^^^^^^^^^^^^^^^^^^^^^
+(APIServer pid=1)   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/openai/api_server.py", line 144, in build_async_engine_client_from_engine_args
+(APIServer pid=1)     async_llm = AsyncLLM.from_vllm_config(
+(APIServer pid=1)                 ^^^^^^^^^^^^^^^^^^^^^^^^^^
+(APIServer pid=1)   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/async_llm.py", line 225, in from_vllm_config
+(APIServer pid=1)     return cls(
+(APIServer pid=1)            ^^^^
+(APIServer pid=1)   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/async_llm.py", line 154, in __init__
+(APIServer pid=1)     self.engine_core = EngineCoreClient.make_async_mp_client(
+(APIServer pid=1)                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(APIServer pid=1)   File "/usr/local/lib/python3.12/dist-packages/vllm/tracing/otel.py", line 178, in sync_wrapper
+(APIServer pid=1)     return func(*args, **kwargs)
+(APIServer pid=1)            ^^^^^^^^^^^^^^^^^^^^^
+(APIServer pid=1)   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/core_client.py", line 128, in make_async_mp_client
+(APIServer pid=1)     return AsyncMPClient(*client_args)
+(APIServer pid=1)            ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(APIServer pid=1)   File "/usr/local/lib/python3.12/dist-packages/vllm/tracing/otel.py", line 178, in sync_wrapper
+(APIServer pid=1)     return func(*args, **kwargs)
+(APIServer pid=1)            ^^^^^^^^^^^^^^^^^^^^^
+(APIServer pid=1)   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/core_client.py", line 924, in __init__
+(APIServer pid=1)     super().__init__(
+(APIServer pid=1)   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/core_client.py", line 583, in __init__
+(APIServer pid=1)     with launch_core_engines(
+(APIServer pid=1)          ^^^^^^^^^^^^^^^^^^^^
+(APIServer pid=1)   File "/usr/lib/python3.12/contextlib.py", line 144, in __exit__
+(APIServer pid=1)     next(self.gen)
+(APIServer pid=1)   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/utils.py", line 972, in launch_core_engines
+(APIServer pid=1)     wait_for_engine_startup(
+(APIServer pid=1)   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/utils.py", line 1031, in wait_for_engine_startup
+(APIServer pid=1)     raise RuntimeError(
+(APIServer pid=1) RuntimeError: Engine core initialization failed. See root cause above. Failed core proc(s): {}
+bench-vllm
+
+========================================================================
+[2026-04-18 07:02:22] SGLang — google/gemma-2-9b-it
+========================================================================
+d75f1d8e5034fd88c308539f8e1bd42adb23cbc0f1d1e4da4129dcb65f64bc4c
+  Waiting for SGLang health................... ready (95s)
+─────────────────────────────── Matrix execution ───────────────────────────────
+  Model          : google/gemma-2-9b-it
+  Scenarios      : throughput_ramp_extended
+  Engines        : sglang
+  Iterations     : 1
+  Cooldown (sec) : 10
+─────────────────────────────────── Step 1/1 ───────────────────────────────────
+  Scenario  : throughput_ramp_extended
+  Engine    : sglang
+  Iteration : 1/1
+  Model     : google/gemma-2-9b-it
+  GPU VRAM  : 20763 MiB / 23028 MiB (90%)
+[2m2026-04-18T07:04:07.365650Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mSGLangClient[0m [36mprompt_pack[0m=[35mlong_generation[0m [36mscenario[0m=[35mthroughput_ramp_extended[0m
+[2m2026-04-18T07:04:07.366068Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m1[0m
+[2m2026-04-18T07:29:06.445469Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m4[0m
+[2m2026-04-18T07:35:56.892730Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m8[0m
+[2m2026-04-18T07:39:27.345976Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m16[0m
+[2m2026-04-18T07:41:17.630533Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m32[0m
+[2m2026-04-18T07:42:51.401391Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m64[0m
+
+  sglang throughput_ramp_extended  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 900/900 0:40:13
+[2m2026-04-18T07:44:21.369026Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_concurrency64/gemma-2-9b-it/throughput_ramp_extended_sglang_1776495847.json[0m
+  ✓ DONE in 40m 14s  — saved to throughput_ramp_extended_sglang_1776495847.json
+  Progress: 1 completed, 0 skipped, 0 remaining  — total elapsed 40m 15s
+─────────────────────────────── Matrix complete ────────────────────────────────
+  Total time: 40m 25s
+
+                             Matrix Results Summary                             
+┏━━━━━━━━━━━━━━━━━━━┳━━━━━━━━┳━━━━━━┳━━━━━━━━━━━┳━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━┓
+┃ Scenario          ┃ Engine ┃ Iter ┃  Status   ┃ Duration ┃ Output File       ┃
+┡━━━━━━━━━━━━━━━━━━━╇━━━━━━━━╇━━━━━━╇━━━━━━━━━━━╇━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━┩
+│ throughput_ramp_… │ sglang │  1   │ completed │  40m 14s │ throughput_ramp_… │
+└───────────────────┴────────┴──────┴───────────┴──────────┴───────────────────┘
+✓ Matrix manifest saved to 
+results_concurrency64/gemma-2-9b-it/matrix_manifest_1776495846.json
+bench-sglang
+
+========================================================================
+[2026-04-18 07:44:36] PHASE 2 COMPLETE
+========================================================================
+
+========================================================================
+[2026-04-18 07:44:36] ALL PHASES COMPLETE
+========================================================================
+
+Results:
+  results_variance/              131 result files
+  results_concurrency64/           7 result files
+  results_decode_sweep/           72 result files
+
+STATUS: 1 ERROR(S):
+  1. vLLM failed to start for google/gemma-2-9b-it
+
+Next steps:
+  Resume Phase 2 (missing-only, idempotent, 1 iter/cell):
+    nohup bash scripts/run_new_benchmarks.sh --phase2 2>&1 | tee logs/phase2_resume_$(date +%Y%m%dT%H%M%S).log &
+
+  Then run analysis:
+    python -m analysis.variance_analysis --results-dir results_variance
+    python -m analysis.tpot_analysis --results-dir results_variance
+    python -m analysis.decode_length_analysis --results-dir results_decode_sweep
