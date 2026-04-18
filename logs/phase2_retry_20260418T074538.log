@@ -1,0 +1,102 @@
+nohup: ignoring input
+
+========================================================================
+[2026-04-18 07:45:38] PREFLIGHT
+========================================================================
+  Python: Python 3.13.12
+  Docker: 29.4.0
+  GPU:    NVIDIA A10G, 23028 MiB
+  HF token: found
+  vLLM bind: 172.31.12.166:8000
+  SGLang:    172.31.12.166:8001
+
+========================================================================
+[2026-04-18 07:45:41] PULLING DOCKER IMAGES (if not cached)
+========================================================================
+  [pull] vllm/vllm-openai:v0.18.0-cu130 — already present, skipping pull
+  [pull] lmsysorg/sglang:v0.5.10.post1-cu130 — already present, skipping pull
+
+========================================================================
+[2026-04-18 07:45:41] PREFLIGHT COMPLETE
+========================================================================
+
+========================================================================
+[2026-04-18 07:45:41] PHASE 2 — CONCURRENCY-64 EXTENDED RAMP (resume, missing-only, 1 iter)
+========================================================================
+  Output dir : results_concurrency64/
+  Iterations : 1   (single run per engine to conserve GPU cost)
+  Cooldown   : 10s between scenarios
+  Behavior   : skip any (model,engine) that already has a result file
+  [SKIP] vllm meta-llama/Llama-3.1-8B-Instruct — result file already exists
+  [SKIP] sglang meta-llama/Llama-3.1-8B-Instruct — result file already exists
+  [SKIP] vllm Qwen/Qwen3-8B — result file already exists
+  [SKIP] sglang Qwen/Qwen3-8B — result file already exists
+  [SKIP] vllm mistralai/Mistral-7B-Instruct-v0.3 — result file already exists
+  [SKIP] sglang mistralai/Mistral-7B-Instruct-v0.3 — result file already exists
+
+========================================================================
+[2026-04-18 07:45:41] vLLM — google/gemma-2-9b-it
+========================================================================
+4274333144e9113851c2b3a18d02896a80458db8dc9b1a967712fa05ac459113
+  Waiting for vLLM health............ ready (60s)
+─────────────────────────────── Matrix execution ───────────────────────────────
+  Model          : google/gemma-2-9b-it
+  Scenarios      : throughput_ramp_extended
+  Engines        : vllm
+  Iterations     : 1
+  Cooldown (sec) : 10
+─────────────────────────────────── Step 1/1 ───────────────────────────────────
+  Scenario  : throughput_ramp_extended
+  Engine    : vllm
+  Iteration : 1/1
+  Model     : google/gemma-2-9b-it
+  GPU VRAM  : 20811 MiB / 23028 MiB (90%)
+[2m2026-04-18T07:46:47.506352Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mVLLMClient[0m [36mprompt_pack[0m=[35mlong_generation[0m [36mscenario[0m=[35mthroughput_ramp_extended[0m
+[2m2026-04-18T07:46:47.506718Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m1[0m
+[2m2026-04-18T08:11:49.283484Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m4[0m
+[2m2026-04-18T08:18:34.185928Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m8[0m
+[2m2026-04-18T08:22:05.806993Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m16[0m
+[2m2026-04-18T08:23:58.455659Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m32[0m
+[2m2026-04-18T08:25:01.317074Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m64[0m
+
+  vllm throughput_ramp_extended  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 900/900 0:39:01
+[2m2026-04-18T08:25:49.119026Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_concurrency64/gemma-2-9b-it/throughput_ramp_extended_vllm_1776498407.json[0m
+  ✓ DONE in 39m 01s  — saved to throughput_ramp_extended_vllm_1776498407.json
+  Progress: 1 completed, 0 skipped, 0 remaining  — total elapsed 39m 01s
+─────────────────────────────── Matrix complete ────────────────────────────────
+  Total time: 39m 11s
+
+                             Matrix Results Summary                             
+┏━━━━━━━━━━━━━━━━━━━┳━━━━━━━━┳━━━━━━┳━━━━━━━━━━━┳━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━┓
+┃ Scenario          ┃ Engine ┃ Iter ┃  Status   ┃ Duration ┃ Output File       ┃
+┡━━━━━━━━━━━━━━━━━━━╇━━━━━━━━╇━━━━━━╇━━━━━━━━━━━╇━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━┩
+│ throughput_ramp_… │ vllm   │  1   │ completed │  39m 01s │ throughput_ramp_… │
+└───────────────────┴────────┴──────┴───────────┴──────────┴───────────────────┘
+✓ Matrix manifest saved to 
+results_concurrency64/gemma-2-9b-it/matrix_manifest_1776498407.json
+bench-vllm
+  [SKIP] sglang google/gemma-2-9b-it — result file already exists
+
+========================================================================
+[2026-04-18 08:26:04] PHASE 2 COMPLETE
+========================================================================
+
+========================================================================
+[2026-04-18 08:26:04] ALL PHASES COMPLETE
+========================================================================
+
+Results:
+  results_variance/              131 result files
+  results_concurrency64/           8 result files
+  results_decode_sweep/           72 result files
+
+STATUS: ALL PASSED — no errors
+
+Next steps:
+  Resume Phase 2 (missing-only, idempotent, 1 iter/cell):
+    nohup bash scripts/run_new_benchmarks.sh --phase2 2>&1 | tee logs/phase2_resume_$(date +%Y%m%dT%H%M%S).log &
+
+  Then run analysis:
+    python -m analysis.variance_analysis --results-dir results_variance
+    python -m analysis.tpot_analysis --results-dir results_variance
+    python -m analysis.decode_length_analysis --results-dir results_decode_sweep
