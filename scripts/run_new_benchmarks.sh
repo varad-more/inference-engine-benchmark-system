@@ -289,34 +289,86 @@ run_sglang_model() {
 #  PHASE 1 — Variance Subset
 #  Credibility backbone: 5 iterations × 5 scenarios × 2 engines × 4 models
 #
-#  STATUS (as of 2026-04-09): COMPLETE — 201 result files in results_variance/
-#    google/gemma-2-2b-it          — COMPLETE (vLLM + SGLang, all scenarios × 5 iter)
-#    microsoft/Phi-4-mini-instruct — COMPLETE (vLLM + SGLang, all scenarios × 5 iter)
-#    meta-llama/Llama-3.1-8B-Instruct — COMPLETE (vLLM + SGLang, all scenarios × 5 iter)
-#    google/gemma-3-4b-it          — COMPLETE (vLLM + SGLang, all scenarios × 5 iter)
+#  STATUS (as of 2026-04-18): PARTIAL — 131 / 200 files in results_variance/
+#    google/gemma-2-2b-it             — ✅ COMPLETE (50/50)
+#    microsoft/Phi-4-mini-instruct    — ✅ COMPLETE (50/50)
+#    meta-llama/Llama-3.1-8B-Instruct — ⚠️ PARTIAL  (31/50)
+#         vLLM   : all 5 scenarios × 5 iter  ✓
+#         SGLang : only single_request_latency complete; long_context_stress,
+#                  prefix_sharing_benefit, structured_generation_speed, and
+#                  throughput_ramp are missing or incomplete.
+#    google/gemma-3-4b-it             — ❌ MISSING  (0/50, entire model absent)
 #
-#  Runs are commented out. Re-enable only if re-running from scratch.
+#  The resume block below runs only the missing cells. run_experiment.py does
+#  not check for existing files per-iteration, so re-runs append new iterations
+#  with fresh timestamps. Safe to re-launch — the completed models are gated
+#  behind compgen checks and will skip cleanly.
 # =============================================================================
 if [ "$RUN_PHASE1" = "true" ]; then
-    log "PHASE 1 — VARIANCE SUBSET (COMPLETE — SKIPPED)"
-    echo "  Status     : COMPLETE as of 2026-04-09 (201 files in results_variance/)"
-    echo "  Re-enable the run_vllm_model/run_sglang_model calls below to re-run."
+    log "PHASE 1 — VARIANCE SUBSET (resume, missing cells only)"
 
     VARIANCE_SCENARIOS_ALL="single_request_latency,throughput_ramp,long_context_stress,prefix_sharing_benefit,structured_generation_speed"
 
-    # COMPLETE — all 4 models × 5 scenarios × 2 engines × 5 iterations done.
-    # Uncomment below only to re-run from scratch.
-    # run_vllm_model "google/gemma-2-2b-it" "$VARIANCE_SCENARIOS_ALL" 5 30 "results_variance"
-    # run_sglang_model "google/gemma-2-2b-it" "$VARIANCE_SCENARIOS_ALL" 5 30 "results_variance"
-    # run_vllm_model "microsoft/Phi-4-mini-instruct" "$VARIANCE_SCENARIOS_ALL" 5 30 "results_variance"
-    # run_sglang_model "microsoft/Phi-4-mini-instruct" "$VARIANCE_SCENARIOS_ALL" 5 30 "results_variance"
-    # run_vllm_model "meta-llama/Llama-3.1-8B-Instruct" "$VARIANCE_SCENARIOS_ALL" 5 30 "results_variance"
-    # run_sglang_model "meta-llama/Llama-3.1-8B-Instruct" "$VARIANCE_SCENARIOS_ALL" 5 30 "results_variance"
-    # run_vllm_model "google/gemma-3-4b-it" "$VARIANCE_SCENARIOS_ALL" 5 30 "results_variance" \
-    #     --max-model-len 4096 --enforce-eager --disable-frontend-multiprocessing
-    # run_sglang_model "google/gemma-3-4b-it" "$VARIANCE_SCENARIOS_ALL" 5 30 "results_variance"
+    # Helper: returns 0 if a model has a "complete" variance set. We treat a
+    # (model, engine) pair as complete if all 5 scenarios each have ≥5 files.
+    phase1_engine_complete() {
+        local slug="$1"; local engine="$2"
+        local scen
+        for scen in single_request_latency throughput_ramp long_context_stress prefix_sharing_benefit structured_generation_speed; do
+            local n
+            n=$(compgen -G "results_variance/${slug}/${scen}_${engine}_*.json" 2>/dev/null | wc -l)
+            if [ "$n" -lt 5 ]; then return 1; fi
+        done
+        return 0
+    }
 
-    log "PHASE 1 COMPLETE (already done — skipped)"
+    # ── gemma-2-2b-it — COMPLETE (50/50). Skip unless results_variance wiped.
+    if phase1_engine_complete "gemma-2-2b-it" "vllm" && phase1_engine_complete "gemma-2-2b-it" "sglang"; then
+        echo "  [SKIP] gemma-2-2b-it — both engines complete"
+    else
+        run_vllm_model   "google/gemma-2-2b-it" "$VARIANCE_SCENARIOS_ALL" 5 30 "results_variance"
+        run_sglang_model "google/gemma-2-2b-it" "$VARIANCE_SCENARIOS_ALL" 5 30 "results_variance"
+    fi
+
+    # ── phi-4-mini — COMPLETE (50/50). Skip.
+    if phase1_engine_complete "phi-4-mini-instruct" "vllm" && phase1_engine_complete "phi-4-mini-instruct" "sglang"; then
+        echo "  [SKIP] phi-4-mini-instruct — both engines complete"
+    else
+        run_vllm_model   "microsoft/Phi-4-mini-instruct" "$VARIANCE_SCENARIOS_ALL" 5 30 "results_variance"
+        run_sglang_model "microsoft/Phi-4-mini-instruct" "$VARIANCE_SCENARIOS_ALL" 5 30 "results_variance"
+    fi
+
+    # ── Llama-3.1-8B — vLLM complete, SGLang incomplete.
+    if phase1_engine_complete "llama-3-1-8b-instruct" "vllm"; then
+        echo "  [SKIP] vllm llama-3-1-8b-instruct — complete"
+    else
+        run_vllm_model   "meta-llama/Llama-3.1-8B-Instruct" "$VARIANCE_SCENARIOS_ALL" 5 30 "results_variance"
+    fi
+    if phase1_engine_complete "llama-3-1-8b-instruct" "sglang"; then
+        echo "  [SKIP] sglang llama-3-1-8b-instruct — complete"
+    else
+        # Only 4 scenarios are missing (single_request_latency already has 5 iters).
+        # Re-running all 5 scenarios would duplicate the complete one; run only
+        # what's missing. Cheaper and avoids polluting existing stats.
+        PHASE1_LLAMA_SGLANG_MISSING="long_context_stress,prefix_sharing_benefit,structured_generation_speed,throughput_ramp"
+        run_sglang_model "meta-llama/Llama-3.1-8B-Instruct" "$PHASE1_LLAMA_SGLANG_MISSING" 5 30 "results_variance"
+    fi
+
+    # ── gemma-3-4b-it — entirely missing. Needs --max-model-len 4096 --enforce-eager
+    #    --disable-frontend-multiprocessing on vLLM (Gemma 3 CUDA graph quirks on A10G).
+    if phase1_engine_complete "gemma-3-4b-it" "vllm"; then
+        echo "  [SKIP] vllm gemma-3-4b-it — complete"
+    else
+        run_vllm_model "google/gemma-3-4b-it" "$VARIANCE_SCENARIOS_ALL" 5 30 "results_variance" \
+            --max-model-len 4096 --enforce-eager --disable-frontend-multiprocessing
+    fi
+    if phase1_engine_complete "gemma-3-4b-it" "sglang"; then
+        echo "  [SKIP] sglang gemma-3-4b-it — complete"
+    else
+        run_sglang_model "google/gemma-3-4b-it" "$VARIANCE_SCENARIOS_ALL" 5 30 "results_variance"
+    fi
+
+    log "PHASE 1 COMPLETE"
 fi
 
 # =============================================================================
@@ -421,29 +473,66 @@ fi
 #  PHASE 3 — Decode-Length Sweep
 #  Fixed ~512-token prompts, max_output_tokens ∈ {64, 256, 1024, 4096}
 #
-#  STATUS (as of 2026-04-17): COMPLETE — 72 result files across 4 models
-#    google/gemma-2-2b-it          — COMPLETE (24 files: vLLM ×3, SGLang ×3 per scenario)
-#    microsoft/Phi-4-mini-instruct — COMPLETE (24 files: vLLM ×3, SGLang ×3 per scenario)
-#    google/gemma-3-4b-it          — COMPLETE (8 files: vLLM ×1, SGLang ×1 per scenario)
-#    meta-llama/Llama-3.1-8B-Instruct — COMPLETE (16 files: vLLM ×2, SGLang ×2 per scenario)
+#  STATUS (as of 2026-04-18): 72 files, all cells valid but iteration counts
+#  are uneven. Target: ≥3 iterations per (model, length, engine) so CIs/mean
+#  are reportable.
+#    google/gemma-2-2b-it             — ✅ 3 iter per cell (24 files)
+#    microsoft/Phi-4-mini-instruct    — ✅ 3 iter per cell (24 files)
+#    meta-llama/Llama-3.1-8B-Instruct — ⚠️  2 iter per cell (16 files, needs +1)
+#    google/gemma-3-4b-it             — ⚠️  1 iter per cell (8 files, needs +2)
+#
+#  The top-up block below computes each model's minimum iteration count across
+#  its 4 decode lengths and runs only the deficit needed to reach TARGET_ITERS.
+#  Over-runs nothing: complete models skip, partial models run exactly the
+#  missing iterations. Cost-bounded and idempotent.
 # =============================================================================
+
+# Return the minimum iteration count (across 4 decode lengths) for (slug, engine).
+phase3_min_iters() {
+    local slug="$1"; local engine="$2"
+    local m=999 length n
+    for length in 64 256 1024 4096; do
+        n=$(compgen -G "results_decode_sweep/${slug}/decode_length_sweep_${length}_${engine}_*.json" 2>/dev/null | wc -l)
+        [ "$n" -lt "$m" ] && m="$n"
+    done
+    echo "$m"
+}
+
 if [ "$RUN_PHASE3" = "true" ] && [ "$RUN_PHASE3_REDO" = "false" ]; then
-    log "PHASE 3 — DECODE-LENGTH SWEEP (COMPLETE — SKIPPED)"
-    echo "  Status     : 72 result files as of 2026-04-18 (all cells valid)"
-    echo "  Coverage   : gemma-2-2b/phi-4-mini ×3 iters; llama-8B ×2; gemma-3-4b ×1"
+    log "PHASE 3 — DECODE-LENGTH SWEEP (top-up to ≥3 iter per cell)"
 
     DECODE_SCENARIOS_ALL="decode_length_sweep_64,decode_length_sweep_256,decode_length_sweep_1024,decode_length_sweep_4096"
+    PHASE3_TARGET_ITERS=3
 
-    # gemma-2-2b-it: COMPLETE — skip
-    ((COMPLETED++))
-    # phi-4-mini: COMPLETE — skip
-    ((COMPLETED++))
-    # Llama-3.1-8B: near-complete — only scen=4096 vLLM needs +1 iter (use --phase3-redo)
-    ((COMPLETED++))
-    # gemma-3-4b-it: vLLM scen=4096 missing (prior run all-failed) — use --phase3-redo
-    ((COMPLETED++))
+    # Per-model top-up. Deficit = TARGET - min(iters across decode lengths).
+    # Iterations passed to matrix are appended with fresh timestamps.
+    for entry in \
+        "google/gemma-2-2b-it|gemma-2-2b-it|" \
+        "microsoft/Phi-4-mini-instruct|phi-4-mini-instruct|" \
+        "meta-llama/Llama-3.1-8B-Instruct|llama-3-1-8b-instruct|" \
+        "google/gemma-3-4b-it|gemma-3-4b-it|--max-model-len 5632 --enforce-eager --disable-frontend-multiprocessing" ; do
+        model="${entry%%|*}"; rest="${entry#*|}"
+        slug="${rest%%|*}"; vllm_flags="${rest#*|}"
 
-    log "PHASE 3 COMPLETE (already done — skipped)"
+        for engine in vllm sglang; do
+            existing=$(phase3_min_iters "$slug" "$engine")
+            deficit=$(( PHASE3_TARGET_ITERS - existing ))
+            if [ "$deficit" -le 0 ]; then
+                echo "  [SKIP] ${engine} ${model} — already ${existing} iter (≥${PHASE3_TARGET_ITERS})"
+                continue
+            fi
+            echo "  [TOPUP] ${engine} ${model} — have ${existing}, adding ${deficit} iter"
+            if [ "$engine" = "vllm" ]; then
+                # shellcheck disable=SC2086 # intentional word-split of vllm_flags
+                run_vllm_model "$model" "$DECODE_SCENARIOS_ALL" "$deficit" 15 "results_decode_sweep" $vllm_flags
+            else
+                run_sglang_model "$model" "$DECODE_SCENARIOS_ALL" "$deficit" 15 "results_decode_sweep"
+            fi
+        done
+        ((COMPLETED++))
+    done
+
+    log "PHASE 3 COMPLETE"
 fi
 
 # =============================================================================
