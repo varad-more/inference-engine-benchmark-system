@@ -28,6 +28,10 @@ PYTHON="conda run --no-capture-output -n base python"
 VLLM_IMAGE="vllm/vllm-openai:v0.18.0-cu130"
 SGLANG_IMAGE="lmsysorg/sglang:v0.5.10.post1-cu130"
 
+# Gemma 4 (E2B/E4B) needs Transformers >= 5.5.0 → only shipped in :latest images.
+GEMMA4_VLLM_IMAGE="vllm/vllm-openai:latest"
+GEMMA4_SGLANG_IMAGE="lmsysorg/sglang:latest"
+
 # vLLM binds to the external NIC to avoid colliding with selfhosted-chat-api
 VLLM_BIND_IP="$(hostname -I | awk '{print $1}')"
 VLLM_HOST="$VLLM_BIND_IP"
@@ -40,14 +44,17 @@ COMPLETED=0
 RUN_PHASE1=true
 RUN_PHASE2=true
 RUN_PHASE3=true
+RUN_PHASE4=false     # Part 4 (Gemma 4) — off by default; opt-in via --phase4 or --all
 RUN_PHASE3_REDO=false
 for arg in "$@"; do
     case "$arg" in
-        --phase1) RUN_PHASE2=false; RUN_PHASE3=false ;;
-        --phase2) RUN_PHASE1=false; RUN_PHASE3=false ;;
-        --phase3) RUN_PHASE1=false; RUN_PHASE2=false ;;
+        --phase1) RUN_PHASE2=false; RUN_PHASE3=false; RUN_PHASE4=false ;;
+        --phase2) RUN_PHASE1=false; RUN_PHASE3=false; RUN_PHASE4=false ;;
+        --phase3) RUN_PHASE1=false; RUN_PHASE2=false; RUN_PHASE4=false ;;
+        --phase4) RUN_PHASE1=false; RUN_PHASE2=false; RUN_PHASE3=false; RUN_PHASE4=true ;;
+        --all)    RUN_PHASE1=true;  RUN_PHASE2=true;  RUN_PHASE3=true;  RUN_PHASE4=true ;;
         --phase3-redo)
-            RUN_PHASE1=false; RUN_PHASE2=false; RUN_PHASE3=true
+            RUN_PHASE1=false; RUN_PHASE2=false; RUN_PHASE3=true; RUN_PHASE4=false
             RUN_PHASE3_REDO=true
             ;;
     esac
@@ -326,23 +333,23 @@ if [ "$RUN_PHASE1" = "true" ]; then
     if phase1_engine_complete "gemma-2-2b-it" "vllm" && phase1_engine_complete "gemma-2-2b-it" "sglang"; then
         echo "  [SKIP] gemma-2-2b-it — both engines complete"
     else
-        run_vllm_model   "google/gemma-2-2b-it" "$VARIANCE_SCENARIOS_ALL" 5 30 "results_variance"
-        run_sglang_model "google/gemma-2-2b-it" "$VARIANCE_SCENARIOS_ALL" 5 30 "results_variance"
+        run_vllm_model   "google/gemma-2-2b-it" "$VARIANCE_SCENARIOS_ALL" 5 10 "results_variance"
+        run_sglang_model "google/gemma-2-2b-it" "$VARIANCE_SCENARIOS_ALL" 5 10 "results_variance"
     fi
 
     # ── phi-4-mini — COMPLETE (50/50). Skip.
     if phase1_engine_complete "phi-4-mini-instruct" "vllm" && phase1_engine_complete "phi-4-mini-instruct" "sglang"; then
         echo "  [SKIP] phi-4-mini-instruct — both engines complete"
     else
-        run_vllm_model   "microsoft/Phi-4-mini-instruct" "$VARIANCE_SCENARIOS_ALL" 5 30 "results_variance"
-        run_sglang_model "microsoft/Phi-4-mini-instruct" "$VARIANCE_SCENARIOS_ALL" 5 30 "results_variance"
+        run_vllm_model   "microsoft/Phi-4-mini-instruct" "$VARIANCE_SCENARIOS_ALL" 5 10 "results_variance"
+        run_sglang_model "microsoft/Phi-4-mini-instruct" "$VARIANCE_SCENARIOS_ALL" 5 10 "results_variance"
     fi
 
     # ── Llama-3.1-8B — vLLM complete, SGLang incomplete.
     if phase1_engine_complete "llama-3-1-8b-instruct" "vllm"; then
         echo "  [SKIP] vllm llama-3-1-8b-instruct — complete"
     else
-        run_vllm_model   "meta-llama/Llama-3.1-8B-Instruct" "$VARIANCE_SCENARIOS_ALL" 5 30 "results_variance"
+        run_vllm_model   "meta-llama/Llama-3.1-8B-Instruct" "$VARIANCE_SCENARIOS_ALL" 5 10 "results_variance"
     fi
     if phase1_engine_complete "llama-3-1-8b-instruct" "sglang"; then
         echo "  [SKIP] sglang llama-3-1-8b-instruct — complete"
@@ -351,7 +358,7 @@ if [ "$RUN_PHASE1" = "true" ]; then
         # Re-running all 5 scenarios would duplicate the complete one; run only
         # what's missing. Cheaper and avoids polluting existing stats.
         PHASE1_LLAMA_SGLANG_MISSING="long_context_stress,prefix_sharing_benefit,structured_generation_speed,throughput_ramp"
-        run_sglang_model "meta-llama/Llama-3.1-8B-Instruct" "$PHASE1_LLAMA_SGLANG_MISSING" 5 30 "results_variance"
+        run_sglang_model "meta-llama/Llama-3.1-8B-Instruct" "$PHASE1_LLAMA_SGLANG_MISSING" 5 10 "results_variance"
     fi
 
     # ── gemma-3-4b-it — entirely missing. Needs --max-model-len 4096 --enforce-eager
@@ -359,13 +366,13 @@ if [ "$RUN_PHASE1" = "true" ]; then
     if phase1_engine_complete "gemma-3-4b-it" "vllm"; then
         echo "  [SKIP] vllm gemma-3-4b-it — complete"
     else
-        run_vllm_model "google/gemma-3-4b-it" "$VARIANCE_SCENARIOS_ALL" 5 30 "results_variance" \
+        run_vllm_model "google/gemma-3-4b-it" "$VARIANCE_SCENARIOS_ALL" 5 10 "results_variance" \
             --max-model-len 4096 --enforce-eager --disable-frontend-multiprocessing
     fi
     if phase1_engine_complete "gemma-3-4b-it" "sglang"; then
         echo "  [SKIP] sglang gemma-3-4b-it — complete"
     else
-        run_sglang_model "google/gemma-3-4b-it" "$VARIANCE_SCENARIOS_ALL" 5 30 "results_variance"
+        run_sglang_model "google/gemma-3-4b-it" "$VARIANCE_SCENARIOS_ALL" 5 10 "results_variance"
     fi
 
     log "PHASE 1 COMPLETE"
@@ -506,15 +513,41 @@ if [ "$RUN_PHASE3" = "true" ] && [ "$RUN_PHASE3_REDO" = "false" ]; then
 
     # Per-model top-up. Deficit = TARGET - min(iters across decode lengths).
     # Iterations passed to matrix are appended with fresh timestamps.
+    # Entry format: "hf_id|slug|vllm_flags|image_tag"
+    #   image_tag = ""       → use pinned VLLM_IMAGE / SGLANG_IMAGE
+    #   image_tag = "gemma4" → swap to GEMMA4_*_IMAGE (Transformers >= 5.5.0)
+    # Gemma 4 entries are placed FIRST so any Transformers-from-git install
+    # or arch issue surfaces early, before the safe llama/gemma-3-4b top-ups.
     for entry in \
-        "google/gemma-2-2b-it|gemma-2-2b-it|" \
-        "microsoft/Phi-4-mini-instruct|phi-4-mini-instruct|" \
-        "meta-llama/Llama-3.1-8B-Instruct|llama-3-1-8b-instruct|" \
-        "google/gemma-3-4b-it|gemma-3-4b-it|--max-model-len 5632 --enforce-eager --disable-frontend-multiprocessing" ; do
-        model="${entry%%|*}"; rest="${entry#*|}"
-        slug="${rest%%|*}"; vllm_flags="${rest#*|}"
+        "google/gemma-4-E2B-it|gemma-4-e2b-it||gemma4" \
+        "google/gemma-4-E4B-it|gemma-4-e4b-it||gemma4" \
+        "google/gemma-2-2b-it|gemma-2-2b-it||" \
+        "microsoft/Phi-4-mini-instruct|phi-4-mini-instruct||" \
+        "meta-llama/Llama-3.1-8B-Instruct|llama-3-1-8b-instruct||" \
+        "google/gemma-3-4b-it|gemma-3-4b-it|--max-model-len 5632 --enforce-eager --disable-frontend-multiprocessing|" ; do
+        IFS='|' read -r model slug vllm_flags image_tag <<< "$entry"
 
-        for engine in vllm sglang; do
+        # SKIP_GEMMA4=1 bypasses Gemma 4 entries entirely (use while disk is tight
+        # or if the :latest image/transformers-from-git install misbehaves).
+        if [ "$image_tag" = "gemma4" ] && [ "${SKIP_GEMMA4:-0}" = "1" ]; then
+            echo "  [SKIP] ${model} — SKIP_GEMMA4=1"
+            continue
+        fi
+
+        # Swap in the newer :latest images for Gemma 4 only — scoped to this
+        # model's run, then restored so other entries keep the pinned images.
+        # SKIP_GEMMA4_SGLANG=1 avoids pulling/running the sglang:latest image
+        # (~50 GB) when disk is tight.
+        if [ "$image_tag" = "gemma4" ]; then
+            saved_vllm="$VLLM_IMAGE"; saved_sglang="$SGLANG_IMAGE"
+            VLLM_IMAGE="$GEMMA4_VLLM_IMAGE"; SGLANG_IMAGE="$GEMMA4_SGLANG_IMAGE"
+            pull_image_if_missing "$VLLM_IMAGE"
+            [ "${SKIP_GEMMA4_SGLANG:-0}" = "1" ] || pull_image_if_missing "$SGLANG_IMAGE"
+        fi
+
+        gemma4_engines=(vllm sglang)
+        [ "$image_tag" = "gemma4" ] && [ "${SKIP_GEMMA4_SGLANG:-0}" = "1" ] && gemma4_engines=(vllm)
+        for engine in "${gemma4_engines[@]}"; do
             existing=$(phase3_min_iters "$slug" "$engine")
             deficit=$(( PHASE3_TARGET_ITERS - existing ))
             if [ "$deficit" -le 0 ]; then
@@ -522,13 +555,27 @@ if [ "$RUN_PHASE3" = "true" ] && [ "$RUN_PHASE3_REDO" = "false" ]; then
                 continue
             fi
             echo "  [TOPUP] ${engine} ${model} — have ${existing}, adding ${deficit} iter"
-            if [ "$engine" = "vllm" ]; then
-                # shellcheck disable=SC2086 # intentional word-split of vllm_flags
-                run_vllm_model "$model" "$DECODE_SCENARIOS_ALL" "$deficit" 15 "results_decode_sweep" $vllm_flags
+            # Gemma 4 entries need the dedicated launcher (apt git + pip
+            # transformers-from-git). Other models use the pinned-image path.
+            if [ "$image_tag" = "gemma4" ]; then
+                if [ "$engine" = "vllm" ]; then
+                    MAX_MODEL_LEN=5632 run_vllm_gemma4 "$model" "$DECODE_SCENARIOS_ALL" "$deficit" 15 "results_decode_sweep" "vllm"
+                else
+                    MAX_MODEL_LEN=5632 run_sglang_gemma4 "$model" "$DECODE_SCENARIOS_ALL" "$deficit" 15 "results_decode_sweep" "sglang"
+                fi
             else
-                run_sglang_model "$model" "$DECODE_SCENARIOS_ALL" "$deficit" 15 "results_decode_sweep"
+                if [ "$engine" = "vllm" ]; then
+                    # shellcheck disable=SC2086 # intentional word-split of vllm_flags
+                    run_vllm_model "$model" "$DECODE_SCENARIOS_ALL" "$deficit" 15 "results_decode_sweep" $vllm_flags
+                else
+                    run_sglang_model "$model" "$DECODE_SCENARIOS_ALL" "$deficit" 15 "results_decode_sweep"
+                fi
             fi
         done
+
+        if [ "$image_tag" = "gemma4" ]; then
+            VLLM_IMAGE="$saved_vllm"; SGLANG_IMAGE="$saved_sglang"
+        fi
         ((COMPLETED++))
     done
 
@@ -573,13 +620,204 @@ if [ "$RUN_PHASE3_REDO" = "true" ]; then
 fi
 
 # =============================================================================
+#  PHASE 4 — Gemma 4 baseline + ngram spec-dec  (results/)
+#
+#  Models    : google/gemma-4-E2B-it, google/gemma-4-E4B-it
+#  Baseline  : 5 scenarios × {vllm, sglang}       → 20 cells
+#  Ngram     : 2 scenarios × {vllm-ngram, sglang-ngram} → 8 cells
+#  Iters     : 1 per cell (matches Part 0 baseline convention)
+#
+#  Gemma 4 requires Transformers >= 5.5.0 — uses GEMMA4_*_IMAGE and pip-
+#  installs transformers-from-git inside the container on startup (the
+#  :latest images lag the release). Skip any cell already in results/.
+#
+#  Idempotent resume: cells whose file already exists under
+#    results/<slug>/<scenario>_<engine>_*.json
+#  are skipped. Run with: bash scripts/run_new_benchmarks.sh --phase4
+# =============================================================================
+
+# Run Gemma 4 vLLM (baseline or ngram). Installs transformers-from-git on boot.
+# Args: model scenarios iterations cooldown output_dir engine_label [extra server args...]
+run_vllm_gemma4() {
+    local model="$1" scenarios="$2" iterations="$3" cooldown="$4"
+    local output_dir="$5" engine="$6"; shift 6
+    local extra=("$@")
+    local mml="${MAX_MODEL_LEN:-4096}" gmu="${GPU_MEM_UTIL:-0.85}"
+
+    log "vLLM-Gemma4 (${engine}) — ${model}"
+    cleanup bench-vllm
+
+    local server_args=(
+        --model "$model" --host 0.0.0.0 --port 8000
+        --enable-prefix-caching --max-model-len "$mml"
+        --gpu-memory-utilization "$gmu" --served-model-name "$model"
+        "${extra[@]}"
+    )
+    local quoted
+    quoted=$(printf '%q ' "${server_args[@]}")
+    # vllm/vllm-openai:latest lacks `python` alias and `git` → install both.
+    # Use python3 (canonical on the upstream image) to invoke vLLM.
+    local cmd="(command -v git >/dev/null || (apt-get update -qq && apt-get install -y -qq git)) && pip install -q --upgrade git+https://github.com/huggingface/transformers.git && exec python3 -m vllm.entrypoints.openai.api_server ${quoted}"
+
+    $DOCKER run -d --name bench-vllm --gpus '"device=0"' \
+        -p "${VLLM_BIND_IP}:8000:8000" --shm-size 10g \
+        -v "$(pwd)/model-cache:/root/.cache/huggingface" \
+        -e "HUGGING_FACE_HUB_TOKEN=${HF_TOKEN}" -e "CUDA_VISIBLE_DEVICES=0" \
+        --entrypoint bash "$GEMMA4_VLLM_IMAGE" -c "$cmd"
+    [ $? -ne 0 ] && { error "vLLM-Gemma4 docker run failed for ${model}"; return 1; }
+
+    if ! wait_vllm 900; then
+        error "vLLM-Gemma4 failed to start for ${model}"
+        $DOCKER logs bench-vllm --tail 40 2>&1
+        cleanup bench-vllm; return 1
+    fi
+
+    $PYTHON run_experiment.py matrix \
+        --model "$model" --scenarios "$scenarios" --engines "$engine" \
+        --iterations "$iterations" --cooldown-seconds "$cooldown" \
+        --vllm-host "$VLLM_HOST" --output-dir "$output_dir"
+    local rc=$?
+    [ $rc -ne 0 ] && error "vLLM-Gemma4 (${engine}) benchmark failed for ${model} (exit ${rc})"
+
+    cleanup bench-vllm
+    return $rc
+}
+
+# Run Gemma 4 SGLang (baseline or ngram).
+run_sglang_gemma4() {
+    local model="$1" scenarios="$2" iterations="$3" cooldown="$4"
+    local output_dir="$5" engine="$6"; shift 6
+    local extra=("$@")
+    local mml="${MAX_MODEL_LEN:-4096}" mfs="${MEM_FRAC_STATIC:-0.85}"
+
+    log "SGLang-Gemma4 (${engine}) — ${model}"
+    cleanup bench-sglang
+
+    local server_args=(
+        --model-path "$model" --host 0.0.0.0 --port 8001
+        --mem-fraction-static "$mfs" --context-length "$mml"
+        --disable-cuda-graph
+        "${extra[@]}"
+    )
+    local quoted
+    quoted=$(printf '%q ' "${server_args[@]}")
+    local cmd="(command -v git >/dev/null || (apt-get update -qq && apt-get install -y -qq git)) && pip install -q --upgrade git+https://github.com/huggingface/transformers.git && exec python3 -m sglang.launch_server ${quoted}"
+
+    $DOCKER run -d --name bench-sglang --gpus '"device=0"' \
+        -p "${SGLANG_HOST}:8001:8001" --shm-size 10g \
+        -v "$(pwd)/model-cache:/root/.cache/huggingface" \
+        -e "HUGGING_FACE_HUB_TOKEN=${HF_TOKEN}" -e "CUDA_VISIBLE_DEVICES=0" \
+        -e "SGLANG_ALLOW_OVERWRITE_LONGER_CONTEXT_LEN=1" \
+        --entrypoint bash "$GEMMA4_SGLANG_IMAGE" -c "$cmd"
+    [ $? -ne 0 ] && { error "SGLang-Gemma4 docker run failed for ${model}"; return 1; }
+
+    if ! wait_sglang 900; then
+        error "SGLang-Gemma4 failed to start for ${model}"
+        $DOCKER logs bench-sglang --tail 40 2>&1
+        cleanup bench-sglang; return 1
+    fi
+
+    $PYTHON run_experiment.py matrix \
+        --model "$model" --scenarios "$scenarios" --engines "$engine" \
+        --iterations "$iterations" --cooldown-seconds "$cooldown" \
+        --sglang-host "$SGLANG_HOST" --output-dir "$output_dir"
+    local rc=$?
+    [ $rc -ne 0 ] && error "SGLang-Gemma4 (${engine}) benchmark failed for ${model} (exit ${rc})"
+
+    cleanup bench-sglang
+    return $rc
+}
+
+# Gather pending scenarios (comma-joined) for a given (model, engine) under results/.
+phase4_pending_scenarios() {
+    local slug="$1" engine="$2"; shift 2
+    local scen out=""
+    for scen in "$@"; do
+        if ! compgen -G "results/${slug}/${scen}_${engine}_*.json" >/dev/null; then
+            out="${out:+${out},}${scen}"
+        fi
+    done
+    echo "$out"
+}
+
+if [ "$RUN_PHASE4" = "true" ]; then
+    log "PHASE 4 — GEMMA 4 (baseline + ngram spec-dec, resume)"
+
+    # Ensure the :latest images exist locally (may not have been pulled earlier).
+    # SKIP_GEMMA4_SGLANG=1 skips pulling the sglang:latest image (~50 GB).
+    pull_image_if_missing "$GEMMA4_VLLM_IMAGE"
+    [ "${SKIP_GEMMA4_SGLANG:-0}" = "1" ] || pull_image_if_missing "$GEMMA4_SGLANG_IMAGE"
+
+    PHASE4_BASELINE_SCENARIOS=(single_request_latency throughput_ramp long_context_stress prefix_sharing_benefit structured_generation_speed)
+    PHASE4_NGRAM_SCENARIOS=(single_request_latency throughput_ramp)
+
+    for entry in "google/gemma-4-E2B-it|gemma-4-e2b-it" "google/gemma-4-E4B-it|gemma-4-e4b-it"; do
+        IFS='|' read -r model slug <<<"$entry"
+
+        # ── Baseline vLLM ──
+        pending=$(phase4_pending_scenarios "$slug" "vllm" "${PHASE4_BASELINE_SCENARIOS[@]}")
+        if [ -z "$pending" ]; then
+            echo "  [SKIP] vllm ${model} baseline — all 5 scenarios present"
+        else
+            echo "  [RUN]  vllm ${model} baseline — ${pending}"
+            # --disable-frontend-multiprocessing removed in recent vLLM (on by
+            # default). Keep --enforce-eager to dodge CUDA graph issues.
+            MAX_MODEL_LEN=4096 run_vllm_gemma4 "$model" "$pending" 1 10 "results" "vllm" \
+                --enforce-eager
+        fi
+
+        # ── Baseline SGLang ──
+        if [ "${SKIP_GEMMA4_SGLANG:-0}" = "1" ]; then
+            echo "  [SKIP] sglang ${model} baseline — SKIP_GEMMA4_SGLANG=1 (disk)"
+        else
+            pending=$(phase4_pending_scenarios "$slug" "sglang" "${PHASE4_BASELINE_SCENARIOS[@]}")
+            if [ -z "$pending" ]; then
+                echo "  [SKIP] sglang ${model} baseline — all 5 scenarios present"
+            else
+                echo "  [RUN]  sglang ${model} baseline — ${pending}"
+                MAX_MODEL_LEN=4096 run_sglang_gemma4 "$model" "$pending" 1 10 "results" "sglang"
+            fi
+        fi
+
+        # ── Ngram vLLM ──
+        pending=$(phase4_pending_scenarios "$slug" "vllm-ngram" "${PHASE4_NGRAM_SCENARIOS[@]}")
+        if [ -z "$pending" ]; then
+            echo "  [SKIP] vllm-ngram ${model} — all 2 scenarios present"
+        else
+            echo "  [RUN]  vllm-ngram ${model} — ${pending}"
+            MAX_MODEL_LEN=4096 run_vllm_gemma4 "$model" "$pending" 1 10 "results" "vllm-ngram" \
+                --enforce-eager \
+                --speculative-config '{"method":"ngram","num_speculative_tokens":5,"prompt_lookup_max":4}'
+        fi
+
+        # ── Ngram SGLang ──
+        if [ "${SKIP_GEMMA4_SGLANG:-0}" = "1" ]; then
+            echo "  [SKIP] sglang-ngram ${model} — SKIP_GEMMA4_SGLANG=1 (disk)"
+        else
+            pending=$(phase4_pending_scenarios "$slug" "sglang-ngram" "${PHASE4_NGRAM_SCENARIOS[@]}")
+            if [ -z "$pending" ]; then
+                echo "  [SKIP] sglang-ngram ${model} — all 2 scenarios present"
+            else
+                echo "  [RUN]  sglang-ngram ${model} — ${pending}"
+                MAX_MODEL_LEN=4096 run_sglang_gemma4 "$model" "$pending" 1 10 "results" "sglang-ngram" \
+                    --speculative-algorithm NGRAM --speculative-num-draft-tokens 16
+            fi
+        fi
+
+        ((COMPLETED++))
+    done
+
+    log "PHASE 4 COMPLETE"
+fi
+
+# =============================================================================
 #  SUMMARY
 # =============================================================================
 log "ALL PHASES COMPLETE"
 
 echo ""
 echo "Results:"
-for dir in results_variance results_concurrency64 results_decode_sweep; do
+for dir in results results_variance results_concurrency64 results_decode_sweep; do
     count=$(find "$dir" -name "*.json" -not -name "*manifest*" 2>/dev/null | wc -l | tr -d ' ')
     printf "  %-30s %3s result files\n" "$dir/" "$count"
 done

@@ -1,6 +1,6 @@
 # Phase 3: Decode-Length Sweep Summary
 
-Generated 2026-04-17. Values are mean across iterations (n). Prompt ≈ 512 tokens, concurrency levels {4,8,16}, 60 req/level (180 total).
+Regenerated 2026-04-19 — all cells now at **n=3 iterations** after top-up runs. Values are mean across iterations. Prompt ≈ 512 tokens, concurrency levels {4,8,16}, 60 req/level (180 total).
 
 | Model | Decode tokens | Engine | n | Tokens/s | TTFT p50 (ms) | TTFT p99 (ms) | Latency p50 (ms) | Latency p99 (ms) | Err rate |
 |---|---:|---|---:|---:|---:|---:|---:|---:|---:|
@@ -12,22 +12,22 @@ Generated 2026-04-17. Values are mean across iterations (n). Prompt ≈ 512 toke
 | gemma-2-2b-it | 1024 | vllm | 3 | 458.0 | 37.3 | 57.4 | 8059 | 12864 | 0.000 |
 | gemma-2-2b-it | 4096 | sglang | 3 | 467.0 | 37.9 | 56.7 | 8104 | 11044 | 0.000 |
 | gemma-2-2b-it | 4096 | vllm | 3 | 459.2 | 37.5 | 53.7 | 7977 | 12779 | 0.000 |
-| gemma-3-4b-it | 64 | sglang | 1 | 279.8 | 134.2 | 160.5 | 1545 | 1596 | 0.006 |
-| gemma-3-4b-it | 64 | vllm | 1 | 139.0 | 128.9 | 5297.3 | 2772 | 7960 | 0.000 |
-| gemma-3-4b-it | 256 | sglang | 1 | 288.6 | 126.4 | 158.3 | 5913 | 6091 | 0.006 |
-| gemma-3-4b-it | 256 | vllm | 1 | 154.3 | 127.1 | 151.7 | 11098 | 11556 | 0.000 |
-| gemma-3-4b-it | 1024 | sglang | 1 | 273.4 | 101.2 | 156.3 | 23621 | 26063 | 0.000 |
-| gemma-3-4b-it | 1024 | vllm | 1 | 150.5 | 122.5 | 149.1 | 43316 | 45805 | 0.000 |
-| gemma-3-4b-it | 4096 | sglang | 1 | 272.7 | 100.7 | 154.7 | 26647 | 36101 | 0.000 |
-| gemma-3-4b-it | 4096 | vllm | 1 | 145.0 | 124.9 | 5344.9 | 53760 | 71559 | 0.000 |
-| llama-3-1-8b-instruct | 64 | sglang | 2 | 192.0 | 69.0 | 103.2 | 2254 | 2390 | 0.000 |
-| llama-3-1-8b-instruct | 64 | vllm | 2 | 189.3 | 95.7 | 126.5 | 2299 | 2418 | 0.000 |
-| llama-3-1-8b-instruct | 256 | sglang | 2 | 190.3 | 69.5 | 116.6 | 8993 | 9450 | 0.000 |
-| llama-3-1-8b-instruct | 256 | vllm | 2 | 189.4 | 93.2 | 127.1 | 9074 | 9490 | 0.000 |
-| llama-3-1-8b-instruct | 1024 | sglang | 2 | 186.8 | 69.0 | 95.3 | 36737 | 39147 | 0.000 |
-| llama-3-1-8b-instruct | 1024 | vllm | 2 | 185.0 | 96.1 | 127.4 | 36998 | 39366 | 0.000 |
-| llama-3-1-8b-instruct | 4096 | sglang | 2 | 158.9 | 106.4 | 95647.9 | 159487 | 299046 | 0.025 |
-| llama-3-1-8b-instruct | 4096 | vllm | 2 | 158.7 | 115.9 | 42609.6 | 160819 | 284531 | 0.000 |
+| gemma-3-4b-it | 64 | sglang | 3 | 280.8 | 128.8 | 155.3 | 1540 | 1598 | 0.006 |
+| gemma-3-4b-it | 64 | vllm | 3 | 146.3 | 128.2 | 2827.0 | 2775 | 5758 | 0.000 |
+| gemma-3-4b-it | 256 | sglang | 3 | 289.0 | 126.3 | 153.4 | 5920 | 6101 | 0.004 |
+| gemma-3-4b-it | 256 | vllm | 3 | 156.7 | 126.8 | 149.5 | 10983 | 11259 | 0.000 |
+| gemma-3-4b-it | 1024 | sglang | 3 | 274.9 | 100.1 | 162.9 | 23626 | 25977 | 0.000 |
+| gemma-3-4b-it | 1024 | vllm | 3 | 152.7 | 122.6 | 150.2 | 43325 | 45465 | 0.000 |
+| gemma-3-4b-it | 4096 | sglang | 3 | 269.3 | 100.2 | 153.5 | 26795 | 36119 | 0.000 |
+| gemma-3-4b-it | 4096 | vllm | 3 | 149.4 | 123.5 | 1886.5 | 52738 | 65409 | 0.000 |
+| llama-3-1-8b-instruct | 64 | sglang | 3 | 191.9 | 69.1 | 108.9 | 2256 | 2394 | 0.000 |
+| llama-3-1-8b-instruct | 64 | vllm | 3 | 189.2 | 96.2 | 128.8 | 2299 | 2417 | 0.000 |
+| llama-3-1-8b-instruct | 256 | sglang | 3 | 190.3 | 69.7 | 111.7 | 8997 | 9452 | 0.000 |
+| llama-3-1-8b-instruct | 256 | vllm | 3 | 189.4 | 93.3 | 126.2 | 9076 | 9489 | 0.000 |
+| llama-3-1-8b-instruct | 1024 | sglang | 3 | 186.5 | 69.1 | 103.6 | 36750 | 39165 | 0.000 |
+| llama-3-1-8b-instruct | 1024 | vllm | 3 | 185.1 | 96.3 | 128.7 | 37004 | 39359 | 0.000 |
+| llama-3-1-8b-instruct | 4096 | sglang | 3 | 157.6 | 106.4 | 99231.8 | 159669 | 301590 | 0.030 |
+| llama-3-1-8b-instruct | 4096 | vllm | 3 | 158.5 | 113.6 | 36139.6 | 160926 | 283530 | 0.000 |
 | phi-4-mini-instruct | 64 | sglang | 3 | 340.1 | 49.2 | 105.2 | 1305 | 1378 | 0.000 |
 | phi-4-mini-instruct | 64 | vllm | 3 | 354.4 | 55.1 | 82.7 | 1255 | 1321 | 0.000 |
 | phi-4-mini-instruct | 256 | sglang | 3 | 333.4 | 46.8 | 76.2 | 5177 | 5350 | 0.000 |
