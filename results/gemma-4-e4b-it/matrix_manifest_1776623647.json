@@ -1,0 +1,35 @@
+{
+  "started_at": 1776623647.3109522,
+  "finished_at": 1776623952.7198446,
+  "total_elapsed_seconds": 305.40565490722656,
+  "model": "google/gemma-4-E4B-it",
+  "tasks": [
+    {
+      "model": "google/gemma-4-E4B-it",
+      "scenario_name": "single_request_latency",
+      "engine": "vllm",
+      "engine_variant": "vllm-ngram",
+      "spec_method": "ngram",
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1776623647.3632092,
+      "status": "completed",
+      "finished_at": 1776623700.0416694,
+      "result_path": "results/gemma-4-e4b-it/single_request_latency_vllm-ngram_1776623647.json"
+    },
+    {
+      "model": "google/gemma-4-E4B-it",
+      "scenario_name": "throughput_ramp",
+      "engine": "vllm",
+      "engine_variant": "vllm-ngram",
+      "spec_method": "ngram",
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1776623710.084461,
+      "status": "completed",
+      "finished_at": 1776623942.7053225,
+      "result_path": "results/gemma-4-e4b-it/throughput_ramp_vllm-ngram_1776623710.json"
+    }
+  ],
+  "cooldown_seconds": 10
+}
