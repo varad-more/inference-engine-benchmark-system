@@ -1,0 +1,74 @@
+{
+  "started_at": 1776621249.9972873,
+  "finished_at": 1776621450.9105108,
+  "total_elapsed_seconds": 200.90835618972778,
+  "model": "google/gemma-4-E2B-it",
+  "tasks": [
+    {
+      "model": "google/gemma-4-E2B-it",
+      "scenario_name": "single_request_latency",
+      "engine": "vllm",
+      "engine_variant": "vllm",
+      "spec_method": null,
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1776621250.048412,
+      "status": "completed",
+      "finished_at": 1776621258.397362,
+      "result_path": "results/gemma-4-e2b-it/single_request_latency_vllm_1776621250.json"
+    },
+    {
+      "model": "google/gemma-4-E2B-it",
+      "scenario_name": "throughput_ramp",
+      "engine": "vllm",
+      "engine_variant": "vllm",
+      "spec_method": null,
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1776621268.4365609,
+      "status": "completed",
+      "finished_at": 1776621291.4717357,
+      "result_path": "results/gemma-4-e2b-it/throughput_ramp_vllm_1776621268.json"
+    },
+    {
+      "model": "google/gemma-4-E2B-it",
+      "scenario_name": "long_context_stress",
+      "engine": "vllm",
+      "engine_variant": "vllm",
+      "spec_method": null,
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1776621301.5067341,
+      "status": "completed",
+      "finished_at": 1776621335.5002508,
+      "result_path": "results/gemma-4-e2b-it/long_context_stress_vllm_1776621301.json"
+    },
+    {
+      "model": "google/gemma-4-E2B-it",
+      "scenario_name": "prefix_sharing_benefit",
+      "engine": "vllm",
+      "engine_variant": "vllm",
+      "spec_method": null,
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1776621345.5351043,
+      "status": "completed",
+      "finished_at": 1776621381.760903,
+      "result_path": "results/gemma-4-e2b-it/prefix_sharing_benefit_vllm_1776621345.json"
+    },
+    {
+      "model": "google/gemma-4-E2B-it",
+      "scenario_name": "structured_generation_speed",
+      "engine": "vllm",
+      "engine_variant": "vllm",
+      "spec_method": null,
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1776621391.8040218,
+      "status": "completed",
+      "finished_at": 1776621440.8946612,
+      "result_path": "results/gemma-4-e2b-it/structured_generation_speed_vllm_1776621391.json"
+    }
+  ],
+  "cooldown_seconds": 10
+}

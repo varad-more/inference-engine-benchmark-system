@@ -25,59 +25,63 @@ I benchmarked **14 models** (2B to 9B parameters) on a single NVIDIA A10G 24 GB 
 
 ## Benchmark Execution Status
 
-_Last updated: 2026-04-18_
+_Last updated: 2026-04-19_
 
 | Phase | Description | Status | Result Files |
 |---|---|---|---|
 | Baseline | 14 models × 5 scenarios × 2 engines | ✅ Complete | 152 / 152 |
-| Speculative decoding | Llama 3.1 8B (Ngram + Eagle3), Qwen3 8B (Ngram) | ✅ Complete | In `results/` |
+| Speculative decoding | Llama 3.1 8B (Ngram + Eagle3), Qwen3 8B (Ngram) | ✅ Complete (except Llama sglang-eagle3 — blocked on missing nightly image) | In `results/` |
 | Phase 1 — Variance | 4 models × 5 scenarios × 2 engines × 5 iterations | ✅ Complete | 201 / 200 |
 | Phase 2 — Concurrency-64 | 4 models × `throughput_ramp_extended` × 2 engines × 1 iteration | ✅ Complete | 8 / 8 (0% error rate) |
-| Phase 3 — Decode sweep | 4 models × 4 lengths × 2 engines × (1–3 iter) | ✅ Complete | 72 / 72 |
+| Phase 3 — Decode sweep | 4 models × 4 lengths × 2 engines × 3 iterations | ✅ Complete | 96 / 96 |
+| Phase 4 — Gemma 4 | 2 models (E2B, E4B) × 5 scenarios × 2 engines + ngram spec-dec | 🟡 In progress (vLLM first; SGLang deferred on disk) | 0 / 28 |
 
 ### Phase 3 — Decode-Length Sweep Results
 
 Prompt ≈ 512 tokens, `max_output_tokens ∈ {64, 256, 1024, 4096}`, concurrency 8, 180 requests/run. Mean across iterations. Full table: [`reports/decode_length_sweep_summary.md`](reports/decode_length_sweep_summary.md).
 
+All cells at n=3 iterations after 2026-04-19 top-ups.
+
 | Model | Decode | Engine | n | Tokens/s | TTFT p50 (ms) | TTFT p99 (ms) | Latency p99 (ms) | Err |
 |---|---:|---|---:|---:|---:|---:|---:|---:|
-| gemma-2-2b-it        |   64 | sglang | 3 | 519.1 |  39.4 |   67.9 |     918 | 0.009 |
-| gemma-2-2b-it        |   64 | vllm   | 3 | 523.0 |  42.1 |  188.7 |    1108 | 0.000 |
-| gemma-2-2b-it        |  256 | sglang | 3 | 484.3 |  41.9 |   70.5 |    3577 | 0.004 |
-| gemma-2-2b-it        |  256 | vllm   | 3 | 493.8 |  36.5 |   60.4 |    3587 | 0.000 |
-| gemma-2-2b-it        | 1024 | sglang | 3 | 469.7 |  37.9 |   56.3 |   12742 | 0.000 |
-| gemma-2-2b-it        | 1024 | vllm   | 3 | 458.0 |  37.3 |   57.4 |   12864 | 0.000 |
-| gemma-2-2b-it        | 4096 | sglang | 3 | 467.0 |  37.9 |   56.7 |   11044 | 0.000 |
-| gemma-2-2b-it        | 4096 | vllm   | 3 | 459.2 |  37.5 |   53.7 |   12779 | 0.000 |
-| phi-4-mini-instruct  |   64 | sglang | 3 | 340.1 |  49.2 |  105.2 |    1378 | 0.000 |
-| phi-4-mini-instruct  |   64 | vllm   | 3 | 354.4 |  55.1 |   82.7 |    1321 | 0.000 |
-| phi-4-mini-instruct  |  256 | sglang | 3 | 333.4 |  46.8 |   76.2 |    5350 | 0.000 |
-| phi-4-mini-instruct  |  256 | vllm   | 3 | 346.2 |  56.0 |   70.5 |    5269 | 0.000 |
-| phi-4-mini-instruct  | 1024 | sglang | 3 | 322.6 |  47.6 |   73.9 |   22881 | 0.000 |
-| phi-4-mini-instruct  | 1024 | vllm   | 3 | 304.7 |  56.4 |   80.5 |   23149 | 0.000 |
-| phi-4-mini-instruct  | 4096 | sglang | 3 | 293.5 |  48.3 |   99.9 |   87423 | 0.000 |
-| phi-4-mini-instruct  | 4096 | vllm   | 3 | 287.2 |  56.8 |   74.5 |   79221 | 0.000 |
-| gemma-3-4b-it        |   64 | sglang | 1 | 279.8 | 134.2 |  160.5 |    1596 | 0.006 |
-| gemma-3-4b-it        |   64 | vllm   | 1 | 139.0 | 128.9 | 5297.3 |    7960 | 0.000 |
-| gemma-3-4b-it        |  256 | sglang | 1 | 288.6 | 126.4 |  158.3 |    6091 | 0.006 |
-| gemma-3-4b-it        |  256 | vllm   | 1 | 154.3 | 127.1 |  151.7 |   11556 | 0.000 |
-| gemma-3-4b-it        | 1024 | sglang | 1 | 273.4 | 101.2 |  156.3 |   26063 | 0.000 |
-| gemma-3-4b-it        | 1024 | vllm   | 1 | 150.5 | 122.5 |  149.1 |   45805 | 0.000 |
-| gemma-3-4b-it        | 4096 | sglang | 1 | 272.7 | 100.7 |   154.7 |   36101 | 0.000 |
-| gemma-3-4b-it        | 4096 | vllm   | 1 | 145.0 | 124.9 |  5344.9 |   71559 | 0.000 |
-| llama-3-1-8b-instruct |   64 | sglang | 2 | 192.0 |  69.0 |   103.2 |    2390 | 0.000 |
-| llama-3-1-8b-instruct |   64 | vllm   | 2 | 189.3 |  95.7 |   126.5 |    2418 | 0.000 |
-| llama-3-1-8b-instruct |  256 | sglang | 2 | 190.3 |  69.5 |   116.6 |    9450 | 0.000 |
-| llama-3-1-8b-instruct |  256 | vllm   | 2 | 189.4 |  93.2 |   127.1 |    9490 | 0.000 |
-| llama-3-1-8b-instruct | 1024 | sglang | 2 | 186.8 |  69.0 |    95.3 |   39147 | 0.000 |
-| llama-3-1-8b-instruct | 1024 | vllm   | 2 | 185.0 |  96.1 |   127.4 |   39366 | 0.000 |
-| llama-3-1-8b-instruct | 4096 | sglang | 2 | 158.9 | 106.4 | 95647.9 |  299046 | 0.025 |
-| llama-3-1-8b-instruct | 4096 | vllm   | 2 | 158.7 | 115.9 | 42609.6 |  284531 | 0.000 |
+| gemma-2-2b-it        |   64 | sglang | 3 | 519.1 |  39.4 |    67.9 |     918 | 0.009 |
+| gemma-2-2b-it        |   64 | vllm   | 3 | 523.0 |  42.1 |   188.7 |    1108 | 0.000 |
+| gemma-2-2b-it        |  256 | sglang | 3 | 484.3 |  41.9 |    70.5 |    3577 | 0.004 |
+| gemma-2-2b-it        |  256 | vllm   | 3 | 493.8 |  36.5 |    60.4 |    3587 | 0.000 |
+| gemma-2-2b-it        | 1024 | sglang | 3 | 469.7 |  37.9 |    56.3 |   12742 | 0.000 |
+| gemma-2-2b-it        | 1024 | vllm   | 3 | 458.0 |  37.3 |    57.4 |   12864 | 0.000 |
+| gemma-2-2b-it        | 4096 | sglang | 3 | 467.0 |  37.9 |    56.7 |   11044 | 0.000 |
+| gemma-2-2b-it        | 4096 | vllm   | 3 | 459.2 |  37.5 |    53.7 |   12779 | 0.000 |
+| phi-4-mini-instruct  |   64 | sglang | 3 | 340.1 |  49.2 |   105.2 |    1378 | 0.000 |
+| phi-4-mini-instruct  |   64 | vllm   | 3 | 354.4 |  55.1 |    82.7 |    1321 | 0.000 |
+| phi-4-mini-instruct  |  256 | sglang | 3 | 333.4 |  46.8 |    76.2 |    5350 | 0.000 |
+| phi-4-mini-instruct  |  256 | vllm   | 3 | 346.2 |  56.0 |    70.5 |    5269 | 0.000 |
+| phi-4-mini-instruct  | 1024 | sglang | 3 | 322.6 |  47.6 |    73.9 |   22881 | 0.000 |
+| phi-4-mini-instruct  | 1024 | vllm   | 3 | 304.7 |  56.4 |    80.5 |   23149 | 0.000 |
+| phi-4-mini-instruct  | 4096 | sglang | 3 | 293.5 |  48.3 |    99.9 |   87423 | 0.000 |
+| phi-4-mini-instruct  | 4096 | vllm   | 3 | 287.2 |  56.8 |    74.5 |   79221 | 0.000 |
+| gemma-3-4b-it        |   64 | sglang | 3 | 280.8 | 128.8 |   155.3 |    1598 | 0.006 |
+| gemma-3-4b-it        |   64 | vllm   | 3 | 146.3 | 128.2 |  2827.0 |    5758 | 0.000 |
+| gemma-3-4b-it        |  256 | sglang | 3 | 289.0 | 126.3 |   153.4 |    6101 | 0.004 |
+| gemma-3-4b-it        |  256 | vllm   | 3 | 156.7 | 126.8 |   149.5 |   11259 | 0.000 |
+| gemma-3-4b-it        | 1024 | sglang | 3 | 274.9 | 100.1 |   162.9 |   25977 | 0.000 |
+| gemma-3-4b-it        | 1024 | vllm   | 3 | 152.7 | 122.6 |   150.2 |   45465 | 0.000 |
+| gemma-3-4b-it        | 4096 | sglang | 3 | 269.3 | 100.2 |   153.5 |   36119 | 0.000 |
+| gemma-3-4b-it        | 4096 | vllm   | 3 | 149.4 | 123.5 |  1886.5 |   65409 | 0.000 |
+| llama-3-1-8b-instruct |   64 | sglang | 3 | 191.9 |  69.1 |   108.9 |    2394 | 0.000 |
+| llama-3-1-8b-instruct |   64 | vllm   | 3 | 189.2 |  96.2 |   128.8 |    2417 | 0.000 |
+| llama-3-1-8b-instruct |  256 | sglang | 3 | 190.3 |  69.7 |   111.7 |    9452 | 0.000 |
+| llama-3-1-8b-instruct |  256 | vllm   | 3 | 189.4 |  93.3 |   126.2 |    9489 | 0.000 |
+| llama-3-1-8b-instruct | 1024 | sglang | 3 | 186.5 |  69.1 |   103.6 |   39165 | 0.000 |
+| llama-3-1-8b-instruct | 1024 | vllm   | 3 | 185.1 |  96.3 |   128.7 |   39359 | 0.000 |
+| llama-3-1-8b-instruct | 4096 | sglang | 3 | 157.6 | 106.4 | 99231.8 |  301590 | 0.030 |
+| llama-3-1-8b-instruct | 4096 | vllm   | 3 | 158.5 | 113.6 | 36139.6 |  283530 | 0.000 |
 
 **Observations:**
 - SGLang has consistently lower TTFT (p50) than vLLM; vLLM edges ahead on small-model decode throughput at short outputs.
-- Gemma 3 4B: SGLang ≈ **1.8×** vLLM tokens/s at every decode length — matches the Phase 0 Gemma 3 finding.
-- Llama 8B at 4096 tokens: p99 latency blows out to **~5 min** and tail TTFT spikes to **~95 s (sglang)** / **~48 s (vllm)** — the A10G is queue-saturated at concurrency 8 for this size.
+- Gemma 3 4B: SGLang ≈ **1.8×** vLLM tokens/s at every decode length (n=3 now confirms the Phase 0 finding with tighter CIs). Analysis script reports no throughput crossover — SGLang leads throughout; 44.5% gap at max_tokens=4096.
+- Llama 8B at 4096 tokens: p99 latency blows out to **~5 min** and tail TTFT spikes to **~99 s (sglang)** / **~36 s (vllm)** — the A10G is queue-saturated at concurrency 8 for this size.
+- Crossovers surfaced by the analysis script (`reports/decode_length_analysis.md`): vllm→sglang at max_tokens=1024 for phi-4-mini and gemma-2-2b; sglang→vllm at max_tokens=4096 for Llama-3.1-8B (within CI).
 
 ### Phase 2 — Concurrency-64 Results
 
@@ -106,8 +110,9 @@ Single-iteration runs at concurrency levels {1, 4, 8, 16, 32, 64}, 150 req/level
 ### Follow-up work
 
 - **Variance analysis re-run:** Phase 1 data complete — `python -m analysis.variance_analysis --results-dir results_variance`
-- **Gemma 4 benchmarks:** not yet scheduled
-- **Re-running any phase is idempotent:** Phase 2 and Phase 3-redo blocks auto-skip cells whose result file already exists.
+- **Gemma 4 benchmarks:** in progress — `scripts/run_new_benchmarks.sh` gained `--phase4` block for 2 models × 5 scenarios × 2 engines + ngram spec-dec. Currently running vLLM-only (`SKIP_GEMMA4_SGLANG=1`) because `lmsysorg/sglang:latest` (~50 GB) does not fit the remaining disk.
+- **Llama 3.1 8B SGLang-Eagle3:** blocked on missing `lmsysorg/sglang:nightly-dev-cu13-20260321-94194537` image (retired from Docker Hub). Needs a new nightly pin.
+- **Re-running any phase is idempotent:** Phase 2, Phase 3 top-up, Phase 3-redo, and Phase 4 blocks auto-skip cells whose result file already exists.
 
 ```bash
 # Re-run analysis over the full dataset

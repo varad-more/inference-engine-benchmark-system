@@ -1,0 +1,113 @@
+{
+  "started_at": 1776611481.3241167,
+  "finished_at": 1776617184.6874082,
+  "total_elapsed_seconds": 5703.356874227524,
+  "model": "google/gemma-3-4b-it",
+  "tasks": [
+    {
+      "model": "google/gemma-3-4b-it",
+      "scenario_name": "decode_length_sweep_64",
+      "engine": "vllm",
+      "engine_variant": "vllm",
+      "spec_method": null,
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1776611481.3758228,
+      "status": "completed",
+      "finished_at": 1776611563.9299076,
+      "result_path": "results_decode_sweep/gemma-3-4b-it/decode_length_sweep_64_vllm_1776611481.json"
+    },
+    {
+      "model": "google/gemma-3-4b-it",
+      "scenario_name": "decode_length_sweep_64",
+      "engine": "vllm",
+      "engine_variant": "vllm",
+      "spec_method": null,
+      "iteration": 2,
+      "healthy_before_run": true,
+      "started_at": 1776611578.9718566,
+      "status": "completed",
+      "finished_at": 1776611653.7310011,
+      "result_path": "results_decode_sweep/gemma-3-4b-it/decode_length_sweep_64_vllm_1776611578.json"
+    },
+    {
+      "model": "google/gemma-3-4b-it",
+      "scenario_name": "decode_length_sweep_256",
+      "engine": "vllm",
+      "engine_variant": "vllm",
+      "spec_method": null,
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1776611668.767161,
+      "status": "completed",
+      "finished_at": 1776611961.3842344,
+      "result_path": "results_decode_sweep/gemma-3-4b-it/decode_length_sweep_256_vllm_1776611668.json"
+    },
+    {
+      "model": "google/gemma-3-4b-it",
+      "scenario_name": "decode_length_sweep_256",
+      "engine": "vllm",
+      "engine_variant": "vllm",
+      "spec_method": null,
+      "iteration": 2,
+      "healthy_before_run": true,
+      "started_at": 1776611976.423973,
+      "status": "completed",
+      "finished_at": 1776612269.7330322,
+      "result_path": "results_decode_sweep/gemma-3-4b-it/decode_length_sweep_256_vllm_1776611976.json"
+    },
+    {
+      "model": "google/gemma-3-4b-it",
+      "scenario_name": "decode_length_sweep_1024",
+      "engine": "vllm",
+      "engine_variant": "vllm",
+      "spec_method": null,
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1776612284.7664297,
+      "status": "completed",
+      "finished_at": 1776613364.2747598,
+      "result_path": "results_decode_sweep/gemma-3-4b-it/decode_length_sweep_1024_vllm_1776612284.json"
+    },
+    {
+      "model": "google/gemma-3-4b-it",
+      "scenario_name": "decode_length_sweep_1024",
+      "engine": "vllm",
+      "engine_variant": "vllm",
+      "spec_method": null,
+      "iteration": 2,
+      "healthy_before_run": true,
+      "started_at": 1776613379.3116002,
+      "status": "completed",
+      "finished_at": 1776614468.6124532,
+      "result_path": "results_decode_sweep/gemma-3-4b-it/decode_length_sweep_1024_vllm_1776613379.json"
+    },
+    {
+      "model": "google/gemma-3-4b-it",
+      "scenario_name": "decode_length_sweep_4096",
+      "engine": "vllm",
+      "engine_variant": "vllm",
+      "spec_method": null,
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1776614483.6522903,
+      "status": "completed",
+      "finished_at": 1776615814.1799977,
+      "result_path": "results_decode_sweep/gemma-3-4b-it/decode_length_sweep_4096_vllm_1776614483.json"
+    },
+    {
+      "model": "google/gemma-3-4b-it",
+      "scenario_name": "decode_length_sweep_4096",
+      "engine": "vllm",
+      "engine_variant": "vllm",
+      "spec_method": null,
+      "iteration": 2,
+      "healthy_before_run": true,
+      "started_at": 1776615829.2147832,
+      "status": "completed",
+      "finished_at": 1776617169.6704717,
+      "result_path": "results_decode_sweep/gemma-3-4b-it/decode_length_sweep_4096_vllm_1776615829.json"
+    }
+  ],
+  "cooldown_seconds": 15
+}
