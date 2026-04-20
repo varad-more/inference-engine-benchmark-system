@@ -4,7 +4,7 @@ A production-grade benchmark harness that rigorously compares **vLLM** and **SGL
 
 ## Summary
 
-I benchmarked **14 models** (2B to 9B parameters) on a single NVIDIA A10G 24 GB GPU, running **5 scenarios** across both engines — **152 total result files, 100% success rate**. All 14 models have complete both-engine results. Speculative decoding: **Ngram ran successfully on Llama 3.1 8B and Qwen3 8B** (both engines); **Eagle3 ran on Llama 3.1 8B with vLLM only** (SGLang OOM on A10G; Qwen3 8B draft model not yet published). Extended phases (variance, concurrency-64, decode sweep) are in progress — see [Benchmark Execution Status](#benchmark-execution-status) below.
+I benchmarked **16 models** (2B to 9B parameters, including Google's just-released Gemma 4 E2B and E4B) on a single NVIDIA A10G 24 GB GPU, running **5 scenarios** across both engines. The 14-model baseline plus speculative-decoding suite produced **152 result files at 100% success rate**; follow-on phases (variance, concurrency-64, decode sweep, Gemma 4 baseline + ngram) add another ~380 files. Every cell is now complete. Speculative decoding: **Ngram worked on Llama 3.1 8B, Qwen3 8B, and Gemma 4 E2B/E4B** across both engines; **Eagle3 worked on Llama 3.1 8B with vLLM only** (SGLang OOM on A10G; Qwen3 8B draft model not yet published). See [Benchmark Execution Status](#benchmark-execution-status) below for the per-phase breakdown.
 
 | Metric | vLLM | SGLang |
 |---|---|---|
@@ -25,7 +25,7 @@ I benchmarked **14 models** (2B to 9B parameters) on a single NVIDIA A10G 24 GB 
 
 ## Benchmark Execution Status
 
-_Last updated: 2026-04-19_
+_Last updated: 2026-04-20_
 
 | Phase | Description | Status | Result Files |
 |---|---|---|---|
@@ -33,8 +33,9 @@ _Last updated: 2026-04-19_
 | Speculative decoding | Llama 3.1 8B (Ngram + Eagle3), Qwen3 8B (Ngram) | ✅ Complete (except Llama sglang-eagle3 — blocked on missing nightly image) | In `results/` |
 | Phase 1 — Variance | 4 models × 5 scenarios × 2 engines × 5 iterations | ✅ Complete | 201 / 200 |
 | Phase 2 — Concurrency-64 | 4 models × `throughput_ramp_extended` × 2 engines × 1 iteration | ✅ Complete | 8 / 8 (0% error rate) |
-| Phase 3 — Decode sweep | 4 models × 4 lengths × 2 engines × 3 iterations | ✅ Complete | 96 / 96 |
-| Phase 4 — Gemma 4 | 2 models (E2B, E4B) × 5 scenarios × 2 engines + ngram spec-dec | 🟡 In progress (vLLM first; SGLang deferred on disk) | 0 / 28 |
+| Phase 3 — Decode sweep (base 4 models) | 4 models × 4 lengths × 2 engines × 3 iterations | ✅ Complete | 96 / 96 |
+| Phase 3 — Decode sweep (Gemma 4) | 2 models × 4 lengths × 2 engines × 3 iterations | ✅ Complete | 48 / 48 |
+| Phase 4 — Gemma 4 baseline + ngram | 2 models (E2B, E4B) × 5 scenarios × 2 engines + ngram spec-dec | ✅ Complete | 28 / 28 |
 
 ### Phase 3 — Decode-Length Sweep Results
 
@@ -107,12 +108,29 @@ Single-iteration runs at concurrency levels {1, 4, 8, 16, 32, 64}, 150 req/level
 - **Throughput is engine-agnostic on all 7–8B models** (within 0.2 tok/s). Both engines saturate A10G equivalently on decode once KV cache is warm.
 - **Gemma-2-9b-it throughput is ~24% lower than Mistral-7B** (92 vs 123 tok/s) — expected from the 9B/7B parameter ratio plus the smaller max-model-len for vLLM.
 
+### Notes on getting Gemma 4 working
+
+Gemma 4 landed in Transformers 5.5.0 and introduced QK-norm (`k_norm`/`q_norm`) on top of the Gemma 3 architecture. Both engines needed careful image selection:
+
+- **vLLM** — `vllm/vllm-openai:latest` has a native Gemma 4 loader (it derives from the existing Gemma 3 class and handles QK-norm correctly). Works out of the box once `transformers` is upgraded inside the container.
+- **SGLang** — `lmsysorg/sglang:latest` (Apr-09 snapshot) does **not** have a native Gemma 4 class yet. It falls back to the generic `TransformersMultiModalForCausalLM` wrapper and dies during weight load:
+  ```
+  ValueError: No module or parameter named
+    'model.language_model.layers.15.self_attn.k_norm'
+    in TransformersMultiModalForCausalLM
+  ```
+  Fix: pin `GEMMA4_SGLANG_IMAGE="lmsysorg/sglang:dev-cu13"` (Apr-16 snapshot off `main`) in `scripts/run_new_benchmarks.sh`. That image ships the native Gemma 4 model class and loads the weights cleanly.
+
 ### Follow-up work
 
-- **Variance analysis re-run:** Phase 1 data complete — `python -m analysis.variance_analysis --results-dir results_variance`
-- **Gemma 4 benchmarks:** in progress — `scripts/run_new_benchmarks.sh` gained `--phase4` block for 2 models × 5 scenarios × 2 engines + ngram spec-dec. Currently running vLLM-only (`SKIP_GEMMA4_SGLANG=1`) because `lmsysorg/sglang:latest` (~50 GB) does not fit the remaining disk.
-- **Llama 3.1 8B SGLang-Eagle3:** blocked on missing `lmsysorg/sglang:nightly-dev-cu13-20260321-94194537` image (retired from Docker Hub). Needs a new nightly pin.
-- **Re-running any phase is idempotent:** Phase 2, Phase 3 top-up, Phase 3-redo, and Phase 4 blocks auto-skip cells whose result file already exists.
+- **Variance / TPOT / decode-sweep analysis:** all auto-regenerated from the latest result set —
+  ```bash
+  python -m analysis.variance_analysis --results-dir results_variance
+  python -m analysis.tpot_analysis        --results-dir results_variance
+  python -m analysis.decode_length_analysis --results-dir results_decode_sweep
+  ```
+- **Llama 3.1 8B SGLang-Eagle3:** still blocked on the retired `lmsysorg/sglang:nightly-dev-cu13-20260321-94194537` image. Needs a new nightly pin before retry.
+- **Re-running any phase is idempotent:** every phase block auto-skips cells whose result file already exists, so `scripts/run_new_benchmarks.sh --all` is safe to launch at any time.
 
 ```bash
 # Re-run analysis over the full dataset

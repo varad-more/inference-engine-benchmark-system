@@ -1,0 +1,81 @@
+
+==========================================================================
+[2026-04-19 01:53:18] AUDIT — checking results/ for missing runs
+==========================================================================
+
+Pending baseline runs : 0
+
+Pending spec-dec runs : 2
+  - meta-llama/Llama-3.1-8B-Instruct|single_request_latency|sglang-eagle3
+  - meta-llama/Llama-3.1-8B-Instruct|throughput_ramp|sglang-eagle3
+
+
+==========================================================================
+[2026-04-19 01:53:18] PREFLIGHT
+==========================================================================
+  Python   : Python 3.13.12
+  Docker   : 29.1.3
+  GPU      : (GPU check failed — continuing)
+  HF token : found
+  cache    : exists
+
+==========================================================================
+[2026-04-19 01:53:19] DOCKER IMAGES
+==========================================================================
+[2026-04-19 01:53:19]   pulling image: lmsysorg/sglang:nightly-dev-cu13-20260321-94194537
+Error response from daemon: failed to resolve reference "docker.io/lmsysorg/sglang:nightly-dev-cu13-20260321-94194537": docker.io/lmsysorg/sglang:nightly-dev-cu13-20260321-94194537: not found
+[2026-04-19 01:53:20] ERROR: docker pull failed for lmsysorg/sglang:nightly-dev-cu13-20260321-94194537
+
+==========================================================================
+[2026-04-19 01:53:20] HF MODEL PREFETCH
+==========================================================================
+[2026-04-19 01:53:20]   prefetch: meta-llama/Llama-3.1-8B-Instruct
+docker: Error response from daemon: failed to create task for container: failed to create shim task: OCI runtime create failed: runc create failed: unable to start container process: error during container init: exec: "python": executable file not found in $PATH
+
+Run 'docker run --help' for more information
+[2026-04-19 01:53:20]   prefetch: jamesliu1/sglang-EAGLE3-Llama-3.1-Instruct-8B
+docker: Error response from daemon: failed to create task for container: failed to create shim task: OCI runtime create failed: runc create failed: unable to start container process: error during container init: exec: "python": executable file not found in $PATH
+
+Run 'docker run --help' for more information
+[2026-04-19 01:53:20]   prefetch: jamesliu1/sglang-EAGLE3-Llama-3.1-Instruct-8B
+docker: Error response from daemon: failed to create task for container: failed to create shim task: OCI runtime create failed: runc create failed: unable to start container process: error during container init: exec: "python": executable file not found in $PATH
+
+Run 'docker run --help' for more information
+
+==========================================================================
+[2026-04-19 01:53:20] RUNNING 0 BASELINE + 2 SPEC-DEC
+==========================================================================
+
+==========================================================================
+[2026-04-19 01:53:20] RUN: meta-llama/Llama-3.1-8B-Instruct | single_request_latency | sglang-eagle3
+==========================================================================
+[2026-04-19 01:53:20]   launch SGLang (sglang-eagle3) for meta-llama/Llama-3.1-8B-Instruct
+Unable to find image 'lmsysorg/sglang:nightly-dev-cu13-20260321-94194537' locally
+docker: Error response from daemon: failed to resolve reference "docker.io/lmsysorg/sglang:nightly-dev-cu13-20260321-94194537": docker.io/lmsysorg/sglang:nightly-dev-cu13-20260321-94194537: not found
+
+Run 'docker run --help' for more information
+[2026-04-19 01:53:22] ERROR: sglang-eagle3: docker run failed for meta-llama/Llama-3.1-8B-Instruct
+
+==========================================================================
+[2026-04-19 01:53:22] RUN: meta-llama/Llama-3.1-8B-Instruct | throughput_ramp | sglang-eagle3
+==========================================================================
+[2026-04-19 01:53:22]   launch SGLang (sglang-eagle3) for meta-llama/Llama-3.1-8B-Instruct
+Unable to find image 'lmsysorg/sglang:nightly-dev-cu13-20260321-94194537' locally
+docker: Error response from daemon: failed to resolve reference "docker.io/lmsysorg/sglang:nightly-dev-cu13-20260321-94194537": docker.io/lmsysorg/sglang:nightly-dev-cu13-20260321-94194537: not found
+
+Run 'docker run --help' for more information
+[2026-04-19 01:53:24] ERROR: sglang-eagle3: docker run failed for meta-llama/Llama-3.1-8B-Instruct
+
+==========================================================================
+[2026-04-19 01:53:24] SUMMARY
+==========================================================================
+  completed runs : 0
+  failed runs    : 2
+  errors         : 3
+
+Errors:
+  1. docker pull failed for lmsysorg/sglang:nightly-dev-cu13-20260321-94194537
+  2. sglang-eagle3: docker run failed for meta-llama/Llama-3.1-8B-Instruct
+  3. sglang-eagle3: docker run failed for meta-llama/Llama-3.1-8B-Instruct
+
+Re-run with --audit-only to see remaining gaps.

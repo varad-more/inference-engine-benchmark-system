@@ -1,0 +1,551 @@
+
+========================================================================
+[2026-04-20 01:21:01] PREFLIGHT
+========================================================================
+  Python: Python 3.13.12
+  Docker: 29.1.3
+  GPU:    NVIDIA A10G, 23028 MiB
+  HF token: found
+  vLLM bind: 172.31.43.213:8000
+  SGLang:    172.31.43.213:8001
+
+========================================================================
+[2026-04-20 01:21:04] PULLING DOCKER IMAGES (if not cached)
+========================================================================
+
+========================================================================
+[2026-04-20 01:21:04] PREFLIGHT COMPLETE
+========================================================================
+
+========================================================================
+[2026-04-20 01:21:04] PHASE 3 — DECODE-LENGTH SWEEP (top-up to ≥3 iter per cell)
+========================================================================
+  [pull] lmsysorg/sglang:dev-cu13 — already present, skipping pull
+  [SKIP] vllm google/gemma-4-E2B-it — already 3 iter (≥3)
+  [TOPUP] sglang google/gemma-4-E2B-it — have 0, adding 3 iter
+
+========================================================================
+[2026-04-20 01:21:04] SGLang-Gemma4 (sglang) — google/gemma-4-E2B-it
+========================================================================
+8a7f041ab2dd641f8f2f3ab8cf96ebc33c5b923430c5e9b5e059eacef371f5ef
+  Waiting for SGLang health...................................... ready (190s)
+───────────────────────────────────────────────────────────────────────────────────────────────────── Matrix execution ──────────────────────────────────────────────────────────────────────────────────────────────────────
+  Model          : google/gemma-4-E2B-it
+  Scenarios      : decode_length_sweep_64, decode_length_sweep_256, decode_length_sweep_1024, decode_length_sweep_4096
+  Engines        : sglang
+  Iterations     : 3
+  Cooldown (sec) : 15
+───────────────────────────────────────────────────────────────────────────────────────────────────────── Step 1/12 ─────────────────────────────────────────────────────────────────────────────────────────────────────────
+  Scenario  : decode_length_sweep_64
+  Engine    : sglang
+  Iteration : 1/3
+  Model     : google/gemma-4-E2B-it
+  GPU VRAM  : 20389 MiB / 23028 MiB (89%)
+[2m2026-04-20T01:24:31.783658Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mSGLangClient[0m [36mprompt_pack[0m=[35mlong_generation[0m [36mscenario[0m=[35mdecode_length_sweep_64[0m
+[2m2026-04-20T01:24:31.784039Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m4[0m
+[2m2026-04-20T01:24:33.861821Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m8[0m
+[2m2026-04-20T01:24:33.998858Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m[0m [36midx[0m=[35m9[0m
+[2m2026-04-20T01:24:34.234883Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m[0m [36midx[0m=[35m30[0m
+[2m2026-04-20T01:24:34.352747Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m[0m [36midx[0m=[35m38[0m
+[2m2026-04-20T01:24:34.470699Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m[0m [36midx[0m=[35m42[0m
+[2m2026-04-20T01:24:34.715589Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m16[0m
+
+  sglang decode_length_sweep_64  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 180/180 0:00:03
+[2m2026-04-20T01:24:35.355908Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_decode_sweep/gemma-4-e2b-it/decode_length_sweep_64_sglang_1776648271.json[0m
+  ✓ DONE in 3s  — saved to decode_length_sweep_64_sglang_1776648271.json
+  Progress: 1 completed, 0 skipped, 11 remaining  — total elapsed 4s
+───────────────────────────────────────────────────────────────────────────────────────────────────────── Step 2/12 ─────────────────────────────────────────────────────────────────────────────────────────────────────────
+  Scenario  : decode_length_sweep_64
+  Engine    : sglang
+  Iteration : 2/3
+  Model     : google/gemma-4-E2B-it
+  GPU VRAM  : 20409 MiB / 23028 MiB (89%)
+  ETA       : ~39s
+[2m2026-04-20T01:24:51.390704Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mSGLangClient[0m [36mprompt_pack[0m=[35mlong_generation[0m [36mscenario[0m=[35mdecode_length_sweep_64[0m
+[2m2026-04-20T01:24:51.391043Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m4[0m
+[2m2026-04-20T01:24:53.101913Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m8[0m
+[2m2026-04-20T01:24:53.238115Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m[0m [36midx[0m=[35m56[0m
+[2m2026-04-20T01:24:53.357252Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m[0m [36midx[0m=[35m37[0m
+[2m2026-04-20T01:24:53.708482Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m[0m [36midx[0m=[35m46[0m
+[2m2026-04-20T01:24:54.008439Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m16[0m
+
+  sglang decode_length_sweep_64  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 180/180 0:00:03
+[2m2026-04-20T01:24:54.657720Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_decode_sweep/gemma-4-e2b-it/decode_length_sweep_64_sglang_1776648291.json[0m
+  ✓ DONE in 3s  — saved to decode_length_sweep_64_sglang_1776648291.json
+  Progress: 2 completed, 0 skipped, 10 remaining  — total elapsed 23s
+───────────────────────────────────────────────────────────────────────────────────────────────────────── Step 3/12 ─────────────────────────────────────────────────────────────────────────────────────────────────────────
+  Scenario  : decode_length_sweep_64
+  Engine    : sglang
+  Iteration : 3/3
+  Model     : google/gemma-4-E2B-it
+  GPU VRAM  : 20409 MiB / 23028 MiB (89%)
+  ETA       : ~34s
+[2m2026-04-20T01:25:10.707637Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mSGLangClient[0m [36mprompt_pack[0m=[35mlong_generation[0m [36mscenario[0m=[35mdecode_length_sweep_64[0m
+[2m2026-04-20T01:25:10.707977Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m4[0m
+[2m2026-04-20T01:25:12.428486Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m8[0m
+[2m2026-04-20T01:25:12.918882Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m[0m [36midx[0m=[35m49[0m
+[2m2026-04-20T01:25:13.154554Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m[0m [36midx[0m=[35m19[0m
+[2m2026-04-20T01:25:13.273428Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m[0m [36midx[0m=[35m0[0m
+[2m2026-04-20T01:25:13.337765Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m16[0m
+
+  sglang decode_length_sweep_64  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 180/180 0:00:03
+[2m2026-04-20T01:25:13.988276Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_decode_sweep/gemma-4-e2b-it/decode_length_sweep_64_sglang_1776648310.json[0m
+  ✓ DONE in 3s  — saved to decode_length_sweep_64_sglang_1776648310.json
+  Progress: 3 completed, 0 skipped, 9 remaining  — total elapsed 43s
+───────────────────────────────────────────────────────────────────────────────────────────────────────── Step 4/12 ─────────────────────────────────────────────────────────────────────────────────────────────────────────
+  Scenario  : decode_length_sweep_256
+  Engine    : sglang
+  Iteration : 1/3
+  Model     : google/gemma-4-E2B-it
+  GPU VRAM  : 20409 MiB / 23028 MiB (89%)
+  ETA       : ~30s
+[2m2026-04-20T01:25:30.037998Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mSGLangClient[0m [36mprompt_pack[0m=[35mlong_generation[0m [36mscenario[0m=[35mdecode_length_sweep_256[0m
+[2m2026-04-20T01:25:30.038365Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m4[0m
+[2m2026-04-20T01:25:31.753295Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m8[0m
+[2m2026-04-20T01:25:32.710492Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m16[0m
+
+  sglang decode_length_sweep_256  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 180/180 0:00:03
+[2m2026-04-20T01:25:33.362398Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_decode_sweep/gemma-4-e2b-it/decode_length_sweep_256_sglang_1776648330.json[0m
+  ✓ DONE in 3s  — saved to decode_length_sweep_256_sglang_1776648330.json
+  Progress: 4 completed, 0 skipped, 8 remaining  — total elapsed 1m 02s
+───────────────────────────────────────────────────────────────────────────────────────────────────────── Step 5/12 ─────────────────────────────────────────────────────────────────────────────────────────────────────────
+  Scenario  : decode_length_sweep_256
+  Engine    : sglang
+  Iteration : 2/3
+  Model     : google/gemma-4-E2B-it
+  GPU VRAM  : 20409 MiB / 23028 MiB (89%)
+  ETA       : ~26s
+[2m2026-04-20T01:25:49.401299Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mSGLangClient[0m [36mprompt_pack[0m=[35mlong_generation[0m [36mscenario[0m=[35mdecode_length_sweep_256[0m
+[2m2026-04-20T01:25:49.401642Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m4[0m
+[2m2026-04-20T01:25:51.098148Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m8[0m
+[2m2026-04-20T01:25:51.234118Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m[0m [36midx[0m=[35m37[0m
+[2m2026-04-20T01:25:51.468663Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m[0m [36midx[0m=[35m11[0m
+[2m2026-04-20T01:25:51.814806Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m[0m [36midx[0m=[35m14[0m
+[2m2026-04-20T01:25:51.992591Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m16[0m
+
+  sglang decode_length_sweep_256  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 180/180 0:00:03
+[2m2026-04-20T01:25:52.641114Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_decode_sweep/gemma-4-e2b-it/decode_length_sweep_256_sglang_1776648349.json[0m
+  ✓ DONE in 3s  — saved to decode_length_sweep_256_sglang_1776648349.json
+  Progress: 5 completed, 0 skipped, 7 remaining  — total elapsed 1m 21s
+───────────────────────────────────────────────────────────────────────────────────────────────────────── Step 6/12 ─────────────────────────────────────────────────────────────────────────────────────────────────────────
+  Scenario  : decode_length_sweep_256
+  Engine    : sglang
+  Iteration : 3/3
+  Model     : google/gemma-4-E2B-it
+  GPU VRAM  : 20409 MiB / 23028 MiB (89%)
+  ETA       : ~23s
+[2m2026-04-20T01:26:08.690171Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mSGLangClient[0m [36mprompt_pack[0m=[35mlong_generation[0m [36mscenario[0m=[35mdecode_length_sweep_256[0m
+[2m2026-04-20T01:26:08.690506Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m4[0m
+[2m2026-04-20T01:26:10.438909Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m8[0m
+[2m2026-04-20T01:26:10.697860Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m[0m [36midx[0m=[35m37[0m
+[2m2026-04-20T01:26:10.813705Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m[0m [36midx[0m=[35m15[0m
+[2m2026-04-20T01:26:10.931882Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m[0m [36midx[0m=[35m5[0m
+[2m2026-04-20T01:26:11.047878Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m[0m [36midx[0m=[35m0[0m
+[2m2026-04-20T01:26:11.165787Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m[0m [36midx[0m=[35m18[0m
+[2m2026-04-20T01:26:11.290416Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m16[0m
+
+  sglang decode_length_sweep_256  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 180/180 0:00:03
+[2m2026-04-20T01:26:11.938081Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_decode_sweep/gemma-4-e2b-it/decode_length_sweep_256_sglang_1776648368.json[0m
+  ✓ DONE in 3s  — saved to decode_length_sweep_256_sglang_1776648368.json
+  Progress: 6 completed, 0 skipped, 6 remaining  — total elapsed 1m 41s
+───────────────────────────────────────────────────────────────────────────────────────────────────────── Step 7/12 ─────────────────────────────────────────────────────────────────────────────────────────────────────────
+  Scenario  : decode_length_sweep_1024
+  Engine    : sglang
+  Iteration : 1/3
+  Model     : google/gemma-4-E2B-it
+  GPU VRAM  : 20409 MiB / 23028 MiB (89%)
+  ETA       : ~19s
+[2m2026-04-20T01:26:27.991776Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mSGLangClient[0m [36mprompt_pack[0m=[35mlong_generation[0m [36mscenario[0m=[35mdecode_length_sweep_1024[0m
+[2m2026-04-20T01:26:27.992152Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m4[0m
+[2m2026-04-20T01:26:29.708192Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m8[0m
+[2m2026-04-20T01:26:30.222304Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m[0m [36midx[0m=[35m20[0m
+[2m2026-04-20T01:26:30.336227Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m[0m [36midx[0m=[35m42[0m
+[2m2026-04-20T01:26:30.668368Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m16[0m
+
+  sglang decode_length_sweep_1024  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 180/180 0:00:03
+[2m2026-04-20T01:26:31.313264Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_decode_sweep/gemma-4-e2b-it/decode_length_sweep_1024_sglang_1776648387.json[0m
+  ✓ DONE in 3s  — saved to decode_length_sweep_1024_sglang_1776648387.json
+  Progress: 7 completed, 0 skipped, 5 remaining  — total elapsed 2m 00s
+───────────────────────────────────────────────────────────────────────────────────────────────────────── Step 8/12 ─────────────────────────────────────────────────────────────────────────────────────────────────────────
+  Scenario  : decode_length_sweep_1024
+  Engine    : sglang
+  Iteration : 2/3
+  Model     : google/gemma-4-E2B-it
+  GPU VRAM  : 20409 MiB / 23028 MiB (89%)
+  ETA       : ~16s
+[2m2026-04-20T01:26:47.362294Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mSGLangClient[0m [36mprompt_pack[0m=[35mlong_generation[0m [36mscenario[0m=[35mdecode_length_sweep_1024[0m
+[2m2026-04-20T01:26:47.362637Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m4[0m
+[2m2026-04-20T01:26:49.063534Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m8[0m
+[2m2026-04-20T01:26:49.432982Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m[0m [36midx[0m=[35m12[0m
+[2m2026-04-20T01:26:49.783432Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m[0m [36midx[0m=[35m42[0m
+[2m2026-04-20T01:26:50.000033Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m16[0m
+
+  sglang decode_length_sweep_1024  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 180/180 0:00:03
+[2m2026-04-20T01:26:50.646430Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_decode_sweep/gemma-4-e2b-it/decode_length_sweep_1024_sglang_1776648407.json[0m
+  ✓ DONE in 3s  — saved to decode_length_sweep_1024_sglang_1776648407.json
+  Progress: 8 completed, 0 skipped, 4 remaining  — total elapsed 2m 19s
+───────────────────────────────────────────────────────────────────────────────────────────────────────── Step 9/12 ─────────────────────────────────────────────────────────────────────────────────────────────────────────
+  Scenario  : decode_length_sweep_1024
+  Engine    : sglang
+  Iteration : 3/3
+  Model     : google/gemma-4-E2B-it
+  GPU VRAM  : 20409 MiB / 23028 MiB (89%)
+  ETA       : ~13s
+[2m2026-04-20T01:27:06.695001Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mSGLangClient[0m [36mprompt_pack[0m=[35mlong_generation[0m [36mscenario[0m=[35mdecode_length_sweep_1024[0m
+[2m2026-04-20T01:27:06.695314Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m4[0m
+[2m2026-04-20T01:27:08.530955Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m8[0m
+[2m2026-04-20T01:27:09.535197Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m16[0m
+
+  sglang decode_length_sweep_1024  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 180/180 0:00:03
+[2m2026-04-20T01:27:10.180781Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_decode_sweep/gemma-4-e2b-it/decode_length_sweep_1024_sglang_1776648426.json[0m
+  ✓ DONE in 3s  — saved to decode_length_sweep_1024_sglang_1776648426.json
+  Progress: 9 completed, 0 skipped, 3 remaining  — total elapsed 2m 39s
+──────────────────────────────────────────────────────────────────────────────────────────────────────── Step 10/12 ─────────────────────────────────────────────────────────────────────────────────────────────────────────
+  Scenario  : decode_length_sweep_4096
+  Engine    : sglang
+  Iteration : 1/3
+  Model     : google/gemma-4-E2B-it
+  GPU VRAM  : 20409 MiB / 23028 MiB (89%)
+  ETA       : ~10s
+[2m2026-04-20T01:27:26.222131Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mSGLangClient[0m [36mprompt_pack[0m=[35mlong_generation[0m [36mscenario[0m=[35mdecode_length_sweep_4096[0m
+[2m2026-04-20T01:27:26.222453Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m4[0m
+[2m2026-04-20T01:27:27.932555Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m8[0m
+[2m2026-04-20T01:27:28.067217Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m[0m [36midx[0m=[35m25[0m
+[2m2026-04-20T01:27:28.183355Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m[0m [36midx[0m=[35m35[0m
+[2m2026-04-20T01:27:28.299567Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m[0m [36midx[0m=[35m17[0m
+[2m2026-04-20T01:27:28.534832Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m[0m [36midx[0m=[35m22[0m
+[2m2026-04-20T01:27:28.781008Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m16[0m
+
+  sglang decode_length_sweep_4096  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 180/180 0:00:03
+[2m2026-04-20T01:27:29.429270Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_decode_sweep/gemma-4-e2b-it/decode_length_sweep_4096_sglang_1776648446.json[0m
+  ✓ DONE in 3s  — saved to decode_length_sweep_4096_sglang_1776648446.json
+  Progress: 10 completed, 0 skipped, 2 remaining  — total elapsed 2m 58s
+──────────────────────────────────────────────────────────────────────────────────────────────────────── Step 11/12 ─────────────────────────────────────────────────────────────────────────────────────────────────────────
+  Scenario  : decode_length_sweep_4096
+  Engine    : sglang
+  Iteration : 2/3
+  Model     : google/gemma-4-E2B-it
+  GPU VRAM  : 20409 MiB / 23028 MiB (89%)
+  ETA       : ~6s
+[2m2026-04-20T01:27:45.478838Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mSGLangClient[0m [36mprompt_pack[0m=[35mlong_generation[0m [36mscenario[0m=[35mdecode_length_sweep_4096[0m
+[2m2026-04-20T01:27:45.479180Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m4[0m
+[2m2026-04-20T01:27:47.190478Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m8[0m
+[2m2026-04-20T01:27:48.143978Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m16[0m
+
+  sglang decode_length_sweep_4096  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 180/180 0:00:03
+[2m2026-04-20T01:27:48.796422Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_decode_sweep/gemma-4-e2b-it/decode_length_sweep_4096_sglang_1776648465.json[0m
+  ✓ DONE in 3s  — saved to decode_length_sweep_4096_sglang_1776648465.json
+  Progress: 11 completed, 0 skipped, 1 remaining  — total elapsed 3m 18s
+──────────────────────────────────────────────────────────────────────────────────────────────────────── Step 12/12 ─────────────────────────────────────────────────────────────────────────────────────────────────────────
+  Scenario  : decode_length_sweep_4096
+  Engine    : sglang
+  Iteration : 3/3
+  Model     : google/gemma-4-E2B-it
+  GPU VRAM  : 20409 MiB / 23028 MiB (89%)
+  ETA       : ~3s
+[2m2026-04-20T01:28:04.834387Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mSGLangClient[0m [36mprompt_pack[0m=[35mlong_generation[0m [36mscenario[0m=[35mdecode_length_sweep_4096[0m
+[2m2026-04-20T01:28:04.834733Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m4[0m
+[2m2026-04-20T01:28:06.537564Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m8[0m
+[2m2026-04-20T01:28:06.936634Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m[0m [36midx[0m=[35m5[0m
+[2m2026-04-20T01:28:07.065137Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m[0m [36midx[0m=[35m21[0m
+[2m2026-04-20T01:28:07.195508Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m[0m [36midx[0m=[35m44[0m
+[2m2026-04-20T01:28:07.499811Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m16[0m
+
+  sglang decode_length_sweep_4096  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 180/180 0:00:03
+[2m2026-04-20T01:28:08.151602Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_decode_sweep/gemma-4-e2b-it/decode_length_sweep_4096_sglang_1776648484.json[0m
+  ✓ DONE in 3s  — saved to decode_length_sweep_4096_sglang_1776648484.json
+  Progress: 12 completed, 0 skipped, 0 remaining  — total elapsed 3m 37s
+────────────────────────────────────────────────────────────────────────────────────────────────────── Matrix complete ──────────────────────────────────────────────────────────────────────────────────────────────────────
+  Total time: 3m 52s
+
+                                               Matrix Results Summary                                                
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━┳━━━━━━┳━━━━━━━━━━━┳━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ Scenario                 ┃ Engine ┃ Iter ┃  Status   ┃ Duration ┃ Output File                                     ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━╇━━━━━━╇━━━━━━━━━━━╇━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
+│ decode_length_sweep_64   │ sglang │  1   │ completed │       3s │ decode_length_sweep_64_sglang_1776648271.json   │
+│ decode_length_sweep_64   │ sglang │  2   │ completed │       3s │ decode_length_sweep_64_sglang_1776648291.json   │
+│ decode_length_sweep_64   │ sglang │  3   │ completed │       3s │ decode_length_sweep_64_sglang_1776648310.json   │
+│ decode_length_sweep_256  │ sglang │  1   │ completed │       3s │ decode_length_sweep_256_sglang_1776648330.json  │
+│ decode_length_sweep_256  │ sglang │  2   │ completed │       3s │ decode_length_sweep_256_sglang_1776648349.json  │
+│ decode_length_sweep_256  │ sglang │  3   │ completed │       3s │ decode_length_sweep_256_sglang_1776648368.json  │
+│ decode_length_sweep_1024 │ sglang │  1   │ completed │       3s │ decode_length_sweep_1024_sglang_1776648387.json │
+│ decode_length_sweep_1024 │ sglang │  2   │ completed │       3s │ decode_length_sweep_1024_sglang_1776648407.json │
+│ decode_length_sweep_1024 │ sglang │  3   │ completed │       3s │ decode_length_sweep_1024_sglang_1776648426.json │
+│ decode_length_sweep_4096 │ sglang │  1   │ completed │       3s │ decode_length_sweep_4096_sglang_1776648446.json │
+│ decode_length_sweep_4096 │ sglang │  2   │ completed │       3s │ decode_length_sweep_4096_sglang_1776648465.json │
+│ decode_length_sweep_4096 │ sglang │  3   │ completed │       3s │ decode_length_sweep_4096_sglang_1776648484.json │
+└──────────────────────────┴────────┴──────┴───────────┴──────────┴─────────────────────────────────────────────────┘
+✓ Matrix manifest saved to results_decode_sweep/gemma-4-e2b-it/matrix_manifest_1776648270.json
+bench-sglang
+  [pull] lmsysorg/sglang:dev-cu13 — already present, skipping pull
+  [SKIP] vllm google/gemma-4-E4B-it — already 3 iter (≥3)
+  [TOPUP] sglang google/gemma-4-E4B-it — have 0, adding 3 iter
+
+========================================================================
+[2026-04-20 01:28:28] SGLang-Gemma4 (sglang) — google/gemma-4-E4B-it
+========================================================================
+55434b3c5d61afb9e6495100cc9ecc84d85f611dfa86a74d1caedb88b41a43c9
+  Waiting for SGLang health.................................. ready (170s)
+───────────────────────────────────────────────────────────────────────────────────────────────────── Matrix execution ──────────────────────────────────────────────────────────────────────────────────────────────────────
+  Model          : google/gemma-4-E4B-it
+  Scenarios      : decode_length_sweep_64, decode_length_sweep_256, decode_length_sweep_1024, decode_length_sweep_4096
+  Engines        : sglang
+  Iterations     : 3
+  Cooldown (sec) : 15
+───────────────────────────────────────────────────────────────────────────────────────────────────────── Step 1/12 ─────────────────────────────────────────────────────────────────────────────────────────────────────────
+  Scenario  : decode_length_sweep_64
+  Engine    : sglang
+  Iteration : 1/3
+  Model     : google/gemma-4-E4B-it
+  GPU VRAM  : 20395 MiB / 23028 MiB (89%)
+[2m2026-04-20T01:31:34.408294Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mSGLangClient[0m [36mprompt_pack[0m=[35mlong_generation[0m [36mscenario[0m=[35mdecode_length_sweep_64[0m
+[2m2026-04-20T01:31:34.408729Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m4[0m
+[2m2026-04-20T01:31:59.783979Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m8[0m
+[2m2026-04-20T01:32:12.749127Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m16[0m
+
+  sglang decode_length_sweep_64  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 180/180 0:00:45
+[2m2026-04-20T01:32:19.547846Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_decode_sweep/gemma-4-e4b-it/decode_length_sweep_64_sglang_1776648694.json[0m
+  ✓ DONE in 45s  — saved to decode_length_sweep_64_sglang_1776648694.json
+  Progress: 1 completed, 0 skipped, 11 remaining  — total elapsed 46s
+───────────────────────────────────────────────────────────────────────────────────────────────────────── Step 2/12 ─────────────────────────────────────────────────────────────────────────────────────────────────────────
+  Scenario  : decode_length_sweep_64
+  Engine    : sglang
+  Iteration : 2/3
+  Model     : google/gemma-4-E4B-it
+  GPU VRAM  : 20399 MiB / 23028 MiB (89%)
+  ETA       : ~8m 16s
+[2m2026-04-20T01:32:35.591629Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mSGLangClient[0m [36mprompt_pack[0m=[35mlong_generation[0m [36mscenario[0m=[35mdecode_length_sweep_64[0m
+[2m2026-04-20T01:32:35.591948Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m4[0m
+[2m2026-04-20T01:32:59.420193Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m8[0m
+[2m2026-04-20T01:33:12.036102Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m16[0m
+
+  sglang decode_length_sweep_64  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 180/180 0:00:43
+[2m2026-04-20T01:33:18.645991Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_decode_sweep/gemma-4-e4b-it/decode_length_sweep_64_sglang_1776648755.json[0m
+  ✓ DONE in 43s  — saved to decode_length_sweep_64_sglang_1776648755.json
+  Progress: 2 completed, 0 skipped, 10 remaining  — total elapsed 1m 45s
+───────────────────────────────────────────────────────────────────────────────────────────────────────── Step 3/12 ─────────────────────────────────────────────────────────────────────────────────────────────────────────
+  Scenario  : decode_length_sweep_64
+  Engine    : sglang
+  Iteration : 3/3
+  Model     : google/gemma-4-E4B-it
+  GPU VRAM  : 20399 MiB / 23028 MiB (89%)
+  ETA       : ~7m 20s
+[2m2026-04-20T01:33:34.688328Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mSGLangClient[0m [36mprompt_pack[0m=[35mlong_generation[0m [36mscenario[0m=[35mdecode_length_sweep_64[0m
+[2m2026-04-20T01:33:34.688655Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m4[0m
+[2m2026-04-20T01:33:59.283872Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m8[0m
+[2m2026-04-20T01:34:11.914109Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m16[0m
+
+  sglang decode_length_sweep_64  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 180/180 0:00:43
+[2m2026-04-20T01:34:18.299091Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_decode_sweep/gemma-4-e4b-it/decode_length_sweep_64_sglang_1776648814.json[0m
+  ✓ DONE in 43s  — saved to decode_length_sweep_64_sglang_1776648814.json
+  Progress: 3 completed, 0 skipped, 9 remaining  — total elapsed 2m 44s
+───────────────────────────────────────────────────────────────────────────────────────────────────────── Step 4/12 ─────────────────────────────────────────────────────────────────────────────────────────────────────────
+  Scenario  : decode_length_sweep_256
+  Engine    : sglang
+  Iteration : 1/3
+  Model     : google/gemma-4-E4B-it
+  GPU VRAM  : 20399 MiB / 23028 MiB (89%)
+  ETA       : ~6m 35s
+[2m2026-04-20T01:34:34.338153Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mSGLangClient[0m [36mprompt_pack[0m=[35mlong_generation[0m [36mscenario[0m=[35mdecode_length_sweep_256[0m
+[2m2026-04-20T01:34:34.338505Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m4[0m
+[2m2026-04-20T01:36:02.652815Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m8[0m
+[2m2026-04-20T01:36:47.371653Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m16[0m
+
+  sglang decode_length_sweep_256  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 180/180 0:02:36
+[2m2026-04-20T01:37:10.755387Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_decode_sweep/gemma-4-e4b-it/decode_length_sweep_256_sglang_1776648874.json[0m
+  ✓ DONE in 2m 36s  — saved to decode_length_sweep_256_sglang_1776648874.json
+  Progress: 4 completed, 0 skipped, 8 remaining  — total elapsed 5m 37s
+───────────────────────────────────────────────────────────────────────────────────────────────────────── Step 5/12 ─────────────────────────────────────────────────────────────────────────────────────────────────────────
+  Scenario  : decode_length_sweep_256
+  Engine    : sglang
+  Iteration : 2/3
+  Model     : google/gemma-4-E4B-it
+  GPU VRAM  : 20399 MiB / 23028 MiB (89%)
+  ETA       : ~9m 36s
+[2m2026-04-20T01:37:26.804729Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mSGLangClient[0m [36mprompt_pack[0m=[35mlong_generation[0m [36mscenario[0m=[35mdecode_length_sweep_256[0m
+[2m2026-04-20T01:37:26.805065Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m4[0m
+[2m2026-04-20T01:38:57.288747Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m8[0m
+[2m2026-04-20T01:39:43.346156Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m16[0m
+[2m2026-04-20T01:39:43.698804Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m[0m [36midx[0m=[35m56[0m
+
+  sglang decode_length_sweep_256  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 180/180 0:02:40
+[2m2026-04-20T01:40:07.012549Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_decode_sweep/gemma-4-e4b-it/decode_length_sweep_256_sglang_1776649046.json[0m
+  ✓ DONE in 2m 40s  — saved to decode_length_sweep_256_sglang_1776649046.json
+  Progress: 5 completed, 0 skipped, 7 remaining  — total elapsed 8m 33s
+───────────────────────────────────────────────────────────────────────────────────────────────────────── Step 6/12 ─────────────────────────────────────────────────────────────────────────────────────────────────────────
+  Scenario  : decode_length_sweep_256
+  Engine    : sglang
+  Iteration : 3/3
+  Model     : google/gemma-4-E4B-it
+  GPU VRAM  : 20399 MiB / 23028 MiB (89%)
+  ETA       : ~10m 27s
+[2m2026-04-20T01:40:23.061413Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mSGLangClient[0m [36mprompt_pack[0m=[35mlong_generation[0m [36mscenario[0m=[35mdecode_length_sweep_256[0m
+[2m2026-04-20T01:40:23.061779Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m4[0m
+[2m2026-04-20T01:41:52.015859Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m8[0m
+[2m2026-04-20T01:42:37.270006Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m16[0m
+[2m2026-04-20T01:42:48.819627Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m[0m [36midx[0m=[35m12[0m
+
+  sglang decode_length_sweep_256  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 180/180 0:02:37
+[2m2026-04-20T01:43:00.116427Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_decode_sweep/gemma-4-e4b-it/decode_length_sweep_256_sglang_1776649223.json[0m
+  ✓ DONE in 2m 37s  — saved to decode_length_sweep_256_sglang_1776649223.json
+  Progress: 6 completed, 0 skipped, 6 remaining  — total elapsed 11m 26s
+───────────────────────────────────────────────────────────────────────────────────────────────────────── Step 7/12 ─────────────────────────────────────────────────────────────────────────────────────────────────────────
+  Scenario  : decode_length_sweep_1024
+  Engine    : sglang
+  Iteration : 1/3
+  Model     : google/gemma-4-E4B-it
+  GPU VRAM  : 20399 MiB / 23028 MiB (89%)
+  ETA       : ~10m 05s
+[2m2026-04-20T01:43:16.223239Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mSGLangClient[0m [36mprompt_pack[0m=[35mlong_generation[0m [36mscenario[0m=[35mdecode_length_sweep_1024[0m
+[2m2026-04-20T01:43:16.223599Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m4[0m
+[2m2026-04-20T01:49:05.356862Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m8[0m
+[2m2026-04-20T01:52:01.000499Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m16[0m
+
+  sglang decode_length_sweep_1024  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 180/180 0:10:12
+[2m2026-04-20T01:53:28.883396Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_decode_sweep/gemma-4-e4b-it/decode_length_sweep_1024_sglang_1776649396.json[0m
+  ✓ DONE in 10m 12s  — saved to decode_length_sweep_1024_sglang_1776649396.json
+  Progress: 7 completed, 0 skipped, 5 remaining  — total elapsed 21m 55s
+───────────────────────────────────────────────────────────────────────────────────────────────────────── Step 8/12 ─────────────────────────────────────────────────────────────────────────────────────────────────────────
+  Scenario  : decode_length_sweep_1024
+  Engine    : sglang
+  Iteration : 2/3
+  Model     : google/gemma-4-E4B-it
+  GPU VRAM  : 20399 MiB / 23028 MiB (89%)
+  ETA       : ~14m 30s
+[2m2026-04-20T01:53:45.045409Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mSGLangClient[0m [36mprompt_pack[0m=[35mlong_generation[0m [36mscenario[0m=[35mdecode_length_sweep_1024[0m
+[2m2026-04-20T01:53:45.045807Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m4[0m
+[2m2026-04-20T01:59:32.974743Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m8[0m
+[2m2026-04-20T02:02:27.859860Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m16[0m
+
+  sglang decode_length_sweep_1024  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 180/180 0:10:11
+[2m2026-04-20T02:03:56.420720Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_decode_sweep/gemma-4-e4b-it/decode_length_sweep_1024_sglang_1776650025.json[0m
+  ✓ DONE in 10m 11s  — saved to decode_length_sweep_1024_sglang_1776650025.json
+  Progress: 8 completed, 0 skipped, 4 remaining  — total elapsed 32m 23s
+───────────────────────────────────────────────────────────────────────────────────────────────────────── Step 9/12 ─────────────────────────────────────────────────────────────────────────────────────────────────────────
+  Scenario  : decode_length_sweep_1024
+  Engine    : sglang
+  Iteration : 3/3
+  Model     : google/gemma-4-E4B-it
+  GPU VRAM  : 20399 MiB / 23028 MiB (89%)
+  ETA       : ~15m 14s
+[2m2026-04-20T02:04:12.459851Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mSGLangClient[0m [36mprompt_pack[0m=[35mlong_generation[0m [36mscenario[0m=[35mdecode_length_sweep_1024[0m
+[2m2026-04-20T02:04:12.460157Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m4[0m
+[2m2026-04-20T02:10:01.110194Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m8[0m
+[2m2026-04-20T02:12:55.755403Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m16[0m
+
+  sglang decode_length_sweep_1024  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 180/180 0:10:11
+[2m2026-04-20T02:14:23.513883Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_decode_sweep/gemma-4-e4b-it/decode_length_sweep_1024_sglang_1776650652.json[0m
+  ✓ DONE in 10m 11s  — saved to decode_length_sweep_1024_sglang_1776650652.json
+  Progress: 9 completed, 0 skipped, 3 remaining  — total elapsed 42m 50s
+──────────────────────────────────────────────────────────────────────────────────────────────────────── Step 10/12 ─────────────────────────────────────────────────────────────────────────────────────────────────────────
+  Scenario  : decode_length_sweep_4096
+  Engine    : sglang
+  Iteration : 1/3
+  Model     : google/gemma-4-E4B-it
+  GPU VRAM  : 20399 MiB / 23028 MiB (89%)
+  ETA       : ~13m 33s
+[2m2026-04-20T02:14:39.563657Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mSGLangClient[0m [36mprompt_pack[0m=[35mlong_generation[0m [36mscenario[0m=[35mdecode_length_sweep_4096[0m
+[2m2026-04-20T02:14:39.563988Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m4[0m
+[2m2026-04-20T02:37:34.910444Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m8[0m
+[2m2026-04-20T02:49:00.224530Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m16[0m
+[2m2026-04-20T02:51:00.775284Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m[0m [36midx[0m=[35m42[0m
+[2m2026-04-20T02:51:00.775643Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m[0m [36midx[0m=[35m54[0m
+[2m2026-04-20T02:51:00.901686Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m[0m [36midx[0m=[35m4[0m
+
+  sglang decode_length_sweep_4096  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 180/180 0:41:18
+[2m2026-04-20T02:55:57.840414Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_decode_sweep/gemma-4-e4b-it/decode_length_sweep_4096_sglang_1776651279.json[0m
+  ✓ DONE in 41m 18s  — saved to decode_length_sweep_4096_sglang_1776651279.json
+  Progress: 10 completed, 0 skipped, 2 remaining  — total elapsed 1h 24m 24s
+──────────────────────────────────────────────────────────────────────────────────────────────────────── Step 11/12 ─────────────────────────────────────────────────────────────────────────────────────────────────────────
+  Scenario  : decode_length_sweep_4096
+  Engine    : sglang
+  Iteration : 2/3
+  Model     : google/gemma-4-E4B-it
+  GPU VRAM  : 20399 MiB / 23028 MiB (89%)
+  ETA       : ~16m 23s
+[2m2026-04-20T02:56:13.888870Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mSGLangClient[0m [36mprompt_pack[0m=[35mlong_generation[0m [36mscenario[0m=[35mdecode_length_sweep_4096[0m
+[2m2026-04-20T02:56:13.889179Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m4[0m
+[2m2026-04-20T03:19:12.550286Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m8[0m
+[2m2026-04-20T03:30:45.191781Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m16[0m
+[2m2026-04-20T03:32:46.143728Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m[0m [36midx[0m=[35m4[0m
+[2m2026-04-20T03:32:46.228566Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m[0m [36midx[0m=[35m34[0m
+[2m2026-04-20T03:32:46.400246Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m[0m [36midx[0m=[35m27[0m
+
+  sglang decode_length_sweep_4096  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 180/180 0:41:53
+[2m2026-04-20T03:38:07.816899Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_decode_sweep/gemma-4-e4b-it/decode_length_sweep_4096_sglang_1776653773.json[0m
+  ✓ DONE in 41m 53s  — saved to decode_length_sweep_4096_sglang_1776653773.json
+  Progress: 11 completed, 0 skipped, 1 remaining  — total elapsed 2h 06m 34s
+──────────────────────────────────────────────────────────────────────────────────────────────────────── Step 12/12 ─────────────────────────────────────────────────────────────────────────────────────────────────────────
+  Scenario  : decode_length_sweep_4096
+  Engine    : sglang
+  Iteration : 3/3
+  Model     : google/gemma-4-E4B-it
+  GPU VRAM  : 20399 MiB / 23028 MiB (89%)
+  ETA       : ~11m 15s
+[2m2026-04-20T03:38:23.866294Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mSGLangClient[0m [36mprompt_pack[0m=[35mlong_generation[0m [36mscenario[0m=[35mdecode_length_sweep_4096[0m
+[2m2026-04-20T03:38:23.866634Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m4[0m
+[2m2026-04-20T04:01:33.085611Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m8[0m
+[2m2026-04-20T04:13:08.914317Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m16[0m
+[2m2026-04-20T04:15:09.899483Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m[0m [36midx[0m=[35m54[0m
+[2m2026-04-20T04:15:10.030634Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m[0m [36midx[0m=[35m12[0m
+[2m2026-04-20T04:15:10.165837Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m[0m [36midx[0m=[35m49[0m
+
+  sglang decode_length_sweep_4096  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 180/180 0:42:03
+[2m2026-04-20T04:20:27.358267Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_decode_sweep/gemma-4-e4b-it/decode_length_sweep_4096_sglang_1776656303.json[0m
+  ✓ DONE in 42m 03s  — saved to decode_length_sweep_4096_sglang_1776656303.json
+  Progress: 12 completed, 0 skipped, 0 remaining  — total elapsed 2h 48m 54s
+────────────────────────────────────────────────────────────────────────────────────────────────────── Matrix complete ──────────────────────────────────────────────────────────────────────────────────────────────────────
+  Total time: 2h 49m 09s
+
+                                               Matrix Results Summary                                                
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━┳━━━━━━┳━━━━━━━━━━━┳━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ Scenario                 ┃ Engine ┃ Iter ┃  Status   ┃ Duration ┃ Output File                                     ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━╇━━━━━━╇━━━━━━━━━━━╇━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
+│ decode_length_sweep_64   │ sglang │  1   │ completed │      45s │ decode_length_sweep_64_sglang_1776648694.json   │
+│ decode_length_sweep_64   │ sglang │  2   │ completed │      43s │ decode_length_sweep_64_sglang_1776648755.json   │
+│ decode_length_sweep_64   │ sglang │  3   │ completed │      43s │ decode_length_sweep_64_sglang_1776648814.json   │
+│ decode_length_sweep_256  │ sglang │  1   │ completed │   2m 36s │ decode_length_sweep_256_sglang_1776648874.json  │
+│ decode_length_sweep_256  │ sglang │  2   │ completed │   2m 40s │ decode_length_sweep_256_sglang_1776649046.json  │
+│ decode_length_sweep_256  │ sglang │  3   │ completed │   2m 37s │ decode_length_sweep_256_sglang_1776649223.json  │
+│ decode_length_sweep_1024 │ sglang │  1   │ completed │  10m 12s │ decode_length_sweep_1024_sglang_1776649396.json │
+│ decode_length_sweep_1024 │ sglang │  2   │ completed │  10m 11s │ decode_length_sweep_1024_sglang_1776650025.json │
+│ decode_length_sweep_1024 │ sglang │  3   │ completed │  10m 11s │ decode_length_sweep_1024_sglang_1776650652.json │
+│ decode_length_sweep_4096 │ sglang │  1   │ completed │  41m 18s │ decode_length_sweep_4096_sglang_1776651279.json │
+│ decode_length_sweep_4096 │ sglang │  2   │ completed │  41m 53s │ decode_length_sweep_4096_sglang_1776653773.json │
+│ decode_length_sweep_4096 │ sglang │  3   │ completed │  42m 03s │ decode_length_sweep_4096_sglang_1776656303.json │
+└──────────────────────────┴────────┴──────┴───────────┴──────────┴─────────────────────────────────────────────────┘
+✓ Matrix manifest saved to results_decode_sweep/gemma-4-e4b-it/matrix_manifest_1776648693.json
+bench-sglang
+  [SKIP] vllm google/gemma-2-2b-it — already 3 iter (≥3)
+  [SKIP] sglang google/gemma-2-2b-it — already 3 iter (≥3)
+  [SKIP] vllm microsoft/Phi-4-mini-instruct — already 3 iter (≥3)
+  [SKIP] sglang microsoft/Phi-4-mini-instruct — already 3 iter (≥3)
+  [SKIP] vllm meta-llama/Llama-3.1-8B-Instruct — already 3 iter (≥3)
+  [SKIP] sglang meta-llama/Llama-3.1-8B-Instruct — already 3 iter (≥3)
+  [SKIP] vllm google/gemma-3-4b-it — already 3 iter (≥3)
+  [SKIP] sglang google/gemma-3-4b-it — already 3 iter (≥3)
+
+========================================================================
+[2026-04-20 04:20:47] PHASE 3 COMPLETE
+========================================================================
+
+========================================================================
+[2026-04-20 04:20:47] ALL PHASES COMPLETE
+========================================================================
+
+Results:
+  results/                       180 result files
+  results_variance/              201 result files
+  results_concurrency64/           8 result files
+  results_decode_sweep/          144 result files
+
+STATUS: ALL PASSED — no errors
+
+Next steps:
+  Resume Phase 2 (missing-only, idempotent, 1 iter/cell):
+    nohup bash scripts/run_new_benchmarks.sh --phase2 2>&1 | tee logs/phase2_resume_$(date +%Y%m%dT%H%M%S).log &
+
+  Then run analysis:
+    python -m analysis.variance_analysis --results-dir results_variance
+    python -m analysis.tpot_analysis --results-dir results_variance
+    python -m analysis.decode_length_analysis --results-dir results_decode_sweep
