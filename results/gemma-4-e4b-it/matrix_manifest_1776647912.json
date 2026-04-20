@@ -1,0 +1,35 @@
+{
+  "started_at": 1776647912.012425,
+  "finished_at": 1776648055.5558627,
+  "total_elapsed_seconds": 143.54020380973816,
+  "model": "google/gemma-4-E4B-it",
+  "tasks": [
+    {
+      "model": "google/gemma-4-E4B-it",
+      "scenario_name": "single_request_latency",
+      "engine": "sglang",
+      "engine_variant": "sglang-ngram",
+      "spec_method": "ngram",
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1776647913.064785,
+      "status": "completed",
+      "finished_at": 1776647930.9399998,
+      "result_path": "results/gemma-4-e4b-it/single_request_latency_sglang-ngram_1776647913.json"
+    },
+    {
+      "model": "google/gemma-4-E4B-it",
+      "scenario_name": "throughput_ramp",
+      "engine": "sglang",
+      "engine_variant": "sglang-ngram",
+      "spec_method": "ngram",
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1776647941.9791732,
+      "status": "completed",
+      "finished_at": 1776648045.5417826,
+      "result_path": "results/gemma-4-e4b-it/throughput_ramp_sglang-ngram_1776647941.json"
+    }
+  ],
+  "cooldown_seconds": 10
+}

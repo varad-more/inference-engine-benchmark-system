@@ -1,0 +1,282 @@
+
+========================================================================
+[2026-04-19 20:50:54] PREFLIGHT
+========================================================================
+  Python: Python 3.13.12
+  Docker: 29.1.3
+  GPU:    NVIDIA A10G, 23028 MiB
+  HF token: found
+  vLLM bind: 172.31.43.213:8000
+  SGLang:    172.31.43.213:8001
+
+========================================================================
+[2026-04-19 20:50:57] PULLING DOCKER IMAGES (if not cached)
+========================================================================
+  [pull] vllm/vllm-openai:v0.18.0-cu130 — not found locally, pulling...
+v0.18.0-cu130: Pulling from vllm/vllm-openai
+8b037e7c7a2d: Pulling fs layer
+d1add02700ea: Pulling fs layer
+13fcc08a88b0: Pulling fs layer
+972fecd20995: Pulling fs layer
+d1fa28e83441: Pulling fs layer
+9fb88058195e: Pulling fs layer
+7de14fd8c5f7: Pulling fs layer
+53adc8f7bb73: Pulling fs layer
+25c13d14b6e1: Pulling fs layer
+7565b9a4ca04: Pulling fs layer
+47d73edddacd: Pulling fs layer
+b5a85fd92912: Pulling fs layer
+0d7526b23bd3: Pulling fs layer
+90d494315c4a: Pulling fs layer
+Digest: sha256:9951d6e8f54921a5c80b1b106aa67d495bdaf19d139bd1a8d34d42da747df2d5
+Status: Downloaded newer image for vllm/vllm-openai:v0.18.0-cu130
+docker.io/vllm/vllm-openai:v0.18.0-cu130
+  [pull] vllm/vllm-openai:v0.18.0-cu130 — done
+  [pull] lmsysorg/sglang:v0.5.10.post1-cu130 — not found locally, pulling...
+v0.5.10.post1-cu130: Pulling from lmsysorg/sglang
+ab7341a40ee7: Pulling fs layer
+6e6c08fa9649: Pulling fs layer
+eea924c2c8fb: Pulling fs layer
+10ea6f211d13: Pulling fs layer
+81ca49bb549b: Pulling fs layer
+2551cec2a1e6: Pulling fs layer
+253d64116966: Pulling fs layer
+f5dbe163f972: Pulling fs layer
+4a84b2618a76: Pulling fs layer
+8fb7ecb711ef: Pulling fs layer
+39cbf74fcc36: Pulling fs layer
+d480806e627b: Pulling fs layer
+8c1e45741eb3: Pulling fs layer
+4a87491baa0f: Pulling fs layer
+4f4fb700ef54: Pulling fs layer
+d1b96cead747: Pulling fs layer
+1bd323f07650: Pulling fs layer
+6bc4986146af: Pulling fs layer
+1ddf2823946e: Pulling fs layer
+426238a96650: Pulling fs layer
+401d11fb2a09: Pulling fs layer
+5c1cacc6f82c: Pulling fs layer
+478d417f01d7: Pulling fs layer
+80c623033d90: Pulling fs layer
+b9628a0ffe11: Pulling fs layer
+c20926c42231: Pulling fs layer
+81f3ea01f518: Pulling fs layer
+3a374d334f45: Pulling fs layer
+76249c7cd503: Pulling fs layer
+c03b8ec8dd33: Pulling fs layer
+988ad3b38eeb: Pulling fs layer
+cf9677979b8c: Pulling fs layer
+438929272907: Pulling fs layer
+4f4fb700ef54: Pulling fs layer
+14d61ed86472: Pulling fs layer
+d7913b78456a: Pulling fs layer
+1cd98a0b9132: Pulling fs layer
+afcf80b42416: Pulling fs layer
+25449deb7b7d: Pulling fs layer
+1e5976c6fd1e: Pulling fs layer
+38ec908470f2: Pulling fs layer
+7ad51b062bf0: Pulling fs layer
+45badc9753e1: Pulling fs layer
+e93dd1223ff5: Pulling fs layer
+a77c0854ee58: Pulling fs layer
+856053289bb1: Pulling fs layer
+4f4fb700ef54: Pulling fs layer
+c03b8ec8dd33: Already exists
+6e6c08fa9649: Download complete
+f5dbe163f972: Download complete
+39cbf74fcc36: Download complete
+8fb7ecb711ef: Download complete
+2551cec2a1e6: Download complete
+438929272907: Download complete
+4a87491baa0f: Download complete
+c20926c42231: Download complete
+81f3ea01f518: Download complete
+d480806e627b: Download complete
+253d64116966: Download complete
+b9628a0ffe11: Download complete
+4f4fb700ef54: Download complete
+3a374d334f45: Download complete
+8c1e45741eb3: Download complete
+401d11fb2a09: Download complete
+1bd323f07650: Download complete
+76249c7cd503: Download complete
+6bc4986146af: Download complete
+cf9677979b8c: Download complete
+d7913b78456a: Download complete
+afcf80b42416: Download complete
+1cd98a0b9132: Download complete
+25449deb7b7d: Download complete
+478d417f01d7: Download complete
+a77c0854ee58: Download complete
+856053289bb1: Download complete
+7ad51b062bf0: Download complete
+988ad3b38eeb: Download complete
+10ea6f211d13: Download complete
+80c623033d90: Download complete
+5c1cacc6f82c: Download complete
+38ec908470f2: Download complete
+4a84b2618a76: Download complete
+1e5976c6fd1e: Download complete
+ab7341a40ee7: Download complete
+1ddf2823946e: Download complete
+3b1c34fa1ea2: Download complete
+81ca49bb549b: Download complete
+14d61ed86472: Download complete
+76249c7cd503: Pull complete
+401d11fb2a09: Pull complete
+426238a96650: Download complete
+ab7341a40ee7: Pull complete
+d7913b78456a: Pull complete
+c03b8ec8dd33: Pull complete
+eea924c2c8fb: Download complete
+d1b96cead747: Download complete
+e93dd1223ff5: Download complete
+eea924c2c8fb: Pull complete
+c20926c42231: Pull complete
+afcf80b42416: Pull complete
+8fb7ecb711ef: Pull complete
+e93dd1223ff5: Pull complete
+1cd98a0b9132: Pull complete
+14d61ed86472: Pull complete
+10ea6f211d13: Pull complete
+45badc9753e1: Download complete
+4a84b2618a76: Pull complete
+25449deb7b7d: Pull complete
+6e6c08fa9649: Pull complete
+2551cec2a1e6: Pull complete
+4a87491baa0f: Pull complete
+1ddf2823946e: Pull complete
+7ad51b062bf0: Pull complete
+45badc9753e1: Pull complete
+438929272907: Pull complete
+39cbf74fcc36: Pull complete
+d1b96cead747: Pull complete
+80c623033d90: Pull complete
+38ec908470f2: Pull complete
+988ad3b38eeb: Pull complete
+426238a96650: Pull complete
+1e5976c6fd1e: Pull complete
+81ca49bb549b: Pull complete
+d480806e627b: Pull complete
+3a374d334f45: Pull complete
+1bd323f07650: Pull complete
+5c1cacc6f82c: Pull complete
+b9628a0ffe11: Pull complete
+81f3ea01f518: Pull complete
+a77c0854ee58: Pull complete
+856053289bb1: Pull complete
+253d64116966: Pull complete
+f5dbe163f972: Pull complete
+8c1e45741eb3: Pull complete
+6bc4986146af: Pull complete
+cf9677979b8c: Pull complete
+4f4fb700ef54: Pull complete
+478d417f01d7: Pull complete
+Digest: sha256:53505dbf98d3ed1ef3b36721d3b91e4314a31b0b35beaa9a7472277f5e8cd7a7
+Status: Downloaded newer image for lmsysorg/sglang:v0.5.10.post1-cu130
+docker.io/lmsysorg/sglang:v0.5.10.post1-cu130
+  [pull] lmsysorg/sglang:v0.5.10.post1-cu130 — done
+
+========================================================================
+[2026-04-19 21:00:44] PREFLIGHT COMPLETE
+========================================================================
+
+========================================================================
+[2026-04-19 21:00:44] PHASE 3 — DECODE-LENGTH SWEEP (top-up to ≥3 iter per cell)
+========================================================================
+  [pull] vllm/vllm-openai:latest — already present, skipping pull
+  [pull] lmsysorg/sglang:latest — not found locally, pulling...
+latest: Pulling from lmsysorg/sglang
+2cd52cbb1ebe: Pulling fs layer
+02cb0e091e33: Pulling fs layer
+d749c2c11c0a: Pulling fs layer
+9c3d619183d2: Pulling fs layer
+1aa2fc45621d: Pulling fs layer
+bc94a9448b8d: Pulling fs layer
+a1949430d14a: Pulling fs layer
+32e74186af0a: Pulling fs layer
+14737f95e498: Pulling fs layer
+e0a60d11baaf: Pulling fs layer
+02559cd4bc8d: Pulling fs layer
+5a2aba542b08: Pulling fs layer
+f4c17506c447: Pulling fs layer
+2399656800b7: Pulling fs layer
+1a1caf0dea10: Pulling fs layer
+9e14b831e9c9: Pulling fs layer
+644e9b203583: Pulling fs layer
+3d5153a88c86: Pulling fs layer
+e179981ee6ce: Pulling fs layer
+eefdffbe77c4: Pulling fs layer
+4f4fb700ef54: Pulling fs layer
+7f7602a82106: Pulling fs layer
+e43addc8c1de: Pulling fs layer
+1e7291041da7: Pulling fs layer
+2b2708b43aba: Pulling fs layer
+a80a0583c17c: Pulling fs layer
+6cb9b761b877: Pulling fs layer
+3496e383742f: Pulling fs layer
+32f112e3802c: Pulling fs layer
+15a17189b2df: Pulling fs layer
+2b9c93255401: Pulling fs layer
+81a09ba7b11b: Pulling fs layer
+9e0235c06657: Pulling fs layer
+71c9d315e5fc: Pulling fs layer
+4f4fb700ef54: Pulling fs layer
+4f4fb700ef54: Pulling fs layer
+3cde19e46e49: Pulling fs layer
+6933eda9036d: Pulling fs layer
+4f4fb700ef54: Pulling fs layer
+68044286ad13: Pulling fs layer
+6e8af4fd0a07: Pulling fs layer
+dc0322f80d19: Pulling fs layer
+32bc6143c1d4: Pulling fs layer
+481454657d56: Pulling fs layer
+01528f838fd9: Pulling fs layer
+acdcefbc7efe: Pulling fs layer
+11de3b5379f2: Pulling fs layer
+6e8af4fd0a07: Already exists
+4f4fb700ef54: Already exists
+4f4fb700ef54: Pull complete
+9e14b831e9c9: Download complete
+02cb0e091e33: Download complete
+e179981ee6ce: Download complete
+2cd52cbb1ebe: Download complete
+3d5153a88c86: Download complete
+a80a0583c17c: Download complete
+eefdffbe77c4: Download complete
+f4c17506c447: Download complete
+32e74186af0a: Download complete
+a1949430d14a: Download complete
+02559cd4bc8d: Download complete
+7f7602a82106: Download complete
+644e9b203583: Download complete
+2b2708b43aba: Download complete
+14737f95e498: Download complete
+1e7291041da7: Download complete
+11de3b5379f2: Download complete
+e43addc8c1de: Download complete
+6cb9b761b877: Download complete
+32bc6143c1d4: Download complete
+9c3d619183d2: Download complete
+3496e383742f: Download complete
+81a09ba7b11b: Download complete
+e0a60d11baaf: Download complete
+2399656800b7: Download complete
+481454657d56: Download complete
+dc0322f80d19: Download complete
+3cde19e46e49: Download complete
+01528f838fd9: Download complete
+71c9d315e5fc: Download complete
+32f112e3802c: Download complete
+68044286ad13: Download complete
+bc94a9448b8d: Download complete
+6933eda9036d: Download complete
+1a1caf0dea10: Download complete
+896ef57d366b: Download complete
+d749c2c11c0a: Download complete
+9e0235c06657: Download complete
+acdcefbc7efe: Download complete
+32f112e3802c: Pull complete
+644e9b203583: Pull complete
+failed to extract layer (application/vnd.oci.image.layer.v1.tar+gzip sha256:02559cd4bc8db240554ff3a4e38df5909d4745846b3e3a4df865d102f0a6d0d9) to overlayfs as "extract-792678927-x6e4 sha256:143da87c0ecc7587368619e9e9c353e19efa52cbae2d5fa02c3c0b06c11a32f8": write /var/lib/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/293/fs/usr/local/cuda-12.9/compat/libcuda.so.575.57.08: no space left on device
+ERROR: Failed to pull Docker image: lmsysorg/sglang:latest

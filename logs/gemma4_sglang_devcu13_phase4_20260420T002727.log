@@ -1,0 +1,545 @@
+
+========================================================================
+[2026-04-20 00:27:28] PREFLIGHT
+========================================================================
+  Python: Python 3.13.12
+  Docker: 29.1.3
+  GPU:    NVIDIA A10G, 23028 MiB
+  HF token: found
+  vLLM bind: 172.31.43.213:8000
+  SGLang:    172.31.43.213:8001
+
+========================================================================
+[2026-04-20 00:27:31] PULLING DOCKER IMAGES (if not cached)
+========================================================================
+
+========================================================================
+[2026-04-20 00:27:31] PREFLIGHT COMPLETE
+========================================================================
+
+========================================================================
+[2026-04-20 00:27:31] PHASE 4 — GEMMA 4 (baseline + ngram spec-dec, resume)
+========================================================================
+  [pull] lmsysorg/sglang:dev-cu13 — not found locally, pulling...
+dev-cu13: Pulling from lmsysorg/sglang
+ab7341a40ee7: Pulling fs layer
+c03b8ec8dd33: Pulling fs layer
+4f4fb700ef54: Pulling fs layer
+c20926c42231: Pulling fs layer
+f4393fc7106b: Pulling fs layer
+a9d44434bf9d: Pulling fs layer
+4ba0670c6120: Pulling fs layer
+14d61ed86472: Pulling fs layer
+681071802b1c: Pulling fs layer
+1fb491b24dbf: Pulling fs layer
+4f4fb700ef54: Pulling fs layer
+2bfba90a4675: Pulling fs layer
+7c803a64e8e5: Pulling fs layer
+8fb7ecb711ef: Pulling fs layer
+49ff8e4f6db9: Pulling fs layer
+d6137dd6dd55: Pulling fs layer
+4f4fb700ef54: Pulling fs layer
+e93dd1223ff5: Pulling fs layer
+376f9910dd34: Pulling fs layer
+8fb58c361186: Pulling fs layer
+68202f0aaf16: Pulling fs layer
+1cd98a0b9132: Pulling fs layer
+9c945256728d: Pulling fs layer
+79d348fdecd9: Pulling fs layer
+65376308a201: Pulling fs layer
+a48916d091b8: Pulling fs layer
+b700beabaa5e: Pulling fs layer
+15e29606836f: Pulling fs layer
+5cd664654a98: Pulling fs layer
+eea924c2c8fb: Pulling fs layer
+2cead9314c1c: Pulling fs layer
+4e0d6c7f572d: Pulling fs layer
+82de644b125d: Pulling fs layer
+e2f3ec8a65f8: Pulling fs layer
+d7913b78456a: Pulling fs layer
+973a3f5d45c9: Pulling fs layer
+bad69013f0bb: Pulling fs layer
+d42f00b6eb97: Pulling fs layer
+406446085204: Pulling fs layer
+afcf80b42416: Pulling fs layer
+999f6a158598: Pulling fs layer
+4f4fb700ef54: Pulling fs layer
+facd3372cf60: Pulling fs layer
+b5b65148d757: Pulling fs layer
+fb289c3fd6f6: Pulling fs layer
+cd9d0c81745d: Pulling fs layer
+34795469e64c: Pulling fs layer
+bc44f1641b81: Pulling fs layer
+c6538d30224f: Pulling fs layer
+4f4fb700ef54: Pulling fs layer
+f387fc02a1bc: Pulling fs layer
+bf544b6bd96e: Pulling fs layer
+2d96adfb1f24: Pulling fs layer
+d2cc68bcef2a: Pulling fs layer
+124552c66f5a: Pulling fs layer
+ca4d0fda85ed: Pulling fs layer
+534764078bf8: Pulling fs layer
+c20926c42231: Already exists
+afcf80b42416: Already exists
+1cd98a0b9132: Already exists
+c03b8ec8dd33: Already exists
+8fb7ecb711ef: Already exists
+4f4fb700ef54: Already exists
+14d61ed86472: Already exists
+ab7341a40ee7: Already exists
+d7913b78456a: Already exists
+e2f3ec8a65f8: Download complete
+999f6a158598: Download complete
+facd3372cf60: Download complete
+4e0d6c7f572d: Download complete
+cd9d0c81745d: Download complete
+bad69013f0bb: Download complete
+973a3f5d45c9: Download complete
+681071802b1c: Download complete
+406446085204: Download complete
+7c803a64e8e5: Download complete
+2bfba90a4675: Download complete
+bf544b6bd96e: Download complete
+b5b65148d757: Download complete
+2cead9314c1c: Download complete
+a9d44434bf9d: Download complete
+4ba0670c6120: Download complete
+d6137dd6dd55: Download complete
+1fb491b24dbf: Download complete
+79d348fdecd9: Download complete
+b700beabaa5e: Download complete
+8fb58c361186: Download complete
+376f9910dd34: Download complete
+9c945256728d: Download complete
+fb289c3fd6f6: Download complete
+34795469e64c: Download complete
+49ff8e4f6db9: Download complete
+82de644b125d: Download complete
+d2cc68bcef2a: Download complete
+124552c66f5a: Download complete
+f387fc02a1bc: Download complete
+a48916d091b8: Download complete
+15e29606836f: Download complete
+68202f0aaf16: Download complete
+c6538d30224f: Download complete
+534764078bf8: Download complete
+ca4d0fda85ed: Download complete
+1278f90502f7: Download complete
+2d96adfb1f24: Download complete
+bc44f1641b81: Download complete
+65376308a201: Download complete
+ab7341a40ee7: Pull complete
+d7913b78456a: Pull complete
+c03b8ec8dd33: Pull complete
+5cd664654a98: Download complete
+eea924c2c8fb: Download complete
+f4393fc7106b: Download complete
+eea924c2c8fb: Pull complete
+c20926c42231: Pull complete
+afcf80b42416: Pull complete
+8fb7ecb711ef: Pull complete
+e93dd1223ff5: Download complete
+d42f00b6eb97: Download complete
+e93dd1223ff5: Pull complete
+1cd98a0b9132: Pull complete
+14d61ed86472: Pull complete
+d6137dd6dd55: Pull complete
+82de644b125d: Pull complete
+15e29606836f: Pull complete
+1fb491b24dbf: Pull complete
+facd3372cf60: Pull complete
+7c803a64e8e5: Pull complete
+fb289c3fd6f6: Pull complete
+e2f3ec8a65f8: Pull complete
+d42f00b6eb97: Pull complete
+79d348fdecd9: Pull complete
+b5b65148d757: Pull complete
+b700beabaa5e: Pull complete
+f4393fc7106b: Pull complete
+376f9910dd34: Pull complete
+2bfba90a4675: Pull complete
+ca4d0fda85ed: Pull complete
+9c945256728d: Pull complete
+124552c66f5a: Pull complete
+8fb58c361186: Pull complete
+4e0d6c7f572d: Pull complete
+d2cc68bcef2a: Pull complete
+973a3f5d45c9: Pull complete
+999f6a158598: Pull complete
+a9d44434bf9d: Pull complete
+2d96adfb1f24: Pull complete
+65376308a201: Pull complete
+68202f0aaf16: Pull complete
+4ba0670c6120: Pull complete
+5cd664654a98: Pull complete
+681071802b1c: Pull complete
+406446085204: Pull complete
+49ff8e4f6db9: Pull complete
+cd9d0c81745d: Pull complete
+bad69013f0bb: Pull complete
+34795469e64c: Pull complete
+a48916d091b8: Pull complete
+c6538d30224f: Pull complete
+f387fc02a1bc: Pull complete
+2cead9314c1c: Pull complete
+bc44f1641b81: Pull complete
+bf544b6bd96e: Pull complete
+534764078bf8: Pull complete
+4f4fb700ef54: Pull complete
+Digest: sha256:5513e74bc56a2457e803f9d56034b32723b3d3161398629685893ca4f9914609
+Status: Downloaded newer image for lmsysorg/sglang:dev-cu13
+docker.io/lmsysorg/sglang:dev-cu13
+  [pull] lmsysorg/sglang:dev-cu13 — done
+  [SKIP] vllm google/gemma-4-E2B-it baseline — all 5 scenarios present
+  [RUN]  sglang google/gemma-4-E2B-it baseline — single_request_latency,throughput_ramp,long_context_stress,prefix_sharing_benefit,structured_generation_speed
+
+========================================================================
+[2026-04-20 00:35:06] SGLang-Gemma4 (sglang) — google/gemma-4-E2B-it
+========================================================================
+3ed83070befbcc78fe2a809d4bb83828f3ccd80cbb85c5424f6226c65770af52
+  Waiting for SGLang health.......................................... ready (210s)
+───────────────────────────────────────────────────────────────────────────────────────────────────── Matrix execution ──────────────────────────────────────────────────────────────────────────────────────────────────────
+  Model          : google/gemma-4-E2B-it
+  Scenarios      : single_request_latency, throughput_ramp, long_context_stress, prefix_sharing_benefit, structured_generation_speed
+  Engines        : sglang
+  Iterations     : 1
+  Cooldown (sec) : 10
+───────────────────────────────────────────────────────────────────────────────────────────────────────── Step 1/5 ──────────────────────────────────────────────────────────────────────────────────────────────────────────
+  Scenario  : single_request_latency
+  Engine    : sglang
+  Iteration : 1/1
+  Model     : google/gemma-4-E2B-it
+  GPU VRAM  : 20365 MiB / 23028 MiB (88%)
+[2m2026-04-20T00:39:31.771634Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mSGLangClient[0m [36mprompt_pack[0m=[35mshort_chat[0m [36mscenario[0m=[35msingle_request_latency[0m
+[2m2026-04-20T00:39:34.358401Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m[0m [36midx[0m=[35m40[0m
+
+  sglang single_request_latency  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 50/50 0:00:03
+[2m2026-04-20T00:39:35.493665Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults/gemma-4-e2b-it/single_request_latency_sglang_1776645571.json[0m
+  ✓ DONE in 3s  — saved to single_request_latency_sglang_1776645571.json
+  Progress: 1 completed, 0 skipped, 4 remaining  — total elapsed 4s
+───────────────────────────────────────────────────────────────────────────────────────────────────────── Step 2/5 ──────────────────────────────────────────────────────────────────────────────────────────────────────────
+  Scenario  : throughput_ramp
+  Engine    : sglang
+  Iteration : 1/1
+  Model     : google/gemma-4-E2B-it
+  GPU VRAM  : 20385 MiB / 23028 MiB (89%)
+  ETA       : ~14s
+[2m2026-04-20T00:39:46.531773Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mSGLangClient[0m [36mprompt_pack[0m=[35mlong_generation[0m [36mscenario[0m=[35mthroughput_ramp[0m
+[2m2026-04-20T00:39:46.532144Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m1[0m
+[2m2026-04-20T00:39:54.124855Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m2[0m
+[2m2026-04-20T00:39:59.567110Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m4[0m
+[2m2026-04-20T00:40:02.776625Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m8[0m
+[2m2026-04-20T00:40:03.391001Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m[0m [36midx[0m=[35m3[0m
+[2m2026-04-20T00:40:03.860959Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m[0m [36midx[0m=[35m55[0m
+[2m2026-04-20T00:40:04.096279Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m[0m [36midx[0m=[35m93[0m
+[2m2026-04-20T00:40:04.279188Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m16[0m
+[2m2026-04-20T00:40:05.341358Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m32[0m
+[2m2026-04-20T00:40:06.107061Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m64[0m
+
+  sglang throughput_ramp  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 700/700 0:00:20
+[2m2026-04-20T00:40:06.758161Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults/gemma-4-e2b-it/throughput_ramp_sglang_1776645586.json[0m
+  ✓ DONE in 20s  — saved to throughput_ramp_sglang_1776645586.json
+  Progress: 2 completed, 0 skipped, 3 remaining  — total elapsed 36s
+───────────────────────────────────────────────────────────────────────────────────────────────────────── Step 3/5 ──────────────────────────────────────────────────────────────────────────────────────────────────────────
+  Scenario  : long_context_stress
+  Engine    : sglang
+  Iteration : 1/1
+  Model     : google/gemma-4-E2B-it
+  GPU VRAM  : 20385 MiB / 23028 MiB (89%)
+  ETA       : ~35s
+[2m2026-04-20T00:40:17.800941Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mSGLangClient[0m [36mprompt_pack[0m=[35mlong_context[0m [36mscenario[0m=[35mlong_context_stress[0m
+
+  sglang long_context_stress  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 20/20 0:00:35
+[2m2026-04-20T00:40:53.664429Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults/gemma-4-e2b-it/long_context_stress_sglang_1776645617.json[0m
+  ✓ DONE in 35s  — saved to long_context_stress_sglang_1776645617.json
+  Progress: 3 completed, 0 skipped, 2 remaining  — total elapsed 1m 22s
+───────────────────────────────────────────────────────────────────────────────────────────────────────── Step 4/5 ──────────────────────────────────────────────────────────────────────────────────────────────────────────
+  Scenario  : prefix_sharing_benefit
+  Engine    : sglang
+  Iteration : 1/1
+  Model     : google/gemma-4-E2B-it
+  GPU VRAM  : 20385 MiB / 23028 MiB (89%)
+  ETA       : ~39s
+[2m2026-04-20T00:41:04.709557Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mSGLangClient[0m [36mprompt_pack[0m=[35mshared_prefix[0m [36mscenario[0m=[35mprefix_sharing_benefit[0m
+
+  sglang prefix_sharing_benefit  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100/100 0:00:38
+[2m2026-04-20T00:41:43.212137Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults/gemma-4-e2b-it/prefix_sharing_benefit_sglang_1776645664.json[0m
+  ✓ DONE in 38s  — saved to prefix_sharing_benefit_sglang_1776645664.json
+  Progress: 4 completed, 0 skipped, 1 remaining  — total elapsed 2m 12s
+───────────────────────────────────────────────────────────────────────────────────────────────────────── Step 5/5 ──────────────────────────────────────────────────────────────────────────────────────────────────────────
+  Scenario  : structured_generation_speed
+  Engine    : sglang
+  Iteration : 1/1
+  Model     : google/gemma-4-E2B-it
+  GPU VRAM  : 20385 MiB / 23028 MiB (89%)
+  ETA       : ~24s
+[2m2026-04-20T00:41:54.256379Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mSGLangClient[0m [36mprompt_pack[0m=[35mstructured_json[0m [36mscenario[0m=[35mstructured_generation_speed[0m
+[2m2026-04-20T00:41:54.412319Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m[0m [36midx[0m=[35m125[0m
+
+  sglang structured_generation_speed  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 200/200 0:00:50
+[2m2026-04-20T00:42:44.842984Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults/gemma-4-e2b-it/structured_generation_speed_sglang_1776645714.json[0m
+  ✓ DONE in 50s  — saved to structured_generation_speed_sglang_1776645714.json
+  Progress: 5 completed, 0 skipped, 0 remaining  — total elapsed 3m 14s
+────────────────────────────────────────────────────────────────────────────────────────────────────── Matrix complete ──────────────────────────────────────────────────────────────────────────────────────────────────────
+  Total time: 3m 24s
+
+                                                  Matrix Results Summary                                                   
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━┳━━━━━━┳━━━━━━━━━━━┳━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ Scenario                    ┃ Engine ┃ Iter ┃  Status   ┃ Duration ┃ Output File                                        ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━╇━━━━━━╇━━━━━━━━━━━╇━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
+│ single_request_latency      │ sglang │  1   │ completed │       3s │ single_request_latency_sglang_1776645571.json      │
+│ throughput_ramp             │ sglang │  1   │ completed │      20s │ throughput_ramp_sglang_1776645586.json             │
+│ long_context_stress         │ sglang │  1   │ completed │      35s │ long_context_stress_sglang_1776645617.json         │
+│ prefix_sharing_benefit      │ sglang │  1   │ completed │      38s │ prefix_sharing_benefit_sglang_1776645664.json      │
+│ structured_generation_speed │ sglang │  1   │ completed │      50s │ structured_generation_speed_sglang_1776645714.json │
+└─────────────────────────────┴────────┴──────┴───────────┴──────────┴────────────────────────────────────────────────────┘
+✓ Matrix manifest saved to results/gemma-4-e2b-it/matrix_manifest_1776645570.json
+bench-sglang
+  [SKIP] vllm-ngram google/gemma-4-E2B-it — all 2 scenarios present
+  [RUN]  sglang-ngram google/gemma-4-E2B-it — single_request_latency,throughput_ramp
+
+========================================================================
+[2026-04-20 00:43:01] SGLang-Gemma4 (sglang-ngram) — google/gemma-4-E2B-it
+========================================================================
+1fe75a0271d0c0045fe60a42356bb6e293464aaa5413a992490eac252d551a46
+  Waiting for SGLang health......................... ready (125s)
+───────────────────────────────────────────────────────────────────────────────────────────────────── Matrix execution ──────────────────────────────────────────────────────────────────────────────────────────────────────
+  Model          : google/gemma-4-E2B-it
+  Scenarios      : single_request_latency, throughput_ramp
+  Engines        : sglang-ngram
+  Iterations     : 1
+  Cooldown (sec) : 10
+───────────────────────────────────────────────────────────────────────────────────────────────────────── Step 1/2 ──────────────────────────────────────────────────────────────────────────────────────────────────────────
+  Scenario  : single_request_latency
+  Engine    : sglang-ngram
+  Iteration : 1/1
+  Model     : google/gemma-4-E2B-it
+  GPU VRAM  : 20297 MiB / 23028 MiB (88%)
+[2m2026-04-20T00:45:20.032898Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mSGLangClient[0m [36mprompt_pack[0m=[35mshort_chat[0m [36mscenario[0m=[35msingle_request_latency[0m
+
+  sglang-ngram single_request_latency  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 50/50 0:00:02
+[2m2026-04-20T00:45:22.242116Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults/gemma-4-e2b-it/single_request_latency_sglang-ngram_1776645920.json[0m
+  ✓ DONE in 2s  — saved to single_request_latency_sglang-ngram_1776645920.json
+  Progress: 1 completed, 0 skipped, 1 remaining  — total elapsed 3s
+───────────────────────────────────────────────────────────────────────────────────────────────────────── Step 2/2 ──────────────────────────────────────────────────────────────────────────────────────────────────────────
+  Scenario  : throughput_ramp
+  Engine    : sglang-ngram
+  Iteration : 1/1
+  Model     : google/gemma-4-E2B-it
+  GPU VRAM  : 20297 MiB / 23028 MiB (88%)
+  ETA       : ~2s
+[2m2026-04-20T00:45:33.287799Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mSGLangClient[0m [36mprompt_pack[0m=[35mlong_generation[0m [36mscenario[0m=[35mthroughput_ramp[0m
+[2m2026-04-20T00:45:33.288144Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m1[0m
+[2m2026-04-20T00:45:37.701722Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m2[0m
+[2m2026-04-20T00:45:41.421855Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m4[0m
+[2m2026-04-20T00:45:43.385455Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m8[0m
+[2m2026-04-20T00:45:43.486289Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m[0m [36midx[0m=[35m81[0m
+[2m2026-04-20T00:45:43.647986Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m[0m [36midx[0m=[35m47[0m
+[2m2026-04-20T00:45:43.813857Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m[0m [36midx[0m=[35m88[0m
+[2m2026-04-20T00:45:44.071789Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m[0m [36midx[0m=[35m70[0m
+[2m2026-04-20T00:45:44.151853Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m[0m [36midx[0m=[35m27[0m
+[2m2026-04-20T00:45:44.404973Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m16[0m
+[2m2026-04-20T00:45:45.205779Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m32[0m
+[2m2026-04-20T00:45:45.794694Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m64[0m
+
+  sglang-ngram throughput_ramp  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 700/700 0:00:13
+[2m2026-04-20T00:45:46.353184Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults/gemma-4-e2b-it/throughput_ramp_sglang-ngram_1776645933.json[0m
+  ✓ DONE in 13s  — saved to throughput_ramp_sglang-ngram_1776645933.json
+  Progress: 2 completed, 0 skipped, 0 remaining  — total elapsed 27s
+────────────────────────────────────────────────────────────────────────────────────────────────────── Matrix complete ──────────────────────────────────────────────────────────────────────────────────────────────────────
+  Total time: 37s
+
+                                                Matrix Results Summary                                                 
+┏━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━┳━━━━━━┳━━━━━━━━━━━┳━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ Scenario               ┃ Engine ┃ Iter ┃  Status   ┃ Duration ┃ Output File                                         ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━╇━━━━━━╇━━━━━━━━━━━╇━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
+│ single_request_latency │ sglang │  1   │ completed │       2s │ single_request_latency_sglang-ngram_1776645920.json │
+│ throughput_ramp        │ sglang │  1   │ completed │      13s │ throughput_ramp_sglang-ngram_1776645933.json        │
+└────────────────────────┴────────┴──────┴───────────┴──────────┴─────────────────────────────────────────────────────┘
+✓ Matrix manifest saved to results/gemma-4-e2b-it/matrix_manifest_1776645918.json
+bench-sglang
+  [SKIP] vllm google/gemma-4-E4B-it baseline — all 5 scenarios present
+  [RUN]  sglang google/gemma-4-E4B-it baseline — single_request_latency,throughput_ramp,long_context_stress,prefix_sharing_benefit,structured_generation_speed
+
+========================================================================
+[2026-04-20 00:46:03] SGLang-Gemma4 (sglang) — google/gemma-4-E4B-it
+========================================================================
+32bd3f2203da22c1703157cabc6be00daff9de3c4ce3962bb82c12a356afc49e
+  Waiting for SGLang health.................................................. ready (250s)
+───────────────────────────────────────────────────────────────────────────────────────────────────── Matrix execution ──────────────────────────────────────────────────────────────────────────────────────────────────────
+  Model          : google/gemma-4-E4B-it
+  Scenarios      : single_request_latency, throughput_ramp, long_context_stress, prefix_sharing_benefit, structured_generation_speed
+  Engines        : sglang
+  Iterations     : 1
+  Cooldown (sec) : 10
+───────────────────────────────────────────────────────────────────────────────────────────────────────── Step 1/5 ──────────────────────────────────────────────────────────────────────────────────────────────────────────
+  Scenario  : single_request_latency
+  Engine    : sglang
+  Iteration : 1/1
+  Model     : google/gemma-4-E4B-it
+  GPU VRAM  : 20383 MiB / 23028 MiB (89%)
+[2m2026-04-20T00:50:28.952096Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mSGLangClient[0m [36mprompt_pack[0m=[35mshort_chat[0m [36mscenario[0m=[35msingle_request_latency[0m
+
+  sglang single_request_latency  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 50/50 0:03:27
+[2m2026-04-20T00:53:56.787217Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults/gemma-4-e4b-it/single_request_latency_sglang_1776646228.json[0m
+  ✓ DONE in 3m 27s  — saved to single_request_latency_sglang_1776646228.json
+  Progress: 1 completed, 0 skipped, 4 remaining  — total elapsed 3m 28s
+───────────────────────────────────────────────────────────────────────────────────────────────────────── Step 2/5 ──────────────────────────────────────────────────────────────────────────────────────────────────────────
+  Scenario  : throughput_ramp
+  Engine    : sglang
+  Iteration : 1/1
+  Model     : google/gemma-4-E4B-it
+  GPU VRAM  : 20383 MiB / 23028 MiB (89%)
+  ETA       : ~13m 51s
+[2m2026-04-20T00:54:07.831104Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mSGLangClient[0m [36mprompt_pack[0m=[35mlong_generation[0m [36mscenario[0m=[35mthroughput_ramp[0m
+[2m2026-04-20T00:54:07.831489Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m1[0m
+[2m2026-04-20T01:02:46.591520Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m2[0m
+[2m2026-04-20T01:06:51.745353Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m[0m [36midx[0m=[35m49[0m
+[2m2026-04-20T01:07:25.827572Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m4[0m
+[2m2026-04-20T01:09:51.771598Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m8[0m
+[2m2026-04-20T01:11:11.298164Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m16[0m
+[2m2026-04-20T01:11:57.290885Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m32[0m
+[2m2026-04-20T01:12:20.367215Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m64[0m
+
+  sglang throughput_ramp  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 700/700 0:18:24
+[2m2026-04-20T01:12:32.238077Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults/gemma-4-e4b-it/throughput_ramp_sglang_1776646447.json[0m
+  ✓ DONE in 18m 24s  — saved to throughput_ramp_sglang_1776646447.json
+  Progress: 2 completed, 0 skipped, 3 remaining  — total elapsed 22m 04s
+───────────────────────────────────────────────────────────────────────────────────────────────────────── Step 3/5 ──────────────────────────────────────────────────────────────────────────────────────────────────────────
+  Scenario  : long_context_stress
+  Engine    : sglang
+  Iteration : 1/1
+  Model     : google/gemma-4-E4B-it
+  GPU VRAM  : 20387 MiB / 23028 MiB (89%)
+  ETA       : ~32m 48s
+[2m2026-04-20T01:12:43.282986Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mSGLangClient[0m [36mprompt_pack[0m=[35mlong_context[0m [36mscenario[0m=[35mlong_context_stress[0m
+
+  sglang long_context_stress  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 20/20 0:00:43
+[2m2026-04-20T01:13:26.944809Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults/gemma-4-e4b-it/long_context_stress_sglang_1776647563.json[0m
+  ✓ DONE in 43s  — saved to long_context_stress_sglang_1776647563.json
+  Progress: 3 completed, 0 skipped, 2 remaining  — total elapsed 22m 59s
+───────────────────────────────────────────────────────────────────────────────────────────────────────── Step 4/5 ──────────────────────────────────────────────────────────────────────────────────────────────────────────
+  Scenario  : prefix_sharing_benefit
+  Engine    : sglang
+  Iteration : 1/1
+  Model     : google/gemma-4-E4B-it
+  GPU VRAM  : 20389 MiB / 23028 MiB (89%)
+  ETA       : ~15m 03s
+[2m2026-04-20T01:13:37.989802Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mSGLangClient[0m [36mprompt_pack[0m=[35mshared_prefix[0m [36mscenario[0m=[35mprefix_sharing_benefit[0m
+
+  sglang prefix_sharing_benefit  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100/100 0:00:38
+[2m2026-04-20T01:14:16.319775Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults/gemma-4-e4b-it/prefix_sharing_benefit_sglang_1776647617.json[0m
+  ✓ DONE in 38s  — saved to prefix_sharing_benefit_sglang_1776647617.json
+  Progress: 4 completed, 0 skipped, 1 remaining  — total elapsed 23m 48s
+───────────────────────────────────────────────────────────────────────────────────────────────────────── Step 5/5 ──────────────────────────────────────────────────────────────────────────────────────────────────────────
+  Scenario  : structured_generation_speed
+  Engine    : sglang
+  Iteration : 1/1
+  Model     : google/gemma-4-E4B-it
+  GPU VRAM  : 20389 MiB / 23028 MiB (89%)
+  ETA       : ~5m 48s
+[2m2026-04-20T01:14:27.354034Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mSGLangClient[0m [36mprompt_pack[0m=[35mstructured_json[0m [36mscenario[0m=[35mstructured_generation_speed[0m
+
+  sglang structured_generation_speed  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 200/200 0:01:24
+[2m2026-04-20T01:15:52.155291Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults/gemma-4-e4b-it/structured_generation_speed_sglang_1776647667.json[0m
+  ✓ DONE in 1m 24s  — saved to structured_generation_speed_sglang_1776647667.json
+  Progress: 5 completed, 0 skipped, 0 remaining  — total elapsed 25m 24s
+────────────────────────────────────────────────────────────────────────────────────────────────────── Matrix complete ──────────────────────────────────────────────────────────────────────────────────────────────────────
+  Total time: 25m 34s
+
+                                                  Matrix Results Summary                                                   
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━┳━━━━━━┳━━━━━━━━━━━┳━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ Scenario                    ┃ Engine ┃ Iter ┃  Status   ┃ Duration ┃ Output File                                        ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━╇━━━━━━╇━━━━━━━━━━━╇━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
+│ single_request_latency      │ sglang │  1   │ completed │   3m 27s │ single_request_latency_sglang_1776646228.json      │
+│ throughput_ramp             │ sglang │  1   │ completed │  18m 24s │ throughput_ramp_sglang_1776646447.json             │
+│ long_context_stress         │ sglang │  1   │ completed │      43s │ long_context_stress_sglang_1776647563.json         │
+│ prefix_sharing_benefit      │ sglang │  1   │ completed │      38s │ prefix_sharing_benefit_sglang_1776647617.json      │
+│ structured_generation_speed │ sglang │  1   │ completed │   1m 24s │ structured_generation_speed_sglang_1776647667.json │
+└─────────────────────────────┴────────┴──────┴───────────┴──────────┴────────────────────────────────────────────────────┘
+✓ Matrix manifest saved to results/gemma-4-e4b-it/matrix_manifest_1776646227.json
+bench-sglang
+  [SKIP] vllm-ngram google/gemma-4-E4B-it — all 2 scenarios present
+  [RUN]  sglang-ngram google/gemma-4-E4B-it — single_request_latency,throughput_ramp
+
+========================================================================
+[2026-04-20 01:16:07] SGLang-Gemma4 (sglang-ngram) — google/gemma-4-E4B-it
+========================================================================
+be2fe09a6e1529014683ae0ab3aeeb16350351f6b36568c97d14d0e4f314b6c1
+  Waiting for SGLang health.......................... ready (130s)
+───────────────────────────────────────────────────────────────────────────────────────────────────── Matrix execution ──────────────────────────────────────────────────────────────────────────────────────────────────────
+  Model          : google/gemma-4-E4B-it
+  Scenarios      : single_request_latency, throughput_ramp
+  Engines        : sglang-ngram
+  Iterations     : 1
+  Cooldown (sec) : 10
+───────────────────────────────────────────────────────────────────────────────────────────────────────── Step 1/2 ──────────────────────────────────────────────────────────────────────────────────────────────────────────
+  Scenario  : single_request_latency
+  Engine    : sglang-ngram
+  Iteration : 1/1
+  Model     : google/gemma-4-E4B-it
+  GPU VRAM  : 20317 MiB / 23028 MiB (88%)
+[2m2026-04-20T01:18:33.065480Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mSGLangClient[0m [36mprompt_pack[0m=[35mshort_chat[0m [36mscenario[0m=[35msingle_request_latency[0m
+
+  sglang-ngram single_request_latency  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 50/50 0:00:17
+[2m2026-04-20T01:18:50.939847Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults/gemma-4-e4b-it/single_request_latency_sglang-ngram_1776647913.json[0m
+  ✓ DONE in 17s  — saved to single_request_latency_sglang-ngram_1776647913.json
+  Progress: 1 completed, 0 skipped, 1 remaining  — total elapsed 18s
+───────────────────────────────────────────────────────────────────────────────────────────────────────── Step 2/2 ──────────────────────────────────────────────────────────────────────────────────────────────────────────
+  Scenario  : throughput_ramp
+  Engine    : sglang-ngram
+  Iteration : 1/1
+  Model     : google/gemma-4-E4B-it
+  GPU VRAM  : 20319 MiB / 23028 MiB (88%)
+  ETA       : ~17s
+[2m2026-04-20T01:19:01.979726Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mSGLangClient[0m [36mprompt_pack[0m=[35mlong_generation[0m [36mscenario[0m=[35mthroughput_ramp[0m
+[2m2026-04-20T01:19:01.980113Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m1[0m
+[2m2026-04-20T01:19:43.571530Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m2[0m
+[2m2026-04-20T01:20:08.087500Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m4[0m
+[2m2026-04-20T01:20:21.999515Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m8[0m
+[2m2026-04-20T01:20:23.200773Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m[0m [36midx[0m=[35m67[0m
+[2m2026-04-20T01:20:29.818523Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m16[0m
+[2m2026-04-20T01:20:35.692804Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m32[0m
+[2m2026-04-20T01:20:40.471224Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m64[0m
+
+  sglang-ngram throughput_ramp  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 700/700 0:01:43
+[2m2026-04-20T01:20:45.541652Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults/gemma-4-e4b-it/throughput_ramp_sglang-ngram_1776647941.json[0m
+  ✓ DONE in 1m 43s  — saved to throughput_ramp_sglang-ngram_1776647941.json
+  Progress: 2 completed, 0 skipped, 0 remaining  — total elapsed 2m 13s
+────────────────────────────────────────────────────────────────────────────────────────────────────── Matrix complete ──────────────────────────────────────────────────────────────────────────────────────────────────────
+  Total time: 2m 23s
+
+                                                Matrix Results Summary                                                 
+┏━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━┳━━━━━━┳━━━━━━━━━━━┳━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ Scenario               ┃ Engine ┃ Iter ┃  Status   ┃ Duration ┃ Output File                                         ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━╇━━━━━━╇━━━━━━━━━━━╇━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
+│ single_request_latency │ sglang │  1   │ completed │      17s │ single_request_latency_sglang-ngram_1776647913.json │
+│ throughput_ramp        │ sglang │  1   │ completed │   1m 43s │ throughput_ramp_sglang-ngram_1776647941.json        │
+└────────────────────────┴────────┴──────┴───────────┴──────────┴─────────────────────────────────────────────────────┘
+✓ Matrix manifest saved to results/gemma-4-e4b-it/matrix_manifest_1776647912.json
+bench-sglang
+
+========================================================================
+[2026-04-20 01:21:01] PHASE 4 COMPLETE
+========================================================================
+
+========================================================================
+[2026-04-20 01:21:01] ALL PHASES COMPLETE
+========================================================================
+
+Results:
+  results/                       180 result files
+  results_variance/              201 result files
+  results_concurrency64/           8 result files
+  results_decode_sweep/          120 result files
+
+STATUS: ALL PASSED — no errors
+
+Next steps:
+  Resume Phase 2 (missing-only, idempotent, 1 iter/cell):
+    nohup bash scripts/run_new_benchmarks.sh --phase2 2>&1 | tee logs/phase2_resume_$(date +%Y%m%dT%H%M%S).log &
+
+  Then run analysis:
+    python -m analysis.variance_analysis --results-dir results_variance
+    python -m analysis.tpot_analysis --results-dir results_variance
+    python -m analysis.decode_length_analysis --results-dir results_decode_sweep

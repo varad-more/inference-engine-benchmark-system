@@ -1,0 +1,1338 @@
+nohup: ignoring input
+
+========================================================================
+[2026-04-19 03:05:07] PREFLIGHT
+========================================================================
+  Python: Python 3.13.12
+  Docker: 29.1.3
+  GPU:    NVIDIA A10G, 23028 MiB
+  HF token: found
+  vLLM bind: 172.31.43.213:8000
+  SGLang:    172.31.43.213:8001
+
+========================================================================
+[2026-04-19 03:05:11] PULLING DOCKER IMAGES (if not cached)
+========================================================================
+  [pull] vllm/vllm-openai:v0.18.0-cu130 — already present, skipping pull
+  [pull] lmsysorg/sglang:v0.5.10.post1-cu130 — already present, skipping pull
+
+========================================================================
+[2026-04-19 03:05:11] PREFLIGHT COMPLETE
+========================================================================
+
+========================================================================
+[2026-04-19 03:05:11] PHASE 1 — VARIANCE SUBSET (resume, missing cells only)
+========================================================================
+  [SKIP] gemma-2-2b-it — both engines complete
+  [SKIP] phi-4-mini-instruct — both engines complete
+  [SKIP] vllm llama-3-1-8b-instruct — complete
+
+========================================================================
+[2026-04-19 03:05:11] SGLang — meta-llama/Llama-3.1-8B-Instruct
+========================================================================
+a1abc12b67e67699352441b3a7ee9766bd0f4a4f01720c944d0dcee3645f85ba
+  Waiting for SGLang health...................... ready (110s)
+─────────────────────────────── Matrix execution ───────────────────────────────
+  Model          : meta-llama/Llama-3.1-8B-Instruct
+  Scenarios      : long_context_stress, prefix_sharing_benefit, 
+structured_generation_speed, throughput_ramp
+  Engines        : sglang
+  Iterations     : 5
+  Cooldown (sec) : 10
+────────────────────────────────── Step 1/20 ───────────────────────────────────
+  Scenario  : long_context_stress
+  Engine    : sglang
+  Iteration : 1/5
+  Model     : meta-llama/Llama-3.1-8B-Instruct
+  GPU VRAM  : 20433 MiB / 23028 MiB (89%)
+[2m2026-04-19T03:07:11.413850Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mSGLangClient[0m [36mprompt_pack[0m=[35mlong_context[0m [36mscenario[0m=[35mlong_context_stress[0m
+
+  sglang long_context_stress  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 20/20 0:00:44
+[2m2026-04-19T03:07:56.101553Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_variance/llama-3-1-8b-instruct/long_context_stress_sglang_1776568031.json[0m
+  ✓ DONE in 44s  — saved to long_context_stress_sglang_1776568031.json
+  Progress: 1 completed, 0 skipped, 19 remaining  — total elapsed 45s
+────────────────────────────────── Step 2/20 ───────────────────────────────────
+  Scenario  : long_context_stress
+  Engine    : sglang
+  Iteration : 2/5
+  Model     : meta-llama/Llama-3.1-8B-Instruct
+  GPU VRAM  : 20435 MiB / 23028 MiB (89%)
+  ETA       : ~14m 09s
+[2m2026-04-19T03:08:07.139369Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mSGLangClient[0m [36mprompt_pack[0m=[35mlong_context[0m [36mscenario[0m=[35mlong_context_stress[0m
+
+  sglang long_context_stress  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 20/20 0:00:44
+[2m2026-04-19T03:08:51.798830Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_variance/llama-3-1-8b-instruct/long_context_stress_sglang_1776568087.json[0m
+  ✓ DONE in 44s  — saved to long_context_stress_sglang_1776568087.json
+  Progress: 2 completed, 0 skipped, 18 remaining  — total elapsed 1m 41s
+────────────────────────────────── Step 3/20 ───────────────────────────────────
+  Scenario  : long_context_stress
+  Engine    : sglang
+  Iteration : 3/5
+  Model     : meta-llama/Llama-3.1-8B-Instruct
+  GPU VRAM  : 20435 MiB / 23028 MiB (89%)
+  ETA       : ~13m 24s
+[2m2026-04-19T03:09:02.843446Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mSGLangClient[0m [36mprompt_pack[0m=[35mlong_context[0m [36mscenario[0m=[35mlong_context_stress[0m
+
+  sglang long_context_stress  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 20/20 0:00:44
+[2m2026-04-19T03:09:47.507513Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_variance/llama-3-1-8b-instruct/long_context_stress_sglang_1776568142.json[0m
+  ✓ DONE in 44s  — saved to long_context_stress_sglang_1776568142.json
+  Progress: 3 completed, 0 skipped, 17 remaining  — total elapsed 2m 37s
+────────────────────────────────── Step 4/20 ───────────────────────────────────
+  Scenario  : long_context_stress
+  Engine    : sglang
+  Iteration : 4/5
+  Model     : meta-llama/Llama-3.1-8B-Instruct
+  GPU VRAM  : 20435 MiB / 23028 MiB (89%)
+  ETA       : ~12m 39s
+[2m2026-04-19T03:09:58.549562Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mSGLangClient[0m [36mprompt_pack[0m=[35mlong_context[0m [36mscenario[0m=[35mlong_context_stress[0m
+
+  sglang long_context_stress  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 20/20 0:00:44
+[2m2026-04-19T03:10:43.213674Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_variance/llama-3-1-8b-instruct/long_context_stress_sglang_1776568198.json[0m
+  ✓ DONE in 44s  — saved to long_context_stress_sglang_1776568198.json
+  Progress: 4 completed, 0 skipped, 16 remaining  — total elapsed 3m 32s
+────────────────────────────────── Step 5/20 ───────────────────────────────────
+  Scenario  : long_context_stress
+  Engine    : sglang
+  Iteration : 5/5
+  Model     : meta-llama/Llama-3.1-8B-Instruct
+  GPU VRAM  : 20435 MiB / 23028 MiB (89%)
+  ETA       : ~11m 54s
+[2m2026-04-19T03:10:54.253188Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mSGLangClient[0m [36mprompt_pack[0m=[35mlong_context[0m [36mscenario[0m=[35mlong_context_stress[0m
+
+  sglang long_context_stress  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 20/20 0:00:44
+[2m2026-04-19T03:11:38.915696Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_variance/llama-3-1-8b-instruct/long_context_stress_sglang_1776568254.json[0m
+  ✓ DONE in 44s  — saved to long_context_stress_sglang_1776568254.json
+  Progress: 5 completed, 0 skipped, 15 remaining  — total elapsed 4m 28s
+────────────────────────────────── Step 6/20 ───────────────────────────────────
+  Scenario  : prefix_sharing_benefit
+  Engine    : sglang
+  Iteration : 1/5
+  Model     : meta-llama/Llama-3.1-8B-Instruct
+  GPU VRAM  : 20435 MiB / 23028 MiB (89%)
+  ETA       : ~11m 10s
+[2m2026-04-19T03:11:49.986961Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mSGLangClient[0m [36mprompt_pack[0m=[35mshared_prefix[0m [36mscenario[0m=[35mprefix_sharing_benefit[0m
+
+  sglang prefix_sharing_benefit  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100/100 0:00:58
+[2m2026-04-19T03:12:48.740645Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_variance/llama-3-1-8b-instruct/prefix_sharing_benefit_sglang_1776568309.json[0m
+  ✓ DONE in 58s  — saved to prefix_sharing_benefit_sglang_1776568309.json
+  Progress: 6 completed, 0 skipped, 14 remaining  — total elapsed 5m 38s
+────────────────────────────────── Step 7/20 ───────────────────────────────────
+  Scenario  : prefix_sharing_benefit
+  Engine    : sglang
+  Iteration : 2/5
+  Model     : meta-llama/Llama-3.1-8B-Instruct
+  GPU VRAM  : 20435 MiB / 23028 MiB (89%)
+  ETA       : ~10m 58s
+[2m2026-04-19T03:12:59.775562Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mSGLangClient[0m [36mprompt_pack[0m=[35mshared_prefix[0m [36mscenario[0m=[35mprefix_sharing_benefit[0m
+
+  sglang prefix_sharing_benefit  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100/100 0:00:58
+[2m2026-04-19T03:13:58.440071Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_variance/llama-3-1-8b-instruct/prefix_sharing_benefit_sglang_1776568379.json[0m
+  ✓ DONE in 58s  — saved to prefix_sharing_benefit_sglang_1776568379.json
+  Progress: 7 completed, 0 skipped, 13 remaining  — total elapsed 6m 48s
+────────────────────────────────── Step 8/20 ───────────────────────────────────
+  Scenario  : prefix_sharing_benefit
+  Engine    : sglang
+  Iteration : 3/5
+  Model     : meta-llama/Llama-3.1-8B-Instruct
+  GPU VRAM  : 20435 MiB / 23028 MiB (89%)
+  ETA       : ~10m 32s
+[2m2026-04-19T03:14:09.475116Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mSGLangClient[0m [36mprompt_pack[0m=[35mshared_prefix[0m [36mscenario[0m=[35mprefix_sharing_benefit[0m
+
+  sglang prefix_sharing_benefit  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100/100 0:00:58
+[2m2026-04-19T03:15:08.124458Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_variance/llama-3-1-8b-instruct/prefix_sharing_benefit_sglang_1776568449.json[0m
+  ✓ DONE in 58s  — saved to prefix_sharing_benefit_sglang_1776568449.json
+  Progress: 8 completed, 0 skipped, 12 remaining  — total elapsed 7m 57s
+────────────────────────────────── Step 9/20 ───────────────────────────────────
+  Scenario  : prefix_sharing_benefit
+  Engine    : sglang
+  Iteration : 4/5
+  Model     : meta-llama/Llama-3.1-8B-Instruct
+  GPU VRAM  : 20435 MiB / 23028 MiB (89%)
+  ETA       : ~9m 59s
+[2m2026-04-19T03:15:19.173027Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mSGLangClient[0m [36mprompt_pack[0m=[35mshared_prefix[0m [36mscenario[0m=[35mprefix_sharing_benefit[0m
+
+  sglang prefix_sharing_benefit  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100/100 0:00:58
+[2m2026-04-19T03:16:17.824496Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_variance/llama-3-1-8b-instruct/prefix_sharing_benefit_sglang_1776568519.json[0m
+  ✓ DONE in 58s  — saved to prefix_sharing_benefit_sglang_1776568519.json
+  Progress: 9 completed, 0 skipped, 11 remaining  — total elapsed 9m 07s
+────────────────────────────────── Step 10/20 ──────────────────────────────────
+  Scenario  : prefix_sharing_benefit
+  Engine    : sglang
+  Iteration : 5/5
+  Model     : meta-llama/Llama-3.1-8B-Instruct
+  GPU VRAM  : 20435 MiB / 23028 MiB (89%)
+  ETA       : ~9m 19s
+[2m2026-04-19T03:16:28.868720Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mSGLangClient[0m [36mprompt_pack[0m=[35mshared_prefix[0m [36mscenario[0m=[35mprefix_sharing_benefit[0m
+
+  sglang prefix_sharing_benefit  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100/100 0:00:58
+[2m2026-04-19T03:17:27.517782Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_variance/llama-3-1-8b-instruct/prefix_sharing_benefit_sglang_1776568588.json[0m
+  ✓ DONE in 58s  — saved to prefix_sharing_benefit_sglang_1776568588.json
+  Progress: 10 completed, 0 skipped, 10 remaining  — total elapsed 10m 17s
+────────────────────────────────── Step 11/20 ──────────────────────────────────
+  Scenario  : structured_generation_speed
+  Engine    : sglang
+  Iteration : 1/5
+  Model     : meta-llama/Llama-3.1-8B-Instruct
+  GPU VRAM  : 20435 MiB / 23028 MiB (89%)
+  ETA       : ~8m 36s
+[2m2026-04-19T03:17:38.560230Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mSGLangClient[0m [36mprompt_pack[0m=[35mstructured_json[0m [36mscenario[0m=[35mstructured_generation_speed[0m
+
+  sglang structured_generation_speed  ━━━━━━━━━━━━━━━━━━━━━━━━━━ 200/200 0:01:11
+[2m2026-04-19T03:18:50.368953Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_variance/llama-3-1-8b-instruct/structured_generation_speed_sglang_1776568658.json[0m
+  ✓ DONE in 1m 11s  — saved to 
+structured_generation_speed_sglang_1776568658.json
+  Progress: 11 completed, 0 skipped, 9 remaining  — total elapsed 11m 40s
+────────────────────────────────── Step 12/20 ──────────────────────────────────
+  Scenario  : structured_generation_speed
+  Engine    : sglang
+  Iteration : 2/5
+  Model     : meta-llama/Llama-3.1-8B-Instruct
+  GPU VRAM  : 20435 MiB / 23028 MiB (89%)
+  ETA       : ~8m 01s
+[2m2026-04-19T03:19:01.459054Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mSGLangClient[0m [36mprompt_pack[0m=[35mstructured_json[0m [36mscenario[0m=[35mstructured_generation_speed[0m
+
+  sglang structured_generation_speed  ━━━━━━━━━━━━━━━━━━━━━━━━━━ 200/200 0:01:11
+[2m2026-04-19T03:20:13.245504Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_variance/llama-3-1-8b-instruct/structured_generation_speed_sglang_1776568741.json[0m
+  ✓ DONE in 1m 11s  — saved to 
+structured_generation_speed_sglang_1776568741.json
+  Progress: 12 completed, 0 skipped, 8 remaining  — total elapsed 13m 02s
+────────────────────────────────── Step 13/20 ──────────────────────────────────
+  Scenario  : structured_generation_speed
+  Engine    : sglang
+  Iteration : 3/5
+  Model     : meta-llama/Llama-3.1-8B-Instruct
+  GPU VRAM  : 20435 MiB / 23028 MiB (89%)
+  ETA       : ~7m 20s
+[2m2026-04-19T03:20:24.290104Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mSGLangClient[0m [36mprompt_pack[0m=[35mstructured_json[0m [36mscenario[0m=[35mstructured_generation_speed[0m
+
+  sglang structured_generation_speed  ━━━━━━━━━━━━━━━━━━━━━━━━━━ 200/200 0:01:11
+[2m2026-04-19T03:21:36.041849Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_variance/llama-3-1-8b-instruct/structured_generation_speed_sglang_1776568824.json[0m
+  ✓ DONE in 1m 11s  — saved to 
+structured_generation_speed_sglang_1776568824.json
+  Progress: 13 completed, 0 skipped, 7 remaining  — total elapsed 14m 25s
+────────────────────────────────── Step 14/20 ──────────────────────────────────
+  Scenario  : structured_generation_speed
+  Engine    : sglang
+  Iteration : 4/5
+  Model     : meta-llama/Llama-3.1-8B-Instruct
+  GPU VRAM  : 20435 MiB / 23028 MiB (89%)
+  ETA       : ~6m 34s
+[2m2026-04-19T03:21:47.154625Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mSGLangClient[0m [36mprompt_pack[0m=[35mstructured_json[0m [36mscenario[0m=[35mstructured_generation_speed[0m
+
+  sglang structured_generation_speed  ━━━━━━━━━━━━━━━━━━━━━━━━━━ 200/200 0:01:11
+[2m2026-04-19T03:22:58.939089Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_variance/llama-3-1-8b-instruct/structured_generation_speed_sglang_1776568907.json[0m
+  ✓ DONE in 1m 11s  — saved to 
+structured_generation_speed_sglang_1776568907.json
+  Progress: 14 completed, 0 skipped, 6 remaining  — total elapsed 15m 48s
+────────────────────────────────── Step 15/20 ──────────────────────────────────
+  Scenario  : structured_generation_speed
+  Engine    : sglang
+  Iteration : 5/5
+  Model     : meta-llama/Llama-3.1-8B-Instruct
+  GPU VRAM  : 20435 MiB / 23028 MiB (89%)
+  ETA       : ~5m 44s
+[2m2026-04-19T03:23:09.979504Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mSGLangClient[0m [36mprompt_pack[0m=[35mstructured_json[0m [36mscenario[0m=[35mstructured_generation_speed[0m
+
+  sglang structured_generation_speed  ━━━━━━━━━━━━━━━━━━━━━━━━━━ 200/200 0:01:11
+[2m2026-04-19T03:24:21.785990Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_variance/llama-3-1-8b-instruct/structured_generation_speed_sglang_1776568989.json[0m
+  ✓ DONE in 1m 11s  — saved to 
+structured_generation_speed_sglang_1776568989.json
+  Progress: 15 completed, 0 skipped, 5 remaining  — total elapsed 17m 11s
+────────────────────────────────── Step 16/20 ──────────────────────────────────
+  Scenario  : throughput_ramp
+  Engine    : sglang
+  Iteration : 1/5
+  Model     : meta-llama/Llama-3.1-8B-Instruct
+  GPU VRAM  : 20435 MiB / 23028 MiB (89%)
+  ETA       : ~4m 51s
+[2m2026-04-19T03:24:32.821689Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mSGLangClient[0m [36mprompt_pack[0m=[35mlong_generation[0m [36mscenario[0m=[35mthroughput_ramp[0m
+[2m2026-04-19T03:24:32.822504Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m1[0m
+[2m2026-04-19T03:38:40.164564Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m2[0m
+[2m2026-04-19T03:46:04.063749Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m4[0m
+[2m2026-04-19T03:49:47.180363Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m8[0m
+[2m2026-04-19T03:51:44.309215Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m16[0m
+[2m2026-04-19T03:52:49.895114Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m32[0m
+[2m2026-04-19T03:53:28.404068Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m64[0m
+
+  sglang throughput_ramp  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 700/700 0:29:16
+[2m2026-04-19T03:53:49.311403Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_variance/llama-3-1-8b-instruct/throughput_ramp_sglang_1776569072.json[0m
+  ✓ DONE in 29m 16s  — saved to throughput_ramp_sglang_1776569072.json
+  Progress: 16 completed, 0 skipped, 4 remaining  — total elapsed 46m 38s
+────────────────────────────────── Step 17/20 ──────────────────────────────────
+  Scenario  : throughput_ramp
+  Engine    : sglang
+  Iteration : 2/5
+  Model     : meta-llama/Llama-3.1-8B-Instruct
+  GPU VRAM  : 20563 MiB / 23028 MiB (89%)
+  ETA       : ~10m 58s
+[2m2026-04-19T03:54:00.356660Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mSGLangClient[0m [36mprompt_pack[0m=[35mlong_generation[0m [36mscenario[0m=[35mthroughput_ramp[0m
+[2m2026-04-19T03:54:00.357028Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m1[0m
+[2m2026-04-19T04:08:07.708884Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m2[0m
+[2m2026-04-19T04:15:31.585711Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m4[0m
+[2m2026-04-19T04:19:14.686951Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m8[0m
+[2m2026-04-19T04:21:11.806150Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m16[0m
+[2m2026-04-19T04:22:17.452014Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m32[0m
+[2m2026-04-19T04:22:56.393889Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m64[0m
+
+  sglang throughput_ramp  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 700/700 0:29:16
+[2m2026-04-19T04:23:17.319708Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_variance/llama-3-1-8b-instruct/throughput_ramp_sglang_1776570840.json[0m
+  ✓ DONE in 29m 16s  — saved to throughput_ramp_sglang_1776570840.json
+  Progress: 17 completed, 0 skipped, 3 remaining  — total elapsed 1h 16m 06s
+────────────────────────────────── Step 18/20 ──────────────────────────────────
+  Scenario  : throughput_ramp
+  Engine    : sglang
+  Iteration : 3/5
+  Model     : meta-llama/Llama-3.1-8B-Instruct
+  GPU VRAM  : 20563 MiB / 23028 MiB (89%)
+  ETA       : ~12m 54s
+[2m2026-04-19T04:23:28.358467Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mSGLangClient[0m [36mprompt_pack[0m=[35mlong_generation[0m [36mscenario[0m=[35mthroughput_ramp[0m
+[2m2026-04-19T04:23:28.358807Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m1[0m
+[2m2026-04-19T04:37:35.597042Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m2[0m
+[2m2026-04-19T04:44:59.446404Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m4[0m
+[2m2026-04-19T04:48:42.541393Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m8[0m
+[2m2026-04-19T04:50:39.654671Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m16[0m
+[2m2026-04-19T04:51:45.331262Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m32[0m
+[2m2026-04-19T04:52:23.881675Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m64[0m
+
+  sglang throughput_ramp  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 700/700 0:29:16
+[2m2026-04-19T04:52:44.744990Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_variance/llama-3-1-8b-instruct/throughput_ramp_sglang_1776572608.json[0m
+  ✓ DONE in 29m 16s  — saved to throughput_ramp_sglang_1776572608.json
+  Progress: 18 completed, 0 skipped, 2 remaining  — total elapsed 1h 45m 34s
+────────────────────────────────── Step 19/20 ──────────────────────────────────
+  Scenario  : throughput_ramp
+  Engine    : sglang
+  Iteration : 4/5
+  Model     : meta-llama/Llama-3.1-8B-Instruct
+  GPU VRAM  : 20563 MiB / 23028 MiB (89%)
+  ETA       : ~11m 22s
+[2m2026-04-19T04:52:55.786777Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mSGLangClient[0m [36mprompt_pack[0m=[35mlong_generation[0m [36mscenario[0m=[35mthroughput_ramp[0m
+[2m2026-04-19T04:52:55.787099Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m1[0m
+[2m2026-04-19T05:07:03.017295Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m2[0m
+[2m2026-04-19T05:14:26.913594Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m4[0m
+[2m2026-04-19T05:18:10.039248Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m8[0m
+[2m2026-04-19T05:20:07.173698Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m16[0m
+[2m2026-04-19T05:21:12.825404Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m32[0m
+[2m2026-04-19T05:21:51.435878Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m64[0m
+
+  sglang throughput_ramp  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 700/700 0:29:16
+[2m2026-04-19T05:22:12.332686Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_variance/llama-3-1-8b-instruct/throughput_ramp_sglang_1776574375.json[0m
+  ✓ DONE in 29m 16s  — saved to throughput_ramp_sglang_1776574375.json
+  Progress: 19 completed, 0 skipped, 1 remaining  — total elapsed 2h 15m 01s
+────────────────────────────────── Step 20/20 ──────────────────────────────────
+  Scenario  : throughput_ramp
+  Engine    : sglang
+  Iteration : 5/5
+  Model     : meta-llama/Llama-3.1-8B-Instruct
+  GPU VRAM  : 20563 MiB / 23028 MiB (89%)
+  ETA       : ~6m 55s
+[2m2026-04-19T05:22:23.375190Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mSGLangClient[0m [36mprompt_pack[0m=[35mlong_generation[0m [36mscenario[0m=[35mthroughput_ramp[0m
+[2m2026-04-19T05:22:23.375561Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m1[0m
+[2m2026-04-19T05:36:30.719733Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m2[0m
+[2m2026-04-19T05:43:54.623499Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m4[0m
+[2m2026-04-19T05:47:37.749634Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m8[0m
+[2m2026-04-19T05:49:34.878916Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m16[0m
+[2m2026-04-19T05:50:40.477041Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m32[0m
+[2m2026-04-19T05:51:18.995299Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m64[0m
+
+  sglang throughput_ramp  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 700/700 0:29:16
+[2m2026-04-19T05:51:39.868057Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_variance/llama-3-1-8b-instruct/throughput_ramp_sglang_1776576143.json[0m
+  ✓ DONE in 29m 16s  — saved to throughput_ramp_sglang_1776576143.json
+  Progress: 20 completed, 0 skipped, 0 remaining  — total elapsed 2h 44m 29s
+─────────────────────────────── Matrix complete ────────────────────────────────
+  Total time: 2h 44m 39s
+
+                             Matrix Results Summary                             
+┏━━━━━━━━━━━━━━━━━━━┳━━━━━━━━┳━━━━━━┳━━━━━━━━━━━┳━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━┓
+┃ Scenario          ┃ Engine ┃ Iter ┃  Status   ┃ Duration ┃ Output File       ┃
+┡━━━━━━━━━━━━━━━━━━━╇━━━━━━━━╇━━━━━━╇━━━━━━━━━━━╇━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━┩
+│ long_context_str… │ sglang │  1   │ completed │      44s │ long_context_str… │
+│ long_context_str… │ sglang │  2   │ completed │      44s │ long_context_str… │
+│ long_context_str… │ sglang │  3   │ completed │      44s │ long_context_str… │
+│ long_context_str… │ sglang │  4   │ completed │      44s │ long_context_str… │
+│ long_context_str… │ sglang │  5   │ completed │      44s │ long_context_str… │
+│ prefix_sharing_b… │ sglang │  1   │ completed │      58s │ prefix_sharing_b… │
+│ prefix_sharing_b… │ sglang │  2   │ completed │      58s │ prefix_sharing_b… │
+│ prefix_sharing_b… │ sglang │  3   │ completed │      58s │ prefix_sharing_b… │
+│ prefix_sharing_b… │ sglang │  4   │ completed │      58s │ prefix_sharing_b… │
+│ prefix_sharing_b… │ sglang │  5   │ completed │      58s │ prefix_sharing_b… │
+│ structured_gener… │ sglang │  1   │ completed │   1m 11s │ structured_gener… │
+│ structured_gener… │ sglang │  2   │ completed │   1m 11s │ structured_gener… │
+│ structured_gener… │ sglang │  3   │ completed │   1m 11s │ structured_gener… │
+│ structured_gener… │ sglang │  4   │ completed │   1m 11s │ structured_gener… │
+│ structured_gener… │ sglang │  5   │ completed │   1m 11s │ structured_gener… │
+│ throughput_ramp   │ sglang │  1   │ completed │  29m 16s │ throughput_ramp_… │
+│ throughput_ramp   │ sglang │  2   │ completed │  29m 16s │ throughput_ramp_… │
+│ throughput_ramp   │ sglang │  3   │ completed │  29m 16s │ throughput_ramp_… │
+│ throughput_ramp   │ sglang │  4   │ completed │  29m 16s │ throughput_ramp_… │
+│ throughput_ramp   │ sglang │  5   │ completed │  29m 16s │ throughput_ramp_… │
+└───────────────────┴────────┴──────┴───────────┴──────────┴───────────────────┘
+✓ Matrix manifest saved to 
+results_variance/llama-3-1-8b-instruct/matrix_manifest_1776568030.json
+bench-sglang
+
+========================================================================
+[2026-04-19 05:51:56] vLLM — google/gemma-3-4b-it
+========================================================================
+cf0316a79757812c5bb3e9ed603758866d60a173eb59c01a28a39e31b703f4f8
+  Waiting for vLLM health....................... ready (115s)
+─────────────────────────────── Matrix execution ───────────────────────────────
+  Model          : google/gemma-3-4b-it
+  Scenarios      : single_request_latency, throughput_ramp, long_context_stress,
+prefix_sharing_benefit, structured_generation_speed
+  Engines        : vllm
+  Iterations     : 5
+  Cooldown (sec) : 10
+────────────────────────────────── Step 1/25 ───────────────────────────────────
+  Scenario  : single_request_latency
+  Engine    : vllm
+  Iteration : 1/5
+  Model     : google/gemma-3-4b-it
+  GPU VRAM  : 19649 MiB / 23028 MiB (85%)
+[2m2026-04-19T05:53:59.280164Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mVLLMClient[0m [36mprompt_pack[0m=[35mshort_chat[0m [36mscenario[0m=[35msingle_request_latency[0m
+
+  vllm single_request_latency  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 50/50 0:04:05
+[2m2026-04-19T05:58:04.405488Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_variance/gemma-3-4b-it/single_request_latency_vllm_1776578039.json[0m
+  ✓ DONE in 4m 05s  — saved to single_request_latency_vllm_1776578039.json
+  Progress: 1 completed, 0 skipped, 24 remaining  — total elapsed 4m 05s
+────────────────────────────────── Step 2/25 ───────────────────────────────────
+  Scenario  : single_request_latency
+  Engine    : vllm
+  Iteration : 2/5
+  Model     : google/gemma-3-4b-it
+  GPU VRAM  : 19649 MiB / 23028 MiB (85%)
+  ETA       : ~1h 38m 03s
+[2m2026-04-19T05:58:14.447913Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mVLLMClient[0m [36mprompt_pack[0m=[35mshort_chat[0m [36mscenario[0m=[35msingle_request_latency[0m
+
+  vllm single_request_latency  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 50/50 0:03:58
+[2m2026-04-19T06:02:13.260206Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_variance/gemma-3-4b-it/single_request_latency_vllm_1776578294.json[0m
+  ✓ DONE in 3m 58s  — saved to single_request_latency_vllm_1776578294.json
+  Progress: 2 completed, 0 skipped, 23 remaining  — total elapsed 8m 14s
+────────────────────────────────── Step 3/25 ───────────────────────────────────
+  Scenario  : single_request_latency
+  Engine    : vllm
+  Iteration : 3/5
+  Model     : google/gemma-3-4b-it
+  GPU VRAM  : 19649 MiB / 23028 MiB (85%)
+  ETA       : ~1h 32m 45s
+[2m2026-04-19T06:02:23.300972Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mVLLMClient[0m [36mprompt_pack[0m=[35mshort_chat[0m [36mscenario[0m=[35msingle_request_latency[0m
+
+  vllm single_request_latency  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 50/50 0:03:59
+[2m2026-04-19T06:06:22.863139Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_variance/gemma-3-4b-it/single_request_latency_vllm_1776578543.json[0m
+  ✓ DONE in 3m 59s  — saved to single_request_latency_vllm_1776578543.json
+  Progress: 3 completed, 0 skipped, 22 remaining  — total elapsed 12m 23s
+────────────────────────────────── Step 4/25 ───────────────────────────────────
+  Scenario  : single_request_latency
+  Engine    : vllm
+  Iteration : 4/5
+  Model     : google/gemma-3-4b-it
+  GPU VRAM  : 19649 MiB / 23028 MiB (85%)
+  ETA       : ~1h 28m 25s
+[2m2026-04-19T06:06:32.906493Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mVLLMClient[0m [36mprompt_pack[0m=[35mshort_chat[0m [36mscenario[0m=[35msingle_request_latency[0m
+
+  vllm single_request_latency  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 50/50 0:03:58
+[2m2026-04-19T06:10:31.094211Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_variance/gemma-3-4b-it/single_request_latency_vllm_1776578792.json[0m
+  ✓ DONE in 3m 58s  — saved to single_request_latency_vllm_1776578792.json
+  Progress: 4 completed, 0 skipped, 21 remaining  — total elapsed 16m 31s
+────────────────────────────────── Step 5/25 ───────────────────────────────────
+  Scenario  : single_request_latency
+  Engine    : vllm
+  Iteration : 5/5
+  Model     : google/gemma-3-4b-it
+  GPU VRAM  : 19649 MiB / 23028 MiB (85%)
+  ETA       : ~1h 24m 08s
+[2m2026-04-19T06:10:41.136081Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mVLLMClient[0m [36mprompt_pack[0m=[35mshort_chat[0m [36mscenario[0m=[35msingle_request_latency[0m
+
+  vllm single_request_latency  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 50/50 0:03:58
+[2m2026-04-19T06:14:39.843857Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_variance/gemma-3-4b-it/single_request_latency_vllm_1776579041.json[0m
+  ✓ DONE in 3m 58s  — saved to single_request_latency_vllm_1776579041.json
+  Progress: 5 completed, 0 skipped, 20 remaining  — total elapsed 20m 40s
+────────────────────────────────── Step 6/25 ───────────────────────────────────
+  Scenario  : throughput_ramp
+  Engine    : vllm
+  Iteration : 1/5
+  Model     : google/gemma-3-4b-it
+  GPU VRAM  : 19649 MiB / 23028 MiB (85%)
+  ETA       : ~1h 20m 01s
+[2m2026-04-19T06:14:49.882813Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mVLLMClient[0m [36mprompt_pack[0m=[35mlong_generation[0m [36mscenario[0m=[35mthroughput_ramp[0m
+[2m2026-04-19T06:14:49.883142Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m1[0m
+[2m2026-04-19T06:32:17.191603Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m2[0m
+[2m2026-04-19T06:41:15.965258Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m4[0m
+[2m2026-04-19T06:45:45.994983Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m8[0m
+[2m2026-04-19T06:48:06.523237Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m16[0m
+[2m2026-04-19T06:49:26.529253Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m32[0m
+[2m2026-04-19T06:50:11.304790Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m64[0m
+
+  vllm throughput_ramp  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 700/700 0:35:43
+[2m2026-04-19T06:50:33.693891Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_variance/gemma-3-4b-it/throughput_ramp_vllm_1776579289.json[0m
+  ✓ DONE in 35m 43s  — saved to throughput_ramp_vllm_1776579289.json
+  Progress: 6 completed, 0 skipped, 19 remaining  — total elapsed 56m 34s
+────────────────────────────────── Step 7/25 ───────────────────────────────────
+  Scenario  : throughput_ramp
+  Engine    : vllm
+  Iteration : 2/5
+  Model     : google/gemma-3-4b-it
+  GPU VRAM  : 19655 MiB / 23028 MiB (85%)
+  ETA       : ~2h 56m 29s
+[2m2026-04-19T06:50:43.733188Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mVLLMClient[0m [36mprompt_pack[0m=[35mlong_generation[0m [36mscenario[0m=[35mthroughput_ramp[0m
+[2m2026-04-19T06:50:43.733528Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m1[0m
+[2m2026-04-19T07:08:21.515672Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m2[0m
+[2m2026-04-19T07:17:19.636649Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m4[0m
+[2m2026-04-19T07:21:49.363007Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m8[0m
+[2m2026-04-19T07:24:10.291840Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m16[0m
+[2m2026-04-19T07:25:27.690216Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m32[0m
+[2m2026-04-19T07:26:12.763632Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m64[0m
+
+  vllm throughput_ramp  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 700/700 0:35:51
+[2m2026-04-19T07:26:35.294110Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_variance/gemma-3-4b-it/throughput_ramp_vllm_1776581443.json[0m
+  ✓ DONE in 35m 51s  — saved to throughput_ramp_vllm_1776581443.json
+  Progress: 7 completed, 0 skipped, 18 remaining  — total elapsed 1h 32m 36s
+────────────────────────────────── Step 8/25 ───────────────────────────────────
+  Scenario  : throughput_ramp
+  Engine    : vllm
+  Iteration : 3/5
+  Model     : google/gemma-3-4b-it
+  GPU VRAM  : 19655 MiB / 23028 MiB (85%)
+  ETA       : ~3h 55m 31s
+[2m2026-04-19T07:26:45.338052Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mVLLMClient[0m [36mprompt_pack[0m=[35mlong_generation[0m [36mscenario[0m=[35mthroughput_ramp[0m
+[2m2026-04-19T07:26:45.338394Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m1[0m
+[2m2026-04-19T07:44:19.401685Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m2[0m
+[2m2026-04-19T07:53:16.808178Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m4[0m
+[2m2026-04-19T07:57:47.205677Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m8[0m
+[2m2026-04-19T08:00:08.814438Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m16[0m
+[2m2026-04-19T08:01:25.703689Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m32[0m
+[2m2026-04-19T08:02:10.851978Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m64[0m
+
+  vllm throughput_ramp  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 700/700 0:35:47
+[2m2026-04-19T08:02:33.119282Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_variance/gemma-3-4b-it/throughput_ramp_vllm_1776583605.json[0m
+  ✓ DONE in 35m 47s  — saved to throughput_ramp_vllm_1776583605.json
+  Progress: 8 completed, 0 skipped, 17 remaining  — total elapsed 2h 08m 33s
+────────────────────────────────── Step 9/25 ───────────────────────────────────
+  Scenario  : throughput_ramp
+  Engine    : vllm
+  Iteration : 4/5
+  Model     : google/gemma-3-4b-it
+  GPU VRAM  : 19655 MiB / 23028 MiB (85%)
+  ETA       : ~4h 30m 42s
+[2m2026-04-19T08:02:43.162752Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mVLLMClient[0m [36mprompt_pack[0m=[35mlong_generation[0m [36mscenario[0m=[35mthroughput_ramp[0m
+[2m2026-04-19T08:02:43.163058Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m1[0m
+[2m2026-04-19T08:20:13.793951Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m2[0m
+[2m2026-04-19T08:29:11.823688Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m4[0m
+[2m2026-04-19T08:33:41.896086Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m8[0m
+[2m2026-04-19T08:36:02.558225Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m16[0m
+[2m2026-04-19T08:37:19.776246Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m32[0m
+[2m2026-04-19T08:38:04.745620Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m64[0m
+
+  vllm throughput_ramp  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 700/700 0:35:43
+[2m2026-04-19T08:38:26.970626Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_variance/gemma-3-4b-it/throughput_ramp_vllm_1776585763.json[0m
+  ✓ DONE in 35m 43s  — saved to throughput_ramp_vllm_1776585763.json
+  Progress: 9 completed, 0 skipped, 16 remaining  — total elapsed 2h 44m 27s
+────────────────────────────────── Step 10/25 ──────────────────────────────────
+  Scenario  : throughput_ramp
+  Engine    : vllm
+  Iteration : 5/5
+  Model     : google/gemma-3-4b-it
+  GPU VRAM  : 19655 MiB / 23028 MiB (85%)
+  ETA       : ~4h 49m 59s
+[2m2026-04-19T08:38:37.012907Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mVLLMClient[0m [36mprompt_pack[0m=[35mlong_generation[0m [36mscenario[0m=[35mthroughput_ramp[0m
+[2m2026-04-19T08:38:37.013217Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m1[0m
+[2m2026-04-19T08:56:08.528175Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m2[0m
+[2m2026-04-19T09:05:05.411450Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m4[0m
+[2m2026-04-19T09:09:35.869787Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m8[0m
+[2m2026-04-19T09:11:56.830430Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m16[0m
+[2m2026-04-19T09:13:13.894141Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m32[0m
+[2m2026-04-19T09:13:58.866591Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m64[0m
+
+  vllm throughput_ramp  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 700/700 0:35:44
+[2m2026-04-19T09:14:21.410001Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_variance/gemma-3-4b-it/throughput_ramp_vllm_1776587917.json[0m
+  ✓ DONE in 35m 44s  — saved to throughput_ramp_vllm_1776587917.json
+  Progress: 10 completed, 0 skipped, 15 remaining  — total elapsed 3h 20m 22s
+────────────────────────────────── Step 11/25 ──────────────────────────────────
+  Scenario  : long_context_stress
+  Engine    : vllm
+  Iteration : 1/5
+  Model     : google/gemma-3-4b-it
+  GPU VRAM  : 19655 MiB / 23028 MiB (85%)
+  ETA       : ~4h 58m 17s
+[2m2026-04-19T09:14:31.445387Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mVLLMClient[0m [36mprompt_pack[0m=[35mlong_context[0m [36mscenario[0m=[35mlong_context_stress[0m
+
+  vllm long_context_stress  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 20/20 0:00:53
+[2m2026-04-19T09:15:25.154484Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_variance/gemma-3-4b-it/long_context_stress_vllm_1776590071.json[0m
+  ✓ DONE in 53s  — saved to long_context_stress_vllm_1776590071.json
+  Progress: 11 completed, 0 skipped, 14 remaining  — total elapsed 3h 21m 25s
+────────────────────────────────── Step 12/25 ──────────────────────────────────
+  Scenario  : long_context_stress
+  Engine    : vllm
+  Iteration : 2/5
+  Model     : google/gemma-3-4b-it
+  GPU VRAM  : 19655 MiB / 23028 MiB (85%)
+  ETA       : ~4h 14m 14s
+[2m2026-04-19T09:15:35.191527Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mVLLMClient[0m [36mprompt_pack[0m=[35mlong_context[0m [36mscenario[0m=[35mlong_context_stress[0m
+
+  vllm long_context_stress  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 20/20 0:00:54
+[2m2026-04-19T09:16:29.255865Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_variance/gemma-3-4b-it/long_context_stress_vllm_1776590135.json[0m
+  ✓ DONE in 54s  — saved to long_context_stress_vllm_1776590135.json
+  Progress: 12 completed, 0 skipped, 13 remaining  — total elapsed 3h 22m 30s
+────────────────────────────────── Step 13/25 ──────────────────────────────────
+  Scenario  : long_context_stress
+  Engine    : vllm
+  Iteration : 3/5
+  Model     : google/gemma-3-4b-it
+  GPU VRAM  : 19655 MiB / 23028 MiB (85%)
+  ETA       : ~3h 37m 22s
+[2m2026-04-19T09:16:39.291987Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mVLLMClient[0m [36mprompt_pack[0m=[35mlong_context[0m [36mscenario[0m=[35mlong_context_stress[0m
+
+  vllm long_context_stress  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 20/20 0:00:54
+[2m2026-04-19T09:17:33.505960Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_variance/gemma-3-4b-it/long_context_stress_vllm_1776590199.json[0m
+  ✓ DONE in 54s  — saved to long_context_stress_vllm_1776590199.json
+  Progress: 13 completed, 0 skipped, 12 remaining  — total elapsed 3h 23m 34s
+────────────────────────────────── Step 14/25 ──────────────────────────────────
+  Scenario  : long_context_stress
+  Engine    : vllm
+  Iteration : 4/5
+  Model     : google/gemma-3-4b-it
+  GPU VRAM  : 19655 MiB / 23028 MiB (85%)
+  ETA       : ~3h 06m 03s
+[2m2026-04-19T09:17:43.540957Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mVLLMClient[0m [36mprompt_pack[0m=[35mlong_context[0m [36mscenario[0m=[35mlong_context_stress[0m
+
+  vllm long_context_stress  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 20/20 0:00:54
+[2m2026-04-19T09:18:37.657949Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_variance/gemma-3-4b-it/long_context_stress_vllm_1776590263.json[0m
+  ✓ DONE in 54s  — saved to long_context_stress_vllm_1776590263.json
+  Progress: 14 completed, 0 skipped, 11 remaining  — total elapsed 3h 24m 38s
+────────────────────────────────── Step 15/25 ──────────────────────────────────
+  Scenario  : long_context_stress
+  Engine    : vllm
+  Iteration : 5/5
+  Model     : google/gemma-3-4b-it
+  GPU VRAM  : 19655 MiB / 23028 MiB (85%)
+  ETA       : ~2h 39m 04s
+[2m2026-04-19T09:18:47.698143Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mVLLMClient[0m [36mprompt_pack[0m=[35mlong_context[0m [36mscenario[0m=[35mlong_context_stress[0m
+
+  vllm long_context_stress  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 20/20 0:00:54
+[2m2026-04-19T09:19:42.256905Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_variance/gemma-3-4b-it/long_context_stress_vllm_1776590327.json[0m
+  ✓ DONE in 54s  — saved to long_context_stress_vllm_1776590327.json
+  Progress: 15 completed, 0 skipped, 10 remaining  — total elapsed 3h 25m 43s
+────────────────────────────────── Step 16/25 ──────────────────────────────────
+  Scenario  : prefix_sharing_benefit
+  Engine    : vllm
+  Iteration : 1/5
+  Model     : google/gemma-3-4b-it
+  GPU VRAM  : 19655 MiB / 23028 MiB (85%)
+  ETA       : ~2h 15m 34s
+[2m2026-04-19T09:19:52.294891Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mVLLMClient[0m [36mprompt_pack[0m=[35mshared_prefix[0m [36mscenario[0m=[35mprefix_sharing_benefit[0m
+
+  vllm prefix_sharing_benefit  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100/100 0:01:00
+[2m2026-04-19T09:20:52.357436Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_variance/gemma-3-4b-it/prefix_sharing_benefit_vllm_1776590392.json[0m
+  ✓ DONE in 1m 00s  — saved to prefix_sharing_benefit_vllm_1776590392.json
+  Progress: 16 completed, 0 skipped, 9 remaining  — total elapsed 3h 26m 53s
+────────────────────────────────── Step 17/25 ──────────────────────────────────
+  Scenario  : prefix_sharing_benefit
+  Engine    : vllm
+  Iteration : 2/5
+  Model     : google/gemma-3-4b-it
+  GPU VRAM  : 19655 MiB / 23028 MiB (85%)
+  ETA       : ~1h 54m 57s
+[2m2026-04-19T09:21:02.399361Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mVLLMClient[0m [36mprompt_pack[0m=[35mshared_prefix[0m [36mscenario[0m=[35mprefix_sharing_benefit[0m
+
+  vllm prefix_sharing_benefit  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100/100 0:01:01
+[2m2026-04-19T09:22:03.667955Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_variance/gemma-3-4b-it/prefix_sharing_benefit_vllm_1776590462.json[0m
+  ✓ DONE in 1m 01s  — saved to prefix_sharing_benefit_vllm_1776590462.json
+  Progress: 17 completed, 0 skipped, 8 remaining  — total elapsed 3h 28m 04s
+────────────────────────────────── Step 18/25 ──────────────────────────────────
+  Scenario  : prefix_sharing_benefit
+  Engine    : vllm
+  Iteration : 3/5
+  Model     : google/gemma-3-4b-it
+  GPU VRAM  : 19655 MiB / 23028 MiB (85%)
+  ETA       : ~1h 36m 39s
+[2m2026-04-19T09:22:13.704437Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mVLLMClient[0m [36mprompt_pack[0m=[35mshared_prefix[0m [36mscenario[0m=[35mprefix_sharing_benefit[0m
+
+  vllm prefix_sharing_benefit  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100/100 0:01:00
+[2m2026-04-19T09:23:13.819215Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_variance/gemma-3-4b-it/prefix_sharing_benefit_vllm_1776590533.json[0m
+  ✓ DONE in 1m 00s  — saved to prefix_sharing_benefit_vllm_1776590533.json
+  Progress: 18 completed, 0 skipped, 7 remaining  — total elapsed 3h 29m 14s
+────────────────────────────────── Step 19/25 ──────────────────────────────────
+  Scenario  : prefix_sharing_benefit
+  Engine    : vllm
+  Iteration : 4/5
+  Model     : google/gemma-3-4b-it
+  GPU VRAM  : 19655 MiB / 23028 MiB (85%)
+  ETA       : ~1h 20m 15s
+[2m2026-04-19T09:23:23.857499Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mVLLMClient[0m [36mprompt_pack[0m=[35mshared_prefix[0m [36mscenario[0m=[35mprefix_sharing_benefit[0m
+
+  vllm prefix_sharing_benefit  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100/100 0:01:00
+[2m2026-04-19T09:24:23.990303Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_variance/gemma-3-4b-it/prefix_sharing_benefit_vllm_1776590603.json[0m
+  ✓ DONE in 1m 00s  — saved to prefix_sharing_benefit_vllm_1776590603.json
+  Progress: 19 completed, 0 skipped, 6 remaining  — total elapsed 3h 30m 24s
+────────────────────────────────── Step 20/25 ──────────────────────────────────
+  Scenario  : prefix_sharing_benefit
+  Engine    : vllm
+  Iteration : 5/5
+  Model     : google/gemma-3-4b-it
+  GPU VRAM  : 19655 MiB / 23028 MiB (85%)
+  ETA       : ~1h 05m 29s
+[2m2026-04-19T09:24:34.030209Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mVLLMClient[0m [36mprompt_pack[0m=[35mshared_prefix[0m [36mscenario[0m=[35mprefix_sharing_benefit[0m
+
+  vllm prefix_sharing_benefit  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100/100 0:01:00
+[2m2026-04-19T09:25:35.000788Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_variance/gemma-3-4b-it/prefix_sharing_benefit_vllm_1776590674.json[0m
+  ✓ DONE in 1m 00s  — saved to prefix_sharing_benefit_vllm_1776590674.json
+  Progress: 20 completed, 0 skipped, 5 remaining  — total elapsed 3h 31m 35s
+────────────────────────────────── Step 21/25 ──────────────────────────────────
+  Scenario  : structured_generation_speed
+  Engine    : vllm
+  Iteration : 1/5
+  Model     : google/gemma-3-4b-it
+  GPU VRAM  : 19655 MiB / 23028 MiB (85%)
+  ETA       : ~52m 06s
+[2m2026-04-19T09:25:45.041701Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mVLLMClient[0m [36mprompt_pack[0m=[35mstructured_json[0m [36mscenario[0m=[35mstructured_generation_speed[0m
+
+  vllm structured_generation_speed  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 200/200 0:00:45
+[2m2026-04-19T09:26:30.168931Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_variance/gemma-3-4b-it/structured_generation_speed_vllm_1776590745.json[0m
+  ✓ DONE in 45s  — saved to structured_generation_speed_vllm_1776590745.json
+  Progress: 21 completed, 0 skipped, 4 remaining  — total elapsed 3h 32m 30s
+────────────────────────────────── Step 22/25 ──────────────────────────────────
+  Scenario  : structured_generation_speed
+  Engine    : vllm
+  Iteration : 2/5
+  Model     : google/gemma-3-4b-it
+  GPU VRAM  : 19655 MiB / 23028 MiB (85%)
+  ETA       : ~39m 50s
+[2m2026-04-19T09:26:40.206832Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mVLLMClient[0m [36mprompt_pack[0m=[35mstructured_json[0m [36mscenario[0m=[35mstructured_generation_speed[0m
+
+  vllm structured_generation_speed  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 200/200 0:00:45
+[2m2026-04-19T09:27:25.724609Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_variance/gemma-3-4b-it/structured_generation_speed_vllm_1776590800.json[0m
+  ✓ DONE in 45s  — saved to structured_generation_speed_vllm_1776590800.json
+  Progress: 22 completed, 0 skipped, 3 remaining  — total elapsed 3h 33m 26s
+────────────────────────────────── Step 23/25 ──────────────────────────────────
+  Scenario  : structured_generation_speed
+  Engine    : vllm
+  Iteration : 3/5
+  Model     : google/gemma-3-4b-it
+  GPU VRAM  : 19655 MiB / 23028 MiB (85%)
+  ETA       : ~28m 37s
+[2m2026-04-19T09:27:35.761524Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mVLLMClient[0m [36mprompt_pack[0m=[35mstructured_json[0m [36mscenario[0m=[35mstructured_generation_speed[0m
+
+  vllm structured_generation_speed  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 200/200 0:00:46
+[2m2026-04-19T09:28:21.856630Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_variance/gemma-3-4b-it/structured_generation_speed_vllm_1776590855.json[0m
+  ✓ DONE in 46s  — saved to structured_generation_speed_vllm_1776590855.json
+  Progress: 23 completed, 0 skipped, 2 remaining  — total elapsed 3h 34m 22s
+────────────────────────────────── Step 24/25 ──────────────────────────────────
+  Scenario  : structured_generation_speed
+  Engine    : vllm
+  Iteration : 4/5
+  Model     : google/gemma-3-4b-it
+  GPU VRAM  : 19655 MiB / 23028 MiB (85%)
+  ETA       : ~18m 19s
+[2m2026-04-19T09:28:31.894011Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mVLLMClient[0m [36mprompt_pack[0m=[35mstructured_json[0m [36mscenario[0m=[35mstructured_generation_speed[0m
+
+  vllm structured_generation_speed  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 200/200 0:00:45
+[2m2026-04-19T09:29:17.346437Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_variance/gemma-3-4b-it/structured_generation_speed_vllm_1776590911.json[0m
+  ✓ DONE in 45s  — saved to structured_generation_speed_vllm_1776590911.json
+  Progress: 24 completed, 0 skipped, 1 remaining  — total elapsed 3h 35m 18s
+────────────────────────────────── Step 25/25 ──────────────────────────────────
+  Scenario  : structured_generation_speed
+  Engine    : vllm
+  Iteration : 5/5
+  Model     : google/gemma-3-4b-it
+  GPU VRAM  : 19655 MiB / 23028 MiB (85%)
+  ETA       : ~8m 48s
+[2m2026-04-19T09:29:27.389623Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mVLLMClient[0m [36mprompt_pack[0m=[35mstructured_json[0m [36mscenario[0m=[35mstructured_generation_speed[0m
+
+  vllm structured_generation_speed  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 200/200 0:00:44
+[2m2026-04-19T09:30:12.261590Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_variance/gemma-3-4b-it/structured_generation_speed_vllm_1776590967.json[0m
+  ✓ DONE in 44s  — saved to structured_generation_speed_vllm_1776590967.json
+  Progress: 25 completed, 0 skipped, 0 remaining  — total elapsed 3h 36m 13s
+─────────────────────────────── Matrix complete ────────────────────────────────
+  Total time: 3h 36m 23s
+
+                             Matrix Results Summary                             
+┏━━━━━━━━━━━━━━━━━━━┳━━━━━━━━┳━━━━━━┳━━━━━━━━━━━┳━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━┓
+┃ Scenario          ┃ Engine ┃ Iter ┃  Status   ┃ Duration ┃ Output File       ┃
+┡━━━━━━━━━━━━━━━━━━━╇━━━━━━━━╇━━━━━━╇━━━━━━━━━━━╇━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━┩
+│ single_request_l… │ vllm   │  1   │ completed │   4m 05s │ single_request_l… │
+│ single_request_l… │ vllm   │  2   │ completed │   3m 58s │ single_request_l… │
+│ single_request_l… │ vllm   │  3   │ completed │   3m 59s │ single_request_l… │
+│ single_request_l… │ vllm   │  4   │ completed │   3m 58s │ single_request_l… │
+│ single_request_l… │ vllm   │  5   │ completed │   3m 58s │ single_request_l… │
+│ throughput_ramp   │ vllm   │  1   │ completed │  35m 43s │ throughput_ramp_… │
+│ throughput_ramp   │ vllm   │  2   │ completed │  35m 51s │ throughput_ramp_… │
+│ throughput_ramp   │ vllm   │  3   │ completed │  35m 47s │ throughput_ramp_… │
+│ throughput_ramp   │ vllm   │  4   │ completed │  35m 43s │ throughput_ramp_… │
+│ throughput_ramp   │ vllm   │  5   │ completed │  35m 44s │ throughput_ramp_… │
+│ long_context_str… │ vllm   │  1   │ completed │      53s │ long_context_str… │
+│ long_context_str… │ vllm   │  2   │ completed │      54s │ long_context_str… │
+│ long_context_str… │ vllm   │  3   │ completed │      54s │ long_context_str… │
+│ long_context_str… │ vllm   │  4   │ completed │      54s │ long_context_str… │
+│ long_context_str… │ vllm   │  5   │ completed │      54s │ long_context_str… │
+│ prefix_sharing_b… │ vllm   │  1   │ completed │   1m 00s │ prefix_sharing_b… │
+│ prefix_sharing_b… │ vllm   │  2   │ completed │   1m 01s │ prefix_sharing_b… │
+│ prefix_sharing_b… │ vllm   │  3   │ completed │   1m 00s │ prefix_sharing_b… │
+│ prefix_sharing_b… │ vllm   │  4   │ completed │   1m 00s │ prefix_sharing_b… │
+│ prefix_sharing_b… │ vllm   │  5   │ completed │   1m 00s │ prefix_sharing_b… │
+│ structured_gener… │ vllm   │  1   │ completed │      45s │ structured_gener… │
+│ structured_gener… │ vllm   │  2   │ completed │      45s │ structured_gener… │
+│ structured_gener… │ vllm   │  3   │ completed │      46s │ structured_gener… │
+│ structured_gener… │ vllm   │  4   │ completed │      45s │ structured_gener… │
+│ structured_gener… │ vllm   │  5   │ completed │      44s │ structured_gener… │
+└───────────────────┴────────┴──────┴───────────┴──────────┴───────────────────┘
+✓ Matrix manifest saved to 
+results_variance/gemma-3-4b-it/matrix_manifest_1776578039.json
+bench-vllm
+
+========================================================================
+[2026-04-19 09:30:27] SGLang — google/gemma-3-4b-it
+========================================================================
+1e2d4b8491503ee2072dfca348f09dd6bb4ade6c592aee306bc3589c626a748d
+  Waiting for SGLang health.............. ready (70s)
+─────────────────────────────── Matrix execution ───────────────────────────────
+  Model          : google/gemma-3-4b-it
+  Scenarios      : single_request_latency, throughput_ramp, long_context_stress,
+prefix_sharing_benefit, structured_generation_speed
+  Engines        : sglang
+  Iterations     : 5
+  Cooldown (sec) : 10
+────────────────────────────────── Step 1/25 ───────────────────────────────────
+  Scenario  : single_request_latency
+  Engine    : sglang
+  Iteration : 1/5
+  Model     : google/gemma-3-4b-it
+  GPU VRAM  : 20287 MiB / 23028 MiB (88%)
+[2m2026-04-19T09:31:48.528224Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mSGLangClient[0m [36mprompt_pack[0m=[35mshort_chat[0m [36mscenario[0m=[35msingle_request_latency[0m
+
+  sglang single_request_latency  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 50/50 0:02:05
+[2m2026-04-19T09:33:54.503051Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_variance/gemma-3-4b-it/single_request_latency_sglang_1776591108.json[0m
+  ✓ DONE in 2m 05s  — saved to single_request_latency_sglang_1776591108.json
+  Progress: 1 completed, 0 skipped, 24 remaining  — total elapsed 2m 07s
+────────────────────────────────── Step 2/25 ───────────────────────────────────
+  Scenario  : single_request_latency
+  Engine    : sglang
+  Iteration : 2/5
+  Model     : google/gemma-3-4b-it
+  GPU VRAM  : 20287 MiB / 23028 MiB (88%)
+  ETA       : ~50m 23s
+[2m2026-04-19T09:34:05.545251Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mSGLangClient[0m [36mprompt_pack[0m=[35mshort_chat[0m [36mscenario[0m=[35msingle_request_latency[0m
+
+  sglang single_request_latency  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 50/50 0:02:05
+[2m2026-04-19T09:36:11.453030Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_variance/gemma-3-4b-it/single_request_latency_sglang_1776591245.json[0m
+  ✓ DONE in 2m 05s  — saved to single_request_latency_sglang_1776591245.json
+  Progress: 2 completed, 0 skipped, 23 remaining  — total elapsed 4m 23s
+────────────────────────────────── Step 3/25 ───────────────────────────────────
+  Scenario  : single_request_latency
+  Engine    : sglang
+  Iteration : 3/5
+  Model     : google/gemma-3-4b-it
+  GPU VRAM  : 20287 MiB / 23028 MiB (88%)
+  ETA       : ~48m 16s
+[2m2026-04-19T09:36:22.496632Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mSGLangClient[0m [36mprompt_pack[0m=[35mshort_chat[0m [36mscenario[0m=[35msingle_request_latency[0m
+
+  sglang single_request_latency  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 50/50 0:02:05
+[2m2026-04-19T09:38:28.432311Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_variance/gemma-3-4b-it/single_request_latency_sglang_1776591382.json[0m
+  ✓ DONE in 2m 05s  — saved to single_request_latency_sglang_1776591382.json
+  Progress: 3 completed, 0 skipped, 22 remaining  — total elapsed 6m 40s
+────────────────────────────────── Step 4/25 ───────────────────────────────────
+  Scenario  : single_request_latency
+  Engine    : sglang
+  Iteration : 4/5
+  Model     : google/gemma-3-4b-it
+  GPU VRAM  : 20287 MiB / 23028 MiB (88%)
+  ETA       : ~46m 10s
+[2m2026-04-19T09:38:39.476082Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mSGLangClient[0m [36mprompt_pack[0m=[35mshort_chat[0m [36mscenario[0m=[35msingle_request_latency[0m
+
+  sglang single_request_latency  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 50/50 0:02:05
+[2m2026-04-19T09:40:45.413703Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_variance/gemma-3-4b-it/single_request_latency_sglang_1776591519.json[0m
+  ✓ DONE in 2m 05s  — saved to single_request_latency_sglang_1776591519.json
+  Progress: 4 completed, 0 skipped, 21 remaining  — total elapsed 8m 57s
+────────────────────────────────── Step 5/25 ───────────────────────────────────
+  Scenario  : single_request_latency
+  Engine    : sglang
+  Iteration : 5/5
+  Model     : google/gemma-3-4b-it
+  GPU VRAM  : 20287 MiB / 23028 MiB (88%)
+  ETA       : ~44m 04s
+[2m2026-04-19T09:40:56.455674Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mSGLangClient[0m [36mprompt_pack[0m=[35mshort_chat[0m [36mscenario[0m=[35msingle_request_latency[0m
+
+  sglang single_request_latency  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 50/50 0:02:05
+[2m2026-04-19T09:43:02.413319Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_variance/gemma-3-4b-it/single_request_latency_sglang_1776591656.json[0m
+  ✓ DONE in 2m 05s  — saved to single_request_latency_sglang_1776591656.json
+  Progress: 5 completed, 0 skipped, 20 remaining  — total elapsed 11m 14s
+────────────────────────────────── Step 6/25 ───────────────────────────────────
+  Scenario  : throughput_ramp
+  Engine    : sglang
+  Iteration : 1/5
+  Model     : google/gemma-3-4b-it
+  GPU VRAM  : 20287 MiB / 23028 MiB (88%)
+  ETA       : ~41m 58s
+[2m2026-04-19T09:43:13.451217Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mSGLangClient[0m [36mprompt_pack[0m=[35mlong_generation[0m [36mscenario[0m=[35mthroughput_ramp[0m
+[2m2026-04-19T09:43:13.451583Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m1[0m
+[2m2026-04-19T09:52:45.714328Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m2[0m
+[2m2026-04-19T09:57:34.321849Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m4[0m
+[2m2026-04-19T09:59:59.660301Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m8[0m
+[2m2026-04-19T10:01:16.801360Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m16[0m
+[2m2026-04-19T10:01:59.370556Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m32[0m
+[2m2026-04-19T10:02:47.040294Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m64[0m
+
+  sglang throughput_ramp  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 700/700 0:20:01
+[2m2026-04-19T10:03:15.377423Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_variance/gemma-3-4b-it/throughput_ramp_sglang_1776591793.json[0m
+  ✓ DONE in 20m 01s  — saved to throughput_ramp_sglang_1776591793.json
+  Progress: 6 completed, 0 skipped, 19 remaining  — total elapsed 31m 27s
+────────────────────────────────── Step 7/25 ───────────────────────────────────
+  Scenario  : throughput_ramp
+  Engine    : sglang
+  Iteration : 2/5
+  Model     : google/gemma-3-4b-it
+  GPU VRAM  : 20621 MiB / 23028 MiB (90%)
+  ETA       : ~1h 36m 40s
+[2m2026-04-19T10:03:26.421485Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mSGLangClient[0m [36mprompt_pack[0m=[35mlong_generation[0m [36mscenario[0m=[35mthroughput_ramp[0m
+[2m2026-04-19T10:03:26.421810Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m1[0m
+[2m2026-04-19T10:12:58.710255Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m2[0m
+[2m2026-04-19T10:17:47.354495Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m4[0m
+[2m2026-04-19T10:20:12.701164Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m8[0m
+[2m2026-04-19T10:21:29.850452Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m16[0m
+[2m2026-04-19T10:21:48.212124Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m[0m [36midx[0m=[35m28[0m
+[2m2026-04-19T10:22:12.459212Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m32[0m
+[2m2026-04-19T10:23:00.642307Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m64[0m
+
+  sglang throughput_ramp  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 700/700 0:20:02
+[2m2026-04-19T10:23:29.185367Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_variance/gemma-3-4b-it/throughput_ramp_sglang_1776593006.json[0m
+  ✓ DONE in 20m 02s  — saved to throughput_ramp_sglang_1776593006.json
+  Progress: 7 completed, 0 skipped, 18 remaining  — total elapsed 51m 41s
+────────────────────────────────── Step 8/25 ───────────────────────────────────
+  Scenario  : throughput_ramp
+  Engine    : sglang
+  Iteration : 3/5
+  Model     : google/gemma-3-4b-it
+  GPU VRAM  : 20623 MiB / 23028 MiB (90%)
+  ETA       : ~2h 10m 02s
+[2m2026-04-19T10:23:40.228946Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mSGLangClient[0m [36mprompt_pack[0m=[35mlong_generation[0m [36mscenario[0m=[35mthroughput_ramp[0m
+[2m2026-04-19T10:23:40.229286Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m1[0m
+[2m2026-04-19T10:33:12.573217Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m2[0m
+[2m2026-04-19T10:38:01.210231Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m4[0m
+[2m2026-04-19T10:40:26.577040Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m8[0m
+[2m2026-04-19T10:41:43.750010Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m16[0m
+[2m2026-04-19T10:42:26.360072Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m32[0m
+[2m2026-04-19T10:43:14.214753Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m64[0m
+
+  sglang throughput_ramp  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 700/700 0:20:02
+[2m2026-04-19T10:43:42.261540Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_variance/gemma-3-4b-it/throughput_ramp_sglang_1776594220.json[0m
+  ✓ DONE in 20m 02s  — saved to throughput_ramp_sglang_1776594220.json
+  Progress: 8 completed, 0 skipped, 17 remaining  — total elapsed 1h 11m 54s
+────────────────────────────────── Step 9/25 ───────────────────────────────────
+  Scenario  : throughput_ramp
+  Engine    : sglang
+  Iteration : 4/5
+  Model     : google/gemma-3-4b-it
+  GPU VRAM  : 20623 MiB / 23028 MiB (90%)
+  ETA       : ~2h 30m 02s
+[2m2026-04-19T10:43:53.306665Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mSGLangClient[0m [36mprompt_pack[0m=[35mlong_generation[0m [36mscenario[0m=[35mthroughput_ramp[0m
+[2m2026-04-19T10:43:53.307030Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m1[0m
+[2m2026-04-19T10:53:23.078667Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m2[0m
+[2m2026-04-19T10:58:11.757498Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m4[0m
+[2m2026-04-19T11:00:37.140891Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m8[0m
+[2m2026-04-19T11:01:54.329284Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m16[0m
+[2m2026-04-19T11:02:18.826264Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m[0m [36midx[0m=[35m31[0m
+[2m2026-04-19T11:02:36.953810Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m32[0m
+[2m2026-04-19T11:03:25.408973Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m64[0m
+
+  sglang throughput_ramp  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 700/700 0:20:00
+[2m2026-04-19T11:03:53.580658Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_variance/gemma-3-4b-it/throughput_ramp_sglang_1776595433.json[0m
+  ✓ DONE in 20m 00s  — saved to throughput_ramp_sglang_1776595433.json
+  Progress: 9 completed, 0 skipped, 16 remaining  — total elapsed 1h 32m 06s
+────────────────────────────────── Step 10/25 ──────────────────────────────────
+  Scenario  : throughput_ramp
+  Engine    : sglang
+  Iteration : 5/5
+  Model     : google/gemma-3-4b-it
+  GPU VRAM  : 20623 MiB / 23028 MiB (90%)
+  ETA       : ~2h 41m 05s
+[2m2026-04-19T11:04:04.616091Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mSGLangClient[0m [36mprompt_pack[0m=[35mlong_generation[0m [36mscenario[0m=[35mthroughput_ramp[0m
+[2m2026-04-19T11:04:04.616456Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m1[0m
+[2m2026-04-19T11:13:36.068450Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m2[0m
+[2m2026-04-19T11:18:29.305907Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m4[0m
+[2m2026-04-19T11:20:54.661129Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m8[0m
+[2m2026-04-19T11:22:11.815108Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m16[0m
+[2m2026-04-19T11:22:36.289310Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m[0m [36midx[0m=[35m41[0m
+[2m2026-04-19T11:22:54.398245Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m32[0m
+[2m2026-04-19T11:23:42.168738Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m64[0m
+
+  sglang throughput_ramp  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 700/700 0:20:05
+[2m2026-04-19T11:24:10.377382Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_variance/gemma-3-4b-it/throughput_ramp_sglang_1776596644.json[0m
+  ✓ DONE in 20m 05s  — saved to throughput_ramp_sglang_1776596644.json
+  Progress: 10 completed, 0 skipped, 15 remaining  — total elapsed 1h 52m 22s
+────────────────────────────────── Step 11/25 ──────────────────────────────────
+  Scenario  : long_context_stress
+  Engine    : sglang
+  Iteration : 1/5
+  Model     : google/gemma-3-4b-it
+  GPU VRAM  : 20623 MiB / 23028 MiB (90%)
+  ETA       : ~2h 46m 03s
+[2m2026-04-19T11:24:21.421754Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mSGLangClient[0m [36mprompt_pack[0m=[35mlong_context[0m [36mscenario[0m=[35mlong_context_stress[0m
+
+  sglang long_context_stress  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 20/20 0:00:29
+[2m2026-04-19T11:24:51.116969Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_variance/gemma-3-4b-it/long_context_stress_sglang_1776597861.json[0m
+  ✓ DONE in 29s  — saved to long_context_stress_sglang_1776597861.json
+  Progress: 11 completed, 0 skipped, 14 remaining  — total elapsed 1h 53m 03s
+────────────────────────────────── Step 12/25 ──────────────────────────────────
+  Scenario  : long_context_stress
+  Engine    : sglang
+  Iteration : 2/5
+  Model     : google/gemma-3-4b-it
+  GPU VRAM  : 20625 MiB / 23028 MiB (90%)
+  ETA       : ~2h 21m 31s
+[2m2026-04-19T11:25:02.167807Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mSGLangClient[0m [36mprompt_pack[0m=[35mlong_context[0m [36mscenario[0m=[35mlong_context_stress[0m
+
+  sglang long_context_stress  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 20/20 0:00:29
+[2m2026-04-19T11:25:31.649994Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_variance/gemma-3-4b-it/long_context_stress_sglang_1776597902.json[0m
+  ✓ DONE in 29s  — saved to long_context_stress_sglang_1776597902.json
+  Progress: 12 completed, 0 skipped, 13 remaining  — total elapsed 1h 53m 44s
+────────────────────────────────── Step 13/25 ──────────────────────────────────
+  Scenario  : long_context_stress
+  Engine    : sglang
+  Iteration : 3/5
+  Model     : google/gemma-3-4b-it
+  GPU VRAM  : 20625 MiB / 23028 MiB (90%)
+  ETA       : ~2h 01m 00s
+[2m2026-04-19T11:25:42.700524Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mSGLangClient[0m [36mprompt_pack[0m=[35mlong_context[0m [36mscenario[0m=[35mlong_context_stress[0m
+
+  sglang long_context_stress  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 20/20 0:00:28
+[2m2026-04-19T11:26:11.235769Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_variance/gemma-3-4b-it/long_context_stress_sglang_1776597942.json[0m
+  ✓ DONE in 28s  — saved to long_context_stress_sglang_1776597942.json
+  Progress: 13 completed, 0 skipped, 12 remaining  — total elapsed 1h 54m 23s
+────────────────────────────────── Step 14/25 ──────────────────────────────────
+  Scenario  : long_context_stress
+  Engine    : sglang
+  Iteration : 4/5
+  Model     : google/gemma-3-4b-it
+  GPU VRAM  : 20625 MiB / 23028 MiB (90%)
+  ETA       : ~1h 43m 32s
+[2m2026-04-19T11:26:22.273308Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mSGLangClient[0m [36mprompt_pack[0m=[35mlong_context[0m [36mscenario[0m=[35mlong_context_stress[0m
+
+  sglang long_context_stress  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 20/20 0:00:29
+[2m2026-04-19T11:26:52.059499Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_variance/gemma-3-4b-it/long_context_stress_sglang_1776597982.json[0m
+  ✓ DONE in 29s  — saved to long_context_stress_sglang_1776597982.json
+  Progress: 14 completed, 0 skipped, 11 remaining  — total elapsed 1h 55m 04s
+────────────────────────────────── Step 15/25 ──────────────────────────────────
+  Scenario  : long_context_stress
+  Engine    : sglang
+  Iteration : 5/5
+  Model     : google/gemma-3-4b-it
+  GPU VRAM  : 20625 MiB / 23028 MiB (90%)
+  ETA       : ~1h 28m 31s
+[2m2026-04-19T11:27:03.096277Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mSGLangClient[0m [36mprompt_pack[0m=[35mlong_context[0m [36mscenario[0m=[35mlong_context_stress[0m
+
+  sglang long_context_stress  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 20/20 0:00:29
+[2m2026-04-19T11:27:32.742169Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_variance/gemma-3-4b-it/long_context_stress_sglang_1776598023.json[0m
+  ✓ DONE in 29s  — saved to long_context_stress_sglang_1776598023.json
+  Progress: 15 completed, 0 skipped, 10 remaining  — total elapsed 1h 55m 45s
+────────────────────────────────── Step 16/25 ──────────────────────────────────
+  Scenario  : prefix_sharing_benefit
+  Engine    : sglang
+  Iteration : 1/5
+  Model     : google/gemma-3-4b-it
+  GPU VRAM  : 20625 MiB / 23028 MiB (90%)
+  ETA       : ~1h 15m 26s
+[2m2026-04-19T11:27:43.786677Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mSGLangClient[0m [36mprompt_pack[0m=[35mshared_prefix[0m [36mscenario[0m=[35mprefix_sharing_benefit[0m
+
+  sglang prefix_sharing_benefit  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100/100 0:00:40
+[2m2026-04-19T11:28:24.102456Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_variance/gemma-3-4b-it/prefix_sharing_benefit_sglang_1776598063.json[0m
+  ✓ DONE in 40s  — saved to prefix_sharing_benefit_sglang_1776598063.json
+  Progress: 16 completed, 0 skipped, 9 remaining  — total elapsed 1h 56m 36s
+────────────────────────────────── Step 17/25 ──────────────────────────────────
+  Scenario  : prefix_sharing_benefit
+  Engine    : sglang
+  Iteration : 2/5
+  Model     : google/gemma-3-4b-it
+  GPU VRAM  : 20625 MiB / 23028 MiB (90%)
+  ETA       : ~1h 04m 01s
+[2m2026-04-19T11:28:35.136982Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mSGLangClient[0m [36mprompt_pack[0m=[35mshared_prefix[0m [36mscenario[0m=[35mprefix_sharing_benefit[0m
+
+  sglang prefix_sharing_benefit  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100/100 0:00:39
+[2m2026-04-19T11:29:15.015120Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_variance/gemma-3-4b-it/prefix_sharing_benefit_sglang_1776598115.json[0m
+  ✓ DONE in 39s  — saved to prefix_sharing_benefit_sglang_1776598115.json
+  Progress: 17 completed, 0 skipped, 8 remaining  — total elapsed 1h 57m 27s
+────────────────────────────────── Step 18/25 ──────────────────────────────────
+  Scenario  : prefix_sharing_benefit
+  Engine    : sglang
+  Iteration : 3/5
+  Model     : google/gemma-3-4b-it
+  GPU VRAM  : 20625 MiB / 23028 MiB (90%)
+  ETA       : ~53m 52s
+[2m2026-04-19T11:29:26.059858Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mSGLangClient[0m [36mprompt_pack[0m=[35mshared_prefix[0m [36mscenario[0m=[35mprefix_sharing_benefit[0m
+
+  sglang prefix_sharing_benefit  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100/100 0:00:40
+[2m2026-04-19T11:30:06.877750Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_variance/gemma-3-4b-it/prefix_sharing_benefit_sglang_1776598166.json[0m
+  ✓ DONE in 40s  — saved to prefix_sharing_benefit_sglang_1776598166.json
+  Progress: 18 completed, 0 skipped, 7 remaining  — total elapsed 1h 58m 19s
+────────────────────────────────── Step 19/25 ──────────────────────────────────
+  Scenario  : prefix_sharing_benefit
+  Engine    : sglang
+  Iteration : 4/5
+  Model     : google/gemma-3-4b-it
+  GPU VRAM  : 20625 MiB / 23028 MiB (90%)
+  ETA       : ~44m 47s
+[2m2026-04-19T11:30:17.921475Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mSGLangClient[0m [36mprompt_pack[0m=[35mshared_prefix[0m [36mscenario[0m=[35mprefix_sharing_benefit[0m
+
+  sglang prefix_sharing_benefit  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100/100 0:00:40
+[2m2026-04-19T11:30:58.228822Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_variance/gemma-3-4b-it/prefix_sharing_benefit_sglang_1776598217.json[0m
+  ✓ DONE in 40s  — saved to prefix_sharing_benefit_sglang_1776598217.json
+  Progress: 19 completed, 0 skipped, 6 remaining  — total elapsed 1h 59m 10s
+────────────────────────────────── Step 20/25 ──────────────────────────────────
+  Scenario  : prefix_sharing_benefit
+  Engine    : sglang
+  Iteration : 5/5
+  Model     : google/gemma-3-4b-it
+  GPU VRAM  : 20625 MiB / 23028 MiB (90%)
+  ETA       : ~36m 35s
+[2m2026-04-19T11:31:09.270690Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mSGLangClient[0m [36mprompt_pack[0m=[35mshared_prefix[0m [36mscenario[0m=[35mprefix_sharing_benefit[0m
+[2m2026-04-19T11:31:27.681308Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m[0m [36midx[0m=[35m8[0m
+
+  sglang prefix_sharing_benefit  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100/100 0:00:39
+[2m2026-04-19T11:31:49.096926Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_variance/gemma-3-4b-it/prefix_sharing_benefit_sglang_1776598269.json[0m
+  ✓ DONE in 39s  — saved to prefix_sharing_benefit_sglang_1776598269.json
+  Progress: 20 completed, 0 skipped, 5 remaining  — total elapsed 2h 00m 01s
+────────────────────────────────── Step 21/25 ──────────────────────────────────
+  Scenario  : structured_generation_speed
+  Engine    : sglang
+  Iteration : 1/5
+  Model     : google/gemma-3-4b-it
+  GPU VRAM  : 20625 MiB / 23028 MiB (90%)
+  ETA       : ~29m 07s
+[2m2026-04-19T11:32:00.140170Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mSGLangClient[0m [36mprompt_pack[0m=[35mstructured_json[0m [36mscenario[0m=[35mstructured_generation_speed[0m
+[2m2026-04-19T11:32:03.828626Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m[0m [36midx[0m=[35m151[0m
+[2m2026-04-19T11:32:26.374987Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m[0m [36midx[0m=[35m43[0m
+[2m2026-04-19T11:32:34.066984Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m[0m [36midx[0m=[35m10[0m
+[2m2026-04-19T11:32:37.966001Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m[0m [36midx[0m=[35m94[0m
+[2m2026-04-19T11:32:41.931618Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m[0m [36midx[0m=[35m96[0m
+
+  sglang structured_generation_speed  ━━━━━━━━━━━━━━━━━━━━━━━━━━ 200/200 0:00:47
+[2m2026-04-19T11:32:47.849737Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_variance/gemma-3-4b-it/structured_generation_speed_sglang_1776598320.json[0m
+  ✓ DONE in 47s  — saved to structured_generation_speed_sglang_1776598320.json
+  Progress: 21 completed, 0 skipped, 4 remaining  — total elapsed 2h 01m 00s
+────────────────────────────────── Step 22/25 ──────────────────────────────────
+  Scenario  : structured_generation_speed
+  Engine    : sglang
+  Iteration : 2/5
+  Model     : google/gemma-3-4b-it
+  GPU VRAM  : 20625 MiB / 23028 MiB (90%)
+  ETA       : ~22m 20s
+[2m2026-04-19T11:32:58.885713Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mSGLangClient[0m [36mprompt_pack[0m=[35mstructured_json[0m [36mscenario[0m=[35mstructured_generation_speed[0m
+[2m2026-04-19T11:33:17.331065Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m[0m [36midx[0m=[35m45[0m
+[2m2026-04-19T11:33:24.818137Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m[0m [36midx[0m=[35m154[0m
+[2m2026-04-19T11:33:28.548905Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m[0m [36midx[0m=[35m105[0m
+[2m2026-04-19T11:33:32.399853Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m[0m [36midx[0m=[35m82[0m
+
+  sglang structured_generation_speed  ━━━━━━━━━━━━━━━━━━━━━━━━━━ 200/200 0:00:46
+[2m2026-04-19T11:33:45.869724Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_variance/gemma-3-4b-it/structured_generation_speed_sglang_1776598378.json[0m
+  ✓ DONE in 46s  — saved to structured_generation_speed_sglang_1776598378.json
+  Progress: 22 completed, 0 skipped, 3 remaining  — total elapsed 2h 01m 58s
+────────────────────────────────── Step 23/25 ──────────────────────────────────
+  Scenario  : structured_generation_speed
+  Engine    : sglang
+  Iteration : 3/5
+  Model     : google/gemma-3-4b-it
+  GPU VRAM  : 20625 MiB / 23028 MiB (90%)
+  ETA       : ~16m 06s
+[2m2026-04-19T11:33:56.909185Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mSGLangClient[0m [36mprompt_pack[0m=[35mstructured_json[0m [36mscenario[0m=[35mstructured_generation_speed[0m
+[2m2026-04-19T11:34:04.297608Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m[0m [36midx[0m=[35m106[0m
+
+  sglang structured_generation_speed  ━━━━━━━━━━━━━━━━━━━━━━━━━━ 200/200 0:00:49
+[2m2026-04-19T11:34:46.209785Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_variance/gemma-3-4b-it/structured_generation_speed_sglang_1776598436.json[0m
+  ✓ DONE in 49s  — saved to structured_generation_speed_sglang_1776598436.json
+  Progress: 23 completed, 0 skipped, 2 remaining  — total elapsed 2h 02m 58s
+────────────────────────────────── Step 24/25 ──────────────────────────────────
+  Scenario  : structured_generation_speed
+  Engine    : sglang
+  Iteration : 4/5
+  Model     : google/gemma-3-4b-it
+  GPU VRAM  : 20625 MiB / 23028 MiB (90%)
+  ETA       : ~10m 20s
+[2m2026-04-19T11:34:57.253483Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mSGLangClient[0m [36mprompt_pack[0m=[35mstructured_json[0m [36mscenario[0m=[35mstructured_generation_speed[0m
+[2m2026-04-19T11:35:00.991448Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m[0m [36midx[0m=[35m188[0m
+[2m2026-04-19T11:35:35.479099Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m[0m [36midx[0m=[35m154[0m
+
+  sglang structured_generation_speed  ━━━━━━━━━━━━━━━━━━━━━━━━━━ 200/200 0:00:49
+[2m2026-04-19T11:35:46.489640Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_variance/gemma-3-4b-it/structured_generation_speed_sglang_1776598497.json[0m
+  ✓ DONE in 49s  — saved to structured_generation_speed_sglang_1776598497.json
+  Progress: 24 completed, 0 skipped, 1 remaining  — total elapsed 2h 03m 59s
+────────────────────────────────── Step 25/25 ──────────────────────────────────
+  Scenario  : structured_generation_speed
+  Engine    : sglang
+  Iteration : 5/5
+  Model     : google/gemma-3-4b-it
+  GPU VRAM  : 20625 MiB / 23028 MiB (90%)
+  ETA       : ~4m 59s
+[2m2026-04-19T11:35:57.533568Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mSGLangClient[0m [36mprompt_pack[0m=[35mstructured_json[0m [36mscenario[0m=[35mstructured_generation_speed[0m
+[2m2026-04-19T11:36:01.206825Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m[0m [36midx[0m=[35m136[0m
+[2m2026-04-19T11:36:12.507286Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m[0m [36midx[0m=[35m129[0m
+[2m2026-04-19T11:36:27.816757Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m[0m [36midx[0m=[35m47[0m
+[2m2026-04-19T11:36:35.515862Z[0m [[31m[1merror    [0m] [1mrequest failed                [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36merror[0m=[35m[0m [36midx[0m=[35m93[0m
+
+  sglang structured_generation_speed  ━━━━━━━━━━━━━━━━━━━━━━━━━━ 200/200 0:00:47
+[2m2026-04-19T11:36:45.333228Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_variance/gemma-3-4b-it/structured_generation_speed_sglang_1776598557.json[0m
+  ✓ DONE in 47s  — saved to structured_generation_speed_sglang_1776598557.json
+  Progress: 25 completed, 0 skipped, 0 remaining  — total elapsed 2h 04m 57s
+─────────────────────────────── Matrix complete ────────────────────────────────
+  Total time: 2h 05m 07s
+
+                             Matrix Results Summary                             
+┏━━━━━━━━━━━━━━━━━━━┳━━━━━━━━┳━━━━━━┳━━━━━━━━━━━┳━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━┓
+┃ Scenario          ┃ Engine ┃ Iter ┃  Status   ┃ Duration ┃ Output File       ┃
+┡━━━━━━━━━━━━━━━━━━━╇━━━━━━━━╇━━━━━━╇━━━━━━━━━━━╇━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━┩
+│ single_request_l… │ sglang │  1   │ completed │   2m 05s │ single_request_l… │
+│ single_request_l… │ sglang │  2   │ completed │   2m 05s │ single_request_l… │
+│ single_request_l… │ sglang │  3   │ completed │   2m 05s │ single_request_l… │
+│ single_request_l… │ sglang │  4   │ completed │   2m 05s │ single_request_l… │
+│ single_request_l… │ sglang │  5   │ completed │   2m 05s │ single_request_l… │
+│ throughput_ramp   │ sglang │  1   │ completed │  20m 01s │ throughput_ramp_… │
+│ throughput_ramp   │ sglang │  2   │ completed │  20m 02s │ throughput_ramp_… │
+│ throughput_ramp   │ sglang │  3   │ completed │  20m 02s │ throughput_ramp_… │
+│ throughput_ramp   │ sglang │  4   │ completed │  20m 00s │ throughput_ramp_… │
+│ throughput_ramp   │ sglang │  5   │ completed │  20m 05s │ throughput_ramp_… │
+│ long_context_str… │ sglang │  1   │ completed │      29s │ long_context_str… │
+│ long_context_str… │ sglang │  2   │ completed │      29s │ long_context_str… │
+│ long_context_str… │ sglang │  3   │ completed │      28s │ long_context_str… │
+│ long_context_str… │ sglang │  4   │ completed │      29s │ long_context_str… │
+│ long_context_str… │ sglang │  5   │ completed │      29s │ long_context_str… │
+│ prefix_sharing_b… │ sglang │  1   │ completed │      40s │ prefix_sharing_b… │
+│ prefix_sharing_b… │ sglang │  2   │ completed │      39s │ prefix_sharing_b… │
+│ prefix_sharing_b… │ sglang │  3   │ completed │      40s │ prefix_sharing_b… │
+│ prefix_sharing_b… │ sglang │  4   │ completed │      40s │ prefix_sharing_b… │
+│ prefix_sharing_b… │ sglang │  5   │ completed │      39s │ prefix_sharing_b… │
+│ structured_gener… │ sglang │  1   │ completed │      47s │ structured_gener… │
+│ structured_gener… │ sglang │  2   │ completed │      46s │ structured_gener… │
+│ structured_gener… │ sglang │  3   │ completed │      49s │ structured_gener… │
+│ structured_gener… │ sglang │  4   │ completed │      49s │ structured_gener… │
+│ structured_gener… │ sglang │  5   │ completed │      47s │ structured_gener… │
+└───────────────────┴────────┴──────┴───────────┴──────────┴───────────────────┘
+✓ Matrix manifest saved to 
+results_variance/gemma-3-4b-it/matrix_manifest_1776591107.json
+bench-sglang
+
+========================================================================
+[2026-04-19 11:37:00] PHASE 1 COMPLETE
+========================================================================
+
+========================================================================
+[2026-04-19 11:37:00] PHASE 2 — CONCURRENCY-64 EXTENDED RAMP (resume, missing-only, 1 iter)
+========================================================================
+  Output dir : results_concurrency64/
+  Iterations : 1   (single run per engine to conserve GPU cost)
+  Cooldown   : 10s between scenarios
+  Behavior   : skip any (model,engine) that already has a result file
+  [SKIP] vllm meta-llama/Llama-3.1-8B-Instruct — result file already exists
+  [SKIP] sglang meta-llama/Llama-3.1-8B-Instruct — result file already exists
+  [SKIP] vllm Qwen/Qwen3-8B — result file already exists
+  [SKIP] sglang Qwen/Qwen3-8B — result file already exists
+  [SKIP] vllm mistralai/Mistral-7B-Instruct-v0.3 — result file already exists
+  [SKIP] sglang mistralai/Mistral-7B-Instruct-v0.3 — result file already exists
+  [SKIP] vllm google/gemma-2-9b-it — result file already exists
+  [SKIP] sglang google/gemma-2-9b-it — result file already exists
+
+========================================================================
+[2026-04-19 11:37:00] PHASE 2 COMPLETE
+========================================================================
+
+========================================================================
+[2026-04-19 11:37:00] PHASE 3 — DECODE-LENGTH SWEEP (top-up to ≥3 iter per cell)
+========================================================================
+  [SKIP] vllm google/gemma-2-2b-it — already 3 iter (≥3)
+  [SKIP] sglang google/gemma-2-2b-it — already 3 iter (≥3)
+  [SKIP] vllm microsoft/Phi-4-mini-instruct — already 3 iter (≥3)
+  [SKIP] sglang microsoft/Phi-4-mini-instruct — already 3 iter (≥3)
+  [TOPUP] vllm meta-llama/Llama-3.1-8B-Instruct — have 2, adding 1 iter
+
+========================================================================
+[2026-04-19 11:37:00] vLLM — meta-llama/Llama-3.1-8B-Instruct
+========================================================================
+c9618689cc62981f90409c5ec59904d02bcbd6c67c40a89b5d66641f9c3daf2b
+  Waiting for vLLM health....................... ready (115s)
+─────────────────────────────── Matrix execution ───────────────────────────────
+  Model          : meta-llama/Llama-3.1-8B-Instruct
+  Scenarios      : decode_length_sweep_64, decode_length_sweep_256, 
+decode_length_sweep_1024, decode_length_sweep_4096
+  Engines        : vllm
+  Iterations     : 1
+  Cooldown (sec) : 15
+─────────────────────────────────── Step 1/4 ───────────────────────────────────
+  Scenario  : decode_length_sweep_64
+  Engine    : vllm
+  Iteration : 1/1
+  Model     : meta-llama/Llama-3.1-8B-Instruct
+  GPU VRAM  : 19529 MiB / 23028 MiB (85%)
+[2m2026-04-19T11:39:04.637164Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mVLLMClient[0m [36mprompt_pack[0m=[35mlong_generation[0m [36mscenario[0m=[35mdecode_length_sweep_64[0m
+[2m2026-04-19T11:39:04.637548Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m4[0m
+[2m2026-04-19T11:39:39.078193Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m8[0m
+[2m2026-04-19T11:39:57.548310Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m16[0m
+
+  vllm decode_length_sweep_64  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 180/180 0:01:02
+[2m2026-04-19T11:40:07.210520Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_decode_sweep/llama-3-1-8b-instruct/decode_length_sweep_64_vllm_1776598744.json[0m
+  ✓ DONE in 1m 02s  — saved to decode_length_sweep_64_vllm_1776598744.json
+  Progress: 1 completed, 0 skipped, 3 remaining  — total elapsed 1m 02s
+─────────────────────────────────── Step 2/4 ───────────────────────────────────
+  Scenario  : decode_length_sweep_256
+  Engine    : vllm
+  Iteration : 1/1
+  Model     : meta-llama/Llama-3.1-8B-Instruct
+  GPU VRAM  : 19533 MiB / 23028 MiB (85%)
+  ETA       : ~3m 07s
+[2m2026-04-19T11:40:22.259553Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mVLLMClient[0m [36mprompt_pack[0m=[35mlong_generation[0m [36mscenario[0m=[35mdecode_length_sweep_256[0m
+[2m2026-04-19T11:40:22.259864Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m4[0m
+[2m2026-04-19T11:42:36.844254Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m8[0m
+[2m2026-04-19T11:43:49.446440Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m16[0m
+
+  vllm decode_length_sweep_256  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 180/180 0:04:05
+[2m2026-04-19T11:44:27.343765Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_decode_sweep/llama-3-1-8b-instruct/decode_length_sweep_256_vllm_1776598822.json[0m
+  ✓ DONE in 4m 05s  — saved to decode_length_sweep_256_vllm_1776598822.json
+  Progress: 2 completed, 0 skipped, 2 remaining  — total elapsed 5m 22s
+─────────────────────────────────── Step 3/4 ───────────────────────────────────
+  Scenario  : decode_length_sweep_1024
+  Engine    : vllm
+  Iteration : 1/1
+  Model     : meta-llama/Llama-3.1-8B-Instruct
+  GPU VRAM  : 19533 MiB / 23028 MiB (85%)
+  ETA       : ~5m 07s
+[2m2026-04-19T11:44:42.383524Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mVLLMClient[0m [36mprompt_pack[0m=[35mlong_generation[0m [36mscenario[0m=[35mdecode_length_sweep_1024[0m
+[2m2026-04-19T11:44:42.383815Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m4[0m
+[2m2026-04-19T11:53:44.886489Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m8[0m
+[2m2026-04-19T11:58:40.233786Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m16[0m
+
+  vllm decode_length_sweep_1024  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 180/180 0:16:35
+[2m2026-04-19T12:01:17.433560Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_decode_sweep/llama-3-1-8b-instruct/decode_length_sweep_1024_vllm_1776599082.json[0m
+  ✓ DONE in 16m 35s  — saved to decode_length_sweep_1024_vllm_1776599082.json
+  Progress: 3 completed, 0 skipped, 1 remaining  — total elapsed 22m 12s
+─────────────────────────────────── Step 4/4 ───────────────────────────────────
+  Scenario  : decode_length_sweep_4096
+  Engine    : vllm
+  Iteration : 1/1
+  Model     : meta-llama/Llama-3.1-8B-Instruct
+  GPU VRAM  : 19533 MiB / 23028 MiB (85%)
+  ETA       : ~7m 14s
+[2m2026-04-19T12:01:32.473070Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mVLLMClient[0m [36mprompt_pack[0m=[35mlong_generation[0m [36mscenario[0m=[35mdecode_length_sweep_4096[0m
+[2m2026-04-19T12:01:32.473402Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m4[0m
+[2m2026-04-19T12:39:19.890491Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m8[0m
+[2m2026-04-19T13:00:36.282376Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m16[0m
+
+  vllm decode_length_sweep_4096  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 180/180 1:14:43
+[2m2026-04-19T13:16:16.469028Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_decode_sweep/llama-3-1-8b-instruct/decode_length_sweep_4096_vllm_1776600092.json[0m
+  ✓ DONE in 1h 14m 43s  — saved to decode_length_sweep_4096_vllm_1776600092.json
+  Progress: 4 completed, 0 skipped, 0 remaining  — total elapsed 1h 37m 11s
+─────────────────────────────── Matrix complete ────────────────────────────────
+  Total time: 1h 37m 26s
+
+                             Matrix Results Summary                             
+┏━━━━━━━━━━━━━━━━━━┳━━━━━━━━┳━━━━━━┳━━━━━━━━━━━┳━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━┓
+┃ Scenario         ┃ Engine ┃ Iter ┃  Status   ┃   Duration ┃ Output File      ┃
+┡━━━━━━━━━━━━━━━━━━╇━━━━━━━━╇━━━━━━╇━━━━━━━━━━━╇━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━┩
+│ decode_length_s… │ vllm   │  1   │ completed │     1m 02s │ decode_length_s… │
+│ decode_length_s… │ vllm   │  1   │ completed │     4m 05s │ decode_length_s… │
+│ decode_length_s… │ vllm   │  1   │ completed │    16m 35s │ decode_length_s… │
+│ decode_length_s… │ vllm   │  1   │ completed │ 1h 14m 43s │ decode_length_s… │
+└──────────────────┴────────┴──────┴───────────┴────────────┴──────────────────┘
+✓ Matrix manifest saved to 
+results_decode_sweep/llama-3-1-8b-instruct/matrix_manifest_1776598744.json
+bench-vllm
+  [TOPUP] sglang meta-llama/Llama-3.1-8B-Instruct — have 2, adding 1 iter
+
+========================================================================
+[2026-04-19 13:16:36] SGLang — meta-llama/Llama-3.1-8B-Instruct
+========================================================================
+2b85b73d7666b391c10bcfa79bc24044392f81da1a474e0f9864278c32b2ae6a
+  Waiting for SGLang health......

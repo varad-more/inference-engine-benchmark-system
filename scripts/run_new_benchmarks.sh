@@ -25,12 +25,17 @@
 set +e
 
 PYTHON="conda run --no-capture-output -n base python"
-VLLM_IMAGE="vllm/vllm-openai:v0.18.0-cu130"
-SGLANG_IMAGE="lmsysorg/sglang:v0.5.10.post1-cu130"
+#VLLM_IMAGE="vllm/vllm-openai:v0.18.0-cu130"
+#SGLANG_IMAGE="lmsysorg/sglang:v0.5.10.post1-cu130"
 
-# Gemma 4 (E2B/E4B) needs Transformers >= 5.5.0 → only shipped in :latest images.
+# Gemma 4 (E2B/E4B) needs Transformers >= 5.5.0 + native gemma4 model class.
+# vLLM :latest has native Gemma 4 (works).
+# SGLang :latest (Apr-09) lacks native Gemma 4 — its generic Transformers
+# wrapper fails on QK-norm params (k_norm/q_norm). Switched to :dev-cu13
+# (Apr-16 snapshot off main) which includes the native class. If it still
+# fails, try a more recent `nightly-dev-cu13-*` tag.
 GEMMA4_VLLM_IMAGE="vllm/vllm-openai:latest"
-GEMMA4_SGLANG_IMAGE="lmsysorg/sglang:latest"
+GEMMA4_SGLANG_IMAGE="lmsysorg/sglang:dev-cu13"
 
 # vLLM binds to the external NIC to avoid colliding with selfhosted-chat-api
 VLLM_BIND_IP="$(hostname -I | awk '{print $1}')"
@@ -116,8 +121,8 @@ echo    "  SGLang:    ${SGLANG_HOST}:8001"
 mkdir -p logs results_variance results_concurrency64 results_decode_sweep reports
 
 log "PULLING DOCKER IMAGES (if not cached)"
-pull_image_if_missing "$VLLM_IMAGE"
-pull_image_if_missing "$SGLANG_IMAGE"
+#pull_image_if_missing "$VLLM_IMAGE"
+#pull_image_if_missing "$SGLANG_IMAGE"
 
 $DOCKER rm -f bench-vllm bench-sglang 2>/dev/null || true
 log "PREFLIGHT COMPLETE"
@@ -287,6 +292,103 @@ run_sglang_model() {
         --output-dir "$output_dir"
     local rc=$?
     [ $rc -ne 0 ] && error "SGLang benchmark failed for ${model} (exit ${rc})"
+
+    cleanup bench-sglang
+    return $rc
+}
+
+# ── Gemma 4 launchers ────────────────────────────────────────────────────────
+# Defined here (not in Phase 4) so --phase3 can call them too. Both use the
+# :latest images and pip-install transformers-from-git inside the container on
+# boot, since Gemma 4 needs Transformers >= 5.5.0.
+
+# Run Gemma 4 vLLM (baseline or ngram). Installs transformers-from-git on boot.
+# Args: model scenarios iterations cooldown output_dir engine_label [extra server args...]
+run_vllm_gemma4() {
+    local model="$1" scenarios="$2" iterations="$3" cooldown="$4"
+    local output_dir="$5" engine="$6"; shift 6
+    local extra=("$@")
+    local mml="${MAX_MODEL_LEN:-4096}" gmu="${GPU_MEM_UTIL:-0.85}"
+
+    log "vLLM-Gemma4 (${engine}) — ${model}"
+    cleanup bench-vllm
+
+    local server_args=(
+        --model "$model" --host 0.0.0.0 --port 8000
+        --enable-prefix-caching --max-model-len "$mml"
+        --gpu-memory-utilization "$gmu" --served-model-name "$model"
+        "${extra[@]}"
+    )
+    local quoted
+    quoted=$(printf '%q ' "${server_args[@]}")
+    # vllm/vllm-openai:latest lacks `python` alias and `git` → install both.
+    # Use python3 (canonical on the upstream image) to invoke vLLM.
+    local cmd="(command -v git >/dev/null || (apt-get update -qq && apt-get install -y -qq git)) && pip install -q --upgrade git+https://github.com/huggingface/transformers.git && exec python3 -m vllm.entrypoints.openai.api_server ${quoted}"
+
+    $DOCKER run -d --name bench-vllm --gpus '"device=0"' \
+        -p "${VLLM_BIND_IP}:8000:8000" --shm-size 10g \
+        -v "$(pwd)/model-cache:/root/.cache/huggingface" \
+        -e "HUGGING_FACE_HUB_TOKEN=${HF_TOKEN}" -e "CUDA_VISIBLE_DEVICES=0" \
+        --entrypoint bash "$GEMMA4_VLLM_IMAGE" -c "$cmd"
+    [ $? -ne 0 ] && { error "vLLM-Gemma4 docker run failed for ${model}"; return 1; }
+
+    if ! wait_vllm 900; then
+        error "vLLM-Gemma4 failed to start for ${model}"
+        $DOCKER logs bench-vllm --tail 40 2>&1
+        cleanup bench-vllm; return 1
+    fi
+
+    $PYTHON run_experiment.py matrix \
+        --model "$model" --scenarios "$scenarios" --engines "$engine" \
+        --iterations "$iterations" --cooldown-seconds "$cooldown" \
+        --vllm-host "$VLLM_HOST" --output-dir "$output_dir"
+    local rc=$?
+    [ $rc -ne 0 ] && error "vLLM-Gemma4 (${engine}) benchmark failed for ${model} (exit ${rc})"
+
+    cleanup bench-vllm
+    return $rc
+}
+
+# Run Gemma 4 SGLang (baseline or ngram).
+run_sglang_gemma4() {
+    local model="$1" scenarios="$2" iterations="$3" cooldown="$4"
+    local output_dir="$5" engine="$6"; shift 6
+    local extra=("$@")
+    local mml="${MAX_MODEL_LEN:-4096}" mfs="${MEM_FRAC_STATIC:-0.85}"
+
+    log "SGLang-Gemma4 (${engine}) — ${model}"
+    cleanup bench-sglang
+
+    local server_args=(
+        --model-path "$model" --host 0.0.0.0 --port 8001
+        --mem-fraction-static "$mfs" --context-length "$mml"
+        --disable-cuda-graph
+        "${extra[@]}"
+    )
+    local quoted
+    quoted=$(printf '%q ' "${server_args[@]}")
+    local cmd="(command -v git >/dev/null || (apt-get update -qq && apt-get install -y -qq git)) && pip install -q --upgrade git+https://github.com/huggingface/transformers.git && exec python3 -m sglang.launch_server ${quoted}"
+
+    $DOCKER run -d --name bench-sglang --gpus '"device=0"' \
+        -p "${SGLANG_HOST}:8001:8001" --shm-size 10g \
+        -v "$(pwd)/model-cache:/root/.cache/huggingface" \
+        -e "HUGGING_FACE_HUB_TOKEN=${HF_TOKEN}" -e "CUDA_VISIBLE_DEVICES=0" \
+        -e "SGLANG_ALLOW_OVERWRITE_LONGER_CONTEXT_LEN=1" \
+        --entrypoint bash "$GEMMA4_SGLANG_IMAGE" -c "$cmd"
+    [ $? -ne 0 ] && { error "SGLang-Gemma4 docker run failed for ${model}"; return 1; }
+
+    if ! wait_sglang 900; then
+        error "SGLang-Gemma4 failed to start for ${model}"
+        $DOCKER logs bench-sglang --tail 40 2>&1
+        cleanup bench-sglang; return 1
+    fi
+
+    $PYTHON run_experiment.py matrix \
+        --model "$model" --scenarios "$scenarios" --engines "$engine" \
+        --iterations "$iterations" --cooldown-seconds "$cooldown" \
+        --sglang-host "$SGLANG_HOST" --output-dir "$output_dir"
+    local rc=$?
+    [ $rc -ne 0 ] && error "SGLang-Gemma4 (${engine}) benchmark failed for ${model} (exit ${rc})"
 
     cleanup bench-sglang
     return $rc
@@ -541,7 +643,8 @@ if [ "$RUN_PHASE3" = "true" ] && [ "$RUN_PHASE3_REDO" = "false" ]; then
         if [ "$image_tag" = "gemma4" ]; then
             saved_vllm="$VLLM_IMAGE"; saved_sglang="$SGLANG_IMAGE"
             VLLM_IMAGE="$GEMMA4_VLLM_IMAGE"; SGLANG_IMAGE="$GEMMA4_SGLANG_IMAGE"
-            pull_image_if_missing "$VLLM_IMAGE"
+            # vLLM gemma4 pull disabled — vLLM runs already complete, SGLang only.
+            #pull_image_if_missing "$VLLM_IMAGE"
             [ "${SKIP_GEMMA4_SGLANG:-0}" = "1" ] || pull_image_if_missing "$SGLANG_IMAGE"
         fi
 
@@ -559,7 +662,7 @@ if [ "$RUN_PHASE3" = "true" ] && [ "$RUN_PHASE3_REDO" = "false" ]; then
             # transformers-from-git). Other models use the pinned-image path.
             if [ "$image_tag" = "gemma4" ]; then
                 if [ "$engine" = "vllm" ]; then
-                    MAX_MODEL_LEN=5632 run_vllm_gemma4 "$model" "$DECODE_SCENARIOS_ALL" "$deficit" 15 "results_decode_sweep" "vllm"
+                    MAX_MODEL_LEN=5632 run_vllm_gemma4 "$model" "$DECODE_SCENARIOS_ALL" "$deficit" 15 "results_decode_sweep" "vllm" --enforce-eager
                 else
                     MAX_MODEL_LEN=5632 run_sglang_gemma4 "$model" "$DECODE_SCENARIOS_ALL" "$deficit" 15 "results_decode_sweep" "sglang"
                 fi
@@ -636,98 +739,6 @@ fi
 #  are skipped. Run with: bash scripts/run_new_benchmarks.sh --phase4
 # =============================================================================
 
-# Run Gemma 4 vLLM (baseline or ngram). Installs transformers-from-git on boot.
-# Args: model scenarios iterations cooldown output_dir engine_label [extra server args...]
-run_vllm_gemma4() {
-    local model="$1" scenarios="$2" iterations="$3" cooldown="$4"
-    local output_dir="$5" engine="$6"; shift 6
-    local extra=("$@")
-    local mml="${MAX_MODEL_LEN:-4096}" gmu="${GPU_MEM_UTIL:-0.85}"
-
-    log "vLLM-Gemma4 (${engine}) — ${model}"
-    cleanup bench-vllm
-
-    local server_args=(
-        --model "$model" --host 0.0.0.0 --port 8000
-        --enable-prefix-caching --max-model-len "$mml"
-        --gpu-memory-utilization "$gmu" --served-model-name "$model"
-        "${extra[@]}"
-    )
-    local quoted
-    quoted=$(printf '%q ' "${server_args[@]}")
-    # vllm/vllm-openai:latest lacks `python` alias and `git` → install both.
-    # Use python3 (canonical on the upstream image) to invoke vLLM.
-    local cmd="(command -v git >/dev/null || (apt-get update -qq && apt-get install -y -qq git)) && pip install -q --upgrade git+https://github.com/huggingface/transformers.git && exec python3 -m vllm.entrypoints.openai.api_server ${quoted}"
-
-    $DOCKER run -d --name bench-vllm --gpus '"device=0"' \
-        -p "${VLLM_BIND_IP}:8000:8000" --shm-size 10g \
-        -v "$(pwd)/model-cache:/root/.cache/huggingface" \
-        -e "HUGGING_FACE_HUB_TOKEN=${HF_TOKEN}" -e "CUDA_VISIBLE_DEVICES=0" \
-        --entrypoint bash "$GEMMA4_VLLM_IMAGE" -c "$cmd"
-    [ $? -ne 0 ] && { error "vLLM-Gemma4 docker run failed for ${model}"; return 1; }
-
-    if ! wait_vllm 900; then
-        error "vLLM-Gemma4 failed to start for ${model}"
-        $DOCKER logs bench-vllm --tail 40 2>&1
-        cleanup bench-vllm; return 1
-    fi
-
-    $PYTHON run_experiment.py matrix \
-        --model "$model" --scenarios "$scenarios" --engines "$engine" \
-        --iterations "$iterations" --cooldown-seconds "$cooldown" \
-        --vllm-host "$VLLM_HOST" --output-dir "$output_dir"
-    local rc=$?
-    [ $rc -ne 0 ] && error "vLLM-Gemma4 (${engine}) benchmark failed for ${model} (exit ${rc})"
-
-    cleanup bench-vllm
-    return $rc
-}
-
-# Run Gemma 4 SGLang (baseline or ngram).
-run_sglang_gemma4() {
-    local model="$1" scenarios="$2" iterations="$3" cooldown="$4"
-    local output_dir="$5" engine="$6"; shift 6
-    local extra=("$@")
-    local mml="${MAX_MODEL_LEN:-4096}" mfs="${MEM_FRAC_STATIC:-0.85}"
-
-    log "SGLang-Gemma4 (${engine}) — ${model}"
-    cleanup bench-sglang
-
-    local server_args=(
-        --model-path "$model" --host 0.0.0.0 --port 8001
-        --mem-fraction-static "$mfs" --context-length "$mml"
-        --disable-cuda-graph
-        "${extra[@]}"
-    )
-    local quoted
-    quoted=$(printf '%q ' "${server_args[@]}")
-    local cmd="(command -v git >/dev/null || (apt-get update -qq && apt-get install -y -qq git)) && pip install -q --upgrade git+https://github.com/huggingface/transformers.git && exec python3 -m sglang.launch_server ${quoted}"
-
-    $DOCKER run -d --name bench-sglang --gpus '"device=0"' \
-        -p "${SGLANG_HOST}:8001:8001" --shm-size 10g \
-        -v "$(pwd)/model-cache:/root/.cache/huggingface" \
-        -e "HUGGING_FACE_HUB_TOKEN=${HF_TOKEN}" -e "CUDA_VISIBLE_DEVICES=0" \
-        -e "SGLANG_ALLOW_OVERWRITE_LONGER_CONTEXT_LEN=1" \
-        --entrypoint bash "$GEMMA4_SGLANG_IMAGE" -c "$cmd"
-    [ $? -ne 0 ] && { error "SGLang-Gemma4 docker run failed for ${model}"; return 1; }
-
-    if ! wait_sglang 900; then
-        error "SGLang-Gemma4 failed to start for ${model}"
-        $DOCKER logs bench-sglang --tail 40 2>&1
-        cleanup bench-sglang; return 1
-    fi
-
-    $PYTHON run_experiment.py matrix \
-        --model "$model" --scenarios "$scenarios" --engines "$engine" \
-        --iterations "$iterations" --cooldown-seconds "$cooldown" \
-        --sglang-host "$SGLANG_HOST" --output-dir "$output_dir"
-    local rc=$?
-    [ $rc -ne 0 ] && error "SGLang-Gemma4 (${engine}) benchmark failed for ${model} (exit ${rc})"
-
-    cleanup bench-sglang
-    return $rc
-}
-
 # Gather pending scenarios (comma-joined) for a given (model, engine) under results/.
 phase4_pending_scenarios() {
     local slug="$1" engine="$2"; shift 2
@@ -745,7 +756,8 @@ if [ "$RUN_PHASE4" = "true" ]; then
 
     # Ensure the :latest images exist locally (may not have been pulled earlier).
     # SKIP_GEMMA4_SGLANG=1 skips pulling the sglang:latest image (~50 GB).
-    pull_image_if_missing "$GEMMA4_VLLM_IMAGE"
+    # vLLM gemma4 pull disabled — vLLM runs already complete, SGLang only.
+    #pull_image_if_missing "$GEMMA4_VLLM_IMAGE"
     [ "${SKIP_GEMMA4_SGLANG:-0}" = "1" ] || pull_image_if_missing "$GEMMA4_SGLANG_IMAGE"
 
     PHASE4_BASELINE_SCENARIOS=(single_request_latency throughput_ramp long_context_stress prefix_sharing_benefit structured_generation_speed)

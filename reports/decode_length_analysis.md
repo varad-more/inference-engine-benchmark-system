@@ -142,6 +142,76 @@ Fixed ~512-token prompts, `max_output_tokens` swept across [64, 256, 1024, 4096]
 - **TTFT crossover:** sglang → vllm at max_tokens=256
 - **TTFT at max_tokens=4096:** SGLang still leads by 18.9% — TTFT advantage is preserved at long decode.
 
+## gemma-4-E2B-it
+
+### Throughput (tok/s)
+
+| max_tokens | vLLM tok/s | SGLang tok/s | Winner |
+|-----------|-----------|-------------|--------|
+| 64 | — | — | — |
+| 256 | — | — | — |
+| 1024 | — | — | — |
+| 4096 | — | — | — |
+
+### TTFT P50 (ms)
+
+| max_tokens | vLLM TTFT | SGLang TTFT |
+|-----------|-----------|-------------|
+| 64 | 95.5 ± 5.6 ms | 109.8 ± 0.6 ms |
+| 256 | 95.3 ± 3.1 ms | 109.3 ± 1.6 ms |
+| 1024 | 95.2 ± 4.5 ms | 110.5 ± 6.6 ms |
+| 4096 | 95.0 ± 6.7 ms | 109.2 ± 0.4 ms |
+
+### TPOT P50 (ms/token)
+
+| max_tokens | vLLM TPOT | SGLang TPOT |
+|-----------|-----------|-------------|
+| 64 | — | — |
+| 256 | — | — |
+| 1024 | — | — |
+| 4096 | — | — |
+
+### Findings
+
+- **Throughput crossover:** insufficient data
+- **TTFT crossover:** no crossover — sglang leads throughout (gap 13.0% at max_tokens=4096)
+- **TTFT at max_tokens=4096:** vLLM still leads by 13.0% — TTFT advantage is preserved at long decode.
+
+## gemma-4-E4B-it
+
+### Throughput (tok/s)
+
+| max_tokens | vLLM tok/s | SGLang tok/s | Winner |
+|-----------|-----------|-------------|--------|
+| 64 | 139.4 ± 48.6 | 132.7 ± 7.3 | vLLM +5% |
+| 256 | 157.9 ± 1.3 | 145.7 ± 6.0 | vLLM +8% |
+| 1024 | 159.4 ± 0.5 | 150.9 ± 0.6 | vLLM +5% |
+| 4096 | 159.4 ± 0.1 | 143.4 ± 1.2 | vLLM +10% |
+
+### TTFT P50 (ms)
+
+| max_tokens | vLLM TTFT | SGLang TTFT |
+|-----------|-----------|-------------|
+| 64 | 114.9 ± 1.8 ms | 130.3 ± 2.7 ms |
+| 256 | 115.0 ± 1.2 ms | 129.0 ± 6.6 ms |
+| 1024 | 115.1 ± 2.5 ms | 129.5 ± 2.1 ms |
+| 4096 | 114.6 ± 1.3 ms | 130.9 ± 4.4 ms |
+
+### TPOT P50 (ms/token)
+
+| max_tokens | vLLM TPOT | SGLang TPOT |
+|-----------|-----------|-------------|
+| 64 | 40.4 ± 0.6 ms | 46.1 ± 1.0 ms |
+| 256 | 40.2 ± 0.6 ms | 43.6 ± 1.4 ms |
+| 1024 | 40.3 ± 0.2 ms | 42.5 ± 0.4 ms |
+| 4096 | 40.3 ± 0.2 ms | 42.3 ± 0.8 ms |
+
+### Findings
+
+- **Throughput crossover:** no crossover — vllm leads throughout (gap 10.1% at max_tokens=4096)
+- **TTFT crossover:** no crossover — sglang leads throughout (gap 12.4% at max_tokens=4096)
+- **TTFT at max_tokens=4096:** vLLM still leads by 12.4% — TTFT advantage is preserved at long decode.
+
 ## Summary: TTFT Advantage at Long Decode (max_tokens=4096)
 
 Does vLLM's TTFT advantage (seen at concurrency=1) survive high output-token budgets? TTFT is determined at the prefill stage, so it should be independent of max_tokens — any divergence here indicates system-level effects (KV memory pressure, scheduler backpressure).
@@ -152,3 +222,5 @@ Does vLLM's TTFT advantage (seen at concurrency=1) survive high output-token bud
 | Phi-4-mini-instruct | 56.8 ± 2.0 ms | 48.3 ± 23.7 ms | Yes |
 | gemma-2-2b-it | 37.5 ± 0.3 ms | 37.9 ± 0.5 ms | No (converged) |
 | gemma-3-4b-it | 123.5 ± 2.9 ms | 100.2 ± 1.2 ms | Yes |
+| gemma-4-E2B-it | 95.0 ± 6.7 ms | 109.2 ± 0.4 ms | Yes |
+| gemma-4-E4B-it | 114.6 ± 1.3 ms | 130.9 ± 4.4 ms | Yes |

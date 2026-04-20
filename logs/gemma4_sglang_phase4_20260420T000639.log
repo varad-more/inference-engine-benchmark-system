@@ -1,0 +1,82 @@
+
+========================================================================
+[2026-04-20 00:06:39] PREFLIGHT
+========================================================================
+  Python: Python 3.13.12
+  Docker: 29.1.3
+  GPU:    NVIDIA A10G, 23028 MiB
+  HF token: found
+  vLLM bind: 172.31.43.213:8000
+  SGLang:    172.31.43.213:8001
+
+========================================================================
+[2026-04-20 00:06:41] PULLING DOCKER IMAGES (if not cached)
+========================================================================
+
+========================================================================
+[2026-04-20 00:06:41] PREFLIGHT COMPLETE
+========================================================================
+
+========================================================================
+[2026-04-20 00:06:41] PHASE 4 — GEMMA 4 (baseline + ngram spec-dec, resume)
+========================================================================
+  [pull] vllm/vllm-openai:latest — not found locally, pulling...
+latest: Pulling from vllm/vllm-openai
+79789cd7b026: Pulling fs layer
+221c2136afde: Pulling fs layer
+41b285c072bb: Pulling fs layer
+4d1acfd0ca86: Pulling fs layer
+f29b1d4013a9: Pulling fs layer
+6e8af4fd0a07: Pulling fs layer
+66587c81b81a: Pulling fs layer
+e97a3b2dd5b4: Pulling fs layer
+2ae5276ee4af: Pulling fs layer
+639c5b6dcdcc: Pulling fs layer
+ecfe24229231: Pulling fs layer
+59a4bcbddda3: Pulling fs layer
+538a021fe593: Pulling fs layer
+1d2bf29d2d33: Pulling fs layer
+c74306d5e9a3: Pulling fs layer
+30d740efde88: Pulling fs layer
+43afbe813ddf: Pulling fs layer
+d903b0585329: Pulling fs layer
+71834d56fbb3: Pulling fs layer
+3cd60e5dff7a: Pulling fs layer
+13192de4a45e: Pulling fs layer
+95af3ece301f: Pulling fs layer
+394e603deea8: Pulling fs layer
+257588654d22: Pulling fs layer
+82dd4757f190: Pulling fs layer
+340d44d2921c: Pulling fs layer
+b3a77bc542b1: Pulling fs layer
+43afbe813ddf: Download complete
+79789cd7b026: Download complete
+d903b0585329: Download complete
+6e8af4fd0a07: Download complete
+2ae5276ee4af: Download complete
+59a4bcbddda3: Download complete
+f29b1d4013a9: Download complete
+71834d56fbb3: Download complete
+221c2136afde: Download complete
+41b285c072bb: Download complete
+639c5b6dcdcc: Download complete
+30d740efde88: Download complete
+538a021fe593: Download complete
+13192de4a45e: Download complete
+394e603deea8: Download complete
+1d2bf29d2d33: Download complete
+3cd60e5dff7a: Download complete
+66587c81b81a: Download complete
+4d1acfd0ca86: Download complete
+b3a77bc542b1: Download complete
+340d44d2921c: Download complete
+66587c81b81a: Pull complete
+f29b1d4013a9: Pull complete
+ecfe24229231: Download complete
+340d44d2921c: Pull complete
+59a4bcbddda3: Pull complete
+6e8af4fd0a07: Pull complete
+41b285c072bb: Pull complete
+394e603deea8: Pull complete
+c74306d5e9a3: Download complete
+82dd4757f190: Download complete

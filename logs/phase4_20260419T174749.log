@@ -1,0 +1,103 @@
+
+========================================================================
+[2026-04-19 17:47:49] PREFLIGHT
+========================================================================
+  Python: Python 3.13.12
+  Docker: 29.1.3
+  GPU:    NVIDIA A10G, 23028 MiB
+  HF token: found
+  vLLM bind: 172.31.43.213:8000
+  SGLang:    172.31.43.213:8001
+
+========================================================================
+[2026-04-19 17:47:52] PULLING DOCKER IMAGES (if not cached)
+========================================================================
+  [pull] vllm/vllm-openai:v0.18.0-cu130 — already present, skipping pull
+  [pull] lmsysorg/sglang:v0.5.10.post1-cu130 — already present, skipping pull
+
+========================================================================
+[2026-04-19 17:47:52] PREFLIGHT COMPLETE
+========================================================================
+
+========================================================================
+[2026-04-19 17:47:52] PHASE 4 — GEMMA 4 (baseline + ngram spec-dec, resume)
+========================================================================
+  [pull] vllm/vllm-openai:latest — already present, skipping pull
+  [RUN]  vllm google/gemma-4-E2B-it baseline — single_request_latency,throughput_ramp,long_context_stress,prefix_sharing_benefit,structured_generation_speed
+
+========================================================================
+[2026-04-19 17:47:52] vLLM-Gemma4 (vllm) — google/gemma-4-E2B-it
+========================================================================
+3ba1a63ecc2373e6f12f65a33f32fb277d2d403b53d7f39885ff44834f34147d
+  Waiting for vLLM health............ CONTAINER EXITED
+  Container logs (last 20 lines):
+                         [--kv-transfer-config KV_TRANSFER_CONFIG]
+                         [--kv-events-config KV_EVENTS_CONFIG]
+                         [--ec-transfer-config EC_TRANSFER_CONFIG]
+                         [--compilation-config COMPILATION_CONFIG]
+                         [--attention-config ATTENTION_CONFIG]
+                         [--reasoning-config REASONING_CONFIG]
+                         [--kernel-config KERNEL_CONFIG]
+                         [--additional-config ADDITIONAL_CONFIG]
+                         [--structured-outputs-config STRUCTURED_OUTPUTS_CONFIG]
+                         [--profiler-config PROFILER_CONFIG]
+                         [--optimization-level OPTIMIZATION_LEVEL]
+                         [--performance-mode {balanced,interactivity,throughput}]
+                         [--weight-transfer-config WEIGHT_TRANSFER_CONFIG]
+                         [--disable-log-stats] [--aggregate-engine-logging]
+                         [--fail-on-environ-validation | --no-fail-on-environ-validation]
+                         [--shutdown-timeout SHUTDOWN_TIMEOUT]
+                         [--gdn-prefill-backend {flashinfer,triton}]
+                         [--enable-log-requests | --no-enable-log-requests]
+                         [model_tag]
+    api_server.py: error: unrecognized arguments: --disable-frontend-multiprocessing
+[2026-04-19 17:49:00] ERROR: vLLM-Gemma4 failed to start for google/gemma-4-E2B-it
+                     [--enable-mfu-metrics | --no-enable-mfu-metrics]
+                     [--enable-logging-iteration-details | --no-enable-logging-iteration-details]
+                     [--max-num-batched-tokens MAX_NUM_BATCHED_TOKENS]
+                     [--max-num-seqs MAX_NUM_SEQS]
+                     [--max-num-partial-prefills MAX_NUM_PARTIAL_PREFILLS]
+                     [--max-long-partial-prefills MAX_LONG_PARTIAL_PREFILLS]
+                     [--long-prefill-token-threshold LONG_PREFILL_TOKEN_THRESHOLD]
+                     [--scheduling-policy {fcfs,priority}]
+                     [--enable-chunked-prefill | --no-enable-chunked-prefill]
+                     [--disable-chunked-mm-input | --no-disable-chunked-mm-input]
+                     [--scheduler-cls SCHEDULER_CLS]
+                     [--scheduler-reserve-full-isl | --no-scheduler-reserve-full-isl]
+                     [--disable-hybrid-kv-cache-manager | --no-disable-hybrid-kv-cache-manager]
+                     [--async-scheduling | --no-async-scheduling]
+                     [--stream-interval STREAM_INTERVAL]
+                     [--cudagraph-capture-sizes CUDAGRAPH_CAPTURE_SIZES [CUDAGRAPH_CAPTURE_SIZES ...]]
+                     [--max-cudagraph-capture-size MAX_CUDAGRAPH_CAPTURE_SIZE]
+                     [--enable-flashinfer-autotune | --no-enable-flashinfer-autotune]
+                     [--moe-backend {aiter,auto,cutlass,deep_gemm,flashinfer_cutedsl,flashinfer_cutlass,flashinfer_trtllm,marlin,triton}]
+                     [--speculative-config SPECULATIVE_CONFIG]
+                     [--kv-transfer-config KV_TRANSFER_CONFIG]
+                     [--kv-events-config KV_EVENTS_CONFIG]
+                     [--ec-transfer-config EC_TRANSFER_CONFIG]
+                     [--compilation-config COMPILATION_CONFIG]
+                     [--attention-config ATTENTION_CONFIG]
+                     [--reasoning-config REASONING_CONFIG]
+                     [--kernel-config KERNEL_CONFIG]
+                     [--additional-config ADDITIONAL_CONFIG]
+                     [--structured-outputs-config STRUCTURED_OUTPUTS_CONFIG]
+                     [--profiler-config PROFILER_CONFIG]
+                     [--optimization-level OPTIMIZATION_LEVEL]
+                     [--performance-mode {balanced,interactivity,throughput}]
+                     [--weight-transfer-config WEIGHT_TRANSFER_CONFIG]
+                     [--disable-log-stats] [--aggregate-engine-logging]
+                     [--fail-on-environ-validation | --no-fail-on-environ-validation]
+                     [--shutdown-timeout SHUTDOWN_TIMEOUT]
+                     [--gdn-prefill-backend {flashinfer,triton}]
+                     [--enable-log-requests | --no-enable-log-requests]
+                     [model_tag]
+api_server.py: error: unrecognized arguments: --disable-frontend-multiprocessing
+bench-vllm
+  [SKIP] sglang google/gemma-4-E2B-it baseline — SKIP_GEMMA4_SGLANG=1 (disk)
+  [RUN]  vllm-ngram google/gemma-4-E2B-it — single_request_latency,throughput_ramp
+
+========================================================================
+[2026-04-19 17:49:03] vLLM-Gemma4 (vllm-ngram) — google/gemma-4-E2B-it
+========================================================================
+5b5f085c3900dcfda24d0609c1c53d1cb46d004ed890444432b7a4a2b6feae84
+  Waiting for vLLM health.....
