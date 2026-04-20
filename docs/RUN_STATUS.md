@@ -96,8 +96,10 @@ All four extended phases are complete as of 2026-04-20. The underlying 14-model 
 ## Commands
 
 ```bash
-# Re-audit at any time (sanity check)
-bash scripts/pending.sh --audit-only
+# Re-audit at any time (just tallies result files on disk)
+for d in results results_variance results_concurrency64 results_decode_sweep; do
+  echo "$d: $(find "$d" -name '*.json' -not -name '*manifest*' | wc -l) files"
+done
 
 # Every phase is idempotent — this is a no-op once complete
 bash scripts/run_new_benchmarks.sh --all
