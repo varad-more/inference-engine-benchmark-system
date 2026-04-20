@@ -1,0 +1,243 @@
+
+========================================================================
+[2026-04-20 00:12:11] PREFLIGHT
+========================================================================
+  Python: Python 3.13.12
+  Docker: 29.1.3
+  GPU:    NVIDIA A10G, 23028 MiB
+  HF token: found
+  vLLM bind: 172.31.43.213:8000
+  SGLang:    172.31.43.213:8001
+
+========================================================================
+[2026-04-20 00:12:13] PULLING DOCKER IMAGES (if not cached)
+========================================================================
+
+========================================================================
+[2026-04-20 00:12:13] PREFLIGHT COMPLETE
+========================================================================
+
+========================================================================
+[2026-04-20 00:12:13] PHASE 4 — GEMMA 4 (baseline + ngram spec-dec, resume)
+========================================================================
+  [pull] lmsysorg/sglang:latest — not found locally, pulling...
+latest: Pulling from lmsysorg/sglang
+02559cd4bc8d: Pulling fs layer
+1aa2fc45621d: Pulling fs layer
+644e9b203583: Pulling fs layer
+eefdffbe77c4: Pulling fs layer
+3cde19e46e49: Pulling fs layer
+1e7291041da7: Pulling fs layer
+2cd52cbb1ebe: Pulling fs layer
+14737f95e498: Pulling fs layer
+dc0322f80d19: Pulling fs layer
+a1949430d14a: Pulling fs layer
+e0a60d11baaf: Pulling fs layer
+32f112e3802c: Pulling fs layer
+2b9c93255401: Pulling fs layer
+6cb9b761b877: Pulling fs layer
+32bc6143c1d4: Pulling fs layer
+2399656800b7: Pulling fs layer
+7f7602a82106: Pulling fs layer
+32e74186af0a: Pulling fs layer
+bc94a9448b8d: Pulling fs layer
+02cb0e091e33: Pulling fs layer
+3496e383742f: Pulling fs layer
+4f4fb700ef54: Pulling fs layer
+e179981ee6ce: Pulling fs layer
+e43addc8c1de: Pulling fs layer
+3d5153a88c86: Pulling fs layer
+acdcefbc7efe: Pulling fs layer
+81a09ba7b11b: Pulling fs layer
+2b2708b43aba: Pulling fs layer
+68044286ad13: Pulling fs layer
+6e8af4fd0a07: Pulling fs layer
+4f4fb700ef54: Pulling fs layer
+15a17189b2df: Pulling fs layer
+d749c2c11c0a: Pulling fs layer
+11de3b5379f2: Pulling fs layer
+01528f838fd9: Pulling fs layer
+9e14b831e9c9: Pulling fs layer
+9c3d619183d2: Pulling fs layer
+5a2aba542b08: Pulling fs layer
+71c9d315e5fc: Pulling fs layer
+f4c17506c447: Pulling fs layer
+481454657d56: Pulling fs layer
+4f4fb700ef54: Pulling fs layer
+4f4fb700ef54: Pulling fs layer
+a80a0583c17c: Pulling fs layer
+6933eda9036d: Pulling fs layer
+9e0235c06657: Pulling fs layer
+1a1caf0dea10: Pulling fs layer
+4f4fb700ef54: Already exists
+6e8af4fd0a07: Already exists
+3496e383742f: Download complete
+7f7602a82106: Download complete
+dc0322f80d19: Download complete
+02cb0e091e33: Download complete
+644e9b203583: Download complete
+eefdffbe77c4: Download complete
+2cd52cbb1ebe: Download complete
+e179981ee6ce: Download complete
+3cde19e46e49: Download complete
+9c3d619183d2: Download complete
+32e74186af0a: Download complete
+2b2708b43aba: Download complete
+1e7291041da7: Download complete
+6cb9b761b877: Download complete
+32bc6143c1d4: Download complete
+481454657d56: Download complete
+a80a0583c17c: Download complete
+e43addc8c1de: Download complete
+9e14b831e9c9: Download complete
+71c9d315e5fc: Download complete
+01528f838fd9: Download complete
+3d5153a88c86: Download complete
+896ef57d366b: Download complete
+32f112e3802c: Download complete
+f4c17506c447: Download complete
+11de3b5379f2: Download complete
+81a09ba7b11b: Download complete
+68044286ad13: Download complete
+14737f95e498: Download complete
+32f112e3802c: Pull complete
+a1949430d14a: Download complete
+644e9b203583: Pull complete
+2399656800b7: Download complete
+e0a60d11baaf: Download complete
+6933eda9036d: Download complete
+02559cd4bc8d: Download complete
+d749c2c11c0a: Download complete
+1a1caf0dea10: Download complete
+02559cd4bc8d: Pull complete
+2cd52cbb1ebe: Pull complete
+6e8af4fd0a07: Pull complete
+acdcefbc7efe: Download complete
+9e0235c06657: Download complete
+bc94a9448b8d: Download complete
+2b9c93255401: Download complete
+15a17189b2df: Download complete
+5a2aba542b08: Download complete
+15a17189b2df: Pull complete
+02cb0e091e33: Pull complete
+9c3d619183d2: Pull complete
+7f7602a82106: Pull complete
+1aa2fc45621d: Download complete
+5a2aba542b08: Pull complete
+6cb9b761b877: Pull complete
+bc94a9448b8d: Pull complete
+d749c2c11c0a: Pull complete
+4f4fb700ef54: Pull complete
+9e0235c06657: Pull complete
+dc0322f80d19: Pull complete
+32bc6143c1d4: Pull complete
+32e74186af0a: Pull complete
+3496e383742f: Pull complete
+acdcefbc7efe: Pull complete
+f4c17506c447: Pull complete
+1aa2fc45621d: Pull complete
+9e14b831e9c9: Pull complete
+68044286ad13: Pull complete
+71c9d315e5fc: Pull complete
+2399656800b7: Pull complete
+a1949430d14a: Pull complete
+e0a60d11baaf: Pull complete
+2b9c93255401: Pull complete
+14737f95e498: Pull complete
+1a1caf0dea10: Pull complete
+1e7291041da7: Pull complete
+481454657d56: Pull complete
+e43addc8c1de: Pull complete
+6933eda9036d: Pull complete
+81a09ba7b11b: Pull complete
+2b2708b43aba: Pull complete
+01528f838fd9: Pull complete
+3d5153a88c86: Pull complete
+e179981ee6ce: Pull complete
+3cde19e46e49: Pull complete
+eefdffbe77c4: Pull complete
+a80a0583c17c: Pull complete
+11de3b5379f2: Pull complete
+Digest: sha256:7515a1e626d22a8582ad4478d3d68b294d2b484c78a023f8b61c6867454bbf4a
+Status: Downloaded newer image for lmsysorg/sglang:latest
+docker.io/lmsysorg/sglang:latest
+  [pull] lmsysorg/sglang:latest — done
+  [SKIP] vllm google/gemma-4-E2B-it baseline — all 5 scenarios present
+  [RUN]  sglang google/gemma-4-E2B-it baseline — single_request_latency,throughput_ramp,long_context_stress,prefix_sharing_benefit,structured_generation_speed
+
+========================================================================
+[2026-04-20 00:20:19] SGLang-Gemma4 (sglang) — google/gemma-4-E2B-it
+========================================================================
+04b8d1c4aa0bc2cdfb1202744a0ee7b0d68119749d027905315dd8764719c387
+  Waiting for SGLang health....................... CONTAINER EXITED
+  Container logs (last 20 lines):
+        model.load_weights(weights)
+      File "/sgl-workspace/sglang/python/sglang/srt/models/transformers.py", line 1089, in load_weights
+        return loader.load_weights(weights, mapper=self.weight_mapper)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+      File "/sgl-workspace/sglang/python/sglang/srt/models/utils.py", line 270, in load_weights
+        return set(self._load_module("", self.module, weights))
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+      File "/sgl-workspace/sglang/python/sglang/srt/models/utils.py", line 226, in _load_module
+        yield from self._load_module(
+      File "/sgl-workspace/sglang/python/sglang/srt/models/utils.py", line 226, in _load_module
+        yield from self._load_module(
+      File "/sgl-workspace/sglang/python/sglang/srt/models/utils.py", line 226, in _load_module
+        yield from self._load_module(
+      [Previous line repeated 2 more times]
+      File "/sgl-workspace/sglang/python/sglang/srt/models/utils.py", line 255, in _load_module
+        raise ValueError(
+    ValueError: No module or parameter named 'model.language_model.layers.15.self_attn.k_norm' in TransformersMultiModalForCausalLM.
+    
+    Multi-thread loading shards:   0% Completed | 0/1 [00:48<?, ?it/s][2026-04-20 00:22:48] Received sigquit from a child process. It usually means the child failed.
+    
+[2026-04-20 00:22:55] ERROR: SGLang-Gemma4 failed to start for google/gemma-4-E2B-it
+  File "/sgl-workspace/sglang/python/sglang/srt/managers/scheduler.py", line 632, in init_model_worker
+    self.init_tp_model_worker()
+  File "/sgl-workspace/sglang/python/sglang/srt/managers/scheduler.py", line 600, in init_tp_model_worker
+    self.tp_worker = TpModelWorker(**worker_kwargs)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/sgl-workspace/sglang/python/sglang/srt/managers/tp_worker.py", line 261, in __init__
+    self._init_model_runner()
+  File "/sgl-workspace/sglang/python/sglang/srt/managers/tp_worker.py", line 344, in _init_model_runner
+    self._model_runner = ModelRunner(
+                         ^^^^^^^^^^^^
+  File "/sgl-workspace/sglang/python/sglang/srt/model_executor/model_runner.py", line 427, in __init__
+    self.initialize(pre_model_load_memory)
+  File "/sgl-workspace/sglang/python/sglang/srt/model_executor/model_runner.py", line 507, in initialize
+    self.load_model()
+  File "/sgl-workspace/sglang/python/sglang/srt/model_executor/model_runner.py", line 1159, in load_model
+    self.model = self.loader.load_model(
+                 ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/sgl-workspace/sglang/python/sglang/srt/model_loader/loader.py", line 689, in load_model
+    self.load_weights_and_postprocess(
+  File "/sgl-workspace/sglang/python/sglang/srt/model_loader/loader.py", line 698, in load_weights_and_postprocess
+    model.load_weights(weights)
+  File "/sgl-workspace/sglang/python/sglang/srt/models/transformers.py", line 1089, in load_weights
+    return loader.load_weights(weights, mapper=self.weight_mapper)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/sgl-workspace/sglang/python/sglang/srt/models/utils.py", line 270, in load_weights
+    return set(self._load_module("", self.module, weights))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/sgl-workspace/sglang/python/sglang/srt/models/utils.py", line 226, in _load_module
+    yield from self._load_module(
+  File "/sgl-workspace/sglang/python/sglang/srt/models/utils.py", line 226, in _load_module
+    yield from self._load_module(
+  File "/sgl-workspace/sglang/python/sglang/srt/models/utils.py", line 226, in _load_module
+    yield from self._load_module(
+  [Previous line repeated 2 more times]
+  File "/sgl-workspace/sglang/python/sglang/srt/models/utils.py", line 255, in _load_module
+    raise ValueError(
+ValueError: No module or parameter named 'model.language_model.layers.15.self_attn.k_norm' in TransformersMultiModalForCausalLM.
+
+Multi-thread loading shards:   0% Completed | 0/1 [00:48<?, ?it/s][2026-04-20 00:22:48] Received sigquit from a child process. It usually means the child failed.
+
+bench-sglang
+  [SKIP] vllm-ngram google/gemma-4-E2B-it — all 2 scenarios present
+  [RUN]  sglang-ngram google/gemma-4-E2B-it — single_request_latency,throughput_ramp
+
+========================================================================
+[2026-04-20 00:22:59] SGLang-Gemma4 (sglang-ngram) — google/gemma-4-E2B-it
+========================================================================
+6d12b2bf4ece0e540ceee2400a946c1b0d718a1102179a466f19938ca6eb3b3b
+  Waiting for SGLang health.......

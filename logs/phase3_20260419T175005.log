@@ -1,0 +1,229 @@
+
+========================================================================
+[2026-04-19 20:31:35] PREFLIGHT
+========================================================================
+  Python: 
+# >>>>>>>>>>>>>>>>>>>>>> ERROR REPORT <<<<<<<<<<<<<<<<<<<<<<
+
+    Traceback (most recent call last):
+      File "/home/ubuntu/miniconda3/lib/python3.13/site-packages/conda/exception_handler.py", line 30, in __call__
+        return func(*args, **kwargs)
+      File "/home/ubuntu/miniconda3/lib/python3.13/site-packages/conda/cli/main.py", line 62, in main_subshell
+        exit_code = do_call(args, parser)
+      File "/home/ubuntu/miniconda3/lib/python3.13/site-packages/conda/cli/conda_argparse.py", line 205, in do_call
+        result = getattr(module, func_name)(args, parser)
+      File "/home/ubuntu/miniconda3/lib/python3.13/site-packages/conda/cli/main_run.py", line 115, in execute
+        script, command = wrap_subprocess_call(
+                          ~~~~~~~~~~~~~~~~~~~~^
+            context.root_prefix,
+            ^^^^^^^^^^^^^^^^^^^^
+        ...<3 lines>...
+            args.executable_call,
+            ^^^^^^^^^^^^^^^^^^^^^
+        )
+        ^
+      File "/home/ubuntu/miniconda3/lib/python3.13/site-packages/conda/deprecations.py", line 194, in inner
+        return func(*args, **kwargs)
+      File "/home/ubuntu/miniconda3/lib/python3.13/site-packages/conda/utils.py", line 327, in wrap_subprocess_call
+        with Utf8NamedTemporaryFile(mode="w", delete=False) as fh:
+             ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+      File "/home/ubuntu/miniconda3/lib/python3.13/site-packages/conda/auxlib/compat.py", line 34, in Utf8NamedTemporaryFile
+        return NamedTemporaryFile(
+            mode=mode,
+        ...<6 lines>...
+            delete=delete,
+        )
+      File "/home/ubuntu/miniconda3/lib/python3.13/tempfile.py", line 565, in NamedTemporaryFile
+        prefix, suffix, dir, output_type = _sanitize_params(prefix, suffix, dir)
+                                           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+      File "/home/ubuntu/miniconda3/lib/python3.13/tempfile.py", line 126, in _sanitize_params
+        dir = gettempdir()
+      File "/home/ubuntu/miniconda3/lib/python3.13/tempfile.py", line 316, in gettempdir
+        return _os.fsdecode(_gettempdir())
+                            ~~~~~~~~~~~^^
+      File "/home/ubuntu/miniconda3/lib/python3.13/tempfile.py", line 309, in _gettempdir
+        tempdir = _get_default_tempdir()
+      File "/home/ubuntu/miniconda3/lib/python3.13/tempfile.py", line 224, in _get_default_tempdir
+        raise FileNotFoundError(_errno.ENOENT,
+                                "No usable temporary directory found in %s" %
+                                dirlist)
+    FileNotFoundError: [Errno 2] No usable temporary directory found in ['/tmp', '/var/tmp', '/usr/tmp', '/home/ubuntu/repos/inference-engine-benchmark-system']
+
+`$ /home/ubuntu/miniconda3/bin/conda run --no-capture-output -n base python --version`
+
+  environment variables:
+                 CIO_TEST=<not set>
+        CONDA_DEFAULT_ENV=base
+                CONDA_EXE=/home/ubuntu/miniconda3/bin/conda
+             CONDA_PREFIX=/home/ubuntu/miniconda3
+    CONDA_PROMPT_MODIFIER=(base)
+         CONDA_PYTHON_EXE=/home/ubuntu/miniconda3/bin/python
+               CONDA_ROOT=/home/ubuntu/miniconda3
+              CONDA_SHLVL=1
+           CURL_CA_BUNDLE=<not set>
+               LD_PRELOAD=<not set>
+                     PATH=/home/ubuntu/.local/bin:/home/ubuntu/.local/bin:/home/ubuntu/.local/bi
+                          n:/home/ubuntu/.local/bin:/home/ubuntu/.local/bin:/home/ubuntu/minicon
+                          da3/bin:/home/ubuntu/miniconda3/condabin:/usr/local/sbin:/usr/local/bi
+                          n:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
+       REQUESTS_CA_BUNDLE=<not set>
+            SSL_CERT_FILE=<not set>
+
+     active environment : base
+    active env location : /home/ubuntu/miniconda3
+            shell level : 1
+       user config file : /home/ubuntu/.condarc
+ populated config files : /home/ubuntu/miniconda3/.condarc
+                          /home/ubuntu/miniconda3/condarc.d/anaconda-auth.yml
+          conda version : 26.1.1
+    conda-build version : not installed
+         python version : 3.13.12.final.0
+                 solver : libmamba (default)
+       virtual packages : __archspec=1=zen2
+                          __conda=26.1.1=0
+                          __cuda=13.0=0
+                          __glibc=2.39=0
+                          __linux=6.17.0=0
+                          __unix=0=0
+       base environment : /home/ubuntu/miniconda3  (writable)
+      conda av data dir : /home/ubuntu/miniconda3/etc/conda
+  conda av metadata url : None
+           channel URLs : https://repo.anaconda.com/pkgs/main/linux-64
+                          https://repo.anaconda.com/pkgs/main/noarch
+                          https://repo.anaconda.com/pkgs/r/linux-64
+                          https://repo.anaconda.com/pkgs/r/noarch
+          package cache : /home/ubuntu/miniconda3/pkgs
+                          /home/ubuntu/.conda/pkgs
+       envs directories : /home/ubuntu/miniconda3/envs
+                          /home/ubuntu/.conda/envs
+    temporary directory : /tmp
+               platform : linux-64
+             user-agent : conda/26.1.1 requests/2.32.5 CPython/3.13.12 Linux/6.17.0-1010-aws ubuntu/24.04.4 glibc/2.39 solver/libmamba conda-libmamba-solver/25.11.0 libmambapy/2.3.2 aau/0.7.5 c/. s/. e/.
+                UID:GID : 1000:113
+             netrc file : None
+           offline mode : False
+
+
+An unexpected error has occurred. Conda has prepared the above report.
+If you suspect this error is being caused by a malfunctioning plugin,
+consider using the --no-plugins option to turn off plugins.
+
+Example: conda --no-plugins install <package>
+
+Alternatively, you can set the CONDA_NO_PLUGINS environment variable on
+the command line to run the command without plugins enabled.
+
+Example: CONDA_NO_PLUGINS=true conda install <package>
+
+  Docker: 29.1.3
+  GPU:    NVIDIA A10G, 23028 MiB
+  HF token: found
+  vLLM bind: 172.31.43.213:8000
+  SGLang:    172.31.43.213:8001
+
+========================================================================
+[2026-04-19 20:31:41] PULLING DOCKER IMAGES (if not cached)
+========================================================================
+  [pull] vllm/vllm-openai:v0.18.0-cu130 — already present, skipping pull
+  [pull] lmsysorg/sglang:v0.5.10.post1-cu130 — already present, skipping pull
+
+========================================================================
+[2026-04-19 20:31:41] PREFLIGHT COMPLETE
+========================================================================
+
+========================================================================
+[2026-04-19 20:31:41] PHASE 3 — DECODE-LENGTH SWEEP (top-up to ≥3 iter per cell)
+========================================================================
+  [pull] vllm/vllm-openai:latest — already present, skipping pull
+  [pull] lmsysorg/sglang:latest — not found locally, pulling...
+latest: Pulling from lmsysorg/sglang
+15a17189b2df: Pulling fs layer
+9e14b831e9c9: Pulling fs layer
+68044286ad13: Pulling fs layer
+02559cd4bc8d: Pulling fs layer
+9e0235c06657: Pulling fs layer
+4f4fb700ef54: Pulling fs layer
+32f112e3802c: Pulling fs layer
+6e8af4fd0a07: Pulling fs layer
+644e9b203583: Pulling fs layer
+e0a60d11baaf: Pulling fs layer
+acdcefbc7efe: Pulling fs layer
+a1949430d14a: Pulling fs layer
+32bc6143c1d4: Pulling fs layer
+2b2708b43aba: Pulling fs layer
+1aa2fc45621d: Pulling fs layer
+32e74186af0a: Pulling fs layer
+3d5153a88c86: Pulling fs layer
+f4c17506c447: Pulling fs layer
+9c3d619183d2: Pulling fs layer
+71c9d315e5fc: Pulling fs layer
+2cd52cbb1ebe: Pulling fs layer
+1a1caf0dea10: Pulling fs layer
+4f4fb700ef54: Pulling fs layer
+bc94a9448b8d: Pulling fs layer
+02cb0e091e33: Pulling fs layer
+481454657d56: Pulling fs layer
+dc0322f80d19: Pulling fs layer
+e43addc8c1de: Pulling fs layer
+5a2aba542b08: Pulling fs layer
+11de3b5379f2: Pulling fs layer
+e179981ee6ce: Pulling fs layer
+4f4fb700ef54: Pulling fs layer
+14737f95e498: Pulling fs layer
+eefdffbe77c4: Pulling fs layer
+6cb9b761b877: Pulling fs layer
+4f4fb700ef54: Pulling fs layer
+6933eda9036d: Pulling fs layer
+2399656800b7: Pulling fs layer
+a80a0583c17c: Pulling fs layer
+01528f838fd9: Pulling fs layer
+1e7291041da7: Pulling fs layer
+2b9c93255401: Pulling fs layer
+3496e383742f: Pulling fs layer
+7f7602a82106: Pulling fs layer
+d749c2c11c0a: Pulling fs layer
+81a09ba7b11b: Pulling fs layer
+3cde19e46e49: Pulling fs layer
+6e8af4fd0a07: Already exists
+4f4fb700ef54: Already exists
+4f4fb700ef54: Pull complete
+896ef57d366b: Download complete
+32bc6143c1d4: Download complete
+3d5153a88c86: Download complete
+32f112e3802c: Download complete
+2b2708b43aba: Download complete
+9c3d619183d2: Download complete
+32e74186af0a: Download complete
+02cb0e091e33: Download complete
+2cd52cbb1ebe: Download complete
+f4c17506c447: Download complete
+481454657d56: Download complete
+68044286ad13: Download complete
+dc0322f80d19: Download complete
+e43addc8c1de: Download complete
+3cde19e46e49: Download complete
+e0a60d11baaf: Download complete
+71c9d315e5fc: Download complete
+e179981ee6ce: Download complete
+3496e383742f: Download complete
+1e7291041da7: Download complete
+9e14b831e9c9: Download complete
+11de3b5379f2: Download complete
+eefdffbe77c4: Download complete
+a80a0583c17c: Download complete
+a1949430d14a: Download complete
+02559cd4bc8d: Download complete
+01528f838fd9: Download complete
+7f7602a82106: Download complete
+6cb9b761b877: Download complete
+644e9b203583: Download complete
+81a09ba7b11b: Download complete
+2399656800b7: Download complete
+14737f95e498: Download complete
+6933eda9036d: Download complete
+d749c2c11c0a: Download complete
+1a1caf0dea10: Download complete
+32f112e3802c: Pull complete
+644e9b203583: Pull complete
+failed to extract layer (application/vnd.oci.image.layer.v1.tar+gzip sha256:02559cd4bc8db240554ff3a4e38df5909d4745846b3e3a4df865d102f0a6d0d9) to overlayfs as "extract-246976798-phGS sha256:143da87c0ecc7587368619e9e9c353e19efa52cbae2d5fa02c3c0b06c11a32f8": write /var/lib/containerd/io.containerd.snapshotter.v1.overlayfs/snapshots/216/fs/usr/local/cuda-12.9/compat/libcuda.so.575.57.08: no space left on device
+ERROR: Failed to pull Docker image: lmsysorg/sglang:latest

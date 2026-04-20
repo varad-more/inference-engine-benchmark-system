@@ -1,0 +1,113 @@
+{
+  "started_at": 1776617275.48468,
+  "finished_at": 1776620398.9980872,
+  "total_elapsed_seconds": 3123.506632089615,
+  "model": "google/gemma-3-4b-it",
+  "tasks": [
+    {
+      "model": "google/gemma-3-4b-it",
+      "scenario_name": "decode_length_sweep_64",
+      "engine": "sglang",
+      "engine_variant": "sglang",
+      "spec_method": null,
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1776617276.537778,
+      "status": "completed",
+      "finished_at": 1776617317.6514685,
+      "result_path": "results_decode_sweep/gemma-3-4b-it/decode_length_sweep_64_sglang_1776617276.json"
+    },
+    {
+      "model": "google/gemma-3-4b-it",
+      "scenario_name": "decode_length_sweep_64",
+      "engine": "sglang",
+      "engine_variant": "sglang",
+      "spec_method": null,
+      "iteration": 2,
+      "healthy_before_run": true,
+      "started_at": 1776617333.6914275,
+      "status": "completed",
+      "finished_at": 1776617374.7257633,
+      "result_path": "results_decode_sweep/gemma-3-4b-it/decode_length_sweep_64_sglang_1776617333.json"
+    },
+    {
+      "model": "google/gemma-3-4b-it",
+      "scenario_name": "decode_length_sweep_256",
+      "engine": "sglang",
+      "engine_variant": "sglang",
+      "spec_method": null,
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1776617390.76021,
+      "status": "completed",
+      "finished_at": 1776617549.8575158,
+      "result_path": "results_decode_sweep/gemma-3-4b-it/decode_length_sweep_256_sglang_1776617390.json"
+    },
+    {
+      "model": "google/gemma-3-4b-it",
+      "scenario_name": "decode_length_sweep_256",
+      "engine": "sglang",
+      "engine_variant": "sglang",
+      "spec_method": null,
+      "iteration": 2,
+      "healthy_before_run": true,
+      "started_at": 1776617565.8981283,
+      "status": "completed",
+      "finished_at": 1776617724.901653,
+      "result_path": "results_decode_sweep/gemma-3-4b-it/decode_length_sweep_256_sglang_1776617565.json"
+    },
+    {
+      "model": "google/gemma-3-4b-it",
+      "scenario_name": "decode_length_sweep_1024",
+      "engine": "sglang",
+      "engine_variant": "sglang",
+      "spec_method": null,
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1776617740.9501138,
+      "status": "completed",
+      "finished_at": 1776618342.5808017,
+      "result_path": "results_decode_sweep/gemma-3-4b-it/decode_length_sweep_1024_sglang_1776617740.json"
+    },
+    {
+      "model": "google/gemma-3-4b-it",
+      "scenario_name": "decode_length_sweep_1024",
+      "engine": "sglang",
+      "engine_variant": "sglang",
+      "spec_method": null,
+      "iteration": 2,
+      "healthy_before_run": true,
+      "started_at": 1776618358.6216588,
+      "status": "completed",
+      "finished_at": 1776618955.6589289,
+      "result_path": "results_decode_sweep/gemma-3-4b-it/decode_length_sweep_1024_sglang_1776618358.json"
+    },
+    {
+      "model": "google/gemma-3-4b-it",
+      "scenario_name": "decode_length_sweep_4096",
+      "engine": "sglang",
+      "engine_variant": "sglang",
+      "spec_method": null,
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1776618971.7077496,
+      "status": "completed",
+      "finished_at": 1776619644.8255932,
+      "result_path": "results_decode_sweep/gemma-3-4b-it/decode_length_sweep_4096_sglang_1776618971.json"
+    },
+    {
+      "model": "google/gemma-3-4b-it",
+      "scenario_name": "decode_length_sweep_4096",
+      "engine": "sglang",
+      "engine_variant": "sglang",
+      "spec_method": null,
+      "iteration": 2,
+      "healthy_before_run": true,
+      "started_at": 1776619660.8642306,
+      "status": "completed",
+      "finished_at": 1776620383.9754512,
+      "result_path": "results_decode_sweep/gemma-3-4b-it/decode_length_sweep_4096_sglang_1776619660.json"
+    }
+  ],
+  "cooldown_seconds": 15
+}

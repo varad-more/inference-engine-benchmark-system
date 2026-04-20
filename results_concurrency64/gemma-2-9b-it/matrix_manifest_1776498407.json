@@ -1,0 +1,22 @@
+{
+  "started_at": 1776498407.4546869,
+  "finished_at": 1776500759.131083,
+  "total_elapsed_seconds": 2351.6736109256744,
+  "model": "google/gemma-2-9b-it",
+  "tasks": [
+    {
+      "model": "google/gemma-2-9b-it",
+      "scenario_name": "throughput_ramp_extended",
+      "engine": "vllm",
+      "engine_variant": "vllm",
+      "spec_method": null,
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1776498407.5057046,
+      "status": "completed",
+      "finished_at": 1776500749.119167,
+      "result_path": "results_concurrency64/gemma-2-9b-it/throughput_ramp_extended_vllm_1776498407.json"
+    }
+  ],
+  "cooldown_seconds": 10
+}

@@ -1,0 +1,22 @@
+{
+  "started_at": 1776407814.7461672,
+  "finished_at": 1776412272.895023,
+  "total_elapsed_seconds": 4458.146014213562,
+  "model": "meta-llama/Llama-3.1-8B-Instruct",
+  "tasks": [
+    {
+      "model": "meta-llama/Llama-3.1-8B-Instruct",
+      "scenario_name": "decode_length_sweep_4096",
+      "engine": "vllm",
+      "engine_variant": "vllm",
+      "spec_method": null,
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1776407814.8850727,
+      "status": "completed",
+      "finished_at": 1776412262.8811648,
+      "result_path": "results_decode_sweep/llama-3-1-8b-instruct/decode_length_sweep_4096_vllm_1776407814.json"
+    }
+  ],
+  "cooldown_seconds": 10
+}

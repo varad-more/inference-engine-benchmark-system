@@ -1,0 +1,22 @@
+{
+  "started_at": 1776416232.6300302,
+  "finished_at": 1776418267.362079,
+  "total_elapsed_seconds": 2034.729436635971,
+  "model": "Qwen/Qwen3-8B",
+  "tasks": [
+    {
+      "model": "Qwen/Qwen3-8B",
+      "scenario_name": "throughput_ramp_extended",
+      "engine": "sglang",
+      "engine_variant": "sglang",
+      "spec_method": null,
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1776416233.6895535,
+      "status": "completed",
+      "finished_at": 1776418257.3546617,
+      "result_path": "results_concurrency64/qwen3-8b/throughput_ramp_extended_sglang_1776416233.json"
+    }
+  ],
+  "cooldown_seconds": 10
+}

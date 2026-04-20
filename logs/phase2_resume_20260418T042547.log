@@ -1,0 +1,318 @@
+
+========================================================================
+[2026-04-18 04:25:48] PREFLIGHT
+========================================================================
+  Python: Python 3.13.12
+  Docker: 29.4.0
+  GPU:    NVIDIA A10G, 23028 MiB
+  HF token: found
+  vLLM bind: 172.31.12.166:8000
+  SGLang:    172.31.12.166:8001
+
+========================================================================
+[2026-04-18 04:25:51] PULLING DOCKER IMAGES (if not cached)
+========================================================================
+  [pull] vllm/vllm-openai:v0.18.0-cu130 — already present, skipping pull
+  [pull] lmsysorg/sglang:v0.5.10.post1-cu130 — already present, skipping pull
+
+========================================================================
+[2026-04-18 04:25:52] PREFLIGHT COMPLETE
+========================================================================
+
+========================================================================
+[2026-04-18 04:25:52] PHASE 2 — CONCURRENCY-64 EXTENDED RAMP (resume, missing-only, 1 iter)
+========================================================================
+  Output dir : results_concurrency64/
+  Iterations : 1   (single run per engine to conserve GPU cost)
+  Cooldown   : 10s between scenarios
+  Behavior   : skip any (model,engine) that already has a result file
+
+========================================================================
+[2026-04-18 04:25:52] vLLM — meta-llama/Llama-3.1-8B-Instruct
+========================================================================
+f13897e6a65aa6ce2efc08777297f293d9d60185452efcfe7e045d35d035acfc
+  Waiting for vLLM health........................................ ready (200s)
+────────────────────────────────────────────────────────────────────────────────────────── Matrix execution ───────────────────────────────────────────────────────────────────────────────────────────
+  Model          : meta-llama/Llama-3.1-8B-Instruct
+  Scenarios      : throughput_ramp_extended
+  Engines        : vllm
+  Iterations     : 1
+  Cooldown (sec) : 10
+────────────────────────────────────────────────────────────────────────────────────────────── Step 1/1 ───────────────────────────────────────────────────────────────────────────────────────────────
+  Scenario  : throughput_ramp_extended
+  Engine    : vllm
+  Iteration : 1/1
+  Model     : meta-llama/Llama-3.1-8B-Instruct
+  GPU VRAM  : 19527 MiB / 23028 MiB (85%)
+[2m2026-04-18T04:29:19.856614Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mVLLMClient[0m [36mprompt_pack[0m=[35mlong_generation[0m [36mscenario[0m=[35mthroughput_ramp_extended[0m
+[2m2026-04-18T04:29:19.857451Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m1[0m
+[2m2026-04-18T04:50:31.866383Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m4[0m
+[2m2026-04-18T04:56:12.714700Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m8[0m
+[2m2026-04-18T04:59:05.372042Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m16[0m
+[2m2026-04-18T05:00:39.686786Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m32[0m
+[2m2026-04-18T05:01:27.488334Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m64[0m
+
+  vllm throughput_ramp_extended  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 900/900 0:32:37
+[2m2026-04-18T05:01:57.499982Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_concurrency64/llama-3-1-8b-instruct/throughput_ramp_extended_vllm_1776486559.json[0m
+  ✓ DONE in 32m 37s  — saved to throughput_ramp_extended_vllm_1776486559.json
+  Progress: 1 completed, 0 skipped, 0 remaining  — total elapsed 32m 37s
+─────────────────────────────────────────────────────────────────────────────────────────── Matrix complete ───────────────────────────────────────────────────────────────────────────────────────────
+  Total time: 32m 47s
+
+                                              Matrix Results Summary                                               
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━┳━━━━━━┳━━━━━━━━━━━┳━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ Scenario                 ┃ Engine ┃ Iter ┃  Status   ┃ Duration ┃ Output File                                   ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━╇━━━━━━╇━━━━━━━━━━━╇━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
+│ throughput_ramp_extended │ vllm   │  1   │ completed │  32m 37s │ throughput_ramp_extended_vllm_1776486559.json │
+└──────────────────────────┴────────┴──────┴───────────┴──────────┴───────────────────────────────────────────────┘
+✓ Matrix manifest saved to results_concurrency64/llama-3-1-8b-instruct/matrix_manifest_1776486559.json
+bench-vllm
+
+========================================================================
+[2026-04-18 05:02:12] SGLang — meta-llama/Llama-3.1-8B-Instruct
+========================================================================
+d2cea1cbde254790ad514b8837e21f9fe91146cdc5eaa90fdb2d5374b7e726ae
+  Waiting for SGLang health..................... ready (105s)
+────────────────────────────────────────────────────────────────────────────────────────── Matrix execution ───────────────────────────────────────────────────────────────────────────────────────────
+  Model          : meta-llama/Llama-3.1-8B-Instruct
+  Scenarios      : throughput_ramp_extended
+  Engines        : sglang
+  Iterations     : 1
+  Cooldown (sec) : 10
+────────────────────────────────────────────────────────────────────────────────────────────── Step 1/1 ───────────────────────────────────────────────────────────────────────────────────────────────
+  Scenario  : throughput_ramp_extended
+  Engine    : sglang
+  Iteration : 1/1
+  Model     : meta-llama/Llama-3.1-8B-Instruct
+  GPU VRAM  : 20431 MiB / 23028 MiB (89%)
+[2m2026-04-18T05:04:06.555095Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mSGLangClient[0m [36mprompt_pack[0m=[35mlong_generation[0m [36mscenario[0m=[35mthroughput_ramp_extended[0m
+[2m2026-04-18T05:04:06.555527Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m1[0m
+[2m2026-04-18T05:25:18.558727Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m4[0m
+[2m2026-04-18T05:30:57.110982Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m8[0m
+[2m2026-04-18T05:33:48.150238Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m16[0m
+[2m2026-04-18T05:35:22.047313Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m32[0m
+[2m2026-04-18T05:36:10.306058Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m64[0m
+
+  sglang throughput_ramp_extended  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 900/900 0:32:33
+[2m2026-04-18T05:36:40.516872Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_concurrency64/llama-3-1-8b-instruct/throughput_ramp_extended_sglang_1776488646.json[0m
+  ✓ DONE in 32m 33s  — saved to throughput_ramp_extended_sglang_1776488646.json
+  Progress: 1 completed, 0 skipped, 0 remaining  — total elapsed 32m 35s
+─────────────────────────────────────────────────────────────────────────────────────────── Matrix complete ───────────────────────────────────────────────────────────────────────────────────────────
+  Total time: 32m 45s
+
+                                               Matrix Results Summary                                                
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━┳━━━━━━┳━━━━━━━━━━━┳━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ Scenario                 ┃ Engine ┃ Iter ┃  Status   ┃ Duration ┃ Output File                                     ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━╇━━━━━━╇━━━━━━━━━━━╇━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
+│ throughput_ramp_extended │ sglang │  1   │ completed │  32m 33s │ throughput_ramp_extended_sglang_1776488646.json │
+└──────────────────────────┴────────┴──────┴───────────┴──────────┴─────────────────────────────────────────────────┘
+✓ Matrix manifest saved to results_concurrency64/llama-3-1-8b-instruct/matrix_manifest_1776488645.json
+bench-sglang
+  [SKIP] vllm Qwen/Qwen3-8B — result file already exists
+  [SKIP] sglang Qwen/Qwen3-8B — result file already exists
+  [SKIP] vllm mistralai/Mistral-7B-Instruct-v0.3 — result file already exists
+
+========================================================================
+[2026-04-18 05:36:55] SGLang — mistralai/Mistral-7B-Instruct-v0.3
+========================================================================
+408815d7122e69cbc7ba8b06f04e4534814d908040b958761ba17157fcc7a2b4
+  Waiting for SGLang health................................................. ready (245s)
+────────────────────────────────────────────────────────────────────────────────────────── Matrix execution ───────────────────────────────────────────────────────────────────────────────────────────
+  Model          : mistralai/Mistral-7B-Instruct-v0.3
+  Scenarios      : throughput_ramp_extended
+  Engines        : sglang
+  Iterations     : 1
+  Cooldown (sec) : 10
+────────────────────────────────────────────────────────────────────────────────────────────── Step 1/1 ───────────────────────────────────────────────────────────────────────────────────────────────
+  Scenario  : throughput_ramp_extended
+  Engine    : sglang
+  Iteration : 1/1
+  Model     : mistralai/Mistral-7B-Instruct-v0.3
+  GPU VRAM  : 20441 MiB / 23028 MiB (89%)
+[2m2026-04-18T05:41:11.166776Z[0m [[32m[1minfo     [0m] [1mstarting scenario             [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mengine[0m=[35mSGLangClient[0m [36mprompt_pack[0m=[35mlong_generation[0m [36mscenario[0m=[35mthroughput_ramp_extended[0m
+[2m2026-04-18T05:41:11.167960Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m1[0m
+[2m2026-04-18T06:01:22.196745Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m4[0m
+[2m2026-04-18T06:06:46.185486Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m8[0m
+[2m2026-04-18T06:09:29.947933Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m16[0m
+[2m2026-04-18T06:11:00.155480Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m32[0m
+[2m2026-04-18T06:11:46.334148Z[0m [[32m[1minfo     [0m] [1mthroughput ramp level         [0m [[0m[1m[34mBenchmarkRunner[0m][0m [36mconcurrency[0m=[35m64[0m
+
+  sglang throughput_ramp_extended  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 900/900 0:31:04
+[2m2026-04-18T06:12:15.247555Z[0m [[32m[1minfo     [0m] [1msaved results                 [0m [[0m[1m[34mbenchmarks.runner[0m][0m [36mpath[0m=[35mresults_concurrency64/mistral-7b-instruct-v0-3/throughput_ramp_extended_sglang_1776490871.json[0m
+  ✓ DONE in 31m 04s  — saved to throughput_ramp_extended_sglang_1776490871.json
+  Progress: 1 completed, 0 skipped, 0 remaining  — total elapsed 31m 05s
+─────────────────────────────────────────────────────────────────────────────────────────── Matrix complete ───────────────────────────────────────────────────────────────────────────────────────────
+  Total time: 31m 15s
+
+                                               Matrix Results Summary                                                
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━┳━━━━━━┳━━━━━━━━━━━┳━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ Scenario                 ┃ Engine ┃ Iter ┃  Status   ┃ Duration ┃ Output File                                     ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━╇━━━━━━╇━━━━━━━━━━━╇━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
+│ throughput_ramp_extended │ sglang │  1   │ completed │  31m 04s │ throughput_ramp_extended_sglang_1776490871.json │
+└──────────────────────────┴────────┴──────┴───────────┴──────────┴─────────────────────────────────────────────────┘
+✓ Matrix manifest saved to results_concurrency64/mistral-7b-instruct-v0-3/matrix_manifest_1776490870.json
+bench-sglang
+
+========================================================================
+[2026-04-18 06:12:30] vLLM — google/gemma-2-9b-it
+========================================================================
+0d32a3f91a2dced7c100ad5f0ec0c78b9e20950862762bab441bc9a417bbcd7b
+  Waiting for vLLM health........... CONTAINER EXITED
+  Container logs (last 20 lines):
+    (APIServer pid=1)     return func(*args, **kwargs)
+    (APIServer pid=1)            ^^^^^^^^^^^^^^^^^^^^^
+    (APIServer pid=1)   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/core_client.py", line 128, in make_async_mp_client
+    (APIServer pid=1)     return AsyncMPClient(*client_args)
+    (APIServer pid=1)            ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    (APIServer pid=1)   File "/usr/local/lib/python3.12/dist-packages/vllm/tracing/otel.py", line 178, in sync_wrapper
+    (APIServer pid=1)     return func(*args, **kwargs)
+    (APIServer pid=1)            ^^^^^^^^^^^^^^^^^^^^^
+    (APIServer pid=1)   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/core_client.py", line 924, in __init__
+    (APIServer pid=1)     super().__init__(
+    (APIServer pid=1)   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/core_client.py", line 583, in __init__
+    (APIServer pid=1)     with launch_core_engines(
+    (APIServer pid=1)          ^^^^^^^^^^^^^^^^^^^^
+    (APIServer pid=1)   File "/usr/lib/python3.12/contextlib.py", line 144, in __exit__
+    (APIServer pid=1)     next(self.gen)
+    (APIServer pid=1)   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/utils.py", line 972, in launch_core_engines
+    (APIServer pid=1)     wait_for_engine_startup(
+    (APIServer pid=1)   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/utils.py", line 1031, in wait_for_engine_startup
+    (APIServer pid=1)     raise RuntimeError(
+    (APIServer pid=1) RuntimeError: Engine core initialization failed. See root cause above. Failed core proc(s): {}
+[2026-04-18 06:13:28] ERROR: vLLM failed to start for google/gemma-2-9b-it
+(APIServer pid=1)                ^^^^^^^^^^^^^^^^^^^^^^^^^^
+(APIServer pid=1)   File "/usr/lib/python3.12/contextlib.py", line 210, in __aenter__
+(APIServer pid=1)     return await anext(self.gen)
+(APIServer pid=1)            ^^^^^^^^^^^^^^^^^^^^^
+(APIServer pid=1)   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/openai/api_server.py", line 103, in build_async_engine_client
+(APIServer pid=1)     async with build_async_engine_client_from_engine_args(
+(APIServer pid=1)                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(APIServer pid=1)   File "/usr/lib/python3.12/contextlib.py", line 210, in __aenter__
+(APIServer pid=1)     return await anext(self.gen)
+(APIServer pid=1)            ^^^^^^^^^^^^^^^^^^^^^
+(APIServer pid=1)   File "/usr/local/lib/python3.12/dist-packages/vllm/entrypoints/openai/api_server.py", line 144, in build_async_engine_client_from_engine_args
+(APIServer pid=1)     async_llm = AsyncLLM.from_vllm_config(
+(APIServer pid=1)                 ^^^^^^^^^^^^^^^^^^^^^^^^^^
+(APIServer pid=1)   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/async_llm.py", line 225, in from_vllm_config
+(APIServer pid=1)     return cls(
+(APIServer pid=1)            ^^^^
+(APIServer pid=1)   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/async_llm.py", line 154, in __init__
+(APIServer pid=1)     self.engine_core = EngineCoreClient.make_async_mp_client(
+(APIServer pid=1)                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(APIServer pid=1)   File "/usr/local/lib/python3.12/dist-packages/vllm/tracing/otel.py", line 178, in sync_wrapper
+(APIServer pid=1)     return func(*args, **kwargs)
+(APIServer pid=1)            ^^^^^^^^^^^^^^^^^^^^^
+(APIServer pid=1)   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/core_client.py", line 128, in make_async_mp_client
+(APIServer pid=1)     return AsyncMPClient(*client_args)
+(APIServer pid=1)            ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+(APIServer pid=1)   File "/usr/local/lib/python3.12/dist-packages/vllm/tracing/otel.py", line 178, in sync_wrapper
+(APIServer pid=1)     return func(*args, **kwargs)
+(APIServer pid=1)            ^^^^^^^^^^^^^^^^^^^^^
+(APIServer pid=1)   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/core_client.py", line 924, in __init__
+(APIServer pid=1)     super().__init__(
+(APIServer pid=1)   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/core_client.py", line 583, in __init__
+(APIServer pid=1)     with launch_core_engines(
+(APIServer pid=1)          ^^^^^^^^^^^^^^^^^^^^
+(APIServer pid=1)   File "/usr/lib/python3.12/contextlib.py", line 144, in __exit__
+(APIServer pid=1)     next(self.gen)
+(APIServer pid=1)   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/utils.py", line 972, in launch_core_engines
+(APIServer pid=1)     wait_for_engine_startup(
+(APIServer pid=1)   File "/usr/local/lib/python3.12/dist-packages/vllm/v1/engine/utils.py", line 1031, in wait_for_engine_startup
+(APIServer pid=1)     raise RuntimeError(
+(APIServer pid=1) RuntimeError: Engine core initialization failed. See root cause above. Failed core proc(s): {}
+bench-vllm
+
+========================================================================
+[2026-04-18 06:13:32] SGLang — google/gemma-2-9b-it
+========================================================================
+5214f621b6731d59bcc8a2a65cd76cacfc39f61276dfa1201dcad84213bd4821
+  Waiting for SGLang health......... CONTAINER EXITED
+  Container logs (last 20 lines):
+      File "/usr/lib/python3.12/concurrent/futures/thread.py", line 58, in run
+        result = self.fn(*self.args, **self.kwargs)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+      File "/usr/local/lib/python3.12/dist-packages/huggingface_hub/_snapshot_download.py", line 431, in _inner_hf_hub_download
+        hf_hub_download(  # type: ignore
+      File "/usr/local/lib/python3.12/dist-packages/huggingface_hub/utils/_validators.py", line 88, in _inner_fn
+        return fn(*args, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^
+      File "/usr/local/lib/python3.12/dist-packages/huggingface_hub/file_download.py", line 995, in hf_hub_download
+        return _hf_hub_download_to_cache_dir(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+      File "/usr/local/lib/python3.12/dist-packages/huggingface_hub/file_download.py", line 1214, in _hf_hub_download_to_cache_dir
+        _download_to_tmp_and_move(
+      File "/usr/local/lib/python3.12/dist-packages/huggingface_hub/file_download.py", line 1838, in _download_to_tmp_and_move
+        xet_get(
+      File "/usr/local/lib/python3.12/dist-packages/huggingface_hub/file_download.py", line 558, in xet_get
+        download_files(
+    RuntimeError: Data processing error: File reconstruction error: IO Error: No space left on device (os error 28)
+    
+    [2026-04-18 06:14:12] Received sigquit from a child process. It usually means the child failed.
+[2026-04-18 06:14:21] ERROR: SGLang failed to start for google/gemma-2-9b-it
+    thread_map(
+  File "/usr/local/lib/python3.12/dist-packages/tqdm/contrib/concurrent.py", line 69, in thread_map
+    return _executor_map(ThreadPoolExecutor, fn, *iterables, **tqdm_kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/tqdm/contrib/concurrent.py", line 51, in _executor_map
+    return list(tqdm_class(ex.map(fn, *iterables, chunksize=chunksize), **kwargs))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/tqdm/std.py", line 1169, in __iter__
+    for obj in iterable:
+  File "/usr/lib/python3.12/concurrent/futures/_base.py", line 619, in result_iterator
+    yield _result_or_cancel(fs.pop())
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/concurrent/futures/_base.py", line 317, in _result_or_cancel
+    return fut.result(timeout)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/concurrent/futures/_base.py", line 456, in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/concurrent/futures/_base.py", line 401, in __get_result
+    raise self._exception
+  File "/usr/lib/python3.12/concurrent/futures/thread.py", line 58, in run
+    result = self.fn(*self.args, **self.kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/huggingface_hub/_snapshot_download.py", line 431, in _inner_hf_hub_download
+    hf_hub_download(  # type: ignore
+  File "/usr/local/lib/python3.12/dist-packages/huggingface_hub/utils/_validators.py", line 88, in _inner_fn
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/huggingface_hub/file_download.py", line 995, in hf_hub_download
+    return _hf_hub_download_to_cache_dir(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/dist-packages/huggingface_hub/file_download.py", line 1214, in _hf_hub_download_to_cache_dir
+    _download_to_tmp_and_move(
+  File "/usr/local/lib/python3.12/dist-packages/huggingface_hub/file_download.py", line 1838, in _download_to_tmp_and_move
+    xet_get(
+  File "/usr/local/lib/python3.12/dist-packages/huggingface_hub/file_download.py", line 558, in xet_get
+    download_files(
+RuntimeError: Data processing error: File reconstruction error: IO Error: No space left on device (os error 28)
+
+[2026-04-18 06:14:12] Received sigquit from a child process. It usually means the child failed.
+bench-sglang
+
+========================================================================
+[2026-04-18 06:14:25] PHASE 2 COMPLETE
+========================================================================
+
+========================================================================
+[2026-04-18 06:14:25] ALL PHASES COMPLETE
+========================================================================
+
+Results:
+  results_variance/              131 result files
+  results_concurrency64/           6 result files
+  results_decode_sweep/           72 result files
+
+STATUS: 2 ERROR(S):
+  1. vLLM failed to start for google/gemma-2-9b-it
+  2. SGLang failed to start for google/gemma-2-9b-it
+
+Next steps:
+  Resume Phase 2 (missing-only, idempotent, 1 iter/cell):
+    nohup bash scripts/run_new_benchmarks.sh --phase2 2>&1 | tee logs/phase2_resume_$(date +%Y%m%dT%H%M%S).log &
+
+  Then run analysis:
+    python -m analysis.variance_analysis --results-dir results_variance
+    python -m analysis.tpot_analysis --results-dir results_variance
+    python -m analysis.decode_length_analysis --results-dir results_decode_sweep

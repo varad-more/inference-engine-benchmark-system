@@ -1,0 +1,22 @@
+{
+  "started_at": 1776495846.3119547,
+  "finished_at": 1776498271.3763695,
+  "total_elapsed_seconds": 2425.061637401581,
+  "model": "google/gemma-2-9b-it",
+  "tasks": [
+    {
+      "model": "google/gemma-2-9b-it",
+      "scenario_name": "throughput_ramp_extended",
+      "engine": "sglang",
+      "engine_variant": "sglang",
+      "spec_method": null,
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1776495847.3649433,
+      "status": "completed",
+      "finished_at": 1776498261.3691592,
+      "result_path": "results_concurrency64/gemma-2-9b-it/throughput_ramp_extended_sglang_1776495847.json"
+    }
+  ],
+  "cooldown_seconds": 10
+}

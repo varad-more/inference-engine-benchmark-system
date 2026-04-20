@@ -1,0 +1,114 @@
+
+========================================================================
+[2026-04-19 13:26:38] PREFLIGHT
+========================================================================
+  Python: Python 3.13.12
+  Docker: 29.1.3
+  GPU:    NVIDIA A10G, 23028 MiB
+  HF token: found
+  vLLM bind: 172.31.43.213:8000
+  SGLang:    172.31.43.213:8001
+
+========================================================================
+[2026-04-19 13:26:41] PULLING DOCKER IMAGES (if not cached)
+========================================================================
+  [pull] vllm/vllm-openai:v0.18.0-cu130 — already present, skipping pull
+  [pull] lmsysorg/sglang:v0.5.10.post1-cu130 — already present, skipping pull
+
+========================================================================
+[2026-04-19 13:26:41] PREFLIGHT COMPLETE
+========================================================================
+
+========================================================================
+[2026-04-19 13:26:41] PHASE 4 — GEMMA 4 (baseline + ngram spec-dec, resume)
+========================================================================
+  [pull] vllm/vllm-openai:latest — already present, skipping pull
+  [RUN]  vllm google/gemma-4-E2B-it baseline — single_request_latency,throughput_ramp,long_context_stress,prefix_sharing_benefit,structured_generation_speed
+
+========================================================================
+[2026-04-19 13:26:41] vLLM-Gemma4 (vllm) — google/gemma-4-E2B-it
+========================================================================
+517518b22cd89da2d1fc8d2111cabf00a1ce332c8eaab2ea219700e89768dbfb
+  Waiting for vLLM health. CONTAINER EXITED
+  Container logs (last 20 lines):
+      ERROR: Error [Errno 2] No such file or directory: 'git' while executing command git version
+    ERROR: Cannot find command 'git' - do you have 'git' installed and in your PATH?
+[2026-04-19 13:26:54] ERROR: vLLM-Gemma4 failed to start for google/gemma-4-E2B-it
+  ERROR: Error [Errno 2] No such file or directory: 'git' while executing command git version
+ERROR: Cannot find command 'git' - do you have 'git' installed and in your PATH?
+bench-vllm
+  [SKIP] sglang google/gemma-4-E2B-it baseline — SKIP_GEMMA4_SGLANG=1 (disk)
+  [RUN]  vllm-ngram google/gemma-4-E2B-it — single_request_latency,throughput_ramp
+
+========================================================================
+[2026-04-19 13:26:57] vLLM-Gemma4 (vllm-ngram) — google/gemma-4-E2B-it
+========================================================================
+9323de852f89c687a562a34f323666b1a766bf31e0c165932b6022adabfa108f
+  Waiting for vLLM health. CONTAINER EXITED
+  Container logs (last 20 lines):
+      ERROR: Error [Errno 2] No such file or directory: 'git' while executing command git version
+    ERROR: Cannot find command 'git' - do you have 'git' installed and in your PATH?
+[2026-04-19 13:27:09] ERROR: vLLM-Gemma4 failed to start for google/gemma-4-E2B-it
+  ERROR: Error [Errno 2] No such file or directory: 'git' while executing command git version
+ERROR: Cannot find command 'git' - do you have 'git' installed and in your PATH?
+bench-vllm
+  [SKIP] sglang-ngram google/gemma-4-E2B-it — SKIP_GEMMA4_SGLANG=1 (disk)
+  [RUN]  vllm google/gemma-4-E4B-it baseline — single_request_latency,throughput_ramp,long_context_stress,prefix_sharing_benefit,structured_generation_speed
+
+========================================================================
+[2026-04-19 13:27:12] vLLM-Gemma4 (vllm) — google/gemma-4-E4B-it
+========================================================================
+651af2e9d789aedf0bc38240fef05cd8b095f68dd3a4bc58150eca49a41de431
+  Waiting for vLLM health. CONTAINER EXITED
+  Container logs (last 20 lines):
+      ERROR: Error [Errno 2] No such file or directory: 'git' while executing command git version
+    ERROR: Cannot find command 'git' - do you have 'git' installed and in your PATH?
+[2026-04-19 13:27:24] ERROR: vLLM-Gemma4 failed to start for google/gemma-4-E4B-it
+  ERROR: Error [Errno 2] No such file or directory: 'git' while executing command git version
+ERROR: Cannot find command 'git' - do you have 'git' installed and in your PATH?
+bench-vllm
+  [SKIP] sglang google/gemma-4-E4B-it baseline — SKIP_GEMMA4_SGLANG=1 (disk)
+  [RUN]  vllm-ngram google/gemma-4-E4B-it — single_request_latency,throughput_ramp
+
+========================================================================
+[2026-04-19 13:27:27] vLLM-Gemma4 (vllm-ngram) — google/gemma-4-E4B-it
+========================================================================
+b75b39d1867da060d73f5f4855d01dba14aab0575e4b664c0c38f70db27fa59d
+  Waiting for vLLM health. CONTAINER EXITED
+  Container logs (last 20 lines):
+      ERROR: Error [Errno 2] No such file or directory: 'git' while executing command git version
+    ERROR: Cannot find command 'git' - do you have 'git' installed and in your PATH?
+[2026-04-19 13:27:39] ERROR: vLLM-Gemma4 failed to start for google/gemma-4-E4B-it
+  ERROR: Error [Errno 2] No such file or directory: 'git' while executing command git version
+ERROR: Cannot find command 'git' - do you have 'git' installed and in your PATH?
+bench-vllm
+  [SKIP] sglang-ngram google/gemma-4-E4B-it — SKIP_GEMMA4_SGLANG=1 (disk)
+
+========================================================================
+[2026-04-19 13:27:42] PHASE 4 COMPLETE
+========================================================================
+
+========================================================================
+[2026-04-19 13:27:42] ALL PHASES COMPLETE
+========================================================================
+
+Results:
+  results/                       152 result files
+  results_variance/              201 result files
+  results_concurrency64/           8 result files
+  results_decode_sweep/           76 result files
+
+STATUS: 4 ERROR(S):
+  1. vLLM-Gemma4 failed to start for google/gemma-4-E2B-it
+  2. vLLM-Gemma4 failed to start for google/gemma-4-E2B-it
+  3. vLLM-Gemma4 failed to start for google/gemma-4-E4B-it
+  4. vLLM-Gemma4 failed to start for google/gemma-4-E4B-it
+
+Next steps:
+  Resume Phase 2 (missing-only, idempotent, 1 iter/cell):
+    nohup bash scripts/run_new_benchmarks.sh --phase2 2>&1 | tee logs/phase2_resume_$(date +%Y%m%dT%H%M%S).log &
+
+  Then run analysis:
+    python -m analysis.variance_analysis --results-dir results_variance
+    python -m analysis.tpot_analysis --results-dir results_variance
+    python -m analysis.decode_length_analysis --results-dir results_decode_sweep

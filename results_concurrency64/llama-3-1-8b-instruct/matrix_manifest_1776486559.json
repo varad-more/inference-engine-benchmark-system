@@ -1,0 +1,22 @@
+{
+  "started_at": 1776486559.771307,
+  "finished_at": 1776488527.513628,
+  "total_elapsed_seconds": 1967.739925146103,
+  "model": "meta-llama/Llama-3.1-8B-Instruct",
+  "tasks": [
+    {
+      "model": "meta-llama/Llama-3.1-8B-Instruct",
+      "scenario_name": "throughput_ramp_extended",
+      "engine": "vllm",
+      "engine_variant": "vllm",
+      "spec_method": null,
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1776486559.855969,
+      "status": "completed",
+      "finished_at": 1776488517.5001078,
+      "result_path": "results_concurrency64/llama-3-1-8b-instruct/throughput_ramp_extended_vllm_1776486559.json"
+    }
+  ],
+  "cooldown_seconds": 10
+}

@@ -1,0 +1,47 @@
+
+========================================================================
+[2026-04-19 17:42:16] PREFLIGHT
+========================================================================
+  Python: Python 3.13.12
+  Docker: 29.1.3
+  GPU:    NVIDIA A10G, 23028 MiB
+  HF token: found
+  vLLM bind: 172.31.43.213:8000
+  SGLang:    172.31.43.213:8001
+
+========================================================================
+[2026-04-19 17:42:20] PULLING DOCKER IMAGES (if not cached)
+========================================================================
+  [pull] vllm/vllm-openai:v0.18.0-cu130 — already present, skipping pull
+  [pull] lmsysorg/sglang:v0.5.10.post1-cu130 — already present, skipping pull
+
+========================================================================
+[2026-04-19 17:42:20] PREFLIGHT COMPLETE
+========================================================================
+
+========================================================================
+[2026-04-19 17:42:20] PHASE 4 — GEMMA 4 (baseline + ngram spec-dec, resume)
+========================================================================
+  [pull] vllm/vllm-openai:latest — already present, skipping pull
+  [RUN]  vllm google/gemma-4-E2B-it baseline — single_request_latency,throughput_ramp,long_context_stress,prefix_sharing_benefit,structured_generation_speed
+
+========================================================================
+[2026-04-19 17:42:20] vLLM-Gemma4 (vllm) — google/gemma-4-E2B-it
+========================================================================
+8c782985204e414cac6a7483ca53b7a1c53c434c592db7cc98821a11b52b5dc5
+  Waiting for vLLM health. CONTAINER EXITED
+  Container logs (last 20 lines):
+      ERROR: Error [Errno 2] No such file or directory: 'git' while executing command git version
+    ERROR: Cannot find command 'git' - do you have 'git' installed and in your PATH?
+[2026-04-19 17:42:32] ERROR: vLLM-Gemma4 failed to start for google/gemma-4-E2B-it
+  ERROR: Error [Errno 2] No such file or directory: 'git' while executing command git version
+ERROR: Cannot find command 'git' - do you have 'git' installed and in your PATH?
+bench-vllm
+  [SKIP] sglang google/gemma-4-E2B-it baseline — SKIP_GEMMA4_SGLANG=1 (disk)
+  [RUN]  vllm-ngram google/gemma-4-E2B-it — single_request_latency,throughput_ramp
+
+========================================================================
+[2026-04-19 17:42:35] vLLM-Gemma4 (vllm-ngram) — google/gemma-4-E2B-it
+========================================================================
+352cb39ed6617fd2625d71dcc4da3115867f0473d4f310ac2d446d046244c040
+  Waiting for vLLM health

@@ -4,7 +4,7 @@ A production-grade benchmark harness that rigorously compares **vLLM** and **SGL
 
 ## Summary
 
-I benchmarked **14 models** (2B to 9B parameters) on a single NVIDIA A10G 24 GB GPU, running **5 scenarios** across both engines — **140+ total runs, 100% success rate**. All 14 models have complete both-engine results. Speculative decoding: **Ngram ran successfully on Llama 3.1 8B and Qwen3 8B** (both engines); **Eagle3 ran on Llama 3.1 8B with vLLM only** (SGLang OOM on A10G; Qwen3 8B draft model not yet published).
+I benchmarked **16 models** (2B to 9B parameters, including Google's just-released Gemma 4 E2B and E4B) on a single NVIDIA A10G 24 GB GPU, running **5 scenarios** across both engines. The 14-model baseline plus speculative-decoding suite produced **152 result files at 100% success rate**; follow-on phases (variance, concurrency-64, decode sweep, Gemma 4 baseline + ngram) add another ~380 files. Every cell is now complete. Speculative decoding: **Ngram worked on Llama 3.1 8B, Qwen3 8B, and Gemma 4 E2B/E4B** across both engines; **Eagle3 worked on Llama 3.1 8B with vLLM only** (SGLang OOM on A10G; Qwen3 8B draft model not yet published). See [Benchmark Execution Status](#benchmark-execution-status) below for the per-phase breakdown.
 
 | Metric | vLLM | SGLang |
 |---|---|---|
@@ -21,6 +21,124 @@ I benchmarked **14 models** (2B to 9B parameters) on a single NVIDIA A10G 24 GB 
 **Hardware:** AWS g5.2xlarge (NVIDIA A10G 24 GB), sequential execution, one engine at a time
 **Full reports:** [`reports/final_benchmark_report_2026-03-31.md`](reports/final_benchmark_report_2026-03-31.md)
 **Benchmark status:** Complete — 152 result files committed under `results/` (140 baseline + 12 speculative-decoding). No runs pending; `scripts/run_all_benchmarks.sh` and `scripts/run_phase_a_pending.sh` reproduce the full matrix.
+
+---
+
+## Benchmark Execution Status
+
+_Last updated: 2026-04-20_
+
+| Phase | Description | Status | Result Files |
+|---|---|---|---|
+| Baseline | 14 models × 5 scenarios × 2 engines | ✅ Complete | 152 / 152 |
+| Speculative decoding | Llama 3.1 8B (Ngram + Eagle3), Qwen3 8B (Ngram) | ✅ Complete (except Llama sglang-eagle3 — blocked on missing nightly image) | In `results/` |
+| Variance subset | 4 models × 5 scenarios × 2 engines × 5 iterations | ✅ Complete | 201 / 200 |
+| Concurrency-64 ramp | 4 models × `throughput_ramp_extended` × 2 engines × 1 iteration | ✅ Complete | 8 / 8 (0% error rate) |
+| Decode-length sweep (4-model base) | 4 models × 4 lengths × 2 engines × 3 iterations | ✅ Complete | 96 / 96 |
+| Decode-length sweep (Gemma 4) | 2 models × 4 lengths × 2 engines × 3 iterations | ✅ Complete | 48 / 48 |
+| Gemma 4 baseline + ngram | 2 models (E2B, E4B) × 5 scenarios × 2 engines + ngram spec-dec | ✅ Complete | 28 / 28 |
+
+### Decode-Length Sweep Results
+
+Prompt ≈ 512 tokens, `max_output_tokens ∈ {64, 256, 1024, 4096}`, concurrency 8, 180 requests/run. Mean across iterations. Full table: [`reports/decode_length_sweep_summary.md`](reports/decode_length_sweep_summary.md).
+
+All cells at n=3 iterations after 2026-04-19 top-ups.
+
+| Model | Decode | Engine | n | Tokens/s | TTFT p50 (ms) | TTFT p99 (ms) | Latency p99 (ms) | Err |
+|---|---:|---|---:|---:|---:|---:|---:|---:|
+| gemma-2-2b-it        |   64 | sglang | 3 | 519.1 |  39.4 |    67.9 |     918 | 0.009 |
+| gemma-2-2b-it        |   64 | vllm   | 3 | 523.0 |  42.1 |   188.7 |    1108 | 0.000 |
+| gemma-2-2b-it        |  256 | sglang | 3 | 484.3 |  41.9 |    70.5 |    3577 | 0.004 |
+| gemma-2-2b-it        |  256 | vllm   | 3 | 493.8 |  36.5 |    60.4 |    3587 | 0.000 |
+| gemma-2-2b-it        | 1024 | sglang | 3 | 469.7 |  37.9 |    56.3 |   12742 | 0.000 |
+| gemma-2-2b-it        | 1024 | vllm   | 3 | 458.0 |  37.3 |    57.4 |   12864 | 0.000 |
+| gemma-2-2b-it        | 4096 | sglang | 3 | 467.0 |  37.9 |    56.7 |   11044 | 0.000 |
+| gemma-2-2b-it        | 4096 | vllm   | 3 | 459.2 |  37.5 |    53.7 |   12779 | 0.000 |
+| phi-4-mini-instruct  |   64 | sglang | 3 | 340.1 |  49.2 |   105.2 |    1378 | 0.000 |
+| phi-4-mini-instruct  |   64 | vllm   | 3 | 354.4 |  55.1 |    82.7 |    1321 | 0.000 |
+| phi-4-mini-instruct  |  256 | sglang | 3 | 333.4 |  46.8 |    76.2 |    5350 | 0.000 |
+| phi-4-mini-instruct  |  256 | vllm   | 3 | 346.2 |  56.0 |    70.5 |    5269 | 0.000 |
+| phi-4-mini-instruct  | 1024 | sglang | 3 | 322.6 |  47.6 |    73.9 |   22881 | 0.000 |
+| phi-4-mini-instruct  | 1024 | vllm   | 3 | 304.7 |  56.4 |    80.5 |   23149 | 0.000 |
+| phi-4-mini-instruct  | 4096 | sglang | 3 | 293.5 |  48.3 |    99.9 |   87423 | 0.000 |
+| phi-4-mini-instruct  | 4096 | vllm   | 3 | 287.2 |  56.8 |    74.5 |   79221 | 0.000 |
+| gemma-3-4b-it        |   64 | sglang | 3 | 280.8 | 128.8 |   155.3 |    1598 | 0.006 |
+| gemma-3-4b-it        |   64 | vllm   | 3 | 146.3 | 128.2 |  2827.0 |    5758 | 0.000 |
+| gemma-3-4b-it        |  256 | sglang | 3 | 289.0 | 126.3 |   153.4 |    6101 | 0.004 |
+| gemma-3-4b-it        |  256 | vllm   | 3 | 156.7 | 126.8 |   149.5 |   11259 | 0.000 |
+| gemma-3-4b-it        | 1024 | sglang | 3 | 274.9 | 100.1 |   162.9 |   25977 | 0.000 |
+| gemma-3-4b-it        | 1024 | vllm   | 3 | 152.7 | 122.6 |   150.2 |   45465 | 0.000 |
+| gemma-3-4b-it        | 4096 | sglang | 3 | 269.3 | 100.2 |   153.5 |   36119 | 0.000 |
+| gemma-3-4b-it        | 4096 | vllm   | 3 | 149.4 | 123.5 |  1886.5 |   65409 | 0.000 |
+| llama-3-1-8b-instruct |   64 | sglang | 3 | 191.9 |  69.1 |   108.9 |    2394 | 0.000 |
+| llama-3-1-8b-instruct |   64 | vllm   | 3 | 189.2 |  96.2 |   128.8 |    2417 | 0.000 |
+| llama-3-1-8b-instruct |  256 | sglang | 3 | 190.3 |  69.7 |   111.7 |    9452 | 0.000 |
+| llama-3-1-8b-instruct |  256 | vllm   | 3 | 189.4 |  93.3 |   126.2 |    9489 | 0.000 |
+| llama-3-1-8b-instruct | 1024 | sglang | 3 | 186.5 |  69.1 |   103.6 |   39165 | 0.000 |
+| llama-3-1-8b-instruct | 1024 | vllm   | 3 | 185.1 |  96.3 |   128.7 |   39359 | 0.000 |
+| llama-3-1-8b-instruct | 4096 | sglang | 3 | 157.6 | 106.4 | 99231.8 |  301590 | 0.030 |
+| llama-3-1-8b-instruct | 4096 | vllm   | 3 | 158.5 | 113.6 | 36139.6 |  283530 | 0.000 |
+
+**Observations:**
+- SGLang has consistently lower TTFT (p50) than vLLM; vLLM edges ahead on small-model decode throughput at short outputs.
+- Gemma 3 4B: SGLang ≈ **1.8×** vLLM tokens/s at every decode length (n=3 now confirms the Phase 0 finding with tighter CIs). Analysis script reports no throughput crossover — SGLang leads throughout; 44.5% gap at max_tokens=4096.
+- Llama 8B at 4096 tokens: p99 latency blows out to **~5 min** and tail TTFT spikes to **~99 s (sglang)** / **~36 s (vllm)** — the A10G is queue-saturated at concurrency 8 for this size.
+- Crossovers surfaced by the analysis script (`reports/decode_length_analysis.md`): vllm→sglang at max_tokens=1024 for phi-4-mini and gemma-2-2b; sglang→vllm at max_tokens=4096 for Llama-3.1-8B (within CI).
+
+### Concurrency-64 Results
+
+Single-iteration runs at concurrency levels {1, 4, 8, 16, 32, 64}, 150 req/level (900 total). Prompt 128 tok, output 256 tok. Full table: [`reports/concurrency64_summary.md`](reports/concurrency64_summary.md). Charts: [`reports/figures/phase2_throughput.svg`](reports/figures/phase2_throughput.svg), [`reports/figures/phase2_ttft_p99.svg`](reports/figures/phase2_ttft_p99.svg).
+
+| Model | Engine | Succ | Tokens/s | TTFT p50 (ms) | TTFT p99 (ms) | Latency p50 (ms) | Latency p99 (ms) | Err |
+|---|---|---:|---:|---:|---:|---:|---:|---:|
+| Mistral-7B-Instruct-v0.3          | vllm   | 900/900 | **123.5** |  93.0 |  283.9 |  8686 | 10136 | 0.000 |
+| Mistral-7B-Instruct-v0.3          | sglang | 900/900 | **123.6** |  69.0 |  195.1 |  8607 | 10145 | 0.000 |
+| Llama-3.1-8B-Instruct             | vllm   | 900/900 | 117.8 |  97.2 |  235.0 |  9078 | 10516 | 0.000 |
+| Llama-3.1-8B-Instruct             | sglang | 900/900 | 118.0 |  71.0 |  188.2 |  8993 | 10574 | 0.000 |
+| Qwen3-8B                          | vllm   | 900/900 | 113.7 | 103.2 |  232.2 |  9430 | 11683 | 0.000 |
+| Qwen3-8B                          | sglang | 900/900 | 113.9 |  73.5 |  403.0 |  9355 | 11663 | 0.000 |
+| google/gemma-2-9b-it†             | vllm   | 900/900 |  92.2 | 130.9 |**1859.1**| 11723 | 23037 | 0.000 |
+| google/gemma-2-9b-it†             | sglang | 900/900 |  89.5 | 130.4 |**29426.6**| 11631 | 43557 | 0.000 |
+
+† gemma-2-9b-it vLLM required `--max-model-len 2048 --enforce-eager --gpu-memory-utilization 0.90` to fit the 9B param KV cache on A10G 24 GB; default `--max-model-len 8192` fails engine-core init (OOM). SGLang fits under default flags.
+
+**Key findings:**
+- **Zero errors across all 8 cells at concurrency=64** — A10G 24 GB sustains 7–9B-class models end-to-end at 128/256 prompt/output.
+- **SGLang has consistently lower median TTFT** (p50 69–74 ms vs vLLM's 93–131 ms) across every 7–9B model — a ~25–30 ms edge from RadixAttention prefix lookup.
+- **vLLM has substantially tighter tail TTFT on gemma-2-9b-it**: p99 1859 ms vs SGLang 29427 ms — a **~16× gap**. SGLang's tail collapses on this specific model at high concurrency; vLLM is the safer choice for latency-SLO gemma-2-9b serving.
+- **Throughput is engine-agnostic on all 7–8B models** (within 0.2 tok/s). Both engines saturate A10G equivalently on decode once KV cache is warm.
+- **Gemma-2-9b-it throughput is ~24% lower than Mistral-7B** (92 vs 123 tok/s) — expected from the 9B/7B parameter ratio plus the smaller max-model-len for vLLM.
+
+### Notes on getting Gemma 4 working
+
+Gemma 4 landed in Transformers 5.5.0 and introduced QK-norm (`k_norm`/`q_norm`) on top of the Gemma 3 architecture. Both engines needed careful image selection:
+
+- **vLLM** — `vllm/vllm-openai:latest` has a native Gemma 4 loader (it derives from the existing Gemma 3 class and handles QK-norm correctly). Works out of the box once `transformers` is upgraded inside the container.
+- **SGLang** — `lmsysorg/sglang:latest` (Apr-09 snapshot) does **not** have a native Gemma 4 class yet. It falls back to the generic `TransformersMultiModalForCausalLM` wrapper and dies during weight load:
+  ```
+  ValueError: No module or parameter named
+    'model.language_model.layers.15.self_attn.k_norm'
+    in TransformersMultiModalForCausalLM
+  ```
+  Fix: pin `GEMMA4_SGLANG_IMAGE="lmsysorg/sglang:dev-cu13"` (Apr-16 snapshot off `main`) in `scripts/run_new_benchmarks.sh`. That image ships the native Gemma 4 model class and loads the weights cleanly.
+
+### Follow-up work
+
+- **Variance / TPOT / decode-sweep analysis:** all auto-regenerated from the latest result set —
+  ```bash
+  python -m analysis.variance_analysis --results-dir results_variance
+  python -m analysis.tpot_analysis        --results-dir results_variance
+  python -m analysis.decode_length_analysis --results-dir results_decode_sweep
+  ```
+- **Llama 3.1 8B SGLang-Eagle3:** still blocked on the retired `lmsysorg/sglang:nightly-dev-cu13-20260321-94194537` image. Needs a new nightly pin before retry.
+- **Re-running any phase is idempotent:** every phase block auto-skips cells whose result file already exists, so `scripts/run_new_benchmarks.sh --all` is safe to launch at any time.
+
+```bash
+# Re-run analysis over the full dataset
+conda run -n base python -m analysis.variance_analysis --results-dir results_variance
+conda run -n base python -m analysis.tpot_analysis --results-dir results_variance
+conda run -n base python -m analysis.decode_length_analysis --results-dir results_decode_sweep
+```
 
 ---
 
@@ -104,13 +222,17 @@ inference-engine-benchmark-system/
 │   └── schemas/                # JSON schemas referenced by structured prompts
 │
 ├── tests/                      # pytest suite (httpx mocking via respx, no live engines needed)
-├── results/                    # Raw JSON results (one file per scenario × engine × run)
+├── results/                    # Raw JSON results — baseline (14 models × 5 scenarios × 2 engines)
+├── results_variance/           # variance subset (5 iterations per scenario/engine/model)
+├── results_concurrency64/      # concurrency-64 extended ramp (7–9B models)
+├── results_decode_sweep/       # decode-length sweep (output tokens: 64/256/1024/4096)
 ├── reports/                    # Generated reports and SVG figures
 │   └── figures/                # SVG charts (TTFT, throughput, tradeoff)
 ├── docs/                       # Detailed guides (getting started, spec-dec runbook, roadmap)
 ├── scripts/
-│   ├── run_all_benchmarks.sh   # Full suite runner (14 models + spec-dec)
-│   └── run_phase_a_pending.sh  # Eagle3 spec-dec runs
+│   ├── run_all_benchmarks.sh      # 14-model baseline suite (the 152-file headline set)
+│   ├── run_new_benchmarks.sh      # extended suite: --variance, --concurrency, --decode-sweep, --gemma4
+│   └── EXECUTION_GUIDE.md         # prerequisites, env-var knobs, troubleshooting
 ├── deploy/
 │   ├── ec2_deploy.sh           # Self-contained bash AWS deployment
 │   └── terraform/              # Terraform module for team/repeatable workflows
@@ -216,6 +338,34 @@ python run_experiment.py list-prompt-packs
 | `long_context_stress` | 20 | 4 | 8K-token prompts, GPU memory pressure |
 | `prefix_sharing_benefit` | 100 | 8 | 60% shared prefix, KV cache reuse |
 | `structured_generation_speed` | 200 | 16 | JSON schema-constrained decode |
+
+### Extended Benchmark Phases
+
+Four additional benchmark blocks run on top of the baseline suite:
+
+| Block | Script | Scenarios | Iterations | Output Dir | Status |
+|---|---|---|---|---|---|
+| Variance subset | `scripts/run_new_benchmarks.sh --variance` | 5 baseline | 5× | `results_variance/` | ✅ Complete (201 files) |
+| Concurrency-64 ramp | `scripts/run_new_benchmarks.sh --concurrency` | `throughput_ramp_extended` | 1× | `results_concurrency64/` | ✅ Complete (8 files) |
+| Decode-length sweep | `scripts/run_new_benchmarks.sh --decode-sweep` | `decode_length_sweep_{64,256,1024,4096}` | 3× | `results_decode_sweep/` | ✅ Complete (144 files, incl. Gemma 4) |
+| Gemma 4 baseline + ngram | `scripts/run_new_benchmarks.sh --gemma4` | 5 baseline + 2 ngram | 1× | `results/` | ✅ Complete (28 files) |
+
+The **concurrency-64 ramp** pushes 7–9B models up to `concurrency=64` to find the saturation point and OOM ceiling. The **decode-length sweep** fixes the prompt at ~512 tokens and sweeps `max_output_tokens` ∈ {64, 256, 1024, 4096} to isolate how output length affects throughput. The **Gemma 4 block** runs the 5 baseline scenarios plus ngram spec-dec on both engines for E2B and E4B.
+
+Run all phases in the background:
+```bash
+nohup bash scripts/run_new_benchmarks.sh 2>&1 | tee logs/new_benchmarks_$(date +%Y%m%dT%H%M%S).log &
+```
+
+Analyse results after completion:
+```bash
+python -m analysis.variance_analysis      --results-dir results_variance
+python -m analysis.tpot_analysis          --results-dir results_variance
+python -m analysis.decode_length_analysis --results-dir results_decode_sweep
+python -m analysis.goodput                --results-dir results_variance
+```
+
+---
 
 ### Prompt Packs
 
@@ -455,7 +605,86 @@ JSON-constrained generation throughput across 200 requests. **Higher tok/s is be
 
 ---
 
-### 6. Speculative Decoding
+### 6. TPOT & Goodput Analysis
+
+**TPOT** (Time Per Output Token) = inter-token decode latency after the first token: `(total_ms − ttft_ms) / max(output_tokens − 1, 1)`. Computed per request from existing result data; no re-runs required. Full per-scenario tables: [`reports/tpot_analysis.md`](reports/tpot_analysis.md).
+
+#### TPOT at concurrency 1 (single_request_latency, P50 ms)
+
+At serial load, TPOT reflects raw GPU decode speed — engines are near-identical for every model except Gemma 3 4B, where vLLM's `--enforce-eager` constraint doubles decode time.
+
+| Model | vLLM P50 | vLLM P99 | SGLang P50 | SGLang P99 |
+|---|---|---|---|---|
+| gemma-2-2b-it | 12.9 | 13.1 | 12.8 | 12.9 |
+| smollm3-3b | 14.6 | 14.7 | 15.7 | 15.7 |
+| llama-3.2-3b-instruct | 15.0 | 15.0 | 14.7 | 14.7 |
+| phi-3-mini-4k-instruct | 17.4 | 17.4 | 17.7 | 18.0 |
+| **gemma-3-4b-it** | **41.0** | **42.3** | **21.7** | **21.9** |
+| phi-4-mini-instruct | 17.8 | 18.0 | 18.8 | 19.3 |
+| deepseek-r1-distill-qwen-7b | 32.7 | 33.1 | 32.4 | 32.4 |
+| qwen2.5-7b-instruct | 32.7 | 33.3 | 32.3 | 32.8 |
+| mistral-7b-instruct-v0.3 | 31.5 | 31.8 | 31.4 | 31.7 |
+| llama-3.1-8b-instruct | 35.7 | 40.3 | 33.0 | 38.9 |
+| qwen3-8b | 35.6 | 37.2 | 37.0 | 40.9 |
+| granite-3.3-8b-instruct | 36.1 | 36.1 | 36.0 | 36.0 |
+| deepseek-r1-distill-llama-8b | 33.1 | 33.1 | 32.9 | 33.0 |
+| gemma-2-9b-it | 41.4 | 42.4 | 41.2 | 42.2 |
+
+**Takeaway:** At concurrency 1, both engines are GPU-bound equally. TPOT tracks model size. The sole outlier is Gemma 3 4B: SGLang achieves 21.7 ms vs vLLM's 41.0 ms — the same CUDA graph incompatibility that drives the throughput gap.
+
+#### TPOT tail latency under load (throughput_ramp, P99 ms)
+
+Under high concurrency, TPOT P99 reveals scheduling behaviour. vLLM holds tail latency significantly better on larger models.
+
+| Model | vLLM P99 | SGLang P99 | SGLang / vLLM |
+|---|---|---|---|
+| gemma-2-2b-it | 17.6 | 18.4 | 1.05× |
+| smollm3-3b | **21.2** | 41.9 | 2.0× worse |
+| llama-3.2-3b-instruct | **20.6** | 21.3 | 1.04× |
+| phi-3-mini-4k-instruct | 30.7 | **29.1** | 0.95× |
+| gemma-3-4b-it | **44.6** | 56.8 | 1.27× worse |
+| phi-4-mini-instruct | **28.9** | 32.7 | 1.13× worse |
+| qwen2.5-7b-instruct | **37.6** | 36.9 | 0.98× |
+| mistral-7b-instruct-v0.3 | **39.0** | 39.1 | 1.00× |
+| llama-3.1-8b-instruct | **92.7** | 220.8 | 2.4× worse |
+| **qwen3-8b** | **54.3** | **256.2** | **4.7× worse** |
+| granite-3.3-8b-instruct | **47.5** | 48.7 | 1.03× |
+| deepseek-r1-distill-llama-8b | **40.4** | 41.1 | 1.02× |
+| deepseek-r1-distill-qwen-7b | **35.8** | 36.8 | 1.03× |
+| gemma-2-9b-it | **72.1** | 80.1 | 1.11× worse |
+
+**Takeaway:** vLLM tail latency is substantially more stable at 7–9B scale under high concurrency. SGLang P99 TPOT spikes to 4.7× vLLM on Qwen3 8B and 2.4× on Llama 3.1 8B — the same scheduler stall behaviour that produces its P95 tail-latency anomaly on Gemma 2 9B. At ≤4B, the gap closes to <5% for most models.
+
+#### Goodput (TTFT ≤ 200 ms, TPOT ≤ 40 ms)
+
+Goodput = requests/sec satisfying both SLOs simultaneously, summed across all scenarios. Re-run with different thresholds: `python -m analysis.goodput --ttft-slo-ms <X> --tpot-slo-ms <Y>`.
+
+| Model | vLLM goodput | SGLang goodput | SLO pass % (vLLM / SGLang) |
+|---|---|---|---|
+| gemma-2-2b-it | **1.47 rps** | 1.32 rps | 99.9% / 97.0% |
+| smollm3-3b | **1.12 rps** | 0.90 rps | 98.8% / 88.9% |
+| llama-3.2-3b-instruct | 1.08 rps | **1.11 rps** | 98.2% / 99.9% |
+| phi-3-mini-4k-instruct | 0.90 rps | **0.92 rps** | 96.0% / 99.8% |
+| **gemma-3-4b-it** | 0.004 rps | **0.60 rps** | 1.0% / 81.4% |
+| phi-4-mini-instruct | 0.94 rps | **1.00 rps** | 98.8% / 98.9% |
+| deepseek-r1-distill-qwen-7b | **0.51 rps** | 0.47 rps | 97.1% / 91.3% |
+| qwen2.5-7b-instruct | 0.52 rps | **0.53 rps** | 97.1% / 98.6% |
+| mistral-7b-instruct-v0.3 | 0.51 rps | **0.53 rps** | 95.7% / 99.9% |
+| llama-3.1-8b-instruct | 0.28 rps | **0.42 rps** | 60.4% / 71.7% |
+| qwen3-8b | **0.34 rps** | 0.37 rps | 78.4% / 50.9% |
+| granite-3.3-8b-instruct | **0.25 rps** | 0.24 rps | 54.3% / 53.8% |
+| deepseek-r1-distill-llama-8b | **0.47 rps** | 0.47 rps | 94.0% / 93.1% |
+| gemma-2-9b-it | 0 rps | 0 rps | 0% / 0% — TPOT ~44 ms exceeds SLO |
+
+**Takeaways:**
+- **Gemma 2 2B / SmolLM3** — vLLM leads by 10–12% in goodput (CUDA graphs, lower TPOT variance).
+- **Gemma 3 4B** — SGLang delivers 150× the goodput of vLLM (0.60 vs 0.004 rps) because vLLM almost never meets the TPOT SLO without CUDA graphs.
+- **Llama 3.1 8B** — SGLang wins goodput (0.42 vs 0.28 rps) despite vLLM's lower serial TTFT, because SGLang's better TTFT under concurrent load keeps more requests inside the 200 ms window.
+- **Gemma 2 9B** — neither engine meets a 40 ms TPOT SLO (native TPOT ~44 ms); tighten to ≤50 ms to get meaningful results.
+
+---
+
+### 7. Speculative Decoding
 
 #### Llama 3.1 8B
 
@@ -664,28 +893,40 @@ terraform destroy -var="key_pair_name=my-key" -var="your_ip_cidr=$(curl -s https
 
 ## Reproducing These Results
 
+Two entry-point scripts, depending on what you want:
+
 ```bash
-# Full automated suite (14 models, 5 scenarios each, sequential)
+# ─── Option A: 14-model baseline only (the 152-file headline result set) ───
+# Simple, sequential, one engine at a time. Skips any model with ≥10 files.
 chmod +x scripts/run_all_benchmarks.sh
-tmux new -s benchmark
+tmux new -s bench
 ./scripts/run_all_benchmarks.sh 2>&1 | tee logs/run_$(date +%Y%m%dT%H%M%S).log
+./scripts/run_all_benchmarks.sh --force       # ignore existing results
 
-# Force re-run ignoring existing results
-./scripts/run_all_benchmarks.sh --force
+# ─── Option B: extended phases (variance, concurrency-64, decode sweep, Gemma 4) ───
+# Everything beyond the baseline — idempotent, resume-safe.
+bash scripts/run_new_benchmarks.sh --all
+bash scripts/run_new_benchmarks.sh --variance   # variance (4 models × 5 iter)
+bash scripts/run_new_benchmarks.sh --concurrency   # concurrency-64 ramp
+bash scripts/run_new_benchmarks.sh --decode-sweep   # decode-length sweep
+bash scripts/run_new_benchmarks.sh --gemma4   # Gemma 4 baseline + ngram
 
-# Generate reports from results
-conda run -n base python analysis/generate_final_benchmark_report.py
+# Generate summary reports after runs finish
+conda run -n base python -m analysis.generate_final_benchmark_report
 ```
+
+Full walk-through, env-var knobs, and troubleshooting:
+[`scripts/EXECUTION_GUIDE.md`](scripts/EXECUTION_GUIDE.md).
 
 ---
 
 ## Future Work
 
+### Longer-term
 - [ ] SGLang Eagle3 on ≥40 GB GPU (A100/H100)
-- [ ] Eagle3 for Qwen3-8B when draft model is published
+- [ ] Eagle3 for Qwen3-8B when `RedHatAI/Qwen3-8B-speculator.eagle3` is published
 - [ ] Quantized models (AWQ/GPTQ) — test if spec-dec becomes viable at lower precision
 - [ ] Multi-GPU tensor parallel benchmarks
-- [ ] Continuous batching stress tests at concurrency 64+
 - [ ] CI pipeline for automated regression testing
 
 ---

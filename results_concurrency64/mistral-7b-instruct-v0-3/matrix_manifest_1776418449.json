@@ -1,0 +1,22 @@
+{
+  "started_at": 1776418449.138702,
+  "finished_at": 1776420325.0722158,
+  "total_elapsed_seconds": 1875.9309244155884,
+  "model": "mistralai/Mistral-7B-Instruct-v0.3",
+  "tasks": [
+    {
+      "model": "mistralai/Mistral-7B-Instruct-v0.3",
+      "scenario_name": "throughput_ramp_extended",
+      "engine": "vllm",
+      "engine_variant": "vllm",
+      "spec_method": null,
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1776418449.2316048,
+      "status": "completed",
+      "finished_at": 1776420315.0583682,
+      "result_path": "results_concurrency64/mistral-7b-instruct-v0-3/throughput_ramp_extended_vllm_1776418449.json"
+    }
+  ],
+  "cooldown_seconds": 10
+}

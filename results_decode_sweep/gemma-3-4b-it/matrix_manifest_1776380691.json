@@ -1,0 +1,61 @@
+{
+  "started_at": 1776380691.088235,
+  "finished_at": 1776382211.0001245,
+  "total_elapsed_seconds": 1519.9076073169708,
+  "model": "google/gemma-3-4b-it",
+  "tasks": [
+    {
+      "model": "google/gemma-3-4b-it",
+      "scenario_name": "decode_length_sweep_64",
+      "engine": "sglang",
+      "engine_variant": "sglang",
+      "spec_method": null,
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1776380692.1425464,
+      "status": "completed",
+      "finished_at": 1776380733.427461,
+      "result_path": "results_decode_sweep/gemma-3-4b-it/decode_length_sweep_64_sglang_1776380692.json"
+    },
+    {
+      "model": "google/gemma-3-4b-it",
+      "scenario_name": "decode_length_sweep_256",
+      "engine": "sglang",
+      "engine_variant": "sglang",
+      "spec_method": null,
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1776380744.4692628,
+      "status": "completed",
+      "finished_at": 1776380903.3287013,
+      "result_path": "results_decode_sweep/gemma-3-4b-it/decode_length_sweep_256_sglang_1776380744.json"
+    },
+    {
+      "model": "google/gemma-3-4b-it",
+      "scenario_name": "decode_length_sweep_1024",
+      "engine": "sglang",
+      "engine_variant": "sglang",
+      "spec_method": null,
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1776380914.3691945,
+      "status": "completed",
+      "finished_at": 1776381518.60733,
+      "result_path": "results_decode_sweep/gemma-3-4b-it/decode_length_sweep_1024_sglang_1776380914.json"
+    },
+    {
+      "model": "google/gemma-3-4b-it",
+      "scenario_name": "decode_length_sweep_4096",
+      "engine": "sglang",
+      "engine_variant": "sglang",
+      "spec_method": null,
+      "iteration": 1,
+      "healthy_before_run": true,
+      "started_at": 1776381529.6510067,
+      "status": "completed",
+      "finished_at": 1776382200.9850054,
+      "result_path": "results_decode_sweep/gemma-3-4b-it/decode_length_sweep_4096_sglang_1776381529.json"
+    }
+  ],
+  "cooldown_seconds": 10
+}
