@@ -895,29 +895,34 @@ terraform destroy -var="key_pair_name=my-key" -var="your_ip_cidr=$(curl -s https
 
 ## Reproducing These Results
 
+Two entry-point scripts, depending on what you want:
+
 ```bash
-# Full automated suite (14 models, 5 scenarios each, sequential)
+# ─── Option A: 14-model baseline only (the 152-file headline result set) ───
+# Simple, sequential, one engine at a time. Skips any model with ≥10 files.
 chmod +x scripts/run_all_benchmarks.sh
-tmux new -s benchmark
+tmux new -s bench
 ./scripts/run_all_benchmarks.sh 2>&1 | tee logs/run_$(date +%Y%m%dT%H%M%S).log
+./scripts/run_all_benchmarks.sh --force       # ignore existing results
 
-# Force re-run ignoring existing results
-./scripts/run_all_benchmarks.sh --force
+# ─── Option B: extended phases (variance, concurrency-64, decode sweep, Gemma 4) ───
+# Everything beyond the baseline — idempotent, resume-safe.
+bash scripts/run_new_benchmarks.sh --all
+bash scripts/run_new_benchmarks.sh --phase1   # variance (4 models × 5 iter)
+bash scripts/run_new_benchmarks.sh --phase2   # concurrency-64 ramp
+bash scripts/run_new_benchmarks.sh --phase3   # decode-length sweep
+bash scripts/run_new_benchmarks.sh --phase4   # Gemma 4 baseline + ngram
 
-# Generate reports from results
-conda run -n base python analysis/generate_final_benchmark_report.py
+# Generate summary reports after runs finish
+conda run -n base python -m analysis.generate_final_benchmark_report
 ```
+
+Full walk-through, env-var knobs, and troubleshooting:
+[`scripts/EXECUTION_GUIDE.md`](scripts/EXECUTION_GUIDE.md).
 
 ---
 
 ## Future Work
-
-### Near-term (in progress)
-- [ ] **Phase 2 — Concurrency-64:** Complete remaining 3 models (Qwen3-8B, Mistral-7B, gemma-2-9b-it)
-- [ ] **Phase 3 — Decode sweep:** Run all 4 models × 4 output-length configs × 2 engines
-- [ ] **Variance analysis:** Re-run `variance_analysis`, `tpot_analysis`, `goodput` on Phase 1 results
-- [ ] **Decode length analysis:** Run `decode_length_analysis` after Phase 3 completes
-- [ ] **Gemma 4 benchmarks:** Run after Phases 2/3 (GPU free) — baseline + Ngram spec-dec
 
 ### Longer-term
 - [ ] SGLang Eagle3 on ≥40 GB GPU (A100/H100)
