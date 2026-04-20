@@ -391,7 +391,7 @@ def main() -> None:
     if not args.results_dir.exists():
         raise SystemExit(
             f"Results directory not found: {args.results_dir}\n"
-            "Run scripts/run_new_benchmarks.sh --phase1 first."
+            "Run scripts/run_new_benchmarks.sh --variance first."
         )
 
     print(f"Loading results from: {args.results_dir}")

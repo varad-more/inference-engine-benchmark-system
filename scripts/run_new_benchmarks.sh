@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # =============================================================================
-# New Benchmark Suite — Phase 1 (Variance), Phase 2 (Concurrency-64),
-#                       Phase 3 (Decode-Length Sweep)
+# Extended Benchmark Suite — variance, concurrency-64, decode-length sweep,
+# and Gemma 4 (baseline + ngram spec-dec).
 #
 # Manages Docker containers per model/engine.
 # Runs only models that are cached locally or not gated (no HF token required).
@@ -15,11 +15,14 @@
 #   chmod +x scripts/run_new_benchmarks.sh
 #   nohup bash scripts/run_new_benchmarks.sh 2>&1 | tee logs/new_benchmarks_$(date +%Y%m%dT%H%M%S).log &
 #
-# Options:
-#   --phase1   Run only Phase 1 (variance subset)
-#   --phase2   Run only Phase 2 (concurrency-64)
-#   --phase3   Run only Phase 3 (decode-length sweep)
-#   (default: all three phases)
+# Options (each flag runs only that block; default = variance + concurrency +
+# decode-sweep, i.e. everything except gemma4):
+#   --variance          Variance subset — 4 models × 5 scenarios × 5 iter
+#   --concurrency       Concurrency-64 ramp on 7–9B models
+#   --decode-sweep      Decode-length sweep (max_tokens 64/256/1024/4096)
+#   --decode-sweep-redo Targeted re-runs of specific decode-sweep cells
+#   --gemma4            Gemma 4 baseline + ngram spec-dec
+#   --all               Run every block above
 # =============================================================================
 
 set +e
@@ -46,21 +49,21 @@ ERRORS=()
 COMPLETED=0
 
 # ── Parse args ───────────────────────────────────────────────────────────────
-RUN_PHASE1=true
-RUN_PHASE2=true
-RUN_PHASE3=true
-RUN_PHASE4=false     # Part 4 (Gemma 4) — off by default; opt-in via --phase4 or --all
-RUN_PHASE3_REDO=false
+RUN_VARIANCE=true
+RUN_CONCURRENCY=true
+RUN_DECODE_SWEEP=true
+RUN_GEMMA4=false     # Gemma 4 — off by default; opt-in via --gemma4 or --all
+RUN_DECODE_SWEEP_REDO=false
 for arg in "$@"; do
     case "$arg" in
-        --phase1) RUN_PHASE2=false; RUN_PHASE3=false; RUN_PHASE4=false ;;
-        --phase2) RUN_PHASE1=false; RUN_PHASE3=false; RUN_PHASE4=false ;;
-        --phase3) RUN_PHASE1=false; RUN_PHASE2=false; RUN_PHASE4=false ;;
-        --phase4) RUN_PHASE1=false; RUN_PHASE2=false; RUN_PHASE3=false; RUN_PHASE4=true ;;
-        --all)    RUN_PHASE1=true;  RUN_PHASE2=true;  RUN_PHASE3=true;  RUN_PHASE4=true ;;
-        --phase3-redo)
-            RUN_PHASE1=false; RUN_PHASE2=false; RUN_PHASE3=true; RUN_PHASE4=false
-            RUN_PHASE3_REDO=true
+        --variance)     RUN_CONCURRENCY=false; RUN_DECODE_SWEEP=false; RUN_GEMMA4=false ;;
+        --concurrency)  RUN_VARIANCE=false;    RUN_DECODE_SWEEP=false; RUN_GEMMA4=false ;;
+        --decode-sweep) RUN_VARIANCE=false;    RUN_CONCURRENCY=false;  RUN_GEMMA4=false ;;
+        --gemma4)       RUN_VARIANCE=false;    RUN_CONCURRENCY=false;  RUN_DECODE_SWEEP=false; RUN_GEMMA4=true ;;
+        --all)          RUN_VARIANCE=true;     RUN_CONCURRENCY=true;   RUN_DECODE_SWEEP=true;  RUN_GEMMA4=true ;;
+        --decode-sweep-redo)
+            RUN_VARIANCE=false; RUN_CONCURRENCY=false; RUN_DECODE_SWEEP=true; RUN_GEMMA4=false
+            RUN_DECODE_SWEEP_REDO=true
             ;;
     esac
 done
@@ -298,7 +301,7 @@ run_sglang_model() {
 }
 
 # ── Gemma 4 launchers ────────────────────────────────────────────────────────
-# Defined here (not in Phase 4) so --phase3 can call them too. Both use the
+# Defined here (not in the Gemma 4 block) so --decode-sweep can call them too. Both use the
 # :latest images and pip-install transformers-from-git inside the container on
 # boot, since Gemma 4 needs Transformers >= 5.5.0.
 
@@ -395,7 +398,7 @@ run_sglang_gemma4() {
 }
 
 # =============================================================================
-#  PHASE 1 — Variance Subset
+#  Variance Subset
 #  Credibility backbone: 5 iterations × 5 scenarios × 2 engines × 4 models
 #
 #  STATUS (as of 2026-04-18): PARTIAL — 131 / 200 files in results_variance/
@@ -413,8 +416,8 @@ run_sglang_gemma4() {
 #  with fresh timestamps. Safe to re-launch — the completed models are gated
 #  behind compgen checks and will skip cleanly.
 # =============================================================================
-if [ "$RUN_PHASE1" = "true" ]; then
-    log "PHASE 1 — VARIANCE SUBSET (resume, missing cells only)"
+if [ "$RUN_VARIANCE" = "true" ]; then
+    log "VARIANCE SUBSET (resume, missing cells only)"
 
     VARIANCE_SCENARIOS_ALL="single_request_latency,throughput_ramp,long_context_stress,prefix_sharing_benefit,structured_generation_speed"
 
@@ -477,11 +480,11 @@ if [ "$RUN_PHASE1" = "true" ]; then
         run_sglang_model "google/gemma-3-4b-it" "$VARIANCE_SCENARIOS_ALL" 5 10 "results_variance"
     fi
 
-    log "PHASE 1 COMPLETE"
+    log "VARIANCE SUBSET COMPLETE"
 fi
 
 # =============================================================================
-#  PHASE 2 — Concurrency-64 Extended Ramp
+#  Concurrency-64 Extended Ramp
 #  Adds concurrency=64 to find saturation / OOM ceiling on 7-9B models
 #
 #  STATUS (as of 2026-04-18): COMPLETE — all 8 cells done, 0% error rate
@@ -495,7 +498,7 @@ fi
 #  completed cells, won't double-spend GPU.
 #
 #  Run with:
-#    nohup bash scripts/run_new_benchmarks.sh --phase2 2>&1 \
+#    nohup bash scripts/run_new_benchmarks.sh --concurrency 2>&1 \
 #      | tee logs/phase2_resume_$(date +%Y%m%dT%H%M%S).log &
 # =============================================================================
 
@@ -517,8 +520,8 @@ phase2_slug_for() {
     esac
 }
 
-if [ "$RUN_PHASE2" = "true" ]; then
-    log "PHASE 2 — CONCURRENCY-64 EXTENDED RAMP (resume, missing-only, 1 iter)"
+if [ "$RUN_CONCURRENCY" = "true" ]; then
+    log "CONCURRENCY-64 EXTENDED RAMP (resume, missing-only, 1 iter)"
     echo "  Output dir : results_concurrency64/"
     echo "  Iterations : 1   (single run per engine to conserve GPU cost)"
     echo "  Cooldown   : 10s between scenarios"
@@ -575,11 +578,11 @@ if [ "$RUN_PHASE2" = "true" ]; then
         ((COMPLETED++))
     done
 
-    log "PHASE 2 COMPLETE"
+    log "CONCURRENCY-64 COMPLETE"
 fi
 
 # =============================================================================
-#  PHASE 3 — Decode-Length Sweep
+#  Decode-Length Sweep
 #  Fixed ~512-token prompts, max_output_tokens ∈ {64, 256, 1024, 4096}
 #
 #  STATUS (as of 2026-04-18): 72 files, all cells valid but iteration counts
@@ -607,8 +610,8 @@ phase3_min_iters() {
     echo "$m"
 }
 
-if [ "$RUN_PHASE3" = "true" ] && [ "$RUN_PHASE3_REDO" = "false" ]; then
-    log "PHASE 3 — DECODE-LENGTH SWEEP (top-up to ≥3 iter per cell)"
+if [ "$RUN_DECODE_SWEEP" = "true" ] && [ "$RUN_DECODE_SWEEP_REDO" = "false" ]; then
+    log "DECODE-LENGTH SWEEP (top-up to ≥3 iter per cell)"
 
     DECODE_SCENARIOS_ALL="decode_length_sweep_64,decode_length_sweep_256,decode_length_sweep_1024,decode_length_sweep_4096"
     PHASE3_TARGET_ITERS=3
@@ -682,11 +685,11 @@ if [ "$RUN_PHASE3" = "true" ] && [ "$RUN_PHASE3_REDO" = "false" ]; then
         ((COMPLETED++))
     done
 
-    log "PHASE 3 COMPLETE"
+    log "DECODE-LENGTH SWEEP COMPLETE"
 fi
 
 # =============================================================================
-#  PHASE 3 REDO — Targeted reruns for the 2 missing/partial cells
+#  DECODE-SWEEP REDO — Targeted reruns for the 2 missing/partial cells
 #    1. gemma-3-4b-it / decode_length_sweep_4096 / vLLM  — DONE 2026-04-17
 #    2. llama-3-1-8b-instruct / decode_length_sweep_4096 / vLLM  — DONE 2026-04-17
 #
@@ -694,8 +697,8 @@ fi
 #  skips cells that already have a 4096_vllm_*.json; re-running is safe but
 #  will be a no-op unless those files are removed.
 # =============================================================================
-if [ "$RUN_PHASE3_REDO" = "true" ]; then
-    log "PHASE 3 REDO — TARGETED RERUNS (idempotent)"
+if [ "$RUN_DECODE_SWEEP_REDO" = "true" ]; then
+    log "DECODE-SWEEP TARGETED RERUNS (idempotent)"
     echo "  Output dir : results_decode_sweep/"
 
     $DOCKER rm -f bench-vllm bench-sglang 2>/dev/null || true
@@ -719,11 +722,11 @@ if [ "$RUN_PHASE3_REDO" = "true" ]; then
     fi
 
     ((COMPLETED+=2))
-    log "PHASE 3 REDO COMPLETE"
+    log "DECODE-SWEEP REDO COMPLETE"
 fi
 
 # =============================================================================
-#  PHASE 4 — Gemma 4 baseline + ngram spec-dec  (results/)
+#  Gemma 4 baseline + ngram spec-dec  (results/)
 #
 #  Models    : google/gemma-4-E2B-it, google/gemma-4-E4B-it
 #  Baseline  : 5 scenarios × {vllm, sglang}       → 20 cells
@@ -736,7 +739,7 @@ fi
 #
 #  Idempotent resume: cells whose file already exists under
 #    results/<slug>/<scenario>_<engine>_*.json
-#  are skipped. Run with: bash scripts/run_new_benchmarks.sh --phase4
+#  are skipped. Run with: bash scripts/run_new_benchmarks.sh --gemma4
 # =============================================================================
 
 # Gather pending scenarios (comma-joined) for a given (model, engine) under results/.
@@ -751,8 +754,8 @@ phase4_pending_scenarios() {
     echo "$out"
 }
 
-if [ "$RUN_PHASE4" = "true" ]; then
-    log "PHASE 4 — GEMMA 4 (baseline + ngram spec-dec, resume)"
+if [ "$RUN_GEMMA4" = "true" ]; then
+    log "GEMMA 4 (baseline + ngram spec-dec, resume)"
 
     # Ensure the :latest images exist locally (may not have been pulled earlier).
     # SKIP_GEMMA4_SGLANG=1 skips pulling the sglang:latest image (~50 GB).
@@ -819,7 +822,7 @@ if [ "$RUN_PHASE4" = "true" ]; then
         ((COMPLETED++))
     done
 
-    log "PHASE 4 COMPLETE"
+    log "GEMMA 4 COMPLETE"
 fi
 
 # =============================================================================
@@ -846,8 +849,8 @@ fi
 
 echo ""
 echo "Next steps:"
-echo "  Resume Phase 2 (missing-only, idempotent, 1 iter/cell):"
-echo "    nohup bash scripts/run_new_benchmarks.sh --phase2 2>&1 | tee logs/phase2_resume_\$(date +%Y%m%dT%H%M%S).log &"
+echo "  Resume Concurrency-64 (missing-only, idempotent, 1 iter/cell):"
+echo "    nohup bash scripts/run_new_benchmarks.sh --concurrency 2>&1 | tee logs/phase2_resume_\$(date +%Y%m%dT%H%M%S).log &"
 echo ""
 echo "  Then run analysis:"
 echo "    python -m analysis.variance_analysis --results-dir results_variance"

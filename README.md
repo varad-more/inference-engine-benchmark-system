@@ -31,13 +31,13 @@ _Last updated: 2026-04-20_
 |---|---|---|---|
 | Baseline | 14 models × 5 scenarios × 2 engines | ✅ Complete | 152 / 152 |
 | Speculative decoding | Llama 3.1 8B (Ngram + Eagle3), Qwen3 8B (Ngram) | ✅ Complete (except Llama sglang-eagle3 — blocked on missing nightly image) | In `results/` |
-| Phase 1 — Variance | 4 models × 5 scenarios × 2 engines × 5 iterations | ✅ Complete | 201 / 200 |
-| Phase 2 — Concurrency-64 | 4 models × `throughput_ramp_extended` × 2 engines × 1 iteration | ✅ Complete | 8 / 8 (0% error rate) |
-| Phase 3 — Decode sweep (base 4 models) | 4 models × 4 lengths × 2 engines × 3 iterations | ✅ Complete | 96 / 96 |
-| Phase 3 — Decode sweep (Gemma 4) | 2 models × 4 lengths × 2 engines × 3 iterations | ✅ Complete | 48 / 48 |
-| Phase 4 — Gemma 4 baseline + ngram | 2 models (E2B, E4B) × 5 scenarios × 2 engines + ngram spec-dec | ✅ Complete | 28 / 28 |
+| Variance subset | 4 models × 5 scenarios × 2 engines × 5 iterations | ✅ Complete | 201 / 200 |
+| Concurrency-64 ramp | 4 models × `throughput_ramp_extended` × 2 engines × 1 iteration | ✅ Complete | 8 / 8 (0% error rate) |
+| Decode-length sweep (4-model base) | 4 models × 4 lengths × 2 engines × 3 iterations | ✅ Complete | 96 / 96 |
+| Decode-length sweep (Gemma 4) | 2 models × 4 lengths × 2 engines × 3 iterations | ✅ Complete | 48 / 48 |
+| Gemma 4 baseline + ngram | 2 models (E2B, E4B) × 5 scenarios × 2 engines + ngram spec-dec | ✅ Complete | 28 / 28 |
 
-### Phase 3 — Decode-Length Sweep Results
+### Decode-Length Sweep Results
 
 Prompt ≈ 512 tokens, `max_output_tokens ∈ {64, 256, 1024, 4096}`, concurrency 8, 180 requests/run. Mean across iterations. Full table: [`reports/decode_length_sweep_summary.md`](reports/decode_length_sweep_summary.md).
 
@@ -84,7 +84,7 @@ All cells at n=3 iterations after 2026-04-19 top-ups.
 - Llama 8B at 4096 tokens: p99 latency blows out to **~5 min** and tail TTFT spikes to **~99 s (sglang)** / **~36 s (vllm)** — the A10G is queue-saturated at concurrency 8 for this size.
 - Crossovers surfaced by the analysis script (`reports/decode_length_analysis.md`): vllm→sglang at max_tokens=1024 for phi-4-mini and gemma-2-2b; sglang→vllm at max_tokens=4096 for Llama-3.1-8B (within CI).
 
-### Phase 2 — Concurrency-64 Results
+### Concurrency-64 Results
 
 Single-iteration runs at concurrency levels {1, 4, 8, 16, 32, 64}, 150 req/level (900 total). Prompt 128 tok, output 256 tok. Full table: [`reports/concurrency64_summary.md`](reports/concurrency64_summary.md). Charts: [`reports/figures/phase2_throughput.svg`](reports/figures/phase2_throughput.svg), [`reports/figures/phase2_ttft_p99.svg`](reports/figures/phase2_ttft_p99.svg).
 
@@ -222,20 +222,16 @@ inference-engine-benchmark-system/
 │
 ├── tests/                      # pytest suite (httpx mocking via respx, no live engines needed)
 ├── results/                    # Raw JSON results — baseline (14 models × 5 scenarios × 2 engines)
-├── results_variance/           # Phase 1 — variance subset (5 iterations per scenario/engine/model)
-├── results_concurrency64/      # Phase 2 — concurrency-64 extended ramp (7–9B models)
-├── results_decode_sweep/       # Phase 3 — decode-length sweep (output tokens: 64/256/1024/4096)
+├── results_variance/           # variance subset (5 iterations per scenario/engine/model)
+├── results_concurrency64/      # concurrency-64 extended ramp (7–9B models)
+├── results_decode_sweep/       # decode-length sweep (output tokens: 64/256/1024/4096)
 ├── reports/                    # Generated reports and SVG figures
 │   └── figures/                # SVG charts (TTFT, throughput, tradeoff)
 ├── docs/                       # Detailed guides (getting started, spec-dec runbook, roadmap)
 ├── scripts/
-│   ├── run_all_benchmarks.sh      # Full suite runner (14 models + spec-dec)
-│   ├── run_new_benchmarks.sh      # Phase 1/2/3 extended benchmarks (variance, concurrency-64, decode sweep)
-│   ├── run_variance_subset.sh     # Phase 1 only — variance credibility backbone
-│   ├── run_concurrency_64.sh      # Phase 2 only — concurrency=64 extended ramp
-│   ├── run_decode_sweep.sh        # Phase 3 only — decode-length sweep
-│   ├── run_gemma4_benchmarks.sh   # Gemma 4 baseline + ngram spec-dec (requires HF token)
-│   └── run_phase_a_pending.sh     # Eagle3 spec-dec runs
+│   ├── run_all_benchmarks.sh      # 14-model baseline suite (the 152-file headline set)
+│   ├── run_new_benchmarks.sh      # extended suite: --variance, --concurrency, --decode-sweep, --gemma4
+│   └── EXECUTION_GUIDE.md         # prerequisites, env-var knobs, troubleshooting
 ├── deploy/
 │   ├── ec2_deploy.sh           # Self-contained bash AWS deployment
 │   └── terraform/              # Terraform module for team/repeatable workflows
@@ -344,15 +340,16 @@ python run_experiment.py list-prompt-packs
 
 ### Extended Benchmark Phases
 
-Three additional benchmark phases run on top of the baseline suite:
+Four additional benchmark blocks run on top of the baseline suite:
 
-| Phase | Script | Scenarios | Iterations | Output Dir | Status |
+| Block | Script | Scenarios | Iterations | Output Dir | Status |
 |---|---|---|---|---|---|
-| Phase 1 — Variance | `scripts/run_new_benchmarks.sh --phase1` | 5 baseline | 5× | `results_variance/` | ✅ Complete (201 files) |
-| Phase 2 — Concurrency-64 | `scripts/run_new_benchmarks.sh --phase2` | `throughput_ramp_extended` | 3× | `results_concurrency64/` | 🔶 Partial — Llama 3.1 8B done, 3 models pending |
-| Phase 3 — Decode Sweep | `scripts/run_new_benchmarks.sh --phase3` | `decode_length_sweep_{64,256,1024,4096}` | 3× | `results_decode_sweep/` | ⬜ Not started |
+| Variance subset | `scripts/run_new_benchmarks.sh --variance` | 5 baseline | 5× | `results_variance/` | ✅ Complete (201 files) |
+| Concurrency-64 ramp | `scripts/run_new_benchmarks.sh --concurrency` | `throughput_ramp_extended` | 1× | `results_concurrency64/` | ✅ Complete (8 files) |
+| Decode-length sweep | `scripts/run_new_benchmarks.sh --decode-sweep` | `decode_length_sweep_{64,256,1024,4096}` | 3× | `results_decode_sweep/` | ✅ Complete (144 files, incl. Gemma 4) |
+| Gemma 4 baseline + ngram | `scripts/run_new_benchmarks.sh --gemma4` | 5 baseline + 2 ngram | 1× | `results/` | ✅ Complete (28 files) |
 
-**Phase 2** adds `concurrency=64` to find the saturation point and OOM ceiling on 7–9B models. **Phase 3** fixes the prompt at ~512 tokens and sweeps `max_output_tokens` ∈ {64, 256, 1024, 4096} to isolate how output length affects throughput.
+The **concurrency-64 ramp** pushes 7–9B models up to `concurrency=64` to find the saturation point and OOM ceiling. The **decode-length sweep** fixes the prompt at ~512 tokens and sweeps `max_output_tokens` ∈ {64, 256, 1024, 4096} to isolate how output length affects throughput. The **Gemma 4 block** runs the 5 baseline scenarios plus ngram spec-dec on both engines for E2B and E4B.
 
 Run all phases in the background:
 ```bash
@@ -908,10 +905,10 @@ tmux new -s bench
 # ─── Option B: extended phases (variance, concurrency-64, decode sweep, Gemma 4) ───
 # Everything beyond the baseline — idempotent, resume-safe.
 bash scripts/run_new_benchmarks.sh --all
-bash scripts/run_new_benchmarks.sh --phase1   # variance (4 models × 5 iter)
-bash scripts/run_new_benchmarks.sh --phase2   # concurrency-64 ramp
-bash scripts/run_new_benchmarks.sh --phase3   # decode-length sweep
-bash scripts/run_new_benchmarks.sh --phase4   # Gemma 4 baseline + ngram
+bash scripts/run_new_benchmarks.sh --variance   # variance (4 models × 5 iter)
+bash scripts/run_new_benchmarks.sh --concurrency   # concurrency-64 ramp
+bash scripts/run_new_benchmarks.sh --decode-sweep   # decode-length sweep
+bash scripts/run_new_benchmarks.sh --gemma4   # Gemma 4 baseline + ngram
 
 # Generate summary reports after runs finish
 conda run -n base python -m analysis.generate_final_benchmark_report

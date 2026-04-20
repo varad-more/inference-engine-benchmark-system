@@ -6,7 +6,7 @@ Snapshot of completed vs. remaining runs across all phases.
 - **Units:** each number is an actual result JSON file on disk.
 - **Source of truth:** `results/`, `results_variance/`, `results_concurrency64/`, `results_decode_sweep/`.
 
-## Phase 1 — Variance
+## Variance subset
 Target: **25 runs per engine per model** (5 scenarios × 5 iterations).
 
 | Model | vLLM | SGLang | Remaining |
@@ -19,7 +19,7 @@ Target: **25 runs per engine per model** (5 scenarios × 5 iterations).
 
 Output dir: `results_variance/`.
 
-## Phase 2 — Concurrency-64
+## Concurrency-64 ramp
 Target: **1 run per engine per model** (single `throughput_ramp_extended` iteration).
 
 | Model | vLLM | SGLang | Remaining |
@@ -32,7 +32,7 @@ Target: **1 run per engine per model** (single `throughput_ramp_extended` iterat
 
 Output dir: `results_concurrency64/`.
 
-## Phase 3 — Decode-length sweep
+## Decode-length sweep
 Target: **12 runs per engine per model** (4 lengths × 3 iterations).
 
 | Model | vLLM | SGLang | Remaining |
@@ -47,7 +47,7 @@ Target: **12 runs per engine per model** (4 lengths × 3 iterations).
 
 Output dir: `results_decode_sweep/`.
 
-## Phase 4 — Gemma 4 baseline + ngram spec-dec
+## Gemma 4 baseline + ngram spec-dec
 Target: **14 runs per model** (10 baseline + 4 ngram).
 - Baseline: 5 scenarios × 2 engines × 1 iter = 10
 - Ngram spec-dec: 2 scenarios × 2 engines × 1 iter = 4
@@ -64,10 +64,10 @@ Output dir: `results/`.
 
 | Category | Runs |
 |---|---|
-| Phase 1 | 201 / 200 ✅ |
-| Phase 2 | 8 / 8 ✅ |
-| Phase 3 | 144 / 144 ✅ |
-| Phase 4 | 28 / 28 ✅ |
+| Variance subset | 201 / 200 ✅ |
+| Concurrency-64 | 8 / 8 ✅ |
+| Decode-length sweep | 144 / 144 ✅ |
+| Gemma 4 | 28 / 28 ✅ |
 | **Completed** | **381** |
 | **Remaining** | **0** ✅ |
 
