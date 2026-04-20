@@ -39,10 +39,10 @@ Detach: `Ctrl+B D` — reattach: `tmux attach -t bench`.
 ## Running a single phase
 
 ```bash
-bash scripts/run_new_benchmarks.sh --phase1   # variance subset (4 models × 5 iter)
-bash scripts/run_new_benchmarks.sh --phase2   # concurrency-64 ramp on 7–9B
-bash scripts/run_new_benchmarks.sh --phase3   # decode-length sweep (incl. Gemma 4)
-bash scripts/run_new_benchmarks.sh --phase4   # Gemma 4 baseline + ngram spec-dec
+bash scripts/run_new_benchmarks.sh --variance   # variance subset (4 models × 5 iter)
+bash scripts/run_new_benchmarks.sh --concurrency   # concurrency-64 ramp on 7–9B
+bash scripts/run_new_benchmarks.sh --decode-sweep   # decode-length sweep (incl. Gemma 4)
+bash scripts/run_new_benchmarks.sh --gemma4   # Gemma 4 baseline + ngram spec-dec
 ```
 
 Each phase writes to its own directory (`results_variance/`,
@@ -53,12 +53,12 @@ never overwritten.
 
 | Variable | Effect |
 |---|---|
-| `SKIP_GEMMA4=1` | Skip all Gemma 4 entries in phase 3. |
+| `SKIP_GEMMA4=1` | Skip all Gemma 4 entries in the decode-sweep block. |
 | `SKIP_GEMMA4_SGLANG=1` | Run Gemma 4 only on vLLM in phases 3 and 4 (handy when disk is tight — saves the ~55 GB `sglang:dev-cu13` pull). |
 
 ## Speculative decoding
 
-Covered by phase 4. Ngram works on Llama 3.1 8B, Qwen3 8B, Gemma 4 E2B, and
+Covered by the gemma4 block. Ngram works on Llama 3.1 8B, Qwen3 8B, Gemma 4 E2B, and
 Gemma 4 E4B across both engines. Eagle3 works on Llama 3.1 8B with vLLM;
 SGLang OOMs on A10G 24 GB, and the Qwen3 8B draft model has not been
 published yet.
