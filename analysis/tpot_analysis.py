@@ -19,10 +19,10 @@ import statistics
 from collections import defaultdict
 from pathlib import Path
 
-
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
+
 
 def _percentile(sorted_vals: list[float], p: float) -> float:
     n = len(sorted_vals)
@@ -59,6 +59,7 @@ def _model_slug(model_str: str) -> str:
 # Loading
 # ---------------------------------------------------------------------------
 
+
 def load_results(results_dir: Path) -> list[dict]:
     """Return list of parsed JSON dicts from all non-manifest result files."""
     records = []
@@ -82,6 +83,7 @@ def load_results(results_dir: Path) -> list[dict]:
 # ---------------------------------------------------------------------------
 # Analysis
 # ---------------------------------------------------------------------------
+
 
 def compute_tpot_stats(
     records: list[dict],
@@ -163,9 +165,7 @@ def render_markdown(stats: dict[tuple[str, str, str], dict]) -> str:
         "after the first token: `(total_ms − ttft_ms) / max(output_tokens − 1, 1)`."
     )
     lines.append("")
-    lines.append(
-        "Lower is better. P99 is the most conservative SLO-relevant metric."
-    )
+    lines.append("Lower is better. P99 is the most conservative SLO-relevant metric.")
     lines.append("")
 
     # Group by scenario for readability
@@ -200,12 +200,10 @@ def render_markdown(stats: dict[tuple[str, str, str], dict]) -> str:
     # Cross-scenario engine comparison (aggregate across all scenarios)
     lines.append("## Engine Comparison (All Scenarios Aggregated)")
     lines.append("")
-    lines.append(
-        "Aggregates TPOT samples from all scenarios for a high-level engine comparison."
-    )
+    lines.append("Aggregates TPOT samples from all scenarios for a high-level engine comparison.")
     lines.append("")
 
-    engine_agg: dict[tuple[str, str], list[float]] = defaultdict(list)
+    engine_agg: dict[tuple[str, str], list[tuple[float, int]]] = defaultdict(list)
     for (model, engine, _scenario), v in stats.items():
         # We don't have raw samples here, but we can aggregate means weighted by count
         # as a proxy. Recomputing from scratch would need raw data passed through.
@@ -230,8 +228,11 @@ def render_markdown(stats: dict[tuple[str, str, str], dict]) -> str:
 # Entry point
 # ---------------------------------------------------------------------------
 
+
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Compute P50/P95/P99 TPOT per (model, engine, scenario)")
+    parser = argparse.ArgumentParser(
+        description="Compute P50/P95/P99 TPOT per (model, engine, scenario)"
+    )
     parser.add_argument(
         "--results-dir",
         type=Path,
@@ -267,8 +268,10 @@ def main() -> None:
     print("=== TPOT Summary (P50 / P95 / P99 ms) ===")
     rows = sorted(stats.items(), key=lambda kv: (_scenario_sort_key(kv[0][2]), kv[0][0], kv[0][1]))
     for (model, engine, scenario), v in rows:
-        print(f"  {model:35s} {engine:8s} {scenario:35s}  "
-              f"P50={v['p50']:7.2f}  P95={v['p95']:7.2f}  P99={v['p99']:7.2f}  n={v['count']}")
+        print(
+            f"  {model:35s} {engine:8s} {scenario:35s}  "
+            f"P50={v['p50']:7.2f}  P95={v['p95']:7.2f}  P99={v['p99']:7.2f}  n={v['count']}"
+        )
 
 
 if __name__ == "__main__":

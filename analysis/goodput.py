@@ -18,10 +18,10 @@ import json
 from collections import defaultdict
 from pathlib import Path
 
-
 # ---------------------------------------------------------------------------
 # Helpers (shared with tpot_analysis but kept self-contained)
 # ---------------------------------------------------------------------------
+
 
 def _tpot(total_ms: float, ttft_ms: float, output_tokens: int) -> float:
     return (total_ms - ttft_ms) / max(output_tokens - 1, 1)
@@ -43,6 +43,7 @@ def _model_slug(model_str: str) -> str:
 # ---------------------------------------------------------------------------
 # Data loading
 # ---------------------------------------------------------------------------
+
 
 def load_results(results_dir: Path, scenario_filter: str | None = None) -> list[dict]:
     records = []
@@ -67,6 +68,7 @@ def load_results(results_dir: Path, scenario_filter: str | None = None) -> list[
 # Goodput computation
 # ---------------------------------------------------------------------------
 
+
 def compute_goodput(
     records: list[dict],
     ttft_slo_ms: float,
@@ -84,14 +86,16 @@ def compute_goodput(
       }
     """
     # Accumulate per (model, engine) across scenarios
-    agg: dict[tuple[str, str], dict] = defaultdict(lambda: {
-        "qualifying_requests": 0,
-        "total_successful": 0,
-        "total_wall_time_sec": 0.0,
-        "per_scenario": defaultdict(lambda: {
-            "qualifying": 0, "total": 0, "wall_time_sec": 0.0
-        }),
-    })
+    agg: dict[tuple[str, str], dict] = defaultdict(
+        lambda: {
+            "qualifying_requests": 0,
+            "total_successful": 0,
+            "total_wall_time_sec": 0.0,
+            "per_scenario": defaultdict(
+                lambda: {"qualifying": 0, "total": 0, "wall_time_sec": 0.0}
+            ),
+        }
+    )
 
     for rec in records:
         model_raw = rec.get("run_metadata", {}).get("model", "")
@@ -102,11 +106,7 @@ def compute_goodput(
         scenario = rec.get("scenario_name", "unknown")
         key = (model, engine)
 
-        wall_time_sec = (
-            rec.get("metrics", {})
-               .get("throughput", {})
-               .get("wall_time_sec", 0.0)
-        )
+        wall_time_sec = rec.get("metrics", {}).get("throughput", {}).get("wall_time_sec", 0.0)
         # Guard against zero/negative wall times (shouldn't happen in valid files)
         if wall_time_sec <= 0:
             continue
@@ -166,6 +166,7 @@ def compute_goodput(
 # Rendering
 # ---------------------------------------------------------------------------
 
+
 def render_table(
     goodput: dict[tuple[str, str], dict],
     ttft_slo_ms: float,
@@ -189,15 +190,19 @@ def render_table(
     # Aggregate table
     lines.append("## Aggregate Goodput per (Model, Engine)")
     lines.append("")
-    lines.append("| Model | Engine | Goodput (req/s) | SLO Pass Rate | Qualifying | Total Successful | Wall Time (s) |")
-    lines.append("|-------|--------|-----------------|---------------|-----------|-----------------|---------------|")
+    lines.append(
+        "| Model | Engine | Goodput (req/s) | SLO Pass Rate | Qualifying | Total Successful | Wall Time (s) |"
+    )
+    lines.append(
+        "|-------|--------|-----------------|---------------|-----------|-----------------|---------------|"
+    )
 
     rows = sorted(goodput.items(), key=lambda kv: (kv[0][0], kv[0][1]))
     for (model, engine), v in rows:
         lines.append(
             f"| {model} | {engine} "
             f"| {v['goodput_rps']:.4f} "
-            f"| {v['slo_pass_rate']*100:.1f}% "
+            f"| {v['slo_pass_rate'] * 100:.1f}% "
             f"| {v['qualifying_requests']} "
             f"| {v['total_successful']} "
             f"| {v['total_wall_time_sec']:.1f} |"
@@ -230,8 +235,12 @@ def render_table(
     for scenario in sorted(all_scenarios, key=_sc_key):
         lines.append(f"### {scenario.replace('_', ' ').title()}")
         lines.append("")
-        lines.append("| Model | Engine | Goodput (req/s) | SLO Pass Rate | Qualifying | Total | Wall Time (s) |")
-        lines.append("|-------|--------|-----------------|---------------|-----------|-------|---------------|")
+        lines.append(
+            "| Model | Engine | Goodput (req/s) | SLO Pass Rate | Qualifying | Total | Wall Time (s) |"
+        )
+        lines.append(
+            "|-------|--------|-----------------|---------------|-----------|-------|---------------|"
+        )
         sc_rows = []
         for (model, engine), v in goodput.items():
             if scenario not in v["per_scenario"]:
@@ -243,7 +252,7 @@ def render_table(
             lines.append(
                 f"| {model} | {engine} "
                 f"| {sv['goodput_rps']:.4f} "
-                f"| {sv['slo_pass_rate']*100:.1f}% "
+                f"| {sv['slo_pass_rate'] * 100:.1f}% "
                 f"| {sv['qualifying']} "
                 f"| {sv['total']} "
                 f"| {sv['wall_time_sec']:.1f} |"
@@ -256,6 +265,7 @@ def render_table(
 # ---------------------------------------------------------------------------
 # Entry point
 # ---------------------------------------------------------------------------
+
 
 def main() -> None:
     parser = argparse.ArgumentParser(
@@ -311,7 +321,7 @@ def main() -> None:
     for (model, engine), v in sorted(goodput.items(), key=lambda kv: (kv[0][0], kv[0][1])):
         print(
             f"  {model:<35} {engine:<8}  {v['goodput_rps']:>14.4f}  "
-            f"{v['slo_pass_rate']*100:>6.1f}%  {v['qualifying_requests']:>10}  {v['total_successful']:>8}"
+            f"{v['slo_pass_rate'] * 100:>6.1f}%  {v['qualifying_requests']:>10}  {v['total_successful']:>8}"
         )
 
     if args.output:

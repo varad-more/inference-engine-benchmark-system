@@ -98,6 +98,7 @@ def _compute_saturation(records: list[dict[str, Any]]) -> list[dict[str, Any]]:
 
         model_raw = rec.get("run_metadata", {}).get("model", "")
         from analysis import get_engine_variant
+
         engine = get_engine_variant(rec)
         model = model_raw.split("/")[-1] if model_raw else "unknown"
         scenario = rec.get("scenario_name", "unknown")
@@ -164,6 +165,7 @@ def _render_saturation(saturation_rows: list[dict[str, Any]]) -> list[str]:
 
         # Average across multiple runs at the same concurrency
         from statistics import mean as _mean
+
         by_conc: dict[int, list[float]] = defaultdict(list)
         for r in level_rows:
             by_conc[r["concurrency"]].append(r["tokens_per_sec"])
@@ -179,11 +181,11 @@ def _render_saturation(saturation_rows: list[dict[str, Any]]) -> list[str]:
 
         cells = []
         for c in all_concurrencies:
-            tps = avg_tps.get(c)
-            if tps is None:
+            cell_tps = avg_tps.get(c)
+            if cell_tps is None:
                 cells.append("—")
             else:
-                cells.append(f"{tps:.0f}")
+                cells.append(f"{cell_tps:.0f}")
         cells_str = " | ".join(cells)
         lines.append(f"| {model} | {engine} | {scenario} | {cells_str} | {sat_point} |")
 

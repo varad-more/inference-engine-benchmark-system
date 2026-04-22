@@ -30,10 +30,10 @@ from pathlib import Path
 
 from scipy import stats as scipy_stats
 
-
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
+
 
 def _percentile(sorted_vals: list[float], p: float) -> float:
     n = len(sorted_vals)
@@ -97,6 +97,7 @@ def _cv(values: list[float]) -> float:
 # ---------------------------------------------------------------------------
 # Data loading
 # ---------------------------------------------------------------------------
+
 
 def load_results(results_dir: Path) -> list[dict]:
     records = []
@@ -172,8 +173,12 @@ def compute_variance_stats(
         for metric_name, values in metric_lists.items():
             if not values:
                 result[key][metric_name] = {
-                    "mean": 0.0, "std": 0.0, "ci95": 0.0,
-                    "cv_pct": 0.0, "n": 0, "values": [],
+                    "mean": 0.0,
+                    "std": 0.0,
+                    "ci95": 0.0,
+                    "cv_pct": 0.0,
+                    "n": 0,
+                    "values": [],
                     "high_variance": False,
                 }
                 continue
@@ -243,13 +248,13 @@ def render_markdown(
         f"**⚠ = CV > {_HIGH_VARIANCE_THRESHOLD}%** — claim unreliable, needs more iterations or investigation."
     )
     lines.append("")
-    lines.append(
-        "| Metric | Formula |"
-    )
+    lines.append("| Metric | Formula |")
     lines.append("|--------|---------|")
     lines.append("| TTFT P50/P95 | from `metrics.ttft.p50/p95` |")
     lines.append("| Throughput | from `metrics.throughput.tokens_per_sec` |")
-    lines.append("| TPOT P95 | `(total_ms − ttft_ms) / max(output_tokens − 1, 1)`, P95 across requests |")
+    lines.append(
+        "| TPOT P95 | `(total_ms − ttft_ms) / max(output_tokens − 1, 1)`, P95 across requests |"
+    )
     lines.append("")
 
     # Per-scenario tables
@@ -314,11 +319,14 @@ def render_markdown(
     lines.append(
         "| Model | vLLM TTFT P50 | SGLang TTFT P50 | vLLM Peak tok/s | SGLang Peak tok/s |"
     )
-    lines.append("|-------|---------------|-----------------|-----------------|-------------------|")
+    lines.append(
+        "|-------|---------------|-----------------|-----------------|-------------------|"
+    )
 
     # Collect per-model data for the headline table
     models = sorted({model for (model, _, _) in stats.keys()})
     for model in models:
+
         def _get(scenario: str, engine: str, metric: str) -> dict:
             return stats.get((model, engine, scenario), {}).get(metric, {"n": 0})
 
@@ -369,6 +377,7 @@ def render_markdown(
 # ---------------------------------------------------------------------------
 # Entry point
 # ---------------------------------------------------------------------------
+
 
 def main() -> None:
     parser = argparse.ArgumentParser(
@@ -439,8 +448,10 @@ def main() -> None:
             ci = f" ± {v['ci95']:.1f}" if v.get("ci95", 0) > 0 else ""
             return f"{v['mean']:.1f}{ci}"
 
-        print(f"  {model:<35}  TTFT vllm={_s(vllm_ttft)} sgl={_s(sgl_ttft)}  "
-              f"tok/s vllm={_s(vllm_tps)} sgl={_s(sgl_tps)}")
+        print(
+            f"  {model:<35}  TTFT vllm={_s(vllm_ttft)} sgl={_s(sgl_ttft)}  "
+            f"tok/s vllm={_s(vllm_tps)} sgl={_s(sgl_tps)}"
+        )
 
 
 if __name__ == "__main__":

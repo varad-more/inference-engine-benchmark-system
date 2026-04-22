@@ -27,13 +27,14 @@ import re
 import statistics
 from collections import defaultdict
 from pathlib import Path
+from typing import Any
 
 from scipy import stats as scipy_stats
-
 
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
+
 
 def _percentile(sorted_vals: list[float], p: float) -> float:
     n = len(sorted_vals)
@@ -122,6 +123,7 @@ def load_results(results_dir: Path) -> list[dict]:
 # Analysis
 # ---------------------------------------------------------------------------
 
+
 def compute_sweep_stats(
     records: list[dict],
 ) -> dict[tuple[str, str, int], dict[str, dict]]:
@@ -163,7 +165,7 @@ def compute_sweep_stats(
         if tpot > 0:
             groups[key]["tpot_p50_ms"].append(tpot)
 
-    result = {}
+    result: dict[tuple[str, str, int], dict[str, dict[str, Any]]] = {}
     for key, metric_lists in groups.items():
         result[key] = {}
         for metric, values in metric_lists.items():
@@ -188,9 +190,7 @@ def _find_crossover(
     Identify the max_output_tokens value at which sglang overtakes vllm
     (or vice versa) for a given metric. Returns a human-readable string.
     """
-    sweep_lengths = sorted(
-        {k[2] for k in stats if k[0] == model}
-    )
+    sweep_lengths = sorted({k[2] for k in stats if k[0] == model})
     if len(sweep_lengths) < 2:
         return "insufficient data"
 
@@ -208,7 +208,9 @@ def _find_crossover(
 
     # Determine who leads at the shortest length
     first = min(results_by_len)
-    leader_at_first = "vllm" if results_by_len[first]["vllm"] >= results_by_len[first]["sglang"] else "sglang"
+    leader_at_first = (
+        "vllm" if results_by_len[first]["vllm"] >= results_by_len[first]["sglang"] else "sglang"
+    )
 
     for length in sweep_lengths[1:]:
         if length not in results_by_len:
@@ -269,12 +271,12 @@ def render_markdown(stats: dict[tuple[str, str, int], dict]) -> str:
         lines.append("### Throughput (tok/s)")
         lines.append("")
         header = "| max_tokens | vLLM tok/s | SGLang tok/s | Winner |"
-        sep    = "|-----------|-----------|-------------|--------|"
+        sep = "|-----------|-----------|-------------|--------|"
         lines.append(header)
         lines.append(sep)
         for length in _SWEEP_LENGTHS:
             vllm_v = stats.get((model, "vllm", length), {}).get("tokens_per_sec", {})
-            sgl_v  = stats.get((model, "sglang", length), {}).get("tokens_per_sec", {})
+            sgl_v = stats.get((model, "sglang", length), {}).get("tokens_per_sec", {})
             v_mean = vllm_v.get("mean", 0.0)
             s_mean = sgl_v.get("mean", 0.0)
             if v_mean > 0 and s_mean > 0:
@@ -287,9 +289,7 @@ def render_markdown(stats: dict[tuple[str, str, int], dict]) -> str:
                     winner = f"SGLang +{gap:.0f}%"
             else:
                 winner = "—"
-            lines.append(
-                f"| {length} | {_fmt(vllm_v)} | {_fmt(sgl_v)} | {winner} |"
-            )
+            lines.append(f"| {length} | {_fmt(vllm_v)} | {_fmt(sgl_v)} | {winner} |")
         lines.append("")
 
         # TTFT table
@@ -299,7 +299,7 @@ def render_markdown(stats: dict[tuple[str, str, int], dict]) -> str:
         lines.append("|-----------|-----------|-------------|")
         for length in _SWEEP_LENGTHS:
             vllm_v = stats.get((model, "vllm", length), {}).get("ttft_p50_ms", {})
-            sgl_v  = stats.get((model, "sglang", length), {}).get("ttft_p50_ms", {})
+            sgl_v = stats.get((model, "sglang", length), {}).get("ttft_p50_ms", {})
             lines.append(f"| {length} | {_fmt(vllm_v, ' ms')} | {_fmt(sgl_v, ' ms')} |")
         lines.append("")
 
@@ -310,7 +310,7 @@ def render_markdown(stats: dict[tuple[str, str, int], dict]) -> str:
         lines.append("|-----------|-----------|-------------|")
         for length in _SWEEP_LENGTHS:
             vllm_v = stats.get((model, "vllm", length), {}).get("tpot_p50_ms", {})
-            sgl_v  = stats.get((model, "sglang", length), {}).get("tpot_p50_ms", {})
+            sgl_v = stats.get((model, "sglang", length), {}).get("tpot_p50_ms", {})
             lines.append(f"| {length} | {_fmt(vllm_v, ' ms')} | {_fmt(sgl_v, ' ms')} |")
         lines.append("")
 
@@ -325,7 +325,7 @@ def render_markdown(stats: dict[tuple[str, str, int], dict]) -> str:
 
         # TTFT advantage at long decode
         vllm_ttft_long = stats.get((model, "vllm", 4096), {}).get("ttft_p50_ms", {})
-        sgl_ttft_long  = stats.get((model, "sglang", 4096), {}).get("ttft_p50_ms", {})
+        sgl_ttft_long = stats.get((model, "sglang", 4096), {}).get("ttft_p50_ms", {})
         if vllm_ttft_long.get("n", 0) > 0 and sgl_ttft_long.get("n", 0) > 0:
             v_ttft = vllm_ttft_long["mean"]
             s_ttft = sgl_ttft_long["mean"]
@@ -356,7 +356,7 @@ def render_markdown(stats: dict[tuple[str, str, int], dict]) -> str:
     lines.append("|-------|----------------|------------------|------------|")
     for model in models:
         vllm_v = stats.get((model, "vllm", 4096), {}).get("ttft_p50_ms", {})
-        sgl_v  = stats.get((model, "sglang", 4096), {}).get("ttft_p50_ms", {})
+        sgl_v = stats.get((model, "sglang", 4096), {}).get("ttft_p50_ms", {})
         if vllm_v.get("n", 0) > 0 and sgl_v.get("n", 0) > 0:
             gap = abs(vllm_v["mean"] - sgl_v["mean"]) / max(vllm_v["mean"], sgl_v["mean"]) * 100
             preserved = "Yes" if gap >= 3 else "No (converged)"
@@ -371,6 +371,7 @@ def render_markdown(stats: dict[tuple[str, str, int], dict]) -> str:
 # ---------------------------------------------------------------------------
 # Entry point
 # ---------------------------------------------------------------------------
+
 
 def main() -> None:
     parser = argparse.ArgumentParser(

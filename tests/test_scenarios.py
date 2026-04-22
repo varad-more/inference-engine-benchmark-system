@@ -67,9 +67,14 @@ class TestScenarioInstances:
         expected = {
             "single_request_latency",
             "throughput_ramp",
+            "throughput_ramp_extended",
             "long_context_stress",
             "prefix_sharing_benefit",
             "structured_generation_speed",
+            "decode_length_sweep_64",
+            "decode_length_sweep_256",
+            "decode_length_sweep_1024",
+            "decode_length_sweep_4096",
         }
         assert set(SCENARIOS.keys()) == expected
 

@@ -43,7 +43,7 @@ RESULTS_DIR.mkdir(exist_ok=True)
 app = FastAPI(
     title="Inference Engine Benchmark Dashboard",
     description="Real-time benchmark comparison for vLLM vs SGLang",
-    version="0.2.0",
+    version="1.0.0",
 )
 
 _allowed_origins = os.environ.get("ALLOWED_ORIGINS", "http://localhost:3000").split(",")
@@ -74,11 +74,31 @@ class JobStatus(BaseModel):
 
 _jobs: dict[str, JobStatus] = {}
 
+# Cap _jobs to avoid unbounded growth in a long-running dashboard process.
+# When the cap is hit, the oldest terminal (done/error) jobs are evicted first.
+_MAX_JOBS = int(os.environ.get("DASHBOARD_MAX_JOBS", "100"))
+
 # Active WebSocket connections for live streaming
 _live_connections: set[WebSocket] = set()
 
 # Lock protecting _jobs and _live_connections from concurrent mutation
 _state_lock = asyncio.Lock()
+
+
+def _evict_old_jobs_locked() -> None:
+    """Evict finished jobs (done/error) oldest-first when _jobs exceeds _MAX_JOBS.
+
+    Caller must hold _state_lock.
+    """
+    if len(_jobs) <= _MAX_JOBS:
+        return
+    terminal = sorted(
+        (j for j in _jobs.values() if j.status in {"done", "error"}),
+        key=lambda j: j.finished_at or j.started_at,
+    )
+    overflow = len(_jobs) - _MAX_JOBS
+    for job in terminal[:overflow]:
+        _jobs.pop(job.job_id, None)
 
 
 MODEL_LABELS = {
@@ -932,6 +952,7 @@ async def start_run(req: RunRequest, background_tasks: BackgroundTasks) -> JSONR
     )
     async with _state_lock:
         _jobs[job_id] = job
+        _evict_old_jobs_locked()
     background_tasks.add_task(_run_benchmark_job, job_id, req)
     return JSONResponse({"job_id": job_id, "status": "pending"}, status_code=202)
 

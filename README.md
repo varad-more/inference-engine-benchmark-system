@@ -4,7 +4,7 @@ A production-grade benchmark harness that rigorously compares **vLLM** and **SGL
 
 ## Summary
 
-I benchmarked **16 models** (2B to 9B parameters, including Google's just-released Gemma 4 E2B and E4B) on a single NVIDIA A10G 24 GB GPU, running **5 scenarios** across both engines. The 14-model baseline plus speculative-decoding suite produced **152 result files at 100% success rate**; follow-on phases (variance, concurrency-64, decode sweep, Gemma 4 baseline + ngram) add another ~380 files. Every cell is now complete. Speculative decoding: **Ngram worked on Llama 3.1 8B, Qwen3 8B, and Gemma 4 E2B/E4B** across both engines; **Eagle3 worked on Llama 3.1 8B with vLLM only** (SGLang OOM on A10G; Qwen3 8B draft model not yet published). See [Benchmark Execution Status](#benchmark-execution-status) below for the per-phase breakdown.
+I benchmarked **16 models total** (2B–9B parameters) on a single NVIDIA A10G 24 GB GPU, running **5 scenarios** across both engines. The **14-model core baseline** (table below) drove the headline comparison; the two later-arriving Gemma 4 models (E2B, E4B) were added in a separate block, so they don't appear in the "X / 14" tallies. The baseline plus speculative-decoding suite produced **152 result files at 100% success rate**; follow-on phases (variance, concurrency-64, decode sweep, Gemma 4 baseline + ngram) add another ~380 files. Every cell is now complete. Speculative decoding: **Ngram worked on Llama 3.1 8B, Qwen3 8B, and Gemma 4 E2B/E4B** across both engines; **Eagle3 worked on Llama 3.1 8B with vLLM only** (SGLang OOM on A10G; Qwen3 8B draft model not yet published). See [Benchmark Execution Status](#benchmark-execution-status) below for the per-phase breakdown.
 
 | Metric | vLLM | SGLang |
 |---|---|---|
@@ -19,20 +19,20 @@ I benchmarked **16 models** (2B to 9B parameters, including Google's just-releas
 **Bottom line:** vLLM is the stronger general-purpose default on A10G-class hardware — wins TTFT on nearly every model, wins small-model throughput by 3–12%, and dominates structured generation. SGLang matches vLLM on 7–9B throughput, has a decisive advantage on Gemma 3 4B (+77% throughput), and wins prefix-sharing TTFT on 10/14 models.
 
 **Hardware:** AWS g5.2xlarge (NVIDIA A10G 24 GB), sequential execution, one engine at a time
-**Full reports:** [`reports/final_benchmark_report_2026-03-31.md`](reports/final_benchmark_report_2026-03-31.md)
-**Benchmark status:** Complete — 152 result files committed under `results/` (140 baseline + 12 speculative-decoding). No runs pending; `scripts/run_all_benchmarks.sh` and `scripts/run_phase_a_pending.sh` reproduce the full matrix.
+**Full reports:** [`reports/final_benchmark_report_2026-03-31.md`](reports/final_benchmark_report_2026-03-31.md) (latest) · [`2026-03-28`](reports/final_benchmark_report_2026-03-28.md) · [`2026-03-22`](reports/final_benchmark_report_2026-03-22.md) · HTML: [`03-31`](reports/final_benchmark_report_2026-03-31.html) · [`03-28`](reports/final_benchmark_report_2026-03-28.html) · dated snapshots: [`03-31`](reports/benchmark_snapshot_2026-03-31.json) · [`03-28`](reports/benchmark_snapshot_2026-03-28.json) · [`03-22`](reports/benchmark_snapshot_2026-03-22.json) · all charts/tables: [`reports/index.html`](reports/index.html)
+**Supporting analyses:** [variance](reports/variance_analysis.md) · [TPOT](reports/tpot_analysis.md) · [goodput](reports/goodput_slo100_35.md) · [decode-length sweep](reports/decode_length_sweep_summary.md) · [decode-length deep-dive](reports/decode_length_analysis.md) · [concurrency-64 ramp](reports/concurrency64_summary.md) · [cross-model summary](reports/cross_model_summary.md) · [blog companion guides](reports/blog_companion_guides.md)
+**Figures:** [spec-dec](reports/figures/speculative_decoding.svg) · [decode-length sweep](reports/figures/decode_length_sweep.svg) · [variance CV](reports/figures/variance_cv.svg) · [goodput](reports/figures/goodput.svg) · [concurrency-64 throughput](reports/figures/phase2_throughput.svg) · [tradeoff map](reports/figures/throughput_tradeoff.svg) — all regenerable via `python -m analysis.generate_*_figure`.
+**Benchmark status:** 152 headline result files (140 baseline + 12 speculative-decoding) plus ~380 files from the extended phases (variance, concurrency-64, decode-length sweep, Gemma 4). Two known open items tracked below: Llama 3.1 8B SGLang-Eagle3 (retired nightly image) and a Gemma 4 E2B single/throughput rerun. Full matrix reproduces via `scripts/run_all_benchmarks.sh` (baseline) and `scripts/run_new_benchmarks.sh` (extended).
 
 ---
 
 ## Benchmark Execution Status
 
-_Last updated: 2026-04-20_
-
 | Phase | Description | Status | Result Files |
 |---|---|---|---|
 | Baseline | 14 models × 5 scenarios × 2 engines | ✅ Complete | 152 / 152 |
 | Speculative decoding | Llama 3.1 8B (Ngram + Eagle3), Qwen3 8B (Ngram) | ✅ Complete (except Llama sglang-eagle3 — blocked on missing nightly image) | In `results/` |
-| Variance subset | 4 models × 5 scenarios × 2 engines × 5 iterations | ✅ Complete | 201 / 200 |
+| Variance subset | 4 models × 5 scenarios × 2 engines × 5 iterations | ✅ Complete | 201 / 200 — CV chart: [`reports/figures/variance_cv.svg`](reports/figures/variance_cv.svg) |
 | Concurrency-64 ramp | 4 models × `throughput_ramp_extended` × 2 engines × 1 iteration | ✅ Complete | 8 / 8 (0% error rate) |
 | Decode-length sweep (4-model base) | 4 models × 4 lengths × 2 engines × 3 iterations | ✅ Complete | 96 / 96 |
 | Decode-length sweep (Gemma 4) | 2 models × 4 lengths × 2 engines × 3 iterations | ✅ Complete | 48 / 48 |
@@ -43,6 +43,8 @@ _Last updated: 2026-04-20_
 Prompt ≈ 512 tokens, `max_output_tokens ∈ {64, 256, 1024, 4096}`, concurrency 8, 180 requests/run. Mean across iterations. Full table: [`reports/decode_length_sweep_summary.md`](reports/decode_length_sweep_summary.md).
 
 All cells at n=3 iterations after 2026-04-19 top-ups.
+
+![Decode-length sweep: tokens/sec vs max_output_tokens](reports/figures/decode_length_sweep.svg)
 
 | Model | Decode | Engine | n | Tokens/s | TTFT p50 (ms) | TTFT p99 (ms) | Latency p99 (ms) | Err |
 |---|---:|---|---:|---:|---:|---:|---:|---:|
@@ -87,7 +89,7 @@ All cells at n=3 iterations after 2026-04-19 top-ups.
 
 ### Concurrency-64 Results
 
-Single-iteration runs at concurrency levels {1, 4, 8, 16, 32, 64}, 150 req/level (900 total). Prompt 128 tok, output 256 tok. Full table: [`reports/concurrency64_summary.md`](reports/concurrency64_summary.md). Charts: [`reports/figures/phase2_throughput.svg`](reports/figures/phase2_throughput.svg), [`reports/figures/phase2_ttft_p99.svg`](reports/figures/phase2_ttft_p99.svg).
+Single-iteration runs at concurrency levels {1, 4, 8, 16, 32, 64}, 150 req/level (900 total). Prompt 128 tok, output 256 tok. Full table: [`reports/concurrency64_summary.md`](reports/concurrency64_summary.md). Charts: [throughput](reports/figures/phase2_throughput.svg) · [TTFT p50](reports/figures/phase2_ttft_p50.svg) · [TTFT p99](reports/figures/phase2_ttft_p99.svg) · [end-to-end latency p99](reports/figures/phase2_latency_p99.svg).
 
 | Model | Engine | Succ | Tokens/s | TTFT p50 (ms) | TTFT p99 (ms) | Latency p50 (ms) | Latency p99 (ms) | Err |
 |---|---|---:|---:|---:|---:|---:|---:|---:|
@@ -122,23 +124,12 @@ Gemma 4 landed in Transformers 5.5.0 and introduced QK-norm (`k_norm`/`q_norm`) 
   ```
   Fix: pin `GEMMA4_SGLANG_IMAGE="lmsysorg/sglang:dev-cu13"` (Apr-16 snapshot off `main`) in `scripts/run_new_benchmarks.sh`. That image ships the native Gemma 4 model class and loads the weights cleanly.
 
-### Follow-up work
+### Open items
 
-- **Variance / TPOT / decode-sweep analysis:** all auto-regenerated from the latest result set —
-  ```bash
-  python -m analysis.variance_analysis --results-dir results_variance
-  python -m analysis.tpot_analysis        --results-dir results_variance
-  python -m analysis.decode_length_analysis --results-dir results_decode_sweep
-  ```
-- **Llama 3.1 8B SGLang-Eagle3:** still blocked on the retired `lmsysorg/sglang:nightly-dev-cu13-20260321-94194537` image. Needs a new nightly pin before retry.
-- **Re-running any phase is idempotent:** every phase block auto-skips cells whose result file already exists, so `scripts/run_new_benchmarks.sh --all` is safe to launch at any time.
+- **Llama 3.1 8B SGLang-Eagle3** — still blocked on the retired `lmsysorg/sglang:nightly-dev-cu13-20260321-94194537` image. Needs a new nightly pin before retry.
+- **Gemma 4 E2B rerun** — `single_request_latency` and `throughput_ramp` produced 0 output tokens; other scenarios are clean. Rerun needed to publish E2B spec-dec throughput numbers.
 
-```bash
-# Re-run analysis over the full dataset
-conda run -n base python -m analysis.variance_analysis --results-dir results_variance
-conda run -n base python -m analysis.tpot_analysis --results-dir results_variance
-conda run -n base python -m analysis.decode_length_analysis --results-dir results_decode_sweep
-```
+Re-running any phase is idempotent: each phase block auto-skips cells whose result file already exists, so `scripts/run_new_benchmarks.sh --all` is safe to launch at any time. Analysis scripts (`variance_analysis`, `tpot_analysis`, `decode_length_analysis`, `goodput`) regenerate their markdown reports from whatever is on disk — see the [Benchmark Scenarios](#benchmark-scenarios) section below for commands.
 
 ---
 
@@ -209,8 +200,13 @@ inference-engine-benchmark-system/
 │   └── app.py                  # FastAPI: REST API + WebSocket live metrics stream
 │
 ├── analysis/
-│   ├── report.py               # HTML report generator (matplotlib CDF/throughput/KV charts)
-│   └── final_report.py         # Aggregated markdown final summary across runs
+│   ├── report.py                      # HTML report generator (matplotlib CDF/throughput/KV charts)
+│   ├── final_report.py                # Aggregated markdown final summary across runs
+│   ├── generate_final_benchmark_report.py  # Public-facing dated final report builder
+│   ├── variance_analysis.py           # CV, 95% CI, t-distribution across 5-iteration variance runs
+│   ├── tpot_analysis.py               # Per-request TPOT P50/P95/P99 from saved result files
+│   ├── decode_length_analysis.py      # Decode-length sweep crossover + CI analysis
+│   └── goodput.py                     # Joint (TTFT, TPOT) SLO goodput with configurable thresholds
 │
 ├── prompts/
 │   ├── short_chat.jsonl        # Low-latency chat prompts
@@ -331,6 +327,8 @@ python run_experiment.py list-prompt-packs
 
 ## Benchmark Scenarios
 
+### Core scenarios (registered in `benchmarks/scenarios.py`)
+
 | Scenario | Requests | Concurrency | Focus |
 |---|---|---|---|
 | `single_request_latency` | 50 | 1 | P50/P95/P99 TTFT, pure engine overhead |
@@ -338,6 +336,11 @@ python run_experiment.py list-prompt-packs
 | `long_context_stress` | 20 | 4 | 8K-token prompts, GPU memory pressure |
 | `prefix_sharing_benefit` | 100 | 8 | 60% shared prefix, KV cache reuse |
 | `structured_generation_speed` | 200 | 16 | JSON schema-constrained decode |
+| `throughput_ramp_extended` | 150×6 levels | 1 → 64 | Extended ramp to concurrency 64 (saturation + OOM ceiling) |
+| `decode_length_sweep_64` | 180 | 8 | 512-token prompt, 64-token decode |
+| `decode_length_sweep_256` | 180 | 8 | 512-token prompt, 256-token decode |
+| `decode_length_sweep_1024` | 180 | 8 | 512-token prompt, 1024-token decode |
+| `decode_length_sweep_4096` | 180 | 8 | 512-token prompt, 4096-token decode |
 
 ### Extended Benchmark Phases
 
@@ -659,6 +662,10 @@ Under high concurrency, TPOT P99 reveals scheduling behaviour. vLLM holds tail l
 
 Goodput = requests/sec satisfying both SLOs simultaneously, summed across all scenarios. Re-run with different thresholds: `python -m analysis.goodput --ttft-slo-ms <X> --tpot-slo-ms <Y>`.
 
+![Goodput comparison — TTFT ≤ 100 ms and TPOT ≤ 35 ms](reports/figures/goodput.svg)
+
+> The chart uses the stricter `TTFT ≤ 100 ms, TPOT ≤ 35 ms` pair from [`reports/goodput_slo100_35.md`](reports/goodput_slo100_35.md); the table below uses the `200 ms / 40 ms` pair.
+
 | Model | vLLM goodput | SGLang goodput | SLO pass % (vLLM / SGLang) |
 |---|---|---|---|
 | gemma-2-2b-it | **1.47 rps** | 1.32 rps | 99.9% / 97.0% |
@@ -711,9 +718,24 @@ Goodput = requests/sec satisfying both SLOs simultaneously, summed across all sc
 
 > Eagle3 not tested — `RedHatAI/Qwen3-8B-speculator.eagle3` not yet published.
 
+#### Gemma 4 E4B
+
+| Variant | Engine | TTFT p50 | Single tok/s | Peak Throughput |
+|---|---|---|---|---|
+| Baseline | vLLM | 84 ms | 24.5 | 83.8 tok/s |
+| Baseline | SGLang | 87 ms | 24.8 | 81.3 tok/s |
+| Ngram | vLLM | 47 ms | 20.7 | 77.1 tok/s |
+| Ngram | SGLang | 48 ms | 23.2 | 58.0 tok/s |
+
+> Ngram cuts TTFT by ~45% on both engines for E4B; peak throughput slightly regresses (SGLang-ngram −29%), matching the "spec-dec hurts on A10G" pattern seen on Llama/Qwen.
+
+#### Gemma 4 E2B
+
+TTFT numbers land in the same regime (vLLM baseline **71 ms**, Ngram **41 ms**; SGLang baseline **72 ms**, Ngram **40 ms**), but the `single_request_latency` and `throughput_ramp` result files for E2B report `total_tokens_generated=0` — a data-quality issue in those two scenarios only (long-context, prefix-sharing, and structured-generation E2B runs are clean). Decode-throughput numbers for E2B spec-dec are therefore **not published here** and need a rerun. See [`docs/RUN_STATUS.md`](docs/RUN_STATUS.md).
+
 ![Speculative decoding comparison](reports/figures/speculative_decoding.svg)
 
-> **Interactive version** (hover, zoom, toggle variants): [`reports/figures/speculative_decoding_interactive.html`](reports/figures/speculative_decoding_interactive.html)
+> Regenerate with `python -m analysis.generate_spec_decoding_figure` after new spec-dec runs land. The plotly-based interactive variant is out of date (still Llama/Qwen only) and pending a refresh.
 
 ---
 
@@ -922,12 +944,11 @@ Full walk-through, env-var knobs, and troubleshooting:
 
 ## Future Work
 
-### Longer-term
-- [ ] SGLang Eagle3 on ≥40 GB GPU (A100/H100)
-- [ ] Eagle3 for Qwen3-8B when `RedHatAI/Qwen3-8B-speculator.eagle3` is published
+- [ ] SGLang Eagle3 on ≥40 GB GPU (A100/H100) — OOMs on A10G
+- [ ] Eagle3 for Qwen3-8B once `RedHatAI/Qwen3-8B-speculator.eagle3` is published
 - [ ] Quantized models (AWQ/GPTQ) — test if spec-dec becomes viable at lower precision
 - [ ] Multi-GPU tensor parallel benchmarks
-- [ ] CI pipeline for automated regression testing
+- [ ] Nightly CI benchmark regression runs (current CI only gates lint + unit tests)
 
 ---
 
